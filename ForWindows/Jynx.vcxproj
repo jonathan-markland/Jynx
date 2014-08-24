@@ -1,0 +1,246 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{8DF62628-89F4-4231-AB9A-AE42615A5573}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>Jynx</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <Optimization>MinSpace</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>false</SDLCheck>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <Optimization>MinSpace</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>false</SDLCheck>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <OmitFramePointers>true</OmitFramePointers>
+      <ExpandAttributedSource>false</ExpandAttributedSource>
+      <AssemblerOutput>AssemblyCode</AssemblerOutput>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Portable\FileLoader.h" />
+    <ClInclude Include="..\Portable\FileSerialiser.h" />
+    <ClInclude Include="..\Portable\IBinarySerialiser.h" />
+    <ClInclude Include="..\Portable\IFileOpener.h" />
+    <ClInclude Include="..\Portable\IHostServicesForLynxEmulator.h" />
+    <ClInclude Include="..\Portable\IHostServicesForLynxUserInterfaceModel.h" />
+    <ClInclude Include="..\Portable\ILynxEmulator.h" />
+    <ClInclude Include="..\Portable\ILynxUserInterfaceModel.h" />
+    <ClInclude Include="..\Portable\ISerialiser.h" />
+    <ClInclude Include="..\Portable\Lexer.h" />
+    <ClInclude Include="..\Portable\LynxEmulatorGuest.h" />
+    <ClInclude Include="..\Portable\LynxHardware.h" />
+    <ClInclude Include="..\Portable\LynxRectangle.h" />
+    <ClInclude Include="..\Portable\LynxRoms.h" />
+    <ClInclude Include="..\Portable\LynxUserInterfaceModel.h" />
+    <ClInclude Include="..\Portable\SignalWriter.h" />
+    <ClInclude Include="..\Portable\SoundBufferWriter.h" />
+    <ClInclude Include="..\Portable\SoundRecorder.h" />
+    <ClInclude Include="..\Portable\TapFileReader.h" />
+    <ClInclude Include="..\Portable\TapFileSplitter.h" />
+    <ClInclude Include="..\Portable\TapFileWriter.h" />
+    <ClInclude Include="..\Portable\TextPlayer.h" />
+    <ClInclude Include="..\Portable\TextRecorder.h" />
+    <ClInclude Include="..\Portable\Z80\JynxZ80.h" />
+    <ClInclude Include="..\Portable\Z80\JynxZ80Shared.h" />
+    <ClInclude Include="..\Portable\Z80\IZ80DisassemblerStream.h" />
+    <ClInclude Include="..\Portable\Z80\JynxZ80Timings.h" />
+    <ClInclude Include="..\Portable\Z80\JynxZ80Declarations.h" />
+    <ClInclude Include="..\Portable\Z80\JynxZ80Disassembler.h" />
+    <ClInclude Include="..\Portable\Z80\JynxZ80DisassemblyData.h" />
+    <ClInclude Include="..\Portable\Z80\JynxZ80ExternalImplementation.h" />
+    <ClInclude Include="..\Portable\ZeroInitialiseMemory.h" />
+    <ClInclude Include="AboutBoxForm.h" />
+    <ClInclude Include="Program.h" />
+    <ClInclude Include="libWinApi.h" />
+    <ClInclude Include="MainForm.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="SoundThread.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="WindowsFileOpener.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Portable\FileLoader.cpp" />
+    <ClCompile Include="..\Portable\FileSerialiser.cpp" />
+    <ClCompile Include="..\Portable\Lexer.cpp" />
+    <ClCompile Include="..\Portable\LynxEmulatorGuest.cpp" />
+    <ClCompile Include="..\Portable\LynxRectangle.cpp" />
+    <ClCompile Include="..\Portable\LynxUserInterfaceModel.cpp" />
+    <ClCompile Include="..\Portable\SignalWriter.cpp" />
+    <ClCompile Include="..\Portable\SoundBufferWriter.cpp" />
+    <ClCompile Include="..\Portable\SoundRecorder.cpp" />
+    <ClCompile Include="..\Portable\TapFileReader.cpp" />
+    <ClCompile Include="..\Portable\TapFileSplitter.cpp" />
+    <ClCompile Include="..\Portable\TapFileWriter.cpp" />
+    <ClCompile Include="..\Portable\TextPlayer.cpp" />
+    <ClCompile Include="..\Portable\TextRecorder.cpp" />
+    <ClCompile Include="..\Portable\Z80\JynxZ80.cpp" />
+    <ClCompile Include="..\Portable\Z80\JynxZ80_CB.cpp" />
+    <ClCompile Include="..\Portable\Z80\JynxZ80_ED.cpp" />
+    <ClCompile Include="..\Portable\Z80\JynxZ80MainSet.cpp" />
+    <ClCompile Include="..\Portable\Z80\JynxZ80Shared.cpp" />
+    <ClCompile Include="..\Portable\Z80\JynxZ80Timings.cpp" />
+    <ClCompile Include="..\Portable\Z80\JynxZ80Disassembler.cpp" />
+    <ClCompile Include="AboutBoxForm.cpp" />
+    <ClCompile Include="Program.cpp" />
+    <ClCompile Include="libWinApi.cpp" />
+    <ClCompile Include="MainForm.cpp" />
+    <ClCompile Include="SoundThread.cpp" />
+    <ClCompile Include="WindowsFileOpener.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Jynx.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\Jynx.ico" />
+    <Image Include="res\LynxPaw.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\LICENSE.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\readme.htm">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

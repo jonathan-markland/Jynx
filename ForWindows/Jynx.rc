@@ -1,0 +1,303 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#ifndef APSTUDIO_INVOKED
+#include "targetver.h"
+#endif
+#include "afxres.h"
+#include "verrsrc.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (United States) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\Jynx.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINFRAME MENU
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "Open TAP file ...",           ID_FILE_OPENTAPFILE
+        MENUITEM "Rewind Tape",                 ID_FILE_REWINDTAPE
+        MENUITEM SEPARATOR
+        MENUITEM "New Output Tape",             ID_FILE_INSERTBLANKTAPE
+        MENUITEM "Save As TAP file...",         ID_FILE_SAVETAPE
+        MENUITEM SEPARATOR
+        MENUITEM "Load State Snapshot ...",     ID_FILE_LOADSTATESNAPSHOT
+        MENUITEM "Save State Snapshot ...",     ID_FILE_SAVESTATESNAPSHOT
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_FILE_EXIT
+    END
+    POPUP "&Emulation"
+    BEGIN
+        MENUITEM "Lynx &48K",                   ID_EMULATION_LYNX48K
+        MENUITEM "Lynx 9&6K",                   ID_EMULATION_LYNX96K
+        MENUITEM SEPARATOR
+        MENUITEM "Speed 50%",                   ID_EMULATION_SPEED50
+        MENUITEM "Speed 100%",                  ID_EMULATION_SPEED100
+        MENUITEM "Speed 200%",                  ID_EMULATION_SPEED200
+        MENUITEM "Speed 400%",                  ID_EMULATION_SPEED400
+        MENUITEM "Speed 800%",                  ID_EMULATION_SPEED800
+        MENUITEM SEPARATOR
+        MENUITEM "&Reset Guest Machine",        ID_EMULATION_RESET
+    END
+    POPUP "&Display"
+    BEGIN
+        MENUITEM "Fit to &Window",              ID_DISPLAY_FITTOWINDOW
+        MENUITEM "Use &Square Pixels",          ID_DISPLAY_SQUAREPIXELS
+    END
+    POPUP "&Sound"
+    BEGIN
+        MENUITEM "Record sound to file ...",    ID_SOUND_RECORDTOFILE
+        MENUITEM "Finish recording",            ID_SOUND_FINISHRECORDING
+        MENUITEM SEPARATOR
+        MENUITEM "Listen to tape sounds",       ID_SOUND_LISTENTOTAPESOUNDS
+        MENUITEM SEPARATOR
+        MENUITEM "Enable sound",                ID_SOUND_ENABLE
+    END
+    POPUP "&Text"
+    BEGIN
+        MENUITEM "Record Lynx Text to file ...", ID_TEXT_RECORDLYNXTEXT
+        MENUITEM "Stop Recording Lynx Text",    ID_TEXT_STOPRECORDINGLYNXTEXT
+        MENUITEM SEPARATOR
+        MENUITEM "Type in text from file ...",  ID_TEXT_TYPEINFROMFILE
+        MENUITEM SEPARATOR
+        MENUITEM "Enable Lynx Basic REM command extensions", ID_TEXT_LYNXBASICREMCOMMANDEXTENSIONS
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About ...",                  ID_HELP_ABOUT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 287, 237
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About Jynx"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    CONTROL         311,IDC_STATIC,"Static",SS_BITMAP,14,14,32,30
+    LTEXT           "Jynx - Emulation of the 1983 Camputers Lynx 48K / 96K",IDC_STATIC,61,24,194,8,SS_NOPREFIX
+    LTEXT           "(C) 2014   Jonathan Markland",IDC_STATIC,61,36,204,8
+    DEFPUSHBUTTON   "OK",IDOK,119,216,50,14,WS_GROUP
+    LTEXT           "Original Camputers Lynx hardware - John Shrieff",IDC_STATIC,61,82,172,8
+    LTEXT           "Original Lynx BASIC and firmware - Davis Jansons",IDC_STATIC,61,94,171,8
+    LTEXT           "~ With thanks for creating my first computer  ~",IDC_STATIC,61,66,188,8
+    LTEXT           "~ With thanks ~",IDC_STATIC,61,115,185,8
+    LTEXT           "The curator of camputerslynx.info - but where is the site now?",IDC_STATIC,61,128,208,8
+    LTEXT           "~ LICENCE AGREEMENT ~",IDC_STATIC,61,160,185,8
+    LTEXT           "This program comes with ABSOLUTELY NO WARRANTY,",IDC_STATIC,61,172,185,8
+    LTEXT           "and is licensed under the GNU General Public License Version 3",IDC_STATIC,61,182,203,8
+    LTEXT           "See   http://www.gnu.org/licenses/   for your rights.",IDC_STATIC,61,193,185,8
+    LTEXT           "The many excellent Z80 reference sites on the Web (See code).",IDC_STATIC,61,139,208,8
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "CompanyName", "Jonathan Markland"
+            VALUE "FileDescription", "Emulation of the 1983 Camputers Lynx 48K / 96K"
+            VALUE "FileVersion", "1.0.0.1"
+            VALUE "InternalName", "Jynx.exe"
+            VALUE "LegalCopyright", " © 2014 Jonathan Markland"
+            VALUE "OriginalFilename", "Jynx.exe"
+            VALUE "ProductName", "Emulation of the Camputers Lynx"
+            VALUE "ProductVersion", "1.0.0.1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 280
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 230
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDR_MAINFRAME           "Jynx"
+END
+
+#endif    // English (United States) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (United Kingdom) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENG)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
+#pragma code_page(1252)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_MAINFORM DIALOGEX 0, 0, 361, 339
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "Jynx"
+MENU IDR_MAINFRAME
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_MAINFORM, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 354
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 332
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#include ""afxres.h""\r\n"
+    "#include ""verrsrc.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#include ""res\\Jynx.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""      // Standard components\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_BITMAP_LYNX_PAW     BITMAP                  "res\\LynxPaw.bmp"
+#endif    // English (United Kingdom) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE 9, 1
+#include "res\Jynx.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"      // Standard components
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

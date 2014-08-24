@@ -1,0 +1,13 @@
+
+*.aps
+*.old
+*.psess
+*.user
+*.sdf
+*.opensdf
+*.suo
+AutoGen_*
+thumbs.db
+Debug
+Release
+ipch

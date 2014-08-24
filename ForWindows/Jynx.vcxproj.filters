@@ -1,0 +1,249 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Portable">
+      <UniqueIdentifier>{feb27cd4-07d4-4d3f-97e2-a83a703ed382}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Portable\Z80">
+      <UniqueIdentifier>{86fb66a3-e1da-4a31-919d-60d5c33fcbea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ForWindows">
+      <UniqueIdentifier>{2803bb94-d981-4436-bab6-f49c07ff7015}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Portable\FileLoader.h">
+      <Filter>Source Files\Portable</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Portable\FileSerialiser.h">
+      <Filter>Source Files\Portable</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Portable\IFileOpener.h">
+      <Filter>Source Files\Portable</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Portable\IHostServicesForLynxEmulator.h">
+      <Filter>Source Files\Portable</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Portable\ILynxEmulator.h">
+      <Filter>Source Files\Portable</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Portable\ISerialiser.h">
+      <Filter>Source Files\Portable</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Portable\Lexer.h">
+      <Filter>Source Files\Portable</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Portable\LynxEmulatorGuest.h">
+      <Filter>Source Files\Portable</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Portable\LynxHardware.h">
+      <Filter>Source Files\Portable</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Portable\SignalWriter.h">
+      <Filter>Source Files\Portable</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Portable\SoundBufferWriter.h">
+      <Filter>Source Files\Portable</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Portable\SoundRecorder.h">
+      <Filter>Source Files\Portable</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Portable\TapFileReader.h">
+      <Filter>Source Files\Portable</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Portable\TapFileWriter.h">
+      <Filter>Source Files\Portable</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Portable\ZeroInitialiseMemory.h">
+      <Filter>Source Files\Portable</Filter>
+    </ClInclude>
+    <ClInclude Include="AboutBoxForm.h">
+      <Filter>Source Files\ForWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="libWinApi.h">
+      <Filter>Source Files\ForWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="MainForm.h">
+      <Filter>Source Files\ForWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="Program.h">
+      <Filter>Source Files\ForWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Source Files\ForWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundThread.h">
+      <Filter>Source Files\ForWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Source Files\ForWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Source Files\ForWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowsFileOpener.h">
+      <Filter>Source Files\ForWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Portable\ILynxUserInterfaceModel.h">
+      <Filter>Source Files\Portable</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Portable\IHostServicesForLynxUserInterfaceModel.h">
+      <Filter>Source Files\Portable</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Portable\LynxUserInterfaceModel.h">
+      <Filter>Source Files\Portable</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Portable\LynxRectangle.h">
+      <Filter>Source Files\Portable</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Portable\LynxRoms.h">
+      <Filter>Source Files\Portable</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Portable\TextRecorder.h">
+      <Filter>Source Files\Portable</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Portable\TextPlayer.h">
+      <Filter>Source Files\Portable</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Portable\Z80\IZ80DisassemblerStream.h">
+      <Filter>Source Files\Portable\Z80</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Portable\IBinarySerialiser.h">
+      <Filter>Source Files\Portable</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Portable\TapFileSplitter.h">
+      <Filter>Source Files\Portable</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Portable\Z80\JynxZ80.h">
+      <Filter>Source Files\Portable\Z80</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Portable\Z80\JynxZ80Declarations.h">
+      <Filter>Source Files\Portable\Z80</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Portable\Z80\JynxZ80Disassembler.h">
+      <Filter>Source Files\Portable\Z80</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Portable\Z80\JynxZ80DisassemblyData.h">
+      <Filter>Source Files\Portable\Z80</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Portable\Z80\JynxZ80ExternalImplementation.h">
+      <Filter>Source Files\Portable\Z80</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Portable\Z80\JynxZ80Timings.h">
+      <Filter>Source Files\Portable\Z80</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Portable\Z80\JynxZ80Shared.h">
+      <Filter>Source Files\Portable\Z80</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Portable\FileLoader.cpp">
+      <Filter>Source Files\Portable</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Portable\FileSerialiser.cpp">
+      <Filter>Source Files\Portable</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Portable\Lexer.cpp">
+      <Filter>Source Files\Portable</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Portable\LynxEmulatorGuest.cpp">
+      <Filter>Source Files\Portable</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Portable\SignalWriter.cpp">
+      <Filter>Source Files\Portable</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Portable\SoundBufferWriter.cpp">
+      <Filter>Source Files\Portable</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Portable\SoundRecorder.cpp">
+      <Filter>Source Files\Portable</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Portable\TapFileReader.cpp">
+      <Filter>Source Files\Portable</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Portable\TapFileWriter.cpp">
+      <Filter>Source Files\Portable</Filter>
+    </ClCompile>
+    <ClCompile Include="AboutBoxForm.cpp">
+      <Filter>Source Files\ForWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="libWinApi.cpp">
+      <Filter>Source Files\ForWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="MainForm.cpp">
+      <Filter>Source Files\ForWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="Program.cpp">
+      <Filter>Source Files\ForWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundThread.cpp">
+      <Filter>Source Files\ForWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowsFileOpener.cpp">
+      <Filter>Source Files\ForWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Portable\LynxUserInterfaceModel.cpp">
+      <Filter>Source Files\Portable</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Portable\LynxRectangle.cpp">
+      <Filter>Source Files\Portable</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Portable\TextRecorder.cpp">
+      <Filter>Source Files\Portable</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Portable\TextPlayer.cpp">
+      <Filter>Source Files\Portable</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Portable\TapFileSplitter.cpp">
+      <Filter>Source Files\Portable</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Portable\Z80\JynxZ80.cpp">
+      <Filter>Source Files\Portable\Z80</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Portable\Z80\JynxZ80_CB.cpp">
+      <Filter>Source Files\Portable\Z80</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Portable\Z80\JynxZ80_ED.cpp">
+      <Filter>Source Files\Portable\Z80</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Portable\Z80\JynxZ80Disassembler.cpp">
+      <Filter>Source Files\Portable\Z80</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Portable\Z80\JynxZ80Timings.cpp">
+      <Filter>Source Files\Portable\Z80</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Portable\Z80\JynxZ80Shared.cpp">
+      <Filter>Source Files\Portable\Z80</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Portable\Z80\JynxZ80MainSet.cpp">
+      <Filter>Source Files\Portable\Z80</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Jynx.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\Jynx.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\LynxPaw.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\LICENSE.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\readme.htm" />
+  </ItemGroup>
+</Project>
