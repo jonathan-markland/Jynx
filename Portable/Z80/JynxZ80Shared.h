@@ -127,7 +127,7 @@ namespace JynxZ80
 
 	INLINE_FUNCTION   uint32_t  CalcOverflowForSubtract( uint32_t a, uint32_t b, uint32_t calculatedResult )
 	{
-		return (a ^ b) & (b ^ calculatedResult);
+		return (a ^ b) & (a ^ calculatedResult);
 	}
 
 

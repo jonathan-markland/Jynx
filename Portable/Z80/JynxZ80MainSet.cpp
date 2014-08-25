@@ -218,8 +218,6 @@ namespace JynxZ80
 
 			uint8_t  branchTaken;
 
-			auto branchOffset = (int16_t) ((int8_t) CodeStreamFetch());
-
 			if( _currentOpcode == 0x10 )
 			{
 				// DJNZ
@@ -232,6 +230,7 @@ namespace JynxZ80
 			}
 			else
 			{
+				// The 4 conditional JRs
  				auto index = (_currentOpcode >> 3) & 3;  // Intentionally only using the first four, hence "& 3".
 				branchTaken = IsConditionSatisfied( ConditionalExecutionMasksAndExpectations[ index ] );
 			}
@@ -240,8 +239,13 @@ namespace JynxZ80
 			{
 			do_branch_taken:
 				Spend(5);
+				auto branchOffset = (int16_t) ((int8_t) CodeStreamFetch());
 				JumpRelative( branchOffset );
 				OnAboutToBranch();
+			}
+			else
+			{
+				++_programCounter; // branch not taken
 			}
 		}
 	}
@@ -330,6 +334,13 @@ namespace JynxZ80
 
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
+	INLINE_FUNCTION uint8_t Calculate_HF_PV_PostIncrementAndPreDecrement( uint8_t value )
+	{
+		return (value == 0x80 ? Z80Flags::PV : 0) | ((value & 0x0F) ? 0 : Z80Flags::HF);
+	}
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
 	INLINE_FUNCTION void Z80::MainSet_Quarter0_Column4()
 	{
 		// 04 14 24 34 0C 1C 2C 3C
@@ -344,7 +355,12 @@ namespace JynxZ80
 			_hiddenRegisterSix = GuestRead( targetAddress );
 		}
 				
-		DestructiveAdd8( GetReferenceToReg8_FromBits5to3(), 1, 0 );
+		auto &reg = GetReferenceToReg8_FromBits5to3();
+		++reg;
+		SetFlags(
+			CurrentCarry()
+			| CalcZeroAndSignFlags(reg)
+			| Calculate_HF_PV_PostIncrementAndPreDecrement(reg) );
 
 		if( GetRowMask( _currentOpcode ) == RowMasks::Row6 )
 		{
@@ -368,7 +384,10 @@ namespace JynxZ80
 			_hiddenRegisterSix = GuestRead( targetAddress );
 		}
 
-		DestructiveSubtract8( GetReferenceToReg8_FromBits5to3(), 1, 0 );
+		auto &reg = GetReferenceToReg8_FromBits5to3();
+		auto PVHF = Calculate_HF_PV_PostIncrementAndPreDecrement(reg);
+		--reg;
+		SetFlags( CurrentCarry() | CalcZeroAndSignFlags(reg) | PVHF | Z80Flags::NF );
 
 		if( GetRowMask( _currentOpcode ) == RowMasks::Row6 )
 		{
@@ -450,11 +469,16 @@ namespace JynxZ80
 				break;
 
 			case 7: // CCF
-				// Condition Bits Affected: S is not affected Z is not affected H, previous carry is copied P/V is not affected N is reset C is set if CY was 0 before operation; reset otherwise
+				// Condition Bits Affected: S is not affected Z is not affected H, 
+				// previous carry is copied 
+				// P/V is not affected 
+				// N is reset 
+				// C is set if CY was 0 before operation; reset otherwise
 				{
-					auto flags  = Flags() ^ Z80Flags::CF;   // do the CCF
-					auto masked = flags & (Z80Flags::SF | Z80Flags::ZF | Z80Flags::CF);  // keep these, clear others
-					auto halfCarry = (flags << 4) & Z80Flags::HF;
+					auto oldFlags  = Flags();
+					auto flags  = oldFlags ^ Z80Flags::CF;   // do the CCF
+					auto masked = flags & (Z80Flags::SF | Z80Flags::ZF | Z80Flags::CF | Z80Flags::PV);  // keep these, clear others
+					auto halfCarry = (oldFlags << 4) & Z80Flags::HF; // HF takes the old CF value
 					SetFlags( masked | halfCarry );
 				}
 				break;
