@@ -100,7 +100,7 @@ END
 // Dialog
 //
 
-IDD_ABOUTBOX DIALOGEX 0, 0, 287, 237
+IDD_ABOUTBOX DIALOGEX 0, 0, 287, 274
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "About Jynx"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
@@ -108,17 +108,19 @@ BEGIN
     CONTROL         311,IDC_STATIC,"Static",SS_BITMAP,14,14,32,30
     LTEXT           "Jynx - Emulation of the 1983 Camputers Lynx 48K / 96K",IDC_STATIC,61,24,194,8,SS_NOPREFIX
     LTEXT           "(C) 2014   Jonathan Markland",IDC_STATIC,61,36,204,8
-    DEFPUSHBUTTON   "OK",IDOK,119,216,50,14,WS_GROUP
-    LTEXT           "Original Camputers Lynx hardware - John Shrieff",IDC_STATIC,61,82,172,8
-    LTEXT           "Original Lynx BASIC and firmware - Davis Jansons",IDC_STATIC,61,94,171,8
-    LTEXT           "~ With thanks for creating my first computer  ~",IDC_STATIC,61,66,188,8
-    LTEXT           "~ With thanks ~",IDC_STATIC,61,115,185,8
-    LTEXT           "The curator of camputerslynx.info - but where is the site now?",IDC_STATIC,61,128,208,8
-    LTEXT           "~ LICENCE AGREEMENT ~",IDC_STATIC,61,160,185,8
-    LTEXT           "This program comes with ABSOLUTELY NO WARRANTY,",IDC_STATIC,61,172,185,8
-    LTEXT           "and is licensed under the GNU General Public License Version 3",IDC_STATIC,61,182,203,8
-    LTEXT           "See   http://www.gnu.org/licenses/   for your rights.",IDC_STATIC,61,193,185,8
-    LTEXT           "The many excellent Z80 reference sites on the Web (See code).",IDC_STATIC,61,139,208,8
+    DEFPUSHBUTTON   "OK",IDOK,119,253,50,14,WS_GROUP
+    LTEXT           "Original Camputers Lynx hardware - John Shrieff",IDC_STATIC,61,97,172,8
+    LTEXT           "Original Lynx BASIC and firmware - Davis Jansons",IDC_STATIC,61,108,171,8
+    LTEXT           "~ With thanks for creating my first computer  ~",IDC_STATIC,61,73,188,8
+    LTEXT           "~ With thanks ~",IDC_STATIC,61,129,185,8
+    LTEXT           "The curator of camputerslynx.info - but where is the site now?",IDC_STATIC,61,142,208,8
+    LTEXT           "~ LICENCE AGREEMENT ~",IDC_STATIC,61,177,185,8
+    LTEXT           "This program comes with ABSOLUTELY NO WARRANTY,",IDC_STATIC,61,189,185,8
+    LTEXT           "and is licensed under the GNU General Public License Version 3",IDC_STATIC,61,199,203,8
+    LTEXT           "See   http://www.gnu.org/licenses/   for your rights.",IDC_STATIC,61,210,185,8
+    LTEXT           "The many excellent Z80 reference sites on the Web (See code).",IDC_STATIC,61,153,208,8
+    LTEXT           "www.github.com/jonathan-markland/jynx",IDC_STATIC,61,47,204,8
+    LTEXT           "The team at Camputers",IDC_STATIC,61,86,171,8
 END
 
 
@@ -174,7 +176,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 280
         TOPMARGIN, 7
-        BOTTOMMARGIN, 230
+        BOTTOMMARGIN, 267
     END
 END
 #endif    // APSTUDIO_INVOKED
