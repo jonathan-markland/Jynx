@@ -47,9 +47,7 @@ namespace Jynx
 
 
 
-
-
-	class LynxEmulatorGuest: public ILynxEmulator
+	class LynxEmulatorGuest: public ILynxEmulator, public ITapeSpeedSupplier
 	{
 	public:
 
@@ -89,6 +87,9 @@ namespace Jynx
 		virtual void SetLynxRemCommandExtensionsEnabled( bool enable ) override;
 		virtual void TypeInTextFromFile( IFileOpener *fileOpener ) override;
 
+		// Implementing ITapeSpeedSupplier
+		virtual uint32_t  GetLynxTapeSpeedBitsPerSecond() override;
+
 		// Interface called by the Z80 emulator:
 		uint8_t  Z80_AddressRead(  uint16_t address );
 		uint8_t  Z80_IOSpaceRead(  uint16_t portNumber );
@@ -126,8 +127,6 @@ namespace Jynx
 
 		std::string  GetLynxCommandLine() const;
 		void ProcessLynxCommand();
-
-		LynxTapeSpeed  GetLynxTapeSpeed();
 
 	private:
 

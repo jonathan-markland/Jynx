@@ -21,12 +21,27 @@
 #pragma once
 
 #include <vector>
+#include <stdint.h>
 #include "ISerialiser.h"
 #include "IFileOpener.h"
 #include "TapFileSplitter.h"
 
 namespace Jynx
 {
+	class ITapeSpeedSupplier
+	{
+	public:
+
+		// Interface onto the party that will supply the TapFileReader with
+		// the Lynx's current tape speed setting (TAPE command in BASIC).
+		// For reliability, this needs to be done at the last moment, just
+		// before creating the waveform.
+
+		virtual uint32_t  GetLynxTapeSpeedBitsPerSecond() = 0;
+	};
+
+
+
 	class TapFileReader
 	{
 	public:
@@ -36,15 +51,15 @@ namespace Jynx
 		// Must construct afresh for each file to load!
 		// Can rewind though!
 
-		TapFileReader(); 
+		explicit TapFileReader( ITapeSpeedSupplier * ); 
 			// The constructor for an empty tape.
 
-		explicit TapFileReader( IFileOpener *tapFileOpener );
+		TapFileReader( IFileOpener *tapFileOpener, ITapeSpeedSupplier * );
 			// Throws std:: file exceptions.
 			// Throws a std::runtime_error if parse fails.
 
 		// Motor
-		void CassetteMotorOn( const class LynxTapeSpeed &lynxTapeSpeed );
+		void CassetteMotorOn();
 		void CassetteMotorOff();
 
 		// Playback
@@ -58,6 +73,10 @@ namespace Jynx
 		// Wave data representation for the *current* file:
 		std::vector<uint16_t>  _waveData;  // Bit 15 gives the data bit.  Bits 14..0 give the sustain period in Z80 cycles.
 
+		// External supplier of the tape speed.
+		// Called at the last minute, when we make the waveform.
+		ITapeSpeedSupplier *_tapeSpeedSupplier;
+
 		// Playback:
 		bool      _playbackResyncWithCycleCounterOnNextRead;
 		uint32_t  _bitsPerSecond;
@@ -68,15 +87,6 @@ namespace Jynx
 
 		void SetPositionToFile( size_t fileIndex );
 
-	};
-
-
-
-	class LynxTapeSpeed
-	{
-	public:
-		LynxTapeSpeed( uint8_t coarseSpeed, uint8_t fineSpeed ); // At read from the Lynx's RAM  ("COARSE" and "FINE" system variables).
-		const uint32_t BitsPerSecond;   // as Camputers documentation has it, but we only care about ratios anyway!
 	};
 
 } // end namespace Jynx

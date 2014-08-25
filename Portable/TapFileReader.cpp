@@ -25,21 +25,23 @@
 
 namespace Jynx
 {
-	TapFileReader::TapFileReader()
+	TapFileReader::TapFileReader( ITapeSpeedSupplier *tapeSpeedSupplier )
 		: _playbackResyncWithCycleCounterOnNextRead(true)
 		, _playbackCycleCounterOrigin(0)
-		, _bitsPerSecond(600)
+		, _bitsPerSecond(600)  // Initialisation not used as it happens!
+		, _tapeSpeedSupplier( tapeSpeedSupplier )
 	{
 		RewindPlaybackPosition();
 	}
 
 
 
-	TapFileReader::TapFileReader( IFileOpener *tapFileOpener )
+	TapFileReader::TapFileReader( IFileOpener *tapFileOpener, ITapeSpeedSupplier *tapeSpeedSupplier )
 		: _playbackResyncWithCycleCounterOnNextRead(true)
 		, _playbackCycleCounterOrigin(0)
 		, _tapFileSplitter( tapFileOpener )
-		, _bitsPerSecond(600)
+		, _bitsPerSecond(600)  // Initialisation not used as it happens!
+		, _tapeSpeedSupplier( tapeSpeedSupplier )
 	{
 		RewindPlaybackPosition();
 	}
@@ -52,9 +54,8 @@ namespace Jynx
 	//     CASSETTE MOTOR
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
-	void TapFileReader::CassetteMotorOn( const LynxTapeSpeed &lynxTapeSpeed )
+	void TapFileReader::CassetteMotorOn()
 	{
-		_bitsPerSecond = lynxTapeSpeed.BitsPerSecond;
 		_playbackResyncWithCycleCounterOnNextRead = true;
 	}
 
@@ -110,6 +111,7 @@ namespace Jynx
 
 			if( _waveData.empty() )
 			{
+				_bitsPerSecond = _tapeSpeedSupplier->GetLynxTapeSpeedBitsPerSecond();
 				_waveData = _tapFileSplitter.GenerateWaveformForFile( _playbackFileIndex, _bitsPerSecond );
 				assert( ! _waveData.empty() );
 			}
@@ -138,29 +140,6 @@ namespace Jynx
 		// All files expired.
 
 		return 0;
-	}
-
-
-
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-	//     LYNX "TAPE" speed conversion
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-	uint32_t  GetBitsPerSecond( uint8_t coarseSpeed, uint8_t fineSpeed )
-	{
-		if( coarseSpeed == 1 && fineSpeed == 1 ) return 900;  // TAPE 1
-		if( coarseSpeed == 2 && fineSpeed == 4 ) return 1200; // TAPE 2
-		if( coarseSpeed == 2 && fineSpeed == 2 ) return 1500; // TAPE 3
-		if( coarseSpeed == 2 && fineSpeed == 1 ) return 1800; // TAPE 4
-		if( coarseSpeed == 3 && fineSpeed == 2 ) return 2100; // TAPE 5
-		return 600;  // TAPE 0 (default)
-	}
-
-
-
-	LynxTapeSpeed::LynxTapeSpeed( uint8_t coarseSpeed, uint8_t fineSpeed )
-		: BitsPerSecond( GetBitsPerSecond(coarseSpeed, fineSpeed) ) 
-	{
 	}
 
 

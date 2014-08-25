@@ -49,7 +49,7 @@ namespace Jynx
 		assert( g_LynxEmulatorGuestSingleton == nullptr );  // should only be one instance of this class.
 		g_LynxEmulatorGuestSingleton = this; // establish this object as the singleton that the Z80 will call.
 
-		_currentReadTape  = std::make_shared<TapFileReader>();
+		_currentReadTape  = std::make_shared<TapFileReader>( this );
 		_currentWriteTape = std::make_shared<TapFileWriter>();
 		_machineType      = LynxMachineType::LYNX_48K; 
 		_hostObject       = hostObject;
@@ -750,7 +750,7 @@ namespace Jynx
 		// When the Lynx LOADs, we can then serve data at the speed it is expecting.  Of course,
 		// this would never have happened on a real system!  The lynx would have ignored files
 		// saved at unexpected speeds.  (See Lynx BASIC "TAPE" command).
-		_currentReadTape->CassetteMotorOn( GetLynxTapeSpeed() );
+		_currentReadTape->CassetteMotorOn();
 		_currentWriteTape->NotifyCassetteMotorOn();
 	}
 
@@ -789,7 +789,23 @@ namespace Jynx
 
 
 
-	LynxTapeSpeed  LynxEmulatorGuest::GetLynxTapeSpeed()
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	//     LYNX "TAPE" speed conversion
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+	uint32_t  TranslateCoarseAndFineToBitsPerSecond( uint8_t coarseSpeed, uint8_t fineSpeed )
+	{
+		if( coarseSpeed == 1 && fineSpeed == 1 ) return 900;  // TAPE 1
+		if( coarseSpeed == 2 && fineSpeed == 4 ) return 1200; // TAPE 2
+		if( coarseSpeed == 2 && fineSpeed == 2 ) return 1500; // TAPE 3
+		if( coarseSpeed == 2 && fineSpeed == 1 ) return 1800; // TAPE 4
+		if( coarseSpeed == 3 && fineSpeed == 2 ) return 2100; // TAPE 5
+		return 600;  // TAPE 0 (default)
+	}
+
+
+
+	uint32_t  LynxEmulatorGuest::GetLynxTapeSpeedBitsPerSecond()
 	{
 		// The Lynx never did speed detection on reading tapes/
 		// Let's give the Lynx the tape at the speed it wants.
@@ -798,7 +814,7 @@ namespace Jynx
 
 		auto coarseSpeed = _lynxRAM_6000[0x29D];
 		auto fineSpeed   = _lynxRAM_6000[0x29E];
-		return LynxTapeSpeed( coarseSpeed, fineSpeed );
+		return TranslateCoarseAndFineToBitsPerSecond( coarseSpeed, fineSpeed );
 	}
 
 
@@ -1301,7 +1317,7 @@ namespace Jynx
 
 	void LynxEmulatorGuest::LoadExistingTAPFile( IFileOpener *fileOpener )
 	{
-		auto newTape = std::make_shared<TapFileReader>( fileOpener );  // throws
+		auto newTape = std::make_shared<TapFileReader>( fileOpener, this );  // throws
 		_tapeMode = LynxTapeMode::LoadingPermitted;
 		_currentReadTape = newTape;
 	}
