@@ -79,7 +79,7 @@ int32_t SoundThread::ThreadMain()
 
 	auto bufferSizeBytes = _soundBuffer.size() * 2;
 
-	libWinApi::WaveOutputStream  waveOutStream( 44100, 2, 1, 3, bufferSizeBytes );
+	libWinApi::WaveOutputStream  waveOutStream( 44100, 2, 1, 3, (int) bufferSizeBytes );
 
 	auto bufferAddress = (PBYTE) GetBaseAddressOfSharedSoundBuffer();
 
@@ -90,7 +90,7 @@ int32_t SoundThread::ThreadMain()
 		PostMessage( _hWndEmulatorMainForm, WM_ADVANCE_EMULATION, 0, 0 );
 		::WaitForSingleObject( _emulatorIsFillingNextBufferEvent, INFINITE );
 		if( ShouldTerminate() ) break;
-		waveOutStream.Write( bufferAddress, bufferSizeBytes );
+		waveOutStream.Write( bufferAddress, (int) bufferSizeBytes );
 	}
 
 	return 0;

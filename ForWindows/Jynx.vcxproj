@@ -177,6 +177,7 @@
     <ClInclude Include="..\Portable\TapFileWriter.h" />
     <ClInclude Include="..\Portable\TextPlayer.h" />
     <ClInclude Include="..\Portable\TextRecorder.h" />
+    <ClInclude Include="..\Portable\UserSettingsSerialiser.h" />
     <ClInclude Include="..\Portable\Z80\JynxZ80.h" />
     <ClInclude Include="..\Portable\Z80\JynxZ80Shared.h" />
     <ClInclude Include="..\Portable\Z80\IZ80DisassemblerStream.h" />
@@ -211,6 +212,7 @@
     <ClCompile Include="..\Portable\TapFileWriter.cpp" />
     <ClCompile Include="..\Portable\TextPlayer.cpp" />
     <ClCompile Include="..\Portable\TextRecorder.cpp" />
+    <ClCompile Include="..\Portable\UserSettingsSerialiser.cpp" />
     <ClCompile Include="..\Portable\Z80\JynxZ80.cpp" />
     <ClCompile Include="..\Portable\Z80\JynxZ80_CB.cpp" />
     <ClCompile Include="..\Portable\Z80\JynxZ80_ED.cpp" />

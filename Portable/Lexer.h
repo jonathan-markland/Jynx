@@ -40,10 +40,11 @@ namespace Jynx
 		uint8_t ExpectHexByte();
 		uint32_t ExpectInteger();
 
+		void Error();  // Allows other parties to raise error too.
+
 	private:
 
 		uint8_t NibbleToValue( char ch );
-		void Error();
 		const char *_position;
 
 	};

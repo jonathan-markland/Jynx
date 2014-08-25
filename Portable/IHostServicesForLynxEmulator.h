@@ -51,6 +51,7 @@ namespace Jynx
 
 		virtual  std::string  GetPlatformEndOfLineSequence() = 0;
 			// Obtains the platform end of line character sequence.  (UTF8 or ASCII -- it's the same for both!)
+
 	};
 
 } // end namespace Jynx

@@ -54,6 +54,8 @@ namespace Jynx
 		_machineType      = LynxMachineType::LYNX_48K; 
 		_hostObject       = hostObject;
 
+		_processor.SetTimesliceLength( LynxZ80Cycles::At100 ); // 4.00 mhz
+
 		SetGuestHardwareToResetState();
 		// _textPlayer.SetText( g_DemoText ); // TODO: this is just a test
 	}
@@ -75,7 +77,6 @@ namespace Jynx
 		// Init Z80
 		//
 
-		_processor.SetTimesliceLength( LynxZ80Cycles::At100 ); // 4.00 mhz
 		_processor.Reset();
 	
 		//

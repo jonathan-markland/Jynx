@@ -39,6 +39,7 @@ namespace Jynx
 		virtual void Field( const char *tagName, unsigned char &field ) override;
 		virtual void Field( const char *tagName, unsigned short &field ) override;
 		virtual void Field( const char *tagName, int32_t &field ) override;
+		virtual void Field( const char *tagName, bool &field ) override;
 		virtual void Binary( void *baseAddress, uintptr_t blockSize ) override;
 		void Close();
 	private:
@@ -58,6 +59,7 @@ namespace Jynx
 		virtual void Field( const char *tagName, unsigned char &field ) override;
 		virtual void Field( const char *tagName, unsigned short &field ) override;
 		virtual void Field( const char *tagName, int32_t &field ) override;
+		virtual void Field( const char *tagName, bool &field ) override;
 		virtual void Binary( void *baseAddress, uintptr_t blockSize ) override;
 		void Close();
 	private:

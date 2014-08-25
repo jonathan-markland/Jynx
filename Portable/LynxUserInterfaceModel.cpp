@@ -22,6 +22,7 @@
 #include "LynxUserInterfaceModel.h"
 #include "LynxHardware.h"
 #include "LynxEmulatorGuest.h"
+#include "FileSerialiser.h"
 
 
 namespace Jynx
@@ -48,6 +49,15 @@ namespace Jynx
 		// The term "OnInitDialog" is borrowed from Windows - a second stage initialisation after construction.
 		// The constructor is called BEFORE the window is created with the window manager (thus no window handle).
 		// The OnInitDialog is called for extra initialisation as soon as the window is created with the window manager.
+		try
+		{
+			LoadUserSettings();
+		}
+		catch( std::ifstream::failure e )
+		{
+			// TODO: check for file not found, and ignore this.  Anything else is reportable.
+		}
+
 		UpdateUserInterfaceElementsOnView();
 	}
 
@@ -170,8 +180,44 @@ namespace Jynx
 		{
 			if( CanRiskLosingModifiedTape() )
 			{
-				_lynxEmulator->FinishRecordingSoundToFile();
-				_lynxEmulator->FinishRecordingLynxTextToFile();
+				try
+				{
+					_lynxEmulator->FinishRecordingSoundToFile();
+				}
+				catch( std::ofstream::failure e )
+				{
+					// TODO: Should we delete this?  Should FinishRecordingSoundToFile() delete the file?
+					std::string message;
+					message += "Failed to save the WAVE file!  The file may be incomplete.  ";
+					message += e.what();
+					_hostView->TellUser( message.c_str(), "Error" );
+				}
+
+				try
+				{
+					_lynxEmulator->FinishRecordingLynxTextToFile();
+				}
+				catch( std::ofstream::failure e )
+				{
+					// TODO: Should we delete this?  Should FinishRecordingLynxTextToFile() delete the file?
+					std::string message;
+					message += "Failed to save the text file!  The file may be incomplete.  ";
+					message += e.what();
+					_hostView->TellUser( message.c_str(), "Error" );
+				}
+
+				try
+				{
+					SaveUserSettings();
+				}
+				catch( std::ofstream::failure e )
+				{
+					std::string message;
+					message += "Failed to save the user options file!  ";
+					message += e.what();
+					_hostView->TellUser( message.c_str(), "Error" );
+				}
+
 				_hostView->CloseDownNow();
 			}
 		}
@@ -596,5 +642,57 @@ namespace Jynx
 		_lynxEmulator->ResetGuest( _machineType );
 		UpdateUserInterfaceElementsOnView();
 	}
+
+
+
+
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	//     SERIALISE USER SETTINGS
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+	void LynxUserInterfaceModel::SaveUserSettings()
+	{
+		auto fileOpener = _hostView->GetUserSettingsFilePath();
+		if( fileOpener != nullptr )
+		{
+			UserSettings userSettings(
+				_machineType,
+				_renderStyle,
+				_soundEnable,
+				_lynxEmulator->GetCyclesPerTimeslice(),
+				_lynxEmulator->GetTapeSounds(),
+				_lynxEmulator->GetLynxRemCommandExtensionsEnabled() );
+
+			userSettings.SaveToFile( &*fileOpener, _hostView->GetPlatformEndOfLineSequence() );
+		}
+	}
+
+
+
+	void LynxUserInterfaceModel::LoadUserSettings()
+	{
+		// Failure to save user settings must not disrupt anything else, eg: closedown
+		auto fileOpener = _hostView->GetUserSettingsFilePath();
+		if( fileOpener != nullptr )
+		{
+			UserSettings userSettings( &*fileOpener );
+
+			// Now that the file has loaded successfully, we know we can use the information in it!
+			_machineType = userSettings.GetMachineType();
+			_renderStyle = userSettings.GetRenderStyle();
+			_soundEnable = userSettings.GetSoundEnable();
+			_lynxEmulator->SetCyclesPerTimeslice( userSettings.GetCyclesPerTimeslice() );
+			_lynxEmulator->SetTapeSounds( userSettings.GetTapeSounds() );
+			_lynxEmulator->SetLynxRemCommandExtensionsEnabled( userSettings.GetRemExtensions() );
+
+			_lynxEmulator->ResetGuest( _machineType );
+
+			// Update UI:
+			_hostView->InvalidateAreaOfHostScreen( _hostView->GetClientRectangle() );
+			UpdateUserInterfaceElementsOnView();
+		}
+	}
+
 
 } // end namespace Jynx

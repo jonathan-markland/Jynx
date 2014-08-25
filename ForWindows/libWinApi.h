@@ -511,6 +511,7 @@ namespace libWinApi
 {
 	std::wstring  GetMyExeFilePath();
 	std::wstring  GetMyExeFolderPath();
+	std::wstring  GetUserAppDataPath();
 }
 
 

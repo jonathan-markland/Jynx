@@ -661,3 +661,31 @@ std::string  MainForm::GetPlatformEndOfLineSequence()
 	return "\r\n";
 }
 
+
+
+std::wstring  GetJynxAppDataPath()
+{
+	auto pathRoot = libWinApi::GetUserAppDataPath();
+	if( ! pathRoot.empty() )
+	{
+		auto jynxFolderPath = pathRoot + L"JynxEmulator";
+		if ( CreateDirectory( jynxFolderPath.c_str(), NULL) || ERROR_ALREADY_EXISTS == GetLastError() )
+		{
+			return jynxFolderPath;
+		}
+	}
+	return std::wstring();
+}
+
+
+
+std::shared_ptr<Jynx::IFileOpener>  MainForm::GetUserSettingsFilePath()
+{
+	auto jynxAppDataPath = GetJynxAppDataPath();
+	if( ! jynxAppDataPath.empty() )
+	{
+		auto fullPath = jynxAppDataPath + L"\\JynxEmulatorSettings.config";
+		return std::make_shared<WindowsFileOpener>( fullPath );
+	}
+	return nullptr;
+}

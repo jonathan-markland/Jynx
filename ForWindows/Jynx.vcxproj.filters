@@ -143,6 +143,9 @@
     <ClInclude Include="..\Portable\Z80\JynxZ80Shared.h">
       <Filter>Source Files\Portable\Z80</Filter>
     </ClInclude>
+    <ClInclude Include="..\Portable\UserSettingsSerialiser.h">
+      <Filter>Source Files\Portable</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Portable\FileLoader.cpp">
@@ -225,6 +228,9 @@
     </ClCompile>
     <ClCompile Include="..\Portable\Z80\JynxZ80MainSet.cpp">
       <Filter>Source Files\Portable\Z80</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Portable\UserSettingsSerialiser.cpp">
+      <Filter>Source Files\Portable</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

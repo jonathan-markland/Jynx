@@ -12,10 +12,12 @@
 #include <memory>
 #include <iostream>
 #include <fstream>
+#include <string>
 #include <assert.h>
 
 #include "windowsx.h"
 #include "shellapi.h"
+#include "shlobj.h"
 #include "CommCtrl.h"
 #include "Commdlg.h"
 
@@ -1967,4 +1969,31 @@ namespace libWinApi
 		return (DWORD) thisThread->ThreadMain();
 	}
 }
+
+
+
+
+
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+//     USER'S APPLICATION DATA PATH
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+namespace libWinApi
+{
+	std::wstring  GetUserAppDataPath()
+	{
+		wchar_t  Path[MAX_PATH + 1];
+		HRESULT hr = ::SHGetFolderPath( NULL, CSIDL_LOCAL_APPDATA, NULL, SHGFP_TYPE_CURRENT, Path );
+		if( SUCCEEDED(hr) )
+		{
+			return std::wstring(Path) + L"\\";
+		}
+
+		assert(FALSE);
+		return std::wstring( L"C:\\" );
+	}
+}
+
 

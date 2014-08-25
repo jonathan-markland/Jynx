@@ -24,20 +24,11 @@
 #include "IHostServicesForLynxUserInterfaceModel.h"
 #include "IHostServicesForLynxEmulator.h"
 #include "ILynxEmulator.h"
+#include "UserSettingsSerialiser.h"
 
 
 namespace Jynx
 {
-	namespace RenderStyle
-	{
-		enum Enum
-		{
-			FitToWindow, SquarePixels
-		};
-	}
-
-
-
 	class LynxUserInterfaceModel: 
 		public ILynxUserInterfaceModel, 
 		public IHostServicesForLynxEmulator
@@ -105,6 +96,9 @@ namespace Jynx
 		void SetRenderStyle( RenderStyle::Enum newStyle );
 		void SetMachineTypeAndReset( LynxMachineType::Enum machineType );
 		bool UserAllowsReset();
+
+		void SaveUserSettings();
+		void LoadUserSettings();
 
 	};
 

@@ -75,6 +75,13 @@ namespace Jynx
 
 
 
+	void OutputFileSerialiser::Field( const char *tagName, bool &field )
+	{
+		_outStream << tagName << " " << (field ? "1" : "0"); EndLine();
+	}
+
+
+
 	void OutputFileSerialiser::Binary( void *baseAddress, uintptr_t blockSize )
 	{
 		auto source = (unsigned char *) baseAddress;;
@@ -185,6 +192,28 @@ namespace Jynx
 		_lexer.ExpectMatch( tagName );
 		_lexer.ExpectChar( ' ' );
 		field = _lexer.ExpectInteger();
+		_lexer.ExpectEndLine();
+	}
+
+
+
+	void InputFileSerialiser::Field( const char *tagName, bool &field )
+	{
+		_lexer.ExpectMatch( tagName );
+		_lexer.ExpectChar( ' ' );
+		int integerField = _lexer.ExpectInteger();
+		if( integerField == 0 )
+		{
+			field = false;
+		}
+		else if( integerField == 1 )
+		{
+			field = true;
+		}
+		else
+		{
+			_lexer.Error();
+		}
 		_lexer.ExpectEndLine();
 	}
 

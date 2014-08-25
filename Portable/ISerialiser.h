@@ -38,16 +38,17 @@ namespace Jynx
 		virtual void Field(    const char *tagName, uint8_t  &field ) = 0;
 		virtual void Field(    const char *tagName, uint16_t &field ) = 0;
 		virtual void Field(    const char *tagName, int32_t  &field ) = 0;
+		virtual void Field(    const char *tagName, bool     &field ) = 0;
 		virtual void Binary(   void *baseAddress,   uintptr_t blockSize ) = 0;
 
+		// Serialise enums:
 
-		// TODO: The following is not really very pure design!
-
-		inline void Field( const char *tagName, bool &field )  // TODO: make first class?
+		template<typename ENUM>
+		void FieldEnum( const char *tagName, ENUM &field )
 		{
-			uint8_t translatedField = field ? 1 : 0;
-			Field( tagName, translatedField );
-			field = translatedField ? true : false;
+			auto value = (int32_t) field;
+			Field( tagName, value );
+			field = (ENUM) value;
 		}
 
 		// Very type-safe design for static array serialisation:
