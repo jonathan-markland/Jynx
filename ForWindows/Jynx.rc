@@ -130,8 +130,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,0,1
- PRODUCTVERSION 1,0,0,1
+ FILEVERSION 1,0,2,0
+ PRODUCTVERSION 1,0,2,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -148,12 +148,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Jonathan Markland"
             VALUE "FileDescription", "Emulation of the 1983 Camputers Lynx 48K / 96K"
-            VALUE "FileVersion", "1.0.0.1"
+            VALUE "FileVersion", "1.0.2.0"
             VALUE "InternalName", "Jynx.exe"
             VALUE "LegalCopyright", " © 2014 Jonathan Markland"
             VALUE "OriginalFilename", "Jynx.exe"
             VALUE "ProductName", "Emulation of the Camputers Lynx"
-            VALUE "ProductVersion", "1.0.0.1"
+            VALUE "ProductVersion", "1.0.2.0"
         END
     END
     BLOCK "VarFileInfo"
