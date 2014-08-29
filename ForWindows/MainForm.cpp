@@ -653,15 +653,15 @@ void  MainForm::LynxScreenAddressUpdated( uint32_t addressOffset, uint32_t lynxR
 		uint32_t hostPixelValue = 0;
 		if( lynxRedByte & pixelMask ) 
 		{
-			hostPixelValue |= 0xFF0000;
+			hostPixelValue |= RGB(255,0,0);
 		}
 		if( lynxGreenByte & pixelMask )
 		{
-			hostPixelValue |= 0x00FF00;
+			hostPixelValue |= RGB(0,255,0);
 		}
 		if( lynxBlueByte & pixelMask )
 		{
-			hostPixelValue |= 0x0000FF;
+			hostPixelValue |= RGB(0,0,255);
 		}
 		pixelMask >>= 1;
 		*pixelAddress = hostPixelValue;

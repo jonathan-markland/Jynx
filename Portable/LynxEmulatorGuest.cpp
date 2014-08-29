@@ -299,7 +299,7 @@ namespace Jynx
 
 		if( _bankPort & BANKPORT_WREN2 && bCasEnBank2 )
 		{
-			MapReflections( _addressSpaceWRITE2, &_lynxRedRAM, &_lynxBlueRAM );
+			MapReflections( _addressSpaceWRITE2, &_lynxBlueRAM, &_lynxRedRAM );
 		}
 		else
 		{
@@ -352,7 +352,7 @@ namespace Jynx
 			if( bCasEnBank2 )
 			{
 				// Bank 2 is switched in
-				MapReflections( _addressSpaceREAD, &_lynxRedRAM, &_lynxBlueRAM );
+				MapReflections( _addressSpaceREAD, &_lynxBlueRAM, &_lynxRedRAM );
 				++readCount;
 			}
 			if( bCasEnBank3 )
