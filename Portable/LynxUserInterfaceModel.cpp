@@ -37,6 +37,7 @@ namespace Jynx
 	{
 		JynxZ80::Z80::InitialiseGlobalTables();  // Not absolutely ideal place to put this.
 
+		// Creating the LynxEmulatorGuest will create the Z80 + emulation thread.
 		_lynxEmulator = new LynxEmulatorGuest( this, soundBuffer, numSamples, _machineType, platformEndOfLineSequenceUTF8 );
 	}
 
@@ -46,7 +47,9 @@ namespace Jynx
 	{
 		if( _lynxEmulator != nullptr )
 		{
+			// Deleting signals the Z80 thread to terminate, and awaits its termination.
 			delete _lynxEmulator;
+			// Z80 thread terminated.
 			_lynxEmulator = nullptr;
 		}
 	}
@@ -73,7 +76,6 @@ namespace Jynx
 
 
 
-	void LynxUserInterfaceModel::AdvanceEmulation()                { _lynxEmulator->AdvanceEmulation(); }
 	void LynxUserInterfaceModel::NotifyAllKeysUp()                 { _lynxEmulator->NotifyAllKeysUp(); }
 	void LynxUserInterfaceModel::NotifyKeyDown( int32_t keyCode )  { _lynxEmulator->NotifyKeyDown( keyCode); }
 	void LynxUserInterfaceModel::NotifyKeyUp( int32_t keyCode )    { _lynxEmulator->NotifyKeyUp( keyCode ); }
@@ -574,6 +576,14 @@ namespace Jynx
 
 		// Just delegate this call.
 		_hostView->PaintPixelsOnHostBitmapForLynxScreenByte( addressOffset, lynxRedByte, lynxGreenByte, lynxBlueByte ); 
+	}
+
+
+
+	IHostThread *LynxUserInterfaceModel::CreateThread( IHostServicesForLynxEmulatorThreadFunction threadFunction, void *userObject )
+	{
+		// Just delegate this call.
+		return _hostView->CreateThread( threadFunction, userObject );
 	}
 
 

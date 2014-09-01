@@ -66,7 +66,6 @@ namespace Jynx
 
 		// ILynxEmulator interface called by the client, on the MAIN thread.
 		// (These functions are threadsafe).
-		virtual void AdvanceEmulation() override; // TODO: remove from interface
 		virtual void CallMeBackToInvalidateRegions() override;
 		virtual void NotifyKeyDown( int32_t guestKeyCode ) override;
 		virtual void NotifyKeyUp( int32_t guestKeyCode ) override;
@@ -121,6 +120,8 @@ namespace Jynx
 		void InitialiseLYNX();
 		void LoadROMS();
 		void Load8KBChipFile( uint8_t *chipToLoad, LynxRoms::Enum romRequired );
+		void RunThreadMainLoop();
+		static void BootstrapRunThreadMainLoop( void *thisPointer );
 
 		void UpdateAllOtherStateFromPortStateVariables();
 		void UpdateBankSwitchFromPorts();
@@ -148,6 +149,7 @@ namespace Jynx
 	private:
 
 		IHostServicesForLynxEmulator * const _hostObject;  // Safe to read on ANY thread (not changed once constructed).
+		IHostThread *_emulationThread;                        // The "Z80 thread".
 
 		// Machine type being emulated
 		LynxMachineType::Enum _machineType;

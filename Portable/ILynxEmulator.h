@@ -57,9 +57,6 @@ namespace Jynx
 
 		// Services provided by the emulator to the emulator's host.
 
-		virtual void AdvanceEmulation() = 0;
-			// Host can ask the emulation to advance by 1 timeslice's worth of cycles.
-
 		virtual void CallMeBackToInvalidateRegions() = 0;
 			// Host can ask for callbacks to invalidate screen areas, as needed.
 			// Callbacks to the host are made through the function:

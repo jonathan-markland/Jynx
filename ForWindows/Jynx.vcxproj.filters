@@ -146,6 +146,9 @@
     <ClInclude Include="..\Portable\UserSettingsSerialiser.h">
       <Filter>Source Files\Portable</Filter>
     </ClInclude>
+    <ClInclude Include="..\Portable\IHostThread.h">
+      <Filter>Source Files\Portable</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Portable\FileLoader.cpp">

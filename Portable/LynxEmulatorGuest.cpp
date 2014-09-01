@@ -84,6 +84,7 @@ namespace Jynx
 		, _hostObject(hostObject)
 		, _machineType(initialMachineType)
 		, _platformEndOfLineSequenceUTF8(platformEndOfLineSequenceUTF8)
+		, _emulationThread(nullptr)
 	{
 		// (Reminder - Called on the client thread).
 
@@ -98,6 +99,7 @@ namespace Jynx
 
 		LoadROMS();
 		InitialiseLYNX();
+		_emulationThread = _hostObject->CreateThread( &LynxEmulatorGuest::BootstrapRunThreadMainLoop, this );
 	}
 
 
@@ -107,6 +109,10 @@ namespace Jynx
 		// (Called on main thread)
 		// TODO:  Signal Z80 thread to close down.
 		// TODO:  Thread join with Z80 thread
+		if( _emulationThread != nullptr )
+		{
+			_emulationThread->SignalToTerminateAndJoin();
+		}
 	}
 
 
@@ -1227,12 +1233,16 @@ namespace Jynx
 	}
 
 
-
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-	//     HANDLING CALLS FROM HOST
+	//     Z80 THREAD:  EMULATION MAIN LOOP
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
-	void LynxEmulatorGuest::AdvanceEmulation() // TODO
+	void LynxEmulatorGuest::BootstrapRunThreadMainLoop( void *thisPointer )  // static   (Compatible with non-member function).
+	{
+		((LynxEmulatorGuest *) thisPointer)->RunThreadMainLoop();
+	}
+
+	void LynxEmulatorGuest::RunThreadMainLoop() // TODO
 	{
 		// Execute Z80 code for this timeslice, and accumulate
 		// the precise number of cycles elapsed (which may not
@@ -1264,6 +1274,12 @@ namespace Jynx
 	}
 
 
+
+
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	//     HANDLING CALLS FROM HOST
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 	void LynxEmulatorGuest::NotifyKeyDown( int32_t guestKeyCode )
 	{

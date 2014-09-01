@@ -225,10 +225,10 @@ void MainForm::WindowProc( libWinApi::WindowProcArgs &e )
 		{
 			if( e.wParam == TIMER_EVENT_ID )
 			{
-				if( ! _lynxUIModel->IsSoundEnabled() )
+				/*if( ! _lynxUIModel->IsSoundEnabled() )
 				{
 					_lynxUIModel->AdvanceEmulation();
-				}
+				}*/
 				_lynxUIModel->CallMeBackToInvalidateRegions();
 				e.Result = 0;
 				return;
@@ -707,5 +707,12 @@ std::shared_ptr<Jynx::IFileOpener>  MainForm::GetUserSettingsFilePath()
 		auto fullPath = jynxAppDataPath + L"\\JynxEmulatorSettings.config";
 		return std::make_shared<WindowsFileOpener>( fullPath );
 	}
+	return nullptr;
+}
+
+
+
+Jynx::IHostThread *MainForm::CreateThread( Jynx::IHostServicesForLynxEmulatorThreadFunction threadFunction, void *userObject )
+{
 	return nullptr;
 }

@@ -45,7 +45,6 @@ namespace Jynx
 
 		// ILynxUserInterfaceModel:
 		virtual void OnInitDialog() override;
-		virtual void AdvanceEmulation() override;
 		virtual void CallMeBackToInvalidateRegions() override;
 		virtual void NotifyAllKeysUp() override;
 		virtual void NotifyKeyDown( int32_t keyCode ) override;
@@ -79,6 +78,7 @@ namespace Jynx
 		virtual  void  OpenChipFileStream( std::ifstream &streamToBeOpened, std::ios_base::openmode openModeRequired, LynxRoms::Enum romRequired ) override;
 		virtual  void  NotifyOutputTapeAvailbilityChanged() override;  // Hint: call host CanSaveTAPFile() to discover state at any time.
 		virtual  void  PaintPixelsOnHostBitmapForLynxScreenByte( uint32_t addressOffset, uint32_t lynxRedByte, uint32_t lynxGreenByte, uint32_t lynxBlueByte ) override;
+		virtual  IHostThread *CreateThread( IHostServicesForLynxEmulatorThreadFunction threadFunction, void *userObject ) override;
 
 	private:
 

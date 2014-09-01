@@ -22,6 +22,7 @@
 
 #include <stdint.h>
 #include "LynxRoms.h"
+#include "IHostThread.h"
 
 namespace Jynx
 {
@@ -54,6 +55,10 @@ namespace Jynx
 		virtual  void  NotifyOutputTapeAvailbilityChanged() = 0;  
 			// (WARNING - Called on the Z80 thread, NOT the main thread)
 			// Emulator tells the host if the tape is no longer available, so host can adjust state of menu option.
+
+		virtual  IHostThread *CreateThread( IHostServicesForLynxEmulatorThreadFunction threadFunction, void *userObject ) = 0;
+			// (Called on the MAIN thread only)
+			// Called to create a thread on the host platform, which supports our IHostThread interface.
 
 	};
 
