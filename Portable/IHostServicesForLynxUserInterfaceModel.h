@@ -148,9 +148,6 @@ namespace Jynx
 			// planes, so 32 bytes per horizonal line, addresses 0..31 are the topmost line, left to right,
 			// addresses increment down the screen.
 
-		virtual  std::string  GetPlatformEndOfLineSequence() = 0;
-			// Obtains the platform end of line character sequence.  (UTF8 or ASCII -- it's the same for both!)
-
 		virtual  std::shared_ptr<IFileOpener>  GetUserSettingsFilePath() = 0;
 			// Obtains a file opener that holds the path to the user settings file (or where it would be if it doesn't exist yet).
 	};

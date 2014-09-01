@@ -75,7 +75,7 @@ namespace Jynx
 	//     EMULATOR "GUEST" CLASS -- this is the Lynx hardware
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
-	LynxEmulatorGuest::LynxEmulatorGuest( IHostServicesForLynxEmulator *hostObject, uint16_t *soundBuffer, size_t numSamples, LynxMachineType::Enum initialMachineType )
+	LynxEmulatorGuest::LynxEmulatorGuest( IHostServicesForLynxEmulator *hostObject, uint16_t *soundBuffer, size_t numSamples, LynxMachineType::Enum initialMachineType, const char *platformEndOfLineSequenceUTF8 )
 		: _z80CycleCounter(0)
 		, _tapeMode( LynxTapeMode::SavingPermitted )
 		, _hearTapeSounds(false)
@@ -83,6 +83,7 @@ namespace Jynx
 		, _inhibitTextRecorder(false)
 		, _hostObject(hostObject)
 		, _machineType(initialMachineType)
+		, _platformEndOfLineSequenceUTF8(platformEndOfLineSequenceUTF8)
 	{
 		// (Reminder - Called on the client thread).
 
@@ -1291,7 +1292,7 @@ namespace Jynx
 	void LynxEmulatorGuest::SaveState( IFileOpener *fileOpener )
 	{
 		// TODO:  Guest needs to tell host if it can't serialise right now -- eg: when the cassette motor is ON.
-		OutputFileSerialiser  outputSerialiser( fileOpener, _hostObject->GetPlatformEndOfLineSequence() );
+		OutputFileSerialiser  outputSerialiser( fileOpener, _platformEndOfLineSequenceUTF8 );
 
 		ThreadHandshake  handshake(this);  // The guest thread can open the file before we handshake.
 		Serialise( outputSerialiser );
@@ -1458,7 +1459,7 @@ namespace Jynx
 	{
 		ThreadHandshake  handshake(this);
 		FinishRecordingLynxTextToFile(); // in case already writing a sound file!
-		_textRecorder.StartNewFile( fileOpener, _hostObject->GetPlatformEndOfLineSequence() );
+		_textRecorder.StartNewFile( fileOpener, _platformEndOfLineSequenceUTF8 );
 		_inhibitTextRecorder = true; // until the next CR
 	}
 

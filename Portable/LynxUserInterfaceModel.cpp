@@ -27,17 +27,17 @@
 
 namespace Jynx
 {
-	LynxUserInterfaceModel::LynxUserInterfaceModel( IHostServicesForLynxUserInterfaceModel *hostView, uint16_t *soundBuffer, size_t numSamples )
+	LynxUserInterfaceModel::LynxUserInterfaceModel( IHostServicesForLynxUserInterfaceModel *hostView, uint16_t *soundBuffer, size_t numSamples, const char *platformEndOfLineSequenceUTF8 )
 		: _renderStyle( RenderStyle::SquarePixels )
 		, _machineType( LynxMachineType::LYNX_48K )
 		, _lynxEmulator( nullptr )
 		, _hostView( hostView )
 		, _soundEnable( true )
+		, _platformEndOfLineSequenceUTF8(platformEndOfLineSequenceUTF8)
 	{
 		JynxZ80::Z80::InitialiseGlobalTables();  // Not absolutely ideal place to put this.
 
-		_lynxEmulator = new LynxEmulatorGuest( this, soundBuffer, numSamples, _machineType );
-		TODO: _lynxEmulator->ResetGuest( _machineType );  // TODO: maybe have guest constructor do this?
+		_lynxEmulator = new LynxEmulatorGuest( this, soundBuffer, numSamples, _machineType, platformEndOfLineSequenceUTF8 );
 	}
 
 
@@ -674,7 +674,7 @@ namespace Jynx
 				_lynxEmulator->GetTapeSounds(),
 				_lynxEmulator->GetLynxRemCommandExtensionsEnabled() );
 
-			userSettings.SaveToFile( &*fileOpener, _hostView->GetPlatformEndOfLineSequence() );
+			userSettings.SaveToFile( &*fileOpener, _platformEndOfLineSequenceUTF8 );
 		}
 	}
 

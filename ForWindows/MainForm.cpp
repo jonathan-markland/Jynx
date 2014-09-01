@@ -83,7 +83,11 @@ MainForm::MainForm( HWND hWndOwner )
 	// Create the model (this has the emulator inside, plus UI logic)
 	//
 
-	_lynxUIModel = new Jynx::LynxUserInterfaceModel( this, _soundThread.GetBaseAddressOfSharedSoundBuffer(), _soundThread.GetSizeOfSharedSoundBufferInSamples() );
+	_lynxUIModel = new Jynx::LynxUserInterfaceModel( 
+		this, 
+		_soundThread.GetBaseAddressOfSharedSoundBuffer(), 
+		_soundThread.GetSizeOfSharedSoundBufferInSamples(), 
+		"\r\n" );  // The preferred end of line sequence on the WINDOWS platform.  (Think: Notepad.exe!)
 }
 
 
@@ -674,13 +678,6 @@ void  MainForm::LynxScreenAddressUpdated( uint32_t addressOffset, uint32_t lynxR
 		*pixelAddress = hostPixelValue;
 		++pixelAddress;
 	}
-}
-
-
-
-std::string  MainForm::GetPlatformEndOfLineSequence()
-{
-	return "\r\n";
 }
 
 

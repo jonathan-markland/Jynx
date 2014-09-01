@@ -51,9 +51,6 @@ namespace Jynx
 		virtual  void  NotifyOutputTapeAvailbilityChanged() = 0;  
 			// Emulator tells the host if the tape is no longer available, so host can adjust state of menu option.
 
-		virtual  std::string  GetPlatformEndOfLineSequence() = 0;
-			// Obtains the platform end of line character sequence.  (UTF8 or ASCII -- it's the same for both!)
-
 	};
 
 } // end namespace Jynx

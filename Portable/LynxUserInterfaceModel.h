@@ -40,7 +40,7 @@ namespace Jynx
 		// - If you don't want to use this, make your own object that exposes IHostServicesForLynxEmulator
 		//   and create the LynxEmulatorGuest yourself.
 
-		LynxUserInterfaceModel( IHostServicesForLynxUserInterfaceModel *hostView, uint16_t *soundBuffer, size_t numSamples );
+		LynxUserInterfaceModel( IHostServicesForLynxUserInterfaceModel *hostView, uint16_t *soundBuffer, size_t numSamples, const char *platformEndOfLineSequenceUTF8 );
 		~LynxUserInterfaceModel();
 
 		// ILynxUserInterfaceModel:
@@ -78,7 +78,6 @@ namespace Jynx
 		virtual  void  OpenChipFileStream( std::ifstream &streamToBeOpened, std::ios_base::openmode openModeRequired, LynxRoms::Enum romRequired ) override { _hostView->OpenChipFileStream( streamToBeOpened, openModeRequired, romRequired ); }
 		virtual  void  NotifyOutputTapeAvailbilityChanged() override;  // Hint: call host CanSaveTAPFile() to discover state at any time.
 		virtual  void  LynxScreenAddressUpdated( uint32_t addressOffset, uint32_t lynxRedByte, uint32_t lynxGreenByte, uint32_t lynxBlueByte ) { _hostView->LynxScreenAddressUpdated( addressOffset, lynxRedByte, lynxGreenByte, lynxBlueByte ); }
-		virtual  std::string  GetPlatformEndOfLineSequence() override { return _hostView->GetPlatformEndOfLineSequence(); }
 
 	private:
 
@@ -89,6 +88,9 @@ namespace Jynx
 		LynxMachineType::Enum  _machineType;
 		RenderStyle::Enum      _renderStyle;
 		bool                   _soundEnable;
+
+		// Host platform's preferred UTF8 end of line sequence:
+		const std::string  _platformEndOfLineSequenceUTF8;
 
 		LynxRectangle  GetProjectionRectangle() const;
 

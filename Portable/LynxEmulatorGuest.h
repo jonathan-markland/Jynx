@@ -56,7 +56,7 @@ namespace Jynx
 		// - This creates a thread to run the emulation.
 		// - This is a singleton class at the moment, see use of g_LynxEmulatorGuestSingleton.
 
-		LynxEmulatorGuest( IHostServicesForLynxEmulator *hostObject, uint16_t *soundBuffer, size_t numSamples, LynxMachineType::Enum initialMachineType );
+		LynxEmulatorGuest( IHostServicesForLynxEmulator *hostObject, uint16_t *soundBuffer, size_t numSamples, LynxMachineType::Enum initialMachineType, const char *platformEndOfLineSequenceUTF8 );
 			// Reminder: Constructor called on the CLIENT's thread.
 			// Client tells guest where the sound buffer is.
 			// The format is fixed at 44,100Hz CD MONO sound.
@@ -174,6 +174,9 @@ namespace Jynx
 		uint8_t  _keyboard[16];       // Lynx keyboard ports (not persistent)
 		uint64_t _z80CycleCounter;    // Total cycle counter // TODO: serialise -- but only the cassette creation relies on it, and we don't & can't easily serialise the state of that.
 	
+		// Host platform's preferred UTF8 end of line sequence:
+		const std::string  _platformEndOfLineSequenceUTF8;
+
 		// Tape sound monitoring (ie: wire to speakers)
 		volatile bool     _hearTapeSounds;
 
