@@ -57,9 +57,25 @@ MainForm::MainForm( HWND hWndOwner )
 	, _lynxUIModel( nullptr )
 	, _guestScreenBitmap(NULL)
 	, _timeBeginPeriodResult(0)
-	, _soundThread( 882 )  // TODO: Calculate (for 100%)!!!  (Our desired burst period is 20ms.  882 is the number of samples in 20ms at 44,100Hz rate.)
 	, _timerID(0)
+	, _waveOutStream(nullptr)
 {
+	//
+	// Sound
+	//
+
+	uint32_t numSamplesPerBuffer = 882;
+
+	_soundBuffer.reserve( numSamplesPerBuffer );
+
+	for( uint32_t i=0; i < numSamplesPerBuffer; i++ )
+	{
+		_soundBuffer.push_back( 0 );
+	}
+
+	auto bufferSizeBytes = numSamplesPerBuffer * 2;
+	_waveOutStream = new libWinApi::WaveOutputStream( 44100, 2, 1, 3, (int) bufferSizeBytes );
+
 	//
 	// Create frame buffer bitmap which emulator can directly draw on.
 	//
@@ -85,8 +101,8 @@ MainForm::MainForm( HWND hWndOwner )
 
 	_lynxUIModel = new Jynx::LynxUserInterfaceModel( 
 		this, 
-		_soundThread.GetBaseAddressOfSharedSoundBuffer(), 
-		_soundThread.GetSizeOfSharedSoundBufferInSamples(), 
+		&_soundBuffer.front(), 
+		_soundBuffer.size(), 
 		"\r\n" );  // The preferred end of line sequence on the WINDOWS platform.  (Think: Notepad.exe!)
 }
 
@@ -100,6 +116,12 @@ MainForm::~MainForm()
 	{
 		delete (Jynx::LynxUserInterfaceModel *) _lynxUIModel;  // TODO: not ideal upcast
 		_lynxUIModel = nullptr;
+	}
+
+	if( _waveOutStream != nullptr )
+	{
+		delete _waveOutStream;
+		_waveOutStream = nullptr;
 	}
 
 	if( _timerID != 0 )
@@ -180,9 +202,6 @@ bool  MainForm::OnInitDialog()
 {
 	SetBigAndSmallIcons( IDR_MAINFRAME );
 
-	_soundThread.SetEmulatorWindowHandle( *this );
-	_soundThread.CreateAndRun();
-
 	_timerID = ::SetTimer( *this, TIMER_EVENT_ID, TIMESLICE_PERIOD, NULL );
 
 	libWinApi::CenterWindowPercent( *this, 85, GetOwner() );
@@ -204,25 +223,6 @@ void MainForm::WindowProc( libWinApi::WindowProcArgs &e )
 	try
 	{
 		uint16_t  menuCommand = 0;
-
-		//
-		// WM_ADVANCE_EMULATION
-		//
-		// - If sound is ON, the sound times the emulation.
-		// - If sound is OFF, the WM_TIMER times the emulation.
-		//
-
-		if( e.message == WM_ADVANCE_EMULATION )  // Posted from the _soundThread
-		{
-			if( _lynxUIModel->IsSoundEnabled() )
-			{
-				// TODO:
-				// _lynxUIModel->AdvanceEmulation();
-				// _soundThread.NotifyEmulatorFinishedFillingSoundBuffer();
-			}
-			e.Result = 1;
-			return;
-		}
 
 		//
 		// WM_TIMER:  If a timer is being used to time the emulation, advance it now.
@@ -407,7 +407,8 @@ void MainForm::OnSound()
 		if( state != MF_CHECKED )
 		{
 			// Sound is being turned ON.
-			PostMessage( *this, WM_ADVANCE_EMULATION, 0, 0 );
+			// PostMessage( *this, WM_ADVANCE_EMULATION, 0, 0 );
+			// TODO: What?
 		}
 	}
 }
@@ -769,7 +770,21 @@ Jynx::IHostThread *MainForm::CreateThread( Jynx::IHostServicesForLynxEmulatorThr
 
 void MainForm::ThreadSleep( uint32_t milliseconds )
 {
-	// (Called on the Z80 thread, not the MAIN thread)
-	// Reminder - this is for when sound ISN'T on!
 	::Sleep( milliseconds );
 }
+
+
+
+void MainForm::ThreadWaitForSound()
+{
+	// (Called on the Z80 thread, not the MAIN thread)
+	if( _lynxUIModel->IsSoundEnabled() )
+	{
+		_waveOutStream->Write( &(*_soundBuffer.begin()), (int) _soundBuffer.size() * 2 );
+	}
+	else
+	{
+		::Sleep(20);  // Not using sound.
+	}
+}
+

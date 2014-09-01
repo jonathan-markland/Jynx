@@ -598,6 +598,14 @@ namespace Jynx
 
 
 
+	void LynxUserInterfaceModel::ThreadWaitForSound()
+	{
+		_hostView->ThreadWaitForSound();
+	}
+
+
+
+
 
 
 

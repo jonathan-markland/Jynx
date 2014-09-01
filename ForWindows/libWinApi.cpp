@@ -1900,7 +1900,7 @@ namespace libWinApi
 
 	void WaveOutputStream::WaitOnTheSemaphore()
 	{
-		WaitForSingleObject( _semaphoreHandle, INFINITE );   // this will be upgraded to pump the windows messages.
+		WaitForSingleObject( _semaphoreHandle, INFINITE );
 	}
 
 

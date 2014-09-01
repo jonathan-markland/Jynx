@@ -80,6 +80,7 @@ namespace Jynx
 		virtual  void  PaintPixelsOnHostBitmapForLynxScreenByte( uint32_t addressOffset, uint32_t lynxRedByte, uint32_t lynxGreenByte, uint32_t lynxBlueByte ) override;
 		virtual  IHostThread *CreateThread( IHostServicesForLynxEmulatorThreadFunction threadFunction, void *userObject ) override;
 		virtual  void ThreadSleep( uint32_t milliseconds ) override;
+		virtual  void ThreadWaitForSound() override;
 
 	private:
 

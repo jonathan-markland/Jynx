@@ -34,28 +34,45 @@ namespace Jynx
 	{
 	public:
 
-		// This is the sole synchronisation mechanism for calls into
-		// the LynxEmulatorGuest from its client.
+		// This is the synchronisation mechanism for calls into
+		// the LynxEmulatorGuest from its client.  Used where we
+		// can't do a "volatile variables no locking" solution.
 
-		explicit ThreadHandshake( const LynxEmulatorGuest *guestObjectToLockAndUnlock ) 
-			: _guestObjectToLockAndUnlock(guestObjectToLockAndUnlock) {} // TODO: complete this
-			// Constructor called on LynxEmulatorGuest's CLIENT thread.
-			// CLIENT thread blocks.
-			// At the end of the next cycle, LynxEmulatorGuest notices the waiting client,
-			// and blocks itself, after releasing the client.
-			// The client thread can access the member variables without the need for any further synchronisation.
-			// 
-
-		~ThreadHandshake() {} // TODO: complete this
-			// Destructor called on the LynxEmulatorGuest's CLIENT thread, which
-			// releases the waiting LynxEmulatorGuest thread.
-			// CLIENT thread may NOT access further member variables at this point.
+		explicit ThreadHandshake::ThreadHandshake( LynxEmulatorGuest *guestObjectToLockAndUnlock );
+		~ThreadHandshake();
 
 	private:
 
-		const LynxEmulatorGuest * const _guestObjectToLockAndUnlock;
+		LynxEmulatorGuest * const _guestObjectToLockAndUnlock;
 
 	};
+
+
+
+	ThreadHandshake::ThreadHandshake( LynxEmulatorGuest *guestObjectToLockAndUnlock ) 
+		: _guestObjectToLockAndUnlock(guestObjectToLockAndUnlock) 
+	{
+		// Constructor called on MAIN thread.
+		_guestObjectToLockAndUnlock->_callWaitingAcknowledge = false;
+		_guestObjectToLockAndUnlock->_callWaiting = true;
+		_guestObjectToLockAndUnlock->_hostObject->ThreadSleep(1);
+		while( _guestObjectToLockAndUnlock->_callWaitingAcknowledge == false )
+		{
+			_guestObjectToLockAndUnlock->_hostObject->ThreadSleep(100);
+		}
+		// Z80 thread is now suspended, waiting for actions in our destructor.
+	}
+
+
+
+	ThreadHandshake::~ThreadHandshake() 
+	{
+		// Destructor called on MAIN thread.
+		// Z80 thread is currently blocked on '_callWaitingAcknowledge' going 'false'.
+		_guestObjectToLockAndUnlock->_callWaiting = false; // but SET THIS FIRST!
+		_guestObjectToLockAndUnlock->_callWaitingAcknowledge = false; // Set this SECOND!
+	}
+
 
 }
 
@@ -85,6 +102,8 @@ namespace Jynx
 		, _machineType(initialMachineType)
 		, _platformEndOfLineSequenceUTF8(platformEndOfLineSequenceUTF8)
 		, _emulationThread(nullptr)
+		, _callWaitingAcknowledge(false)
+		, _callWaiting(false)
 	{
 		// (Reminder - Called on the client thread).
 
@@ -1245,6 +1264,8 @@ namespace Jynx
 	{
 		while( _emulationThread->CanKeepRunning() )
 		{
+			_hostObject->ThreadWaitForSound();
+
 			// Execute Z80 code for this timeslice, and accumulate
 			// the precise number of cycles elapsed (which may not
 			// precisely be what we asked for, but the design supports
@@ -1273,7 +1294,19 @@ namespace Jynx
 				RecompositeEntireLynxScreenOntoHostBitmap();
 			}
 
-			_hostObject->ThreadSleep(20);
+			// Now that we have just supplied the sound buffer we have time to consider
+			// the needs of the MAIN thread (if any).  If it wants access to the member
+			// variables of this class (through the public interface) we can now allow it.
+			// (We hope for the best it will release us in a timely fashion).
+
+			if( _callWaiting )
+			{
+				_callWaitingAcknowledge = true;
+				while( _callWaitingAcknowledge == true )
+				{
+					_hostObject->ThreadSleep(5);
+				}
+			}
 		}
 	}
 
@@ -1374,7 +1407,7 @@ namespace Jynx
 
 	uint32_t LynxEmulatorGuest::GetCyclesPerTimeslice() const
 	{
-		ThreadHandshake  handshake(this);  // TODO: elminate by having a copy of the state, NOT by changing the Z80!
+		ThreadHandshake  handshake(const_cast<LynxEmulatorGuest *>(this));  // TODO: elminate by having a copy of the state, NOT by changing the Z80!
 		return _processor.GetTimesliceLength();
 	}
 
@@ -1399,7 +1432,7 @@ namespace Jynx
 
 	bool LynxEmulatorGuest::CanRewindTape() const
 	{
-		ThreadHandshake  handshake(this); // TODO: ideally allow volatile querying
+		ThreadHandshake  handshake(const_cast<LynxEmulatorGuest *>(this)); // TODO: ideally allow volatile querying
 		// (Cannot rewind tape in SAVE mode, because that's meant for building a new tape!).
 		return (_tapeMode == LynxTapeMode::LoadingPermitted);
 	}
@@ -1426,7 +1459,7 @@ namespace Jynx
 
 	bool LynxEmulatorGuest::CanSaveTAPFile() const
 	{
-		ThreadHandshake  handshake(this);  // TODO: Make volatile
+		ThreadHandshake  handshake(const_cast<LynxEmulatorGuest *>(this));  // TODO: Make volatile
 		return _currentWriteTape->IsModified();
 	}
 
@@ -1442,7 +1475,7 @@ namespace Jynx
 
 	bool LynxEmulatorGuest::IsTapeModified() const
 	{
-		ThreadHandshake  handshake(this);  // TODO: Make volatile
+		ThreadHandshake  handshake(const_cast<LynxEmulatorGuest *>(this));  // TODO: Make volatile
 		return _currentWriteTape->IsModified();
 	}
 
@@ -1487,7 +1520,7 @@ namespace Jynx
 
 	bool LynxEmulatorGuest::IsRecordingSoundToFile() const
 	{
-		ThreadHandshake  handshake(this);  // TODO: Make volatile?
+		ThreadHandshake  handshake(const_cast<LynxEmulatorGuest *>(this));  // TODO: Make volatile?
 		return _soundRecorder.IsOpen();
 	}
 
@@ -1516,7 +1549,7 @@ namespace Jynx
 
 	bool LynxEmulatorGuest::IsRecordingLynxTextToFile() const
 	{
-		ThreadHandshake  handshake(this);  // TODO: Make volatile?
+		ThreadHandshake  handshake(const_cast<LynxEmulatorGuest *>(this));  // TODO: Make volatile?
 		return _textRecorder.IsOpen();
 	}
 

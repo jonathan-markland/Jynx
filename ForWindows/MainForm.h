@@ -25,7 +25,6 @@
 #include "mmsystem.h"
 #include "resource.h"
 #include "libWinApi.h"
-#include "SoundThread.h"
 
 #include "../Portable/ILynxUserInterfaceModel.h"
 #include "../Portable/IHostServicesForLynxUserInterfaceModel.h"
@@ -70,6 +69,7 @@ public:
 	virtual std::shared_ptr<Jynx::IFileOpener>  GetUserSettingsFilePath() override;
 	virtual Jynx::IHostThread *CreateThread( Jynx::IHostServicesForLynxEmulatorThreadFunction threadFunction, void *userObject ) override;
 	virtual void ThreadSleep( uint32_t milliseconds ) override;
+	virtual void ThreadWaitForSound() override;
 
 protected:
 
@@ -111,8 +111,10 @@ private:
 
 	HBITMAP                _guestScreenBitmap;
 	MMRESULT               _timeBeginPeriodResult;
-	SoundThread            _soundThread;
 	UINT_PTR               _timerID;
+
+	libWinApi::WaveOutputStream  *_waveOutStream;
+	std::vector<uint16_t>         _soundBuffer;
 
 };
 

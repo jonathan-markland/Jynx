@@ -65,6 +65,10 @@ namespace Jynx
 			// Called when sound is NOT ENABLED, thus sound is NOT timing the emulation.
 			// Allows emulation thread to sleep for 20 ms.
 
+		virtual  void ThreadWaitForSound() = 0;
+			// (WARNING - Called on the Z80 thread, NOT the main thread)
+			// The Z80 thread wants to be suspended until sound is ready.
+
 	};
 
 } // end namespace Jynx

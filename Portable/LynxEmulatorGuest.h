@@ -148,6 +148,8 @@ namespace Jynx
 
 	private:
 
+		friend class ThreadHandshake;
+
 		IHostServicesForLynxEmulator * const _hostObject;  // Safe to read on ANY thread (not changed once constructed).
 		IHostThread *_emulationThread;                        // The "Z80 thread".
 
@@ -187,6 +189,10 @@ namespace Jynx
 		TextPlayer           _textPlayer;
 
 		volatile bool        _watchingCommands;
+
+		// Thread sync.  Allow MAIN thread to ask Z80 thread to suspend.
+		volatile bool        _callWaiting;             // false normally, until MAIN thread call comes in.
+		volatile bool        _callWaitingAcknowledge;  // false normally, until Z80 realises call is waiting, then sets this true, and awaits MAIN thread returning this to false.
 
 		//
 		// SOUND BUFFER (represents ONE Z80 period precisely)
