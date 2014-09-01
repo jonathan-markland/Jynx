@@ -52,6 +52,7 @@ namespace Jynx
 			// to put the ROM files.
 
 		virtual  void  NotifyOutputTapeAvailbilityChanged() = 0;  
+			// (WARNING - Called on the Z80 thread, NOT the main thread)
 			// Emulator tells the host if the tape is no longer available, so host can adjust state of menu option.
 
 	};

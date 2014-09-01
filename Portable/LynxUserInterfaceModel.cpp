@@ -560,7 +560,10 @@ namespace Jynx
 
 	void  LynxUserInterfaceModel::NotifyOutputTapeAvailbilityChanged()
 	{ 
-		UpdateUserInterfaceElementsOnView();
+		// (WARNING - Called on the Z80 thread, NOT the main thread)
+
+		// TODO: Sort this out
+		// This cannot be done on the Z80 thread:  UpdateUserInterfaceElementsOnView();
 	}
 
 
