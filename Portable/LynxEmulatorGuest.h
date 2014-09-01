@@ -57,7 +57,8 @@ namespace Jynx
 
 		LynxEmulatorGuest( IHostServicesForLynxEmulator *hostObject );
 
-		// ILynxEmulator interface called by Host:
+		// ILynxEmulator interface called by host, on the host's thread.
+		// 
 		virtual void AdvanceEmulation() override;
 		virtual void NotifyKeyDown( int32_t guestKeyCode ) override;
 		virtual void NotifyKeyUp( int32_t guestKeyCode ) override;
@@ -89,6 +90,16 @@ namespace Jynx
 
 		// Implementing ITapeSpeedSupplier
 		virtual uint32_t  GetLynxTapeSpeedBitsPerSecond() override;
+
+	private:
+
+		// This is where thread-safeness trumps the inadequate nature of "private"!
+		// We want to say that these 5 can call the 5 functions below.
+		friend uint8_t JynxZ80::Z80ImplementationBaseClass::GuestRead( uint16_t address );
+		friend void    JynxZ80::Z80ImplementationBaseClass::GuestWrite( uint16_t address, uint8_t dataByte );
+		friend void    JynxZ80::Z80ImplementationBaseClass::GuestWriteIOSpace( uint16_t portNumber, uint8_t dataByte );
+		friend uint8_t JynxZ80::Z80ImplementationBaseClass::GuestReadIOSpace( uint16_t portNumber );
+		friend void    JynxZ80::Z80ImplementationBaseClass::OnAboutToBranch();
 
 		// Interface called by the Z80 emulator:
 		uint8_t  Z80_AddressRead(  uint16_t address );

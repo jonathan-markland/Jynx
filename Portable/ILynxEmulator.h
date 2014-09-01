@@ -42,7 +42,7 @@ namespace Jynx
 		enum Enum
 		{
 			At50  =  40000,
-			At100 =  80000,    // 80,000 * 50 timeslices per second = 4.00 Mhz
+			At100 =  70000,    // 80,000 * 50 timeslices per second = 4.00 Mhz
 			At200 = 160000,
 			At400 = 320000,
 			At800 = 640000,

@@ -1079,7 +1079,7 @@ namespace Jynx
 		{
 			// We sort of assume that read can never have side effects!
 			// On the Lynx it doesn't.
-			return g_LynxEmulatorGuestSingleton->Z80_AddressRead( _programCounter++ );
+			return JynxZ80::Z80ImplementationBaseClass::GuestRead( _programCounter++ );
 		}
 
 	private:

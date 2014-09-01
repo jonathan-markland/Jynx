@@ -132,7 +132,7 @@ namespace JynxZ80
 
 	class Z80ImplementationBaseClass
 	{
-	protected:
+	public:
 		NO_INLINE  static void GuestWrite(  uint16_t address, uint8_t value );
 		NO_INLINE  static void GuestWriteIOSpace( uint16_t portNumber, uint8_t value );
 		NO_INLINE  static uint8_t GuestRead( uint16_t address );
