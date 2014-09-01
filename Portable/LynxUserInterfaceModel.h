@@ -41,6 +41,7 @@ namespace Jynx
 		//   and create the LynxEmulatorGuest yourself.
 
 		LynxUserInterfaceModel( IHostServicesForLynxUserInterfaceModel *hostView, uint16_t *soundBuffer, size_t numSamples );
+		~LynxUserInterfaceModel();
 
 		// ILynxUserInterfaceModel:
 		virtual void OnInitDialog() override;

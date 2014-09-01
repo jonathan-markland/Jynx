@@ -43,6 +43,17 @@ namespace Jynx
 
 
 
+	LynxUserInterfaceModel::~LynxUserInterfaceModel()
+	{
+		if( _lynxEmulator != nullptr )
+		{
+			delete _lynxEmulator;
+			_lynxEmulator = nullptr;
+		}
+	}
+
+
+
 
 	void  LynxUserInterfaceModel::OnInitDialog()   
 	{

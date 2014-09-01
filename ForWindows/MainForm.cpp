@@ -617,6 +617,7 @@ const wchar_t *g_RomFileNames[Jynx::LynxRoms::Count] =
 
 void  MainForm::OpenChipFileStream( std::ifstream &streamToBeOpened, std::ios_base::openmode openModeRequired, Jynx::LynxRoms::Enum romRequired )
 {
+	// (Reminder - called back on the thread that calls the Model's constructor).
 	assert( uint32_t(romRequired) < Jynx::LynxRoms::Count ); // Should be
 
 	// Determine path name, ROMS are in same folder as the Windows EXE:
