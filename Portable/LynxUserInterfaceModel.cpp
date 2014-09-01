@@ -36,9 +36,8 @@ namespace Jynx
 	{
 		JynxZ80::Z80::InitialiseGlobalTables();  // Not absolutely ideal place to put this.
 
-		_lynxEmulator = new LynxEmulatorGuest( this );
-		_lynxEmulator->SetSoundBufferForNextPeriod( soundBuffer, numSamples );
-		_lynxEmulator->ResetGuest( _machineType );  // TODO: maybe have guest constructor do this?
+		_lynxEmulator = new LynxEmulatorGuest( this, soundBuffer, numSamples, _machineType );
+		TODO: _lynxEmulator->ResetGuest( _machineType );  // TODO: maybe have guest constructor do this?
 	}
 
 

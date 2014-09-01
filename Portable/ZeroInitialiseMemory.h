@@ -32,6 +32,14 @@ namespace Jynx
 
 
 
+	template<typename T, size_t N>
+	void CopyArrayMemory( T (&destinationArray)[N], const T (&sourceArray)[N] )
+	{
+		memcpy( destinationArray, sourceArray, sizeof(T[N]) );
+	}
+
+
+
 	template<typename T>
 	void ZeroInitialiseMemory( T &itemToZeroInitialise )
 	{

@@ -56,8 +56,10 @@ namespace Jynx
 		// - This creates a thread to run the emulation.
 		// - This is a singleton class at the moment, see use of g_LynxEmulatorGuestSingleton.
 
-		LynxEmulatorGuest( IHostServicesForLynxEmulator *hostObject );
+		LynxEmulatorGuest( IHostServicesForLynxEmulator *hostObject, uint16_t *soundBuffer, size_t numSamples, LynxMachineType::Enum initialMachineType );
 			// Reminder: Constructor called on the CLIENT's thread.
+			// Client tells guest where the sound buffer is.
+			// The format is fixed at 44,100Hz CD MONO sound.
 
 		~LynxEmulatorGuest();
 			// Reminder: Destructor called on the CLIENT's thread.
@@ -83,7 +85,6 @@ namespace Jynx
 		virtual bool CanSaveTAPFile() const override;
 		virtual void SaveTape( IFileOpener *fileOpener ) override;
 		virtual bool IsTapeModified() const override;
-		virtual void SetSoundBufferForNextPeriod( uint16_t *soundBuffer, size_t numSamples ) override;
 		virtual void SetTapeSounds( bool tapeSounds ) override;
 		virtual bool GetTapeSounds() const override;
 		virtual void RecordSoundToFile( IFileOpener *fileOpener ) override;
@@ -231,6 +232,20 @@ namespace Jynx
 		CHIP *_sourceVideoRED;
 		CHIP *_sourceVideoGREEN;
 		CHIP *_sourceVideoBLUE;
+
+		//
+		// The *Original* ROM images.
+		//
+		// - The snapshot format permits the user to fiddle the ROM images,
+		//   these are the original ones, loaded by the constructor, then 
+		//   used as sources when resetting the machine, or changing the type.
+		//
+
+		CHIP  _lynxROM_48_1;
+		CHIP  _lynxROM_48_2;
+		CHIP  _lynxROM_96_1;
+		CHIP  _lynxROM_96_2;
+		CHIP  _lynxROM_96_3;
 
 		//
 		// The Lynx's chip set  (8K ROMs/RAMs)

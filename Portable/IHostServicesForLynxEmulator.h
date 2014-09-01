@@ -32,6 +32,7 @@ namespace Jynx
 		// Services provided by host to the emulator.
 
 		virtual  void  LynxScreenAddressUpdated( uint32_t addressOffset, uint32_t lynxRedByte, uint32_t lynxGreenByte, uint32_t lynxBlueByte ) = 0;
+			// (WARNING - Called on the Z80 thread, NOT the main thread)
 			// The emulator is telling the host that the Lynx has written any of the colour banks
 			// at the given addressOffset into the bank.  The host should translate the Lynx bytes
 			// and plot them on the bitmap it is used to represent the lynx screen.  The bitmap
@@ -42,6 +43,7 @@ namespace Jynx
 			// be updated with the host's window manager.  The area is in Lynx screen coordinates.
 
 		virtual  void  OpenChipFileStream( std::ifstream &streamToBeOpened, std::ios_base::openmode openModeRequired, LynxRoms::Enum romRequired ) = 0;  
+			// (Called on the MAIN thread only)
 			// Host must open the file indicated by romRequired with the stream object
 			// passed, using the open mode passed.  This way, the host can decide where
 			// to put the ROM files.

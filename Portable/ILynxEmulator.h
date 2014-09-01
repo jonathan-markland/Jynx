@@ -107,10 +107,6 @@ namespace Jynx
 		virtual void RewindTape() = 0;
 			// Host instructs the emulator to re-wind the virtual source cassette.
 
-		virtual void SetSoundBufferForNextPeriod( uint16_t *soundBuffer, size_t numSamples ) = 0;
-			// Host tells guest where the sound buffer is.
-			// The format is fixed at 44,100Hz CD MONO sound.
-
 		virtual void SetTapeSounds( bool tapeSounds ) = 0;
 		virtual bool GetTapeSounds() const = 0;
 			// Set/get whether the Lynx tape saving and loading waves can be heard by the user.

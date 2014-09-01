@@ -75,25 +75,73 @@ namespace Jynx
 	//     EMULATOR "GUEST" CLASS -- this is the Lynx hardware
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
-	LynxEmulatorGuest::LynxEmulatorGuest( IHostServicesForLynxEmulator *hostObject )
+	LynxEmulatorGuest::LynxEmulatorGuest( IHostServicesForLynxEmulator *hostObject, uint16_t *soundBuffer, size_t numSamples, LynxMachineType::Enum initialMachineType )
 		: _z80CycleCounter(0)
 		, _tapeMode( LynxTapeMode::SavingPermitted )
 		, _hearTapeSounds(false)
 		, _watchingCommands(false)
 		, _inhibitTextRecorder(false)
 		, _hostObject(hostObject)
+		, _machineType(initialMachineType)
 	{
+		// (Reminder - Called on the client thread).
+
 		assert( g_LynxEmulatorGuestSingleton == nullptr );  // should only be one instance of this class.
 		g_LynxEmulatorGuestSingleton = this; // establish this object as the singleton that the Z80 will call.
 
 		_currentReadTape  = std::make_shared<TapFileReader>( this );
 		_currentWriteTape = std::make_shared<TapFileWriter>();
-		_machineType      = LynxMachineType::LYNX_48K; 
 
 		_processor.SetTimesliceLength( LynxZ80Cycles::At100 ); // 4.00 mhz
+		_soundBufferWriter.SetSoundBuffer( soundBuffer, numSamples );
 
-		SetGuestHardwareToResetState();
-		// _textPlayer.SetText( g_DemoText ); // TODO: this is just a test
+		LoadROMS();
+		InitialiseLYNX();
+	}
+
+
+
+	void LynxEmulatorGuest::LoadROMS()
+	{
+		// (Reminder - Called on the client thread).
+
+		Load8KBChipFile( _lynxROM_48_1, LynxRoms::Lynx48_1 );
+		Load8KBChipFile( _lynxROM_48_2, LynxRoms::Lynx48_2 );
+		Load8KBChipFile( _lynxROM_96_1, LynxRoms::Lynx96_1 );
+		Load8KBChipFile( _lynxROM_96_2, LynxRoms::Lynx96_2 );
+		Load8KBChipFile( _lynxROM_96_3, LynxRoms::Lynx96_3 );
+	}
+
+
+
+	void LynxEmulatorGuest::Load8KBChipFile( uint8_t *chipToLoad, LynxRoms::Enum romRequired )
+	{
+		// (Reminder - Called on the client thread).
+
+		try
+		{
+			std::ifstream  inStream;
+			_hostObject->OpenChipFileStream( inStream, std::ios::in | std::ios::binary | std::ios::ate, romRequired );
+	
+			if( inStream.is_open() )
+			{
+				uint64_t fileSize = inStream.tellg();
+				if( fileSize == 8192 )
+				{
+					inStream.seekg (0, std::ios::beg);
+					inStream.read( (char *) chipToLoad, 8192 );
+					inStream.close();
+					return;
+				}
+				inStream.close();
+			}
+		}
+		catch( const std::ifstream::failure & )
+		{
+			// Drop to re-raise below, because otherwise a horrible message is raised to the user.
+		}
+
+		throw std::exception( "One or more of the ROM files are missing.  Please refer to the readme.htm file for information." );  // very base class std::exception should terminate program.
 	}
 
 
@@ -165,55 +213,23 @@ namespace Jynx
 		ZeroInitialiseMemory( _lynxAltGreenRAM );
 		ZeroInitialiseMemory( _lynxGreenRAM );
 
-	}
+		//
+		// Copy the appropriate ROMs in according to the _machineType
+		//
 
-
-	void LynxEmulatorGuest::LoadROMS()
-	{
 		if( _machineType == LynxMachineType::LYNX_48K )
 		{
-			Load8KBChipFile( _lynxROM_0000, LynxRoms::Lynx48_1 );
-			Load8KBChipFile( _lynxROM_2000, LynxRoms::Lynx48_2 );
+			CopyArrayMemory( _lynxROM_0000, _lynxROM_48_1 );
+			CopyArrayMemory( _lynxROM_2000, _lynxROM_48_2 );
 		}
 		else if( _machineType == LynxMachineType::LYNX_96K )
 		{
-			Load8KBChipFile( _lynxROM_0000, LynxRoms::Lynx96_1 );
-			Load8KBChipFile( _lynxROM_2000, LynxRoms::Lynx96_2 );
-			Load8KBChipFile( _lynxROM_4000, LynxRoms::Lynx96_3 );
+			CopyArrayMemory( _lynxROM_0000, _lynxROM_96_1 );
+			CopyArrayMemory( _lynxROM_2000, _lynxROM_96_2 );
+			CopyArrayMemory( _lynxROM_4000, _lynxROM_96_3 );
 		}
 		else assert(false);
 	}
-
-
-
-	void LynxEmulatorGuest::Load8KBChipFile( uint8_t *chipToLoad, LynxRoms::Enum romRequired )
-	{
-		try
-		{
-			std::ifstream  inStream;
-			_hostObject->OpenChipFileStream( inStream, std::ios::in | std::ios::binary | std::ios::ate, romRequired );
-	
-			if( inStream.is_open() )
-			{
-				uint64_t fileSize = inStream.tellg();
-				if( fileSize == 8192 )
-				{
-					inStream.seekg (0, std::ios::beg);
-					inStream.read( (char *) chipToLoad, 8192 );
-					inStream.close();
-					return;
-				}
-				inStream.close();
-			}
-		}
-		catch( const std::ifstream::failure & )
-		{
-			// Drop to re-raise below, because otherwise a horrible message is raised to the user.
-		}
-
-		throw std::exception( "One or more of the ROM files are missing.  Please refer to the readme.htm file for information." );  // very base class std::exception should terminate program.
-	}
-
 
 
 
@@ -222,7 +238,6 @@ namespace Jynx
 	void LynxEmulatorGuest::InitialiseLYNX()
 	{
 		SetGuestHardwareToResetState();
-		LoadROMS();
 		UpdateAllOtherStateFromPortStateVariables();
 		MarkWholeScreenInvalid();
 		_recompositeWholeScreen = true;
@@ -1227,14 +1242,6 @@ namespace Jynx
 		// Ask for necessary host screen area repainting:
 
 		InvalidateDirtyRegionsOnHostScreen();
-	}
-
-
-
-	void LynxEmulatorGuest::SetSoundBufferForNextPeriod( uint16_t *soundBuffer, size_t numSamples )
-	{
-		ThreadHandshake  handshake(this);
-		_soundBufferWriter.SetSoundBuffer( soundBuffer, numSamples );
 	}
 
 
