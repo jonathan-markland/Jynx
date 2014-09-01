@@ -31,7 +31,7 @@ namespace Jynx
 
 		// Services provided by host to the emulator.
 
-		virtual  void  LynxScreenAddressUpdated( uint32_t addressOffset, uint32_t lynxRedByte, uint32_t lynxGreenByte, uint32_t lynxBlueByte ) = 0;
+		virtual  void  PaintPixelsOnHostBitmapForLynxScreenByte( uint32_t addressOffset, uint32_t lynxRedByte, uint32_t lynxGreenByte, uint32_t lynxBlueByte ) = 0;
 			// (WARNING - Called on the Z80 thread, NOT the main thread)
 			// The emulator is telling the host that the Lynx has written any of the colour banks
 			// at the given addressOffset into the bank.  The host should translate the Lynx bytes

@@ -141,7 +141,7 @@ namespace Jynx
 		virtual  void  OpenChipFileStream( std::ifstream &streamToBeOpened, std::ios_base::openmode openModeRequired, LynxRoms::Enum romRequired ) = 0;
 			// (See same function comments in IHostServicesForLynxEmulator).
 
-		virtual  void  LynxScreenAddressUpdated( uint32_t addressOffset, uint32_t lynxRedByte, uint32_t lynxGreenByte, uint32_t lynxBlueByte ) = 0;
+		virtual  void  PaintPixelsOnHostBitmapForLynxScreenByte( uint32_t addressOffset, uint32_t lynxRedByte, uint32_t lynxGreenByte, uint32_t lynxBlueByte ) = 0;
 			// The emulator does not know the pixel format of the View's bitmap that holds the Lynx screen.
 			// The view must translate the three lynx bytes given (red, green and blue) into 8 adjacent pixels
 			// at the position given by the addressOffset.  The Lynx screen is 256*256 pixels with 3 colour

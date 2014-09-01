@@ -470,7 +470,7 @@ namespace Jynx
 		assert( (addressOffset >> 8) < INV_ROWS );
 		_invalidateRow[addressOffset >> 8] = true; // mark a row invalid
 
-		_hostObject->LynxScreenAddressUpdated( addressOffset, r, g, b );
+		_hostObject->PaintPixelsOnHostBitmapForLynxScreenByte( addressOffset, r, g, b );
 	}
 
 
