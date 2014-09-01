@@ -52,14 +52,22 @@ namespace Jynx
 	public:
 
 		// The Camputers Lynx hardware emulator.
-
-		// Reminder - this is a singleton class at the moment, see use of g_LynxEmulatorGuestSingleton.
+		
+		// - This creates a thread to run the emulation.
+		// - This is a singleton class at the moment, see use of g_LynxEmulatorGuestSingleton.
 
 		LynxEmulatorGuest( IHostServicesForLynxEmulator *hostObject );
+			// Reminder: Constructor called on the CLIENT's thread.
+
+		~LynxEmulatorGuest();
+			// Reminder: Destructor called on the CLIENT's thread.
+
+		void StartThread();
+		void StopThread();
 
 		// ILynxEmulator interface called by host, on the host's thread.
 		// 
-		virtual void AdvanceEmulation() override;
+		virtual void AdvanceEmulation() override; // TODO: remove from interface
 		virtual void NotifyKeyDown( int32_t guestKeyCode ) override;
 		virtual void NotifyKeyUp( int32_t guestKeyCode ) override;
 		virtual void NotifyAllKeysUp() override;
@@ -141,7 +149,7 @@ namespace Jynx
 
 	private:
 
-		IHostServicesForLynxEmulator *_hostObject;
+		IHostServicesForLynxEmulator * const _hostObject;  // Safe to read on ANY thread (not changed once constructed).
 
 		// Machine type being emulated
 		LynxMachineType::Enum _machineType;
@@ -166,7 +174,7 @@ namespace Jynx
 		uint64_t _z80CycleCounter;    // Total cycle counter // TODO: serialise -- but only the cassette creation relies on it, and we don't & can't easily serialise the state of that.
 	
 		// Tape sound monitoring (ie: wire to speakers)
-		bool     _hearTapeSounds;
+		volatile bool     _hearTapeSounds;
 
 		// Lynx text recording (snooping) on host:
 		TextRecorder         _textRecorder;
@@ -175,7 +183,7 @@ namespace Jynx
 		// Lynx text playback (to automate key presses on the Lynx).
 		TextPlayer           _textPlayer;
 
-		bool     _watchingCommands;
+		volatile bool        _watchingCommands;
 
 		//
 		// SOUND BUFFER (represents ONE Z80 period precisely)
