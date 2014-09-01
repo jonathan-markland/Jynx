@@ -879,6 +879,8 @@ namespace Jynx
 
 	uint32_t  LynxEmulatorGuest::GetLynxTapeSpeedBitsPerSecond()
 	{
+		// (Called on the Z80 thread - no synchronization issues here)
+
 		// The Lynx never did speed detection on reading tapes/
 		// Let's give the Lynx the tape at the speed it wants.
 		// 0x692D "COARSE" and 0x692E "FINE" contain two values that set cassette speed

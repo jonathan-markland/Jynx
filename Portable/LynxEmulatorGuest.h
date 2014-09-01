@@ -64,12 +64,10 @@ namespace Jynx
 		~LynxEmulatorGuest();
 			// Reminder: Destructor called on the CLIENT's thread.
 
-		void CallMeBackToInvalidateRegions();
-			// Called on the MAIN thread.
-
-		// ILynxEmulator interface called by host, on the host's thread.
-		// 
+		// ILynxEmulator interface called by the client, on the MAIN thread.
+		// (These functions are threadsafe).
 		virtual void AdvanceEmulation() override; // TODO: remove from interface
+		virtual void CallMeBackToInvalidateRegions() override;
 		virtual void NotifyKeyDown( int32_t guestKeyCode ) override;
 		virtual void NotifyKeyUp( int32_t guestKeyCode ) override;
 		virtual void NotifyAllKeysUp() override;

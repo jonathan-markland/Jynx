@@ -38,6 +38,7 @@ namespace Jynx
 		// - If used, this creates the emulator internally.
 		// - If you don't want to use this, make your own object that exposes IHostServicesForLynxEmulator
 		//   and create the LynxEmulatorGuest yourself.
+		// - Multithreading note:  Consider the model to be called on the MAIN thread.
 
 		LynxUserInterfaceModel( IHostServicesForLynxUserInterfaceModel *hostView, uint16_t *soundBuffer, size_t numSamples, const char *platformEndOfLineSequenceUTF8 );
 		~LynxUserInterfaceModel();
@@ -84,7 +85,7 @@ namespace Jynx
 		friend class EnsureUIUpdated;
 
 		IHostServicesForLynxUserInterfaceModel  *_hostView;
-		class LynxEmulatorGuest     *_lynxEmulator;
+		ILynxEmulator         *_lynxEmulator;
 		LynxMachineType::Enum  _machineType;
 		RenderStyle::Enum      _renderStyle;
 		bool                   _soundEnable;

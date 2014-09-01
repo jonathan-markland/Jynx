@@ -550,6 +550,8 @@ namespace Jynx
 
 	void  LynxUserInterfaceModel::OpenChipFileStream( std::ifstream &streamToBeOpened, std::ios_base::openmode openModeRequired, LynxRoms::Enum romRequired )
 	{ 
+		// (Called on MAIN thread only, not Z80).
+
 		// Just delegate this call.
 		_hostView->OpenChipFileStream( streamToBeOpened, openModeRequired, romRequired ); 
 	}
@@ -565,6 +567,8 @@ namespace Jynx
 
 	void  LynxUserInterfaceModel::PaintPixelsOnHostBitmapForLynxScreenByte( uint32_t addressOffset, uint32_t lynxRedByte, uint32_t lynxGreenByte, uint32_t lynxBlueByte ) 
 	{ 
+		// (WARNING - Called on the Z80 thread, NOT the main thread)
+
 		// Just delegate this call.
 		_hostView->PaintPixelsOnHostBitmapForLynxScreenByte( addressOffset, lynxRedByte, lynxGreenByte, lynxBlueByte ); 
 	}
