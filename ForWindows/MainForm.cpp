@@ -716,3 +716,11 @@ Jynx::IHostThread *MainForm::CreateThread( Jynx::IHostServicesForLynxEmulatorThr
 {
 	return nullptr;
 }
+
+
+
+void MainForm::ThreadSleep( uint32_t milliseconds )
+{
+	// (Called on the Z80 thread, not the MAIN thread)
+	::Sleep( milliseconds );
+}

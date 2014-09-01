@@ -10,6 +10,7 @@ namespace Jynx
 	{
 	public:
 		virtual  void SignalToTerminateAndJoin() = 0;
+		virtual  bool CanKeepRunning() = 0;
 	};
 
 }

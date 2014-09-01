@@ -588,6 +588,16 @@ namespace Jynx
 
 
 
+	void LynxUserInterfaceModel::ThreadSleep( uint32_t milliseconds )
+	{
+		// (WARNING - Called on the Z80 thread, NOT the main thread)
+
+		// Just delegate this call.
+		_hostView->ThreadSleep(milliseconds);
+	}
+
+
+
 
 
 

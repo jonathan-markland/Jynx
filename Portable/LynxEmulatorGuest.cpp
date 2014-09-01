@@ -1242,34 +1242,39 @@ namespace Jynx
 		((LynxEmulatorGuest *) thisPointer)->RunThreadMainLoop();
 	}
 
-	void LynxEmulatorGuest::RunThreadMainLoop() // TODO
+	void LynxEmulatorGuest::RunThreadMainLoop()
 	{
-		// Execute Z80 code for this timeslice, and accumulate
-		// the precise number of cycles elapsed (which may not
-		// precisely be what we asked for, but the design supports
-		// correcting this in later timeslices):
-
-		auto cycleCountBefore = _processor.GetRemainingCycles();
-		_processor.RunForTimeslice();
-		auto cycleCountAfter  = _processor.GetRemainingCycles();
-		_z80CycleCounter += (cycleCountAfter - cycleCountBefore) + _processor.GetTimesliceLength();
-
-		// Sound:
-
-		_soundBufferWriter.EndOfZ80PeriodNotification();
-
-		// Are we recording the sound to a file?
-
-		if( _soundRecorder.IsOpen() )
+		while( _emulationThread->CanKeepRunning() )
 		{
-			_soundBufferWriter.SerialiseSoundBufferContent( &_soundRecorder );
-		}
+			// Execute Z80 code for this timeslice, and accumulate
+			// the precise number of cycles elapsed (which may not
+			// precisely be what we asked for, but the design supports
+			// correcting this in later timeslices):
 
-		// Do we need to re-composite the whole screen?  (Because of port change).
+			auto cycleCountBefore = _processor.GetRemainingCycles();
+			_processor.RunForTimeslice();
+			auto cycleCountAfter  = _processor.GetRemainingCycles();
+			_z80CycleCounter += (cycleCountAfter - cycleCountBefore) + _processor.GetTimesliceLength();
 
-		if( _recompositeWholeScreen )
-		{
-			RecompositeEntireLynxScreenOntoHostBitmap();
+			// Sound:
+
+			_soundBufferWriter.EndOfZ80PeriodNotification();
+
+			// Are we recording the sound to a file?
+
+			if( _soundRecorder.IsOpen() )
+			{
+				_soundBufferWriter.SerialiseSoundBufferContent( &_soundRecorder );
+			}
+
+			// Do we need to re-composite the whole screen?  (Because of port change).
+
+			if( _recompositeWholeScreen )
+			{
+				RecompositeEntireLynxScreenOntoHostBitmap();
+			}
+
+			_hostObject->ThreadSleep(20);
 		}
 	}
 

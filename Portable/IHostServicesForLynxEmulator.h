@@ -60,6 +60,11 @@ namespace Jynx
 			// (Called on the MAIN thread only)
 			// Called to create a thread on the host platform, which supports our IHostThread interface.
 
+		virtual  void ThreadSleep( uint32_t milliseconds ) = 0;
+			// (WARNING - Called on the Z80 thread, NOT the main thread)
+			// Called when sound is NOT ENABLED, thus sound is NOT timing the emulation.
+			// Allows emulation thread to sleep for 20 ms.
+
 	};
 
 } // end namespace Jynx

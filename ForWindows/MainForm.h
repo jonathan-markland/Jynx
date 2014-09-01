@@ -69,6 +69,7 @@ public:
 	virtual void  PaintPixelsOnHostBitmapForLynxScreenByte( uint32_t addressOffset, uint32_t lynxRedByte, uint32_t lynxGreenByte, uint32_t lynxBlueByte ) override;
 	virtual std::shared_ptr<Jynx::IFileOpener>  GetUserSettingsFilePath() override;
 	virtual Jynx::IHostThread *CreateThread( Jynx::IHostServicesForLynxEmulatorThreadFunction threadFunction, void *userObject ) override;
+	virtual void ThreadSleep( uint32_t milliseconds ) override;
 
 protected:
 

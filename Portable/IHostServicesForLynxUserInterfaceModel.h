@@ -153,7 +153,7 @@ namespace Jynx
 			// Obtains a file opener that holds the path to the user settings file (or where it would be if it doesn't exist yet).
 
 		virtual IHostThread *CreateThread( IHostServicesForLynxEmulatorThreadFunction threadFunction, void *userObject ) = 0;
-
+		virtual  void ThreadSleep( uint32_t milliseconds ) = 0;
 	};
 
 

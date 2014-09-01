@@ -79,6 +79,7 @@ namespace Jynx
 		virtual  void  NotifyOutputTapeAvailbilityChanged() override;  // Hint: call host CanSaveTAPFile() to discover state at any time.
 		virtual  void  PaintPixelsOnHostBitmapForLynxScreenByte( uint32_t addressOffset, uint32_t lynxRedByte, uint32_t lynxGreenByte, uint32_t lynxBlueByte ) override;
 		virtual  IHostThread *CreateThread( IHostServicesForLynxEmulatorThreadFunction threadFunction, void *userObject ) override;
+		virtual  void ThreadSleep( uint32_t milliseconds ) override;
 
 	private:
 
