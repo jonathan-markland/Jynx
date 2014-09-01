@@ -107,11 +107,10 @@ namespace Jynx
 	LynxEmulatorGuest::~LynxEmulatorGuest()
 	{
 		// (Called on main thread)
-		// TODO:  Signal Z80 thread to close down.
-		// TODO:  Thread join with Z80 thread
 		if( _emulationThread != nullptr )
 		{
 			_emulationThread->SignalToTerminateAndJoin();
+			_emulationThread = nullptr;
 		}
 	}
 

@@ -48,7 +48,7 @@ namespace Jynx
 		if( _lynxEmulator != nullptr )
 		{
 			// Deleting signals the Z80 thread to terminate, and awaits its termination.
-			delete _lynxEmulator;
+			delete (LynxEmulatorGuest *) _lynxEmulator;  // TODO: not ideal upcase, although we know the exact type from the constructor.
 			// Z80 thread terminated.
 			_lynxEmulator = nullptr;
 		}

@@ -94,6 +94,14 @@ MainForm::MainForm( HWND hWndOwner )
 
 MainForm::~MainForm()
 {
+	// Must destroy _lynxUIModel FIRST - to clean up threads, before
+	// we destroy what the threads are using!
+	if( _lynxUIModel != nullptr )
+	{
+		delete (Jynx::LynxUserInterfaceModel *) _lynxUIModel;  // TODO: not ideal upcast
+		_lynxUIModel = nullptr;
+	}
+
 	if( _timerID != 0 )
 	{
 		::KillTimer( *this, TIMER_EVENT_ID );
@@ -208,8 +216,9 @@ void MainForm::WindowProc( libWinApi::WindowProcArgs &e )
 		{
 			if( _lynxUIModel->IsSoundEnabled() )
 			{
-				_lynxUIModel->AdvanceEmulation();
-				_soundThread.NotifyEmulatorFinishedFillingSoundBuffer();
+				// TODO:
+				// _lynxUIModel->AdvanceEmulation();
+				// _soundThread.NotifyEmulatorFinishedFillingSoundBuffer();
 			}
 			e.Result = 1;
 			return;
@@ -711,10 +720,49 @@ std::shared_ptr<Jynx::IFileOpener>  MainForm::GetUserSettingsFilePath()
 }
 
 
+class ThreadAdapterToMicrosoftWindows: public libWinApi::Thread, public Jynx::IHostThread
+{
+public:
+	ThreadAdapterToMicrosoftWindows( Jynx::IHostServicesForLynxEmulatorThreadFunction threadFunction, void *userObject );
+	virtual int32_t ThreadMain() override;
+	virtual void SignalToTerminateAndJoin() override;
+	virtual bool CanKeepRunning() override;
+private:
+	Jynx::IHostServicesForLynxEmulatorThreadFunction _threadFunction;
+	void *_userObject;
+};
+
+
+
+ThreadAdapterToMicrosoftWindows::ThreadAdapterToMicrosoftWindows( Jynx::IHostServicesForLynxEmulatorThreadFunction threadFunction, void *userObject )
+	: _threadFunction(threadFunction)
+	, _userObject(userObject)
+{
+	CreateAndRun();
+}
+
+int32_t ThreadAdapterToMicrosoftWindows::ThreadMain()
+{
+	_threadFunction(_userObject);
+	return 0;
+}
+
+void ThreadAdapterToMicrosoftWindows::SignalToTerminateAndJoin()
+{
+	this->RequestTermination();
+	this->WaitForTermination();
+}
+
+bool ThreadAdapterToMicrosoftWindows::CanKeepRunning()
+{
+	return ! ShouldTerminate();
+}
+
+
 
 Jynx::IHostThread *MainForm::CreateThread( Jynx::IHostServicesForLynxEmulatorThreadFunction threadFunction, void *userObject )
 {
-	return nullptr;
+	return new ThreadAdapterToMicrosoftWindows( threadFunction, userObject );
 }
 
 
@@ -722,5 +770,6 @@ Jynx::IHostThread *MainForm::CreateThread( Jynx::IHostServicesForLynxEmulatorThr
 void MainForm::ThreadSleep( uint32_t milliseconds )
 {
 	// (Called on the Z80 thread, not the MAIN thread)
+	// Reminder - this is for when sound ISN'T on!
 	::Sleep( milliseconds );
 }
