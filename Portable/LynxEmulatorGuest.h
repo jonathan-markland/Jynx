@@ -64,8 +64,8 @@ namespace Jynx
 		~LynxEmulatorGuest();
 			// Reminder: Destructor called on the CLIENT's thread.
 
-		void StartThread();
-		void StopThread();
+		void CallMeBackToInvalidateRegions();
+			// Called on the MAIN thread.
 
 		// ILynxEmulator interface called by host, on the host's thread.
 		// 
@@ -129,7 +129,6 @@ namespace Jynx
 		void UpdateVideoSources();
 		void ComposeHostBitmapPixelsForLynxScreenAddress( uint32_t addressOffset );
 		void MarkWholeScreenInvalid();
-		void InvalidateDirtyRegionsOnHostScreen();
 		void RecompositeEntireLynxScreenOntoHostBitmap();
 
 		uint8_t  ReadLynxKeyboard( uint16_t portNumber ) const;
@@ -162,7 +161,7 @@ namespace Jynx
 	
 		// Screen area invalidation recording system (guest-side):
 		enum { INV_ROWS = 32 };          // The vertical height of the screen is divided into this many rows for invalidation recording.
-		bool  _invalidateRow[INV_ROWS];  // Set true when an individual bit is drawn
+		volatile bool  _invalidateRow[INV_ROWS];  // Set true when an individual bit is drawn
 		bool  _recompositeWholeScreen;   // Do we need to recomposite whole screen because of change in Lynx screen register that affects the whole display?
 
 		// Main LYNX hardware state:
@@ -171,8 +170,8 @@ namespace Jynx
 		uint8_t  _bankPort;           // Port '0xFFFF' see BANKPORT_ #defines
 		uint8_t  _mc6845Select;       // 6845 register selector
 		uint8_t  _mc6845Regs[32];     // 6845 register values store
-		uint8_t  _keyboard[16];       // Lynx keyboard ports (not persistent)
 		uint64_t _z80CycleCounter;    // Total cycle counter // TODO: serialise -- but only the cassette creation relies on it, and we don't & can't easily serialise the state of that.
+		volatile uint8_t  _keyboard[16];       // Lynx keyboard ports (not persistent)
 	
 		// Host platform's preferred UTF8 end of line sequence:
 		const std::string  _platformEndOfLineSequenceUTF8;

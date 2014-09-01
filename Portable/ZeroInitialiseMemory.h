@@ -60,4 +60,16 @@ namespace Jynx
 		}
 	}
 
+	template<typename T, size_t N>
+	void InitialiseAllArrayElementsVolatile( volatile T (&arrayToInitialise)[N], const T &value )
+	{
+		auto p = &arrayToInitialise[0];
+		auto e = &arrayToInitialise[N];
+		while( p < e )
+		{
+			*p = value;
+			++p;
+		}
+	}
+
 } // end namespace Jynx

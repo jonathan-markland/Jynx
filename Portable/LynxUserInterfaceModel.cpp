@@ -73,6 +73,13 @@ namespace Jynx
 
 
 
+	void LynxUserInterfaceModel::AdvanceEmulation()                { _lynxEmulator->AdvanceEmulation(); }
+	void LynxUserInterfaceModel::NotifyAllKeysUp()                 { _lynxEmulator->NotifyAllKeysUp(); }
+	void LynxUserInterfaceModel::NotifyKeyDown( int32_t keyCode )  { _lynxEmulator->NotifyKeyDown( keyCode); }
+	void LynxUserInterfaceModel::NotifyKeyUp( int32_t keyCode )    { _lynxEmulator->NotifyKeyUp( keyCode ); }
+
+
+
 
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 	//     PAINT ASSISTANCE - CALCULATING LAYOUT
@@ -137,6 +144,12 @@ namespace Jynx
 	}
 
 
+
+	void LynxUserInterfaceModel::CallMeBackToInvalidateRegions()
+	{
+		// Just delegate this call:
+		_lynxEmulator->CallMeBackToInvalidateRegions();
+	}
 
 
 
@@ -507,6 +520,8 @@ namespace Jynx
 
 	void  LynxUserInterfaceModel::InvalidateAreaOfGuestScreen( int left, int top, int right, int bottom )
 	{
+		// (Called on MAIN thread only, not Z80).
+
 		// The entry coordinates are on the Lynx's screen, and we translate to pixel
 		// coordinates on the host display.  (All hosts will use square pixels these days!).
 
@@ -533,11 +548,26 @@ namespace Jynx
 
 
 
+	void  LynxUserInterfaceModel::OpenChipFileStream( std::ifstream &streamToBeOpened, std::ios_base::openmode openModeRequired, LynxRoms::Enum romRequired )
+	{ 
+		// Just delegate this call.
+		_hostView->OpenChipFileStream( streamToBeOpened, openModeRequired, romRequired ); 
+	}
+
+
+
 	void  LynxUserInterfaceModel::NotifyOutputTapeAvailbilityChanged()
 	{ 
 		UpdateUserInterfaceElementsOnView();
 	}
 
+
+
+	void  LynxUserInterfaceModel::PaintPixelsOnHostBitmapForLynxScreenByte( uint32_t addressOffset, uint32_t lynxRedByte, uint32_t lynxGreenByte, uint32_t lynxBlueByte ) 
+	{ 
+		// Just delegate this call.
+		_hostView->PaintPixelsOnHostBitmapForLynxScreenByte( addressOffset, lynxRedByte, lynxGreenByte, lynxBlueByte ); 
+	}
 
 
 

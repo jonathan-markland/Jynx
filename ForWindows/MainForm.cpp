@@ -229,6 +229,7 @@ void MainForm::WindowProc( libWinApi::WindowProcArgs &e )
 				{
 					_lynxUIModel->AdvanceEmulation();
 				}
+				_lynxUIModel->CallMeBackToInvalidateRegions();
 				e.Result = 0;
 				return;
 			}

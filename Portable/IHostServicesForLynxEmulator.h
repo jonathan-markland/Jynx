@@ -39,8 +39,11 @@ namespace Jynx
 			// should NOT be painted with the host's Window Manager with this function!
 
 		virtual  void  InvalidateAreaOfGuestScreen( int32_t left, int32_t top, int32_t right, int32_t bottom ) = 0;
+			// (Called on the MAIN thread only)
 			// The emulator is telling the host that the given region of the Lynx's screen should
 			// be updated with the host's window manager.  The area is in Lynx screen coordinates.
+			// - Note - The main thread must call LynxEmulatorGuest::CallMeBackToInvalidateRegions() 
+			//   to get this callback.
 
 		virtual  void  OpenChipFileStream( std::ifstream &streamToBeOpened, std::ios_base::openmode openModeRequired, LynxRoms::Enum romRequired ) = 0;  
 			// (Called on the MAIN thread only)

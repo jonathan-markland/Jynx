@@ -102,6 +102,15 @@ namespace Jynx
 
 
 
+	LynxEmulatorGuest::~LynxEmulatorGuest()
+	{
+		// (Called on main thread)
+		// TODO:  Signal Z80 thread to close down.
+		// TODO:  Thread join with Z80 thread
+	}
+
+
+
 	void LynxEmulatorGuest::LoadROMS()
 	{
 		// (Reminder - Called on the client thread).
@@ -156,7 +165,7 @@ namespace Jynx
 		//
 
 		_recompositeWholeScreen = false;
-		InitialiseAllArrayElements( _invalidateRow, true );
+		InitialiseAllArrayElementsVolatile( _invalidateRow, true );
 
 		//
 		// Init Z80
@@ -172,7 +181,7 @@ namespace Jynx
 		_bankPort     = BANKPORT_INITIALISATION_VALUE;
 		_mc6845Select = 0;
 		ZeroInitialiseMemory( _mc6845Regs );
-		InitialiseAllArrayElements( _keyboard, (uint8_t) 0xFF );  // -ve logic
+		InitialiseAllArrayElementsVolatile( _keyboard, (uint8_t) 0xFF );  // -ve logic
 
 		//
 		// Initialise bank switching selectors.
@@ -454,6 +463,9 @@ namespace Jynx
 
 	void LynxEmulatorGuest::ComposeHostBitmapPixelsForLynxScreenAddress( uint32_t addressOffset )
 	{
+		// (Called on Z80 thread).
+		// Note: Volatile variable access to _invalidateRow[] -- no sync needed.
+
 		// The Lynx's screen memory has just been written at address offset 'addressOffset'.
 		// We compose the framebuffer equivalent from the sources, which can be NULL.
 
@@ -477,13 +489,33 @@ namespace Jynx
 
 	void LynxEmulatorGuest::MarkWholeScreenInvalid()
 	{
-		InitialiseAllArrayElements( _invalidateRow, true );
+		// (Called on Z80 thread and Main thread).
+		// Volatile variable access -- no sync needed.
+
+		InitialiseAllArrayElementsVolatile( _invalidateRow, true );
 	}
 
 
 
-	void LynxEmulatorGuest::InvalidateDirtyRegionsOnHostScreen()
+	void LynxEmulatorGuest::RecompositeEntireLynxScreenOntoHostBitmap()
 	{
+		// (Called on Z80 thread).
+
+		_recompositeWholeScreen = false;
+
+		for( uint32_t guestScreenAddressOffset = 0x0000; guestScreenAddressOffset < 0x2000; ++guestScreenAddressOffset )
+		{
+			ComposeHostBitmapPixelsForLynxScreenAddress( guestScreenAddressOffset );
+		}
+	}
+
+
+
+	void LynxEmulatorGuest::CallMeBackToInvalidateRegions()
+	{
+		// Called on MAIN thread.  (NOT Z80 thread!)
+		// Volatile variable access to _invalidateRow[] -- no sync needed.
+
 		for( uint32_t i=0; i<INV_ROWS; ++i )
 		{
 			if( _invalidateRow[i] == true )
@@ -493,18 +525,6 @@ namespace Jynx
 				_hostObject->InvalidateAreaOfGuestScreen( x, y, x+LYNX_FRAMEBUF_WIDTH, y+8 );
 				_invalidateRow[i] = false;
 			}
-		}
-	}
-
-
-
-	void LynxEmulatorGuest::RecompositeEntireLynxScreenOntoHostBitmap()
-	{
-		_recompositeWholeScreen = false;
-
-		for( uint32_t guestScreenAddressOffset = 0x0000; guestScreenAddressOffset < 0x2000; ++guestScreenAddressOffset )
-		{
-			ComposeHostBitmapPixelsForLynxScreenAddress( guestScreenAddressOffset );
 		}
 	}
 
@@ -524,7 +544,7 @@ namespace Jynx
 
 		if( ! _textPlayer.HasText() )  // When active, the _textPlayer disables direct keyboard reading.
 		{
-			return static_cast<volatile const uint8_t &>( _keyboard[ (portNumber >> 8) & 0x0F ] );
+			return _keyboard[ (portNumber >> 8) & 0x0F ];
 		}
 		return 0xFF;
 	}
@@ -1239,10 +1259,6 @@ namespace Jynx
 		{
 			RecompositeEntireLynxScreenOntoHostBitmap();
 		}
-
-		// Ask for necessary host screen area repainting:
-
-		InvalidateDirtyRegionsOnHostScreen();
 	}
 
 
@@ -1259,7 +1275,7 @@ namespace Jynx
 		// (Warning: Called on client's thread -- volatile accessing only here).
 		auto registerIndex = (guestKeyCode >> 3) & 15;
 		auto orMask = 0x80 >> (guestKeyCode & 7);
-		static_cast<volatile uint8_t &>( _keyboard[registerIndex] ) &= ~orMask;
+		_keyboard[registerIndex] &= ~orMask;
 	}
 
 
@@ -1270,7 +1286,7 @@ namespace Jynx
 
 		auto registerIndex = (guestKeyCode >> 3) & 15;
 		auto orMask = 0x80 >> (guestKeyCode & 7);
-		static_cast<volatile uint8_t &>( _keyboard[registerIndex] ) |= orMask;
+		_keyboard[registerIndex] |= orMask;
 	}
 
 
@@ -1283,7 +1299,7 @@ namespace Jynx
 
 		for( auto &thisKey : _keyboard )
 		{
-			static_cast<volatile uint8_t &>( thisKey ) = 0xFF;  // NB: "active low" hardware logic
+			thisKey = 0xFF;  // NB: "active low" hardware logic
 		}
 	}
 

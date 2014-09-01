@@ -30,6 +30,7 @@ namespace Jynx
 
 		virtual void OnInitDialog() = 0;
 		virtual void AdvanceEmulation() = 0;
+		virtual void CallMeBackToInvalidateRegions() = 0;
 		virtual void NotifyAllKeysUp() = 0;
 		virtual void NotifyKeyDown( int32_t keyCode ) = 0;
 		virtual void NotifyKeyUp( int32_t keyCode ) = 0;

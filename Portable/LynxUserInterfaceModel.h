@@ -23,7 +23,6 @@
 #include "ILynxUserInterfaceModel.h"
 #include "IHostServicesForLynxUserInterfaceModel.h"
 #include "IHostServicesForLynxEmulator.h"
-#include "ILynxEmulator.h"
 #include "UserSettingsSerialiser.h"
 
 
@@ -45,10 +44,11 @@ namespace Jynx
 
 		// ILynxUserInterfaceModel:
 		virtual void OnInitDialog() override;
-		virtual void AdvanceEmulation() override                  { _lynxEmulator->AdvanceEmulation(); }
-		virtual void NotifyAllKeysUp() override                   { _lynxEmulator->NotifyAllKeysUp(); }
-		virtual void NotifyKeyDown( int32_t keyCode ) override    { _lynxEmulator->NotifyKeyDown( keyCode); }
-		virtual void NotifyKeyUp( int32_t keyCode ) override      { _lynxEmulator->NotifyKeyUp( keyCode ); }
+		virtual void AdvanceEmulation() override;
+		virtual void CallMeBackToInvalidateRegions() override;
+		virtual void NotifyAllKeysUp() override;
+		virtual void NotifyKeyDown( int32_t keyCode ) override;
+		virtual void NotifyKeyUp( int32_t keyCode ) override;
 		virtual void OnPaint() override;
 		virtual void OnLoadStateSnapshot() override;
 		virtual void OnSaveStateSnapshot() override;
@@ -75,16 +75,16 @@ namespace Jynx
 
 		// IHostServicesForLynxEmulator:
 		virtual  void  InvalidateAreaOfGuestScreen( int32_t left, int32_t top, int32_t right, int32_t bottom ) override;
-		virtual  void  OpenChipFileStream( std::ifstream &streamToBeOpened, std::ios_base::openmode openModeRequired, LynxRoms::Enum romRequired ) override { _hostView->OpenChipFileStream( streamToBeOpened, openModeRequired, romRequired ); }
+		virtual  void  OpenChipFileStream( std::ifstream &streamToBeOpened, std::ios_base::openmode openModeRequired, LynxRoms::Enum romRequired ) override;
 		virtual  void  NotifyOutputTapeAvailbilityChanged() override;  // Hint: call host CanSaveTAPFile() to discover state at any time.
-		virtual  void  PaintPixelsOnHostBitmapForLynxScreenByte( uint32_t addressOffset, uint32_t lynxRedByte, uint32_t lynxGreenByte, uint32_t lynxBlueByte ) override { _hostView->PaintPixelsOnHostBitmapForLynxScreenByte( addressOffset, lynxRedByte, lynxGreenByte, lynxBlueByte ); }
+		virtual  void  PaintPixelsOnHostBitmapForLynxScreenByte( uint32_t addressOffset, uint32_t lynxRedByte, uint32_t lynxGreenByte, uint32_t lynxBlueByte ) override;
 
 	private:
 
 		friend class EnsureUIUpdated;
 
 		IHostServicesForLynxUserInterfaceModel  *_hostView;
-		ILynxEmulator         *_lynxEmulator;
+		class LynxEmulatorGuest     *_lynxEmulator;
 		LynxMachineType::Enum  _machineType;
 		RenderStyle::Enum      _renderStyle;
 		bool                   _soundEnable;
