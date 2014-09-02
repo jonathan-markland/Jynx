@@ -1376,6 +1376,16 @@ namespace Jynx
 
 	void LynxEmulatorGuest::LoadState( IFileOpener *fileOpener )
 	{
+		// TODO: This function works, but breaks the principle of de-serialising
+		// into a SPARE object, and abandoning that in the case of failure.
+		// From a perspective of inhibiting the emulation thread for as LITTLE time
+		// as possible, we could de-serialise entirely on the calling thread, and
+		// handshake to pass the result in.  The state could then be copied across
+		// which would easily be done in the time.
+
+		// All this said, the "damage" to the user experience of a sound spit
+		// while de-serialising is mimimal as the sound will be reset anyway!
+
 		ThreadHandshake  handshake(this);
 
 		InitialiseLYNX();
@@ -1494,7 +1504,7 @@ namespace Jynx
 
 	void LynxEmulatorGuest::SetTapeSounds( bool tapeSounds )
 	{
-		ThreadHandshake  handshake(this);  // TODO: Make volatile
+		// (Warning: Called on client's thread -- volatile accessing only here).
 		_hearTapeSounds = tapeSounds;
 	}
 
@@ -1503,7 +1513,6 @@ namespace Jynx
 	bool LynxEmulatorGuest::GetTapeSounds() const
 	{
 		// (Warning: Called on client's thread -- volatile accessing only here).
-
 		return _hearTapeSounds;
 	}
 

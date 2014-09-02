@@ -100,7 +100,7 @@ namespace Jynx
 
 	private:
 
-		// This is where thread-safeness trumps the inadequate nature of "private"!
+		// This is where proof of thread-safeness trumps the inadequate nature of "private"!
 		// We want to say that these 5 can call the 5 functions below.
 		friend uint8_t JynxZ80::Z80ImplementationBaseClass::GuestRead( uint16_t address );
 		friend void    JynxZ80::Z80ImplementationBaseClass::GuestWrite( uint16_t address, uint8_t dataByte );
