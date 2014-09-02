@@ -27,11 +27,18 @@ namespace Jynx
 	{
 		enum Enum
 		{
-			At50  =  40000,
-			At100 =  70000,    // 80,000 * 50 timeslices per second = 4.00 Mhz
-			At200 = 160000,
-			At400 = 320000,
-			At800 = 640000,
+			// The following should be 40,000  80,000  160,000  320,000  640,000   resp.
+			// Where: 80,000 * 50 timeslices per second = 4.00 Mhz.
+			// ** HOWEVER ** Switching in the Lynx ROM causes slow-down of about this much.
+			// I ascertained this (by ear!) with a Youtube video of a real Lynx, listening to the power-on BEEP!!
+			// I am trying to determine the correct values for this. 
+			// TODO:  ROM slow-down only occurs with the ROM switched in anyway.  We need the speeds mention above with the ROM switched OUT.
+
+			At50  =  35000,
+			At100 =  70000,    
+			At200 = 140000,
+			At400 = 280000,
+			At800 = 560000,
 		};
 	};
 
