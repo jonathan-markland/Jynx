@@ -734,11 +734,11 @@ namespace libWinApi
 		// Special handling to work around MS-Windows glitches (if enabled)
 		//
 
-		else if( HandleProblemWorkarounds( &e ) )
+		/* else if( HandleProblemWorkarounds( &e ) )
 		{
 			e.Result = 0;
 			return;
-		}
+		} */
 
 		//
 		// Call the original WNDPROC that we sub-classed in WM_INITDIALOG:

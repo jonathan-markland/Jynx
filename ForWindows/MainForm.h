@@ -111,7 +111,7 @@ private:
 
 	HBITMAP                _guestScreenBitmap;
 	MMRESULT               _timeBeginPeriodResult;
-	UINT_PTR               _timerID;
+	MMRESULT               _timeSetEventResult;
 
 	libWinApi::WaveOutputStream  *_waveOutStream;
 	std::vector<uint16_t>         _soundBuffer;

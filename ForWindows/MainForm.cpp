@@ -41,9 +41,9 @@
 //	     Maybe TIMESLICE_PERIOD can really be set to 20 then!
 
 
-#define TIMER_EVENT_ID      1   // WM_TIMER ID for MainForm.
-
 #define TIMESLICE_PERIOD   16   // 16 bizarrely looks like 20 milliseconds (check the cursor flash rate).
+
+#define WM_HI_RES_TIMER (WM_USER + 0x101)
 
 
 
@@ -52,12 +52,30 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 
+volatile HWND  g_hWndToPostMessage = NULL;
+
+void CALLBACK MainFormTimerProcedure(
+	UINT uTimerID,
+	UINT uMsg,
+	DWORD_PTR dwUser,
+	DWORD_PTR dw1,
+	DWORD_PTR dw2)
+{
+	if( g_hWndToPostMessage != NULL )
+	{
+		::PostMessage( g_hWndToPostMessage, WM_HI_RES_TIMER, 0, 0 );
+	}
+}
+
+
+
+
 MainForm::MainForm( HWND hWndOwner )
 	: BaseForm( hWndOwner, MainForm::IDD )
 	, _lynxUIModel( nullptr )
 	, _guestScreenBitmap(NULL)
 	, _timeBeginPeriodResult(0)
-	, _timerID(0)
+	, _timeSetEventResult(0)
 	, _waveOutStream(nullptr)
 {
 	//
@@ -95,6 +113,12 @@ MainForm::MainForm( HWND hWndOwner )
 		MessageBox( *this, L"Windows has not permitted the emulator to use the desired timer frequency.\nThe emulation speed may be affected.", L"Note", MB_OK | MB_ICONINFORMATION );
 	}
 
+	_timeSetEventResult	= timeSetEvent( 20, 20, &MainFormTimerProcedure, (DWORD_PTR) GetHWND(), TIME_PERIODIC | TIME_CALLBACK_FUNCTION | TIME_KILL_SYNCHRONOUS );
+	if( _timeSetEventResult == NULL )
+	{
+		throw std::runtime_error( "Windows cannot create a multimedia timer.  Emulation cannot continue." );
+	}
+
 	//
 	// Create the model (this has the emulator inside, plus UI logic)
 	//
@@ -118,27 +142,30 @@ MainForm::~MainForm()
 		_lynxUIModel = nullptr;
 	}
 
-	if( _waveOutStream != nullptr )
-	{
-		delete _waveOutStream;
-		_waveOutStream = nullptr;
-	}
+	g_hWndToPostMessage = NULL;
 
-	if( _timerID != 0 )
+	if( _timeSetEventResult != NULL )
 	{
-		::KillTimer( *this, TIMER_EVENT_ID );
-		_timerID = 0;
+		timeKillEvent( _timeSetEventResult );
+		_timeSetEventResult = NULL;
 	}
 
 	if( _timeBeginPeriodResult != TIMERR_NOCANDO )
 	{
 		timeEndPeriod(1);
+		_timeBeginPeriodResult = TIMERR_NOCANDO;
 	}
 
 	if( _guestScreenBitmap != NULL )
 	{
 		::DeleteObject(_guestScreenBitmap);
 		_guestScreenBitmap = NULL;
+	}
+
+	if( _waveOutStream != nullptr )
+	{
+		delete _waveOutStream;
+		_waveOutStream = nullptr;
 	}
 }
 
@@ -202,7 +229,7 @@ bool  MainForm::OnInitDialog()
 {
 	SetBigAndSmallIcons( IDR_MAINFRAME );
 
-	_timerID = ::SetTimer( *this, TIMER_EVENT_ID, TIMESLICE_PERIOD, NULL );
+	g_hWndToPostMessage = GetHWND();
 
 	libWinApi::CenterWindowPercent( *this, 85, GetOwner() );
 	_lynxUIModel->OnInitDialog();
@@ -225,23 +252,20 @@ void MainForm::WindowProc( libWinApi::WindowProcArgs &e )
 		uint16_t  menuCommand = 0;
 
 		//
-		// WM_TIMER:  If a timer is being used to time the emulation, advance it now.
+		// WM_HI_RES_TIMER:  If a timer is being used to time the emulation, advance it now.
 		//            (If sound is enabled, the timer is ignored because the sound 
 		//            playback also times the emulation).
 		//
 
-		if( e.message == WM_TIMER )
+		if( e.message == WM_HI_RES_TIMER )
 		{
-			if( e.wParam == TIMER_EVENT_ID )
+			/*if( ! _lynxUIModel->IsSoundEnabled() )
 			{
-				/*if( ! _lynxUIModel->IsSoundEnabled() )
-				{
-					_lynxUIModel->AdvanceEmulation();
-				}*/
-				_lynxUIModel->CallMeBackToInvalidateRegions();
-				e.Result = 0;
-				return;
-			}
+				_lynxUIModel->AdvanceEmulation();
+			}*/
+			_lynxUIModel->CallMeBackToInvalidateRegions();
+			e.Result = 0;
+			return;
 		}
 
 		if( e.IsPaint() )
