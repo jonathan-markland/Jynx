@@ -765,16 +765,22 @@ void MainForm::ThreadSleep( uint32_t milliseconds )
 
 
 
-void MainForm::ThreadWaitForSound()
+void MainForm::WriteSoundBufferToSoundCardOrSleep()
 {
 	// (Called on the Z80 thread, not the MAIN thread)
 	if( _lynxUIModel->IsSoundEnabled() )
 	{
+		// NOTE: The sound card "forces" us back until it's ready.
+		// This gives us a 20ms timer, on which the emulation is synchronised, when sound is ON.
 		_waveOutStream->Write( &(*_soundBuffer.begin()), (int) _soundBuffer.size() * 2 );
 	}
 	else
 	{
-		::Sleep(20);  // Not using sound.
+		// Sound is OFF, so we have to sleep for the 20 milliseconds instead.
+		// The emulation burst processing is usually very small on a modern CPU
+		// so this will suffice.  I don't care so much about realtime accuracy with 
+		// sound OFF.
+		::Sleep(20);
 	}
 }
 

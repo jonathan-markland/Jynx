@@ -20,7 +20,6 @@
 
 #pragma once
 
-#include "ILynxUserInterfaceModel.h"
 #include "IHostServicesForLynxUserInterfaceModel.h"
 #include "IHostServicesForLynxEmulator.h"
 #include "LynxEmulatorGuest.h"
@@ -30,7 +29,6 @@
 namespace Jynx
 {
 	class LynxUserInterfaceModel: 
-		public ILynxUserInterfaceModel, 
 		public IHostServicesForLynxEmulator
 	{
 	public:
@@ -44,43 +42,44 @@ namespace Jynx
 		LynxUserInterfaceModel( IHostServicesForLynxUserInterfaceModel *hostView, uint16_t *soundBuffer, size_t numSamples, const char *platformEndOfLineSequenceUTF8 );
 
 		// ILynxUserInterfaceModel:
-		virtual void OnInitDialog() override;
-		virtual void OnTimer() override;
-		virtual void NotifyAllKeysUp() override;
-		virtual void NotifyKeyDown( int32_t keyCode ) override;
-		virtual void NotifyKeyUp( int32_t keyCode ) override;
-		virtual void OnPaint() override;
-		virtual void OnLoadStateSnapshot() override;
-		virtual void OnSaveStateSnapshot() override;
-		virtual void OnOpenTAPFile() override;
-		virtual void OnNewAudioTape() override;
-		virtual void OnSaveTAPFileAs() override;
-		virtual void OnRewindAudioTape() override;
-		virtual void OnExit() override;
-		virtual void OnEmulation48K() override;
-		virtual void OnEmulation96K() override;
-		virtual void OnSetCycles( LynxZ80Cycles::Enum numCycles ) override;
-		virtual void OnListenToTapeSounds() override;
-		virtual void OnRecordToFile() override;
-		virtual void OnFinishRecording() override;
-		virtual void OnResetEmulation() override;
-		virtual void OnFitToWindow() override;
-		virtual void OnSquarePixels() override;
-		virtual void OnRecordLynxTextToFile() override;
-		virtual void OnFinishRecordingLynxText() override;
-		virtual void OnLynxBasicRemCommandExtensions() override;
-		virtual void OnEnableDisableSound() override;
-		virtual bool IsSoundEnabled() override;
-		virtual void OnTypeInTextFromFile() override;
+		void OnInitDialog();
+		void OnTimer();
+		void NotifyAllKeysUp();
+		void NotifyKeyDown( int32_t keyCode );
+		void NotifyKeyUp( int32_t keyCode );
+		void OnPaint();
+		void OnLoadStateSnapshot();
+		void OnSaveStateSnapshot();
+		void OnOpenTAPFile();
+		void OnNewAudioTape();
+		void OnSaveTAPFileAs();
+		void OnRewindAudioTape();
+		void OnExit();
+		void OnEmulation48K();
+		void OnEmulation96K();
+		void OnSetCycles( LynxZ80Cycles::Enum numCycles );
+		void OnListenToTapeSounds();
+		void OnRecordToFile();
+		void OnFinishRecording();
+		void OnResetEmulation();
+		void OnFitToWindow();
+		void OnSquarePixels();
+		void OnRecordLynxTextToFile();
+		void OnFinishRecordingLynxText();
+		void OnLynxBasicRemCommandExtensions();
+		void OnEnableDisableSound();
+		bool IsSoundEnabled();
+		void OnTypeInTextFromFile();
 
 		// IHostServicesForLynxEmulator:
+		// The emulator object calls back into the Model (on the emulator thread!) using this restricted interface.
 		virtual  void  InvalidateAreaOfGuestScreen( int32_t left, int32_t top, int32_t right, int32_t bottom ) override;
 		virtual  void  OpenChipFileStream( std::ifstream &streamToBeOpened, std::ios_base::openmode openModeRequired, LynxRoms::Enum romRequired ) override;
 		virtual  void  NotifyOutputTapeAvailbilityChanged() override;  // Hint: call host CanSaveTAPFile() to discover state at any time.
 		virtual  void  PaintPixelsOnHostBitmapForLynxScreenByte( uint32_t addressOffset, uint32_t lynxRedByte, uint32_t lynxGreenByte, uint32_t lynxBlueByte ) override;
 		virtual  IHostThread *CreateThread( IHostServicesForLynxEmulatorThreadFunction threadFunction, void *userObject ) override;
 		virtual  void ThreadSleep( uint32_t milliseconds ) override;
-		virtual  void ThreadWaitForSound() override;
+		virtual  void WriteSoundBufferToSoundCardOrSleep() override;
 
 	private:
 

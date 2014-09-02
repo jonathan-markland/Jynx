@@ -92,9 +92,6 @@
     <ClInclude Include="WindowsFileOpener.h">
       <Filter>Source Files\ForWindows</Filter>
     </ClInclude>
-    <ClInclude Include="..\Portable\ILynxUserInterfaceModel.h">
-      <Filter>Source Files\Portable</Filter>
-    </ClInclude>
     <ClInclude Include="..\Portable\IHostServicesForLynxUserInterfaceModel.h">
       <Filter>Source Files\Portable</Filter>
     </ClInclude>

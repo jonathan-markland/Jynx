@@ -1263,7 +1263,7 @@ namespace Jynx
 	{
 		while( _emulationThread->CanKeepRunning() )
 		{
-			_hostObject->ThreadWaitForSound();
+			_hostObject->WriteSoundBufferToSoundCardOrSleep();
 
 			// Execute Z80 code for this timeslice, and accumulate
 			// the precise number of cycles elapsed (which may not

@@ -69,7 +69,7 @@ public:
 	virtual std::shared_ptr<Jynx::IFileOpener>  GetUserSettingsFilePath() override;
 	virtual Jynx::IHostThread *CreateThread( Jynx::IHostServicesForLynxEmulatorThreadFunction threadFunction, void *userObject ) override;
 	virtual void ThreadSleep( uint32_t milliseconds ) override;
-	virtual void ThreadWaitForSound() override;
+	virtual void WriteSoundBufferToSoundCardOrSleep() override;
 
 protected:
 

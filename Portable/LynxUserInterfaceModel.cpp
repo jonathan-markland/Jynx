@@ -599,9 +599,9 @@ namespace Jynx
 
 
 
-	void LynxUserInterfaceModel::ThreadWaitForSound()
+	void LynxUserInterfaceModel::WriteSoundBufferToSoundCardOrSleep()
 	{
-		_hostView->ThreadWaitForSound();
+		_hostView->WriteSoundBufferToSoundCardOrSleep();
 	}
 
 

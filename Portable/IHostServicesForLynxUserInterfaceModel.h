@@ -154,7 +154,7 @@ namespace Jynx
 
 		virtual IHostThread *CreateThread( IHostServicesForLynxEmulatorThreadFunction threadFunction, void *userObject ) = 0;
 		virtual  void ThreadSleep( uint32_t milliseconds ) = 0;
-		virtual  void ThreadWaitForSound() = 0;
+		virtual  void WriteSoundBufferToSoundCardOrSleep() = 0;
 	};
 
 

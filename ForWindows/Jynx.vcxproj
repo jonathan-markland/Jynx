@@ -162,7 +162,6 @@
     <ClInclude Include="..\Portable\IHostServicesForLynxUserInterfaceModel.h" />
     <ClInclude Include="..\Portable\IHostThread.h" />
     <ClInclude Include="..\Portable\ILynxEmulator.h" />
-    <ClInclude Include="..\Portable\ILynxUserInterfaceModel.h" />
     <ClInclude Include="..\Portable\ISerialiser.h" />
     <ClInclude Include="..\Portable\Lexer.h" />
     <ClInclude Include="..\Portable\LynxEmulatorGuest.h" />
