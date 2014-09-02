@@ -23,6 +23,7 @@
 #include "ILynxUserInterfaceModel.h"
 #include "IHostServicesForLynxUserInterfaceModel.h"
 #include "IHostServicesForLynxEmulator.h"
+#include "LynxEmulatorGuest.h"
 #include "UserSettingsSerialiser.h"
 
 
@@ -41,7 +42,6 @@ namespace Jynx
 		// - Multithreading note:  Consider the model to be called on the MAIN thread.
 
 		LynxUserInterfaceModel( IHostServicesForLynxUserInterfaceModel *hostView, uint16_t *soundBuffer, size_t numSamples, const char *platformEndOfLineSequenceUTF8 );
-		~LynxUserInterfaceModel();
 
 		// ILynxUserInterfaceModel:
 		virtual void OnInitDialog() override;
@@ -87,7 +87,7 @@ namespace Jynx
 		friend class EnsureUIUpdated;
 
 		IHostServicesForLynxUserInterfaceModel  *_hostView;
-		ILynxEmulator         *_lynxEmulator;
+		std::unique_ptr<LynxEmulatorGuest>       _lynxEmulator;
 		LynxMachineType::Enum  _machineType;
 		RenderStyle::Enum      _renderStyle;
 		bool                   _soundEnable;

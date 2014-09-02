@@ -18,8 +18,6 @@
 //		jynx_emulator {at} yahoo {dot} com
 // 
 
-
-
 #include "stdafx.h"
 #include <assert.h>
 #include "resource.h"
@@ -31,18 +29,8 @@
 #include "WindowsFileOpener.h"
 
 #include "../Portable/LynxHardware.h"
-#include "../Portable/LynxUserInterfaceModel.h"
-
-// TODO: The emulation runs very well with the emulation "bursts" being processed on the UI thread.  However, Open file dialogs cause interruption
-//       in the sound because of non-timely servicing of the sound.  This little glitch can be fixed by putting the UI on a different thread, or
-//       opening the file dialogs on a different thread even!
-
-// TODO: Shame the WM_TIMER is inaccurate even with timeBeginPeriod(1) -- try the creating a MM timer and posting from that thread.
-//	     Maybe TIMESLICE_PERIOD can really be set to 20 then!
-
 
 #define TIMESLICE_PERIOD   16   // 16 bizarrely looks like 20 milliseconds (check the cursor flash rate).
-
 #define WM_HI_RES_TIMER (WM_USER + 0x101)
 
 
@@ -123,11 +111,11 @@ MainForm::MainForm( HWND hWndOwner )
 	// Create the model (this has the emulator inside, plus UI logic)
 	//
 
-	_lynxUIModel = new Jynx::LynxUserInterfaceModel( 
+	_lynxUIModel = std::unique_ptr<Jynx::LynxUserInterfaceModel>( new Jynx::LynxUserInterfaceModel( 
 		this, 
 		&_soundBuffer.front(), 
 		_soundBuffer.size(), 
-		"\r\n" );  // The preferred end of line sequence on the WINDOWS platform.  (Think: Notepad.exe!)
+		"\r\n" ) );  // The preferred end of line sequence on the WINDOWS platform.  (Think: Notepad.exe!)
 }
 
 
@@ -136,11 +124,7 @@ MainForm::~MainForm()
 {
 	// Must destroy _lynxUIModel FIRST - to clean up threads, before
 	// we destroy what the threads are using!
-	if( _lynxUIModel != nullptr )
-	{
-		delete (Jynx::LynxUserInterfaceModel *) _lynxUIModel;  // TODO: not ideal upcast
-		_lynxUIModel = nullptr;
-	}
+	_lynxUIModel = nullptr;
 
 	g_hWndToPostMessage = NULL;
 

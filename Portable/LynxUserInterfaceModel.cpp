@@ -30,7 +30,6 @@ namespace Jynx
 	LynxUserInterfaceModel::LynxUserInterfaceModel( IHostServicesForLynxUserInterfaceModel *hostView, uint16_t *soundBuffer, size_t numSamples, const char *platformEndOfLineSequenceUTF8 )
 		: _renderStyle( RenderStyle::SquarePixels )
 		, _machineType( LynxMachineType::LYNX_48K )
-		, _lynxEmulator( nullptr )
 		, _hostView( hostView )
 		, _soundEnable( true )
 		, _platformEndOfLineSequenceUTF8(platformEndOfLineSequenceUTF8)
@@ -38,22 +37,8 @@ namespace Jynx
 		JynxZ80::Z80::InitialiseGlobalTables();  // Not absolutely ideal place to put this.
 
 		// Creating the LynxEmulatorGuest will create the Z80 + emulation thread.
-		_lynxEmulator = new LynxEmulatorGuest( this, soundBuffer, numSamples, _machineType, platformEndOfLineSequenceUTF8 );
+		_lynxEmulator = std::unique_ptr<LynxEmulatorGuest>( new LynxEmulatorGuest( this, soundBuffer, numSamples, _machineType, platformEndOfLineSequenceUTF8 ) );
 	}
-
-
-
-	LynxUserInterfaceModel::~LynxUserInterfaceModel()
-	{
-		if( _lynxEmulator != nullptr )
-		{
-			// Deleting signals the Z80 thread to terminate, and awaits its termination.
-			delete (LynxEmulatorGuest *) _lynxEmulator;  // TODO: not ideal upcase, although we know the exact type from the constructor.
-			// Z80 thread terminated.
-			_lynxEmulator = nullptr;
-		}
-	}
-
 
 
 

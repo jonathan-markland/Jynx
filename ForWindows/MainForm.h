@@ -26,7 +26,7 @@
 #include "resource.h"
 #include "libWinApi.h"
 
-#include "../Portable/ILynxUserInterfaceModel.h"
+#include "../Portable/LynxUserInterfaceModel.h"
 #include "../Portable/IHostServicesForLynxUserInterfaceModel.h"
 
 
@@ -106,7 +106,7 @@ private:
 	HANDLE  _hbicon;
 	HANDLE  _hsicon;
 
-	Jynx::ILynxUserInterfaceModel    *_lynxUIModel;  // Reminder - Emulator is within this.
+	std::unique_ptr<Jynx::LynxUserInterfaceModel> _lynxUIModel;  // Reminder - Emulator is within this.
 	libWinApi::FrameBufferInfo        _screenInfo;
 
 	HBITMAP                _guestScreenBitmap;
