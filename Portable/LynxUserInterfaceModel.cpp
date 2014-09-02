@@ -363,14 +363,20 @@ namespace Jynx
 	{
 		// The View calls this because an option has (somehow!) been selected in the UI (menu/button/icon/whatever).
 
-		auto fileOpener = _hostView->ShowSaveFileDialog( SaveableFileTypes::Snapshot );
-		if( fileOpener )
+		if( _lynxEmulator->CanSaveSnapshot() )
 		{
-			EnsureUIUpdated uiUpdater(this); // TODO: Is this really needed or was it a copy-paste error?
-			_lynxEmulator->SaveState( fileOpener.get() );  // throws
+			auto fileOpener = _hostView->ShowSaveFileDialog( SaveableFileTypes::Snapshot );
+			if( fileOpener )
+			{
+				EnsureUIUpdated uiUpdater(this); // TODO: Is this really needed or was it a copy-paste error?
+				_lynxEmulator->SaveState( fileOpener.get() );  // throws
+			}
+		}
+		else
+		{
+			_hostView->TellUser( "Cannot save a snapshot while the tape is in operation!", "Note" );
 		}
 	}
-
 
 
 	void LynxUserInterfaceModel::OnListenToTapeSounds()

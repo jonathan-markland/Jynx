@@ -947,7 +947,6 @@ namespace Jynx
 
 		serialiser.Field( "version",         version );
 		// TODO:  Check version
-		// TODO:  Renames
 		assert( version == 1 );
 
 		serialiser.Field( "machine",         machine );
@@ -1107,7 +1106,7 @@ namespace Jynx
 
 				if( _textPlayer.HasText() )
 				{
-					auto cpuRegisters = _processor.GetSerialisableVariables(); // take copy TODO: efficiency?
+					auto cpuRegisters = _processor.GetSerialisableVariables(); // take copy
 	
 					auto nextChar = _textPlayer.ReadChar();
 					if( nextChar != 0 )
@@ -1362,10 +1361,14 @@ namespace Jynx
 
 	void LynxEmulatorGuest::SaveState( IFileOpener *fileOpener )
 	{
-		// TODO:  Guest needs to tell host if it can't serialise right now -- eg: when the cassette motor is ON.
-		OutputFileSerialiser  outputSerialiser( fileOpener, _platformEndOfLineSequenceUTF8 );
+		ThreadHandshake  handshake(this);
 
-		ThreadHandshake  handshake(this);  // The guest thread can open the file before we handshake.
+		if( _devicePort & DEVICEPORT_CASSETTE_MOTOR )
+		{
+			throw std::runtime_error( "Cannot save a snapshot while the cassette is in operation." );
+		}
+
+		OutputFileSerialiser  outputSerialiser( fileOpener, _platformEndOfLineSequenceUTF8 );
 		Serialise( outputSerialiser );
 	}
 
@@ -1477,6 +1480,14 @@ namespace Jynx
 	{
 		ThreadHandshake  handshake(const_cast<LynxEmulatorGuest *>(this));  // TODO: Make volatile
 		return _currentWriteTape->IsModified();
+	}
+
+
+
+	bool LynxEmulatorGuest::CanSaveSnapshot() const
+	{
+		ThreadHandshake  handshake(const_cast<LynxEmulatorGuest *>(this));  // TODO: Make volatile
+		return (_devicePort & DEVICEPORT_CASSETTE_MOTOR) ? false : true;
 	}
 
 

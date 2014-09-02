@@ -99,6 +99,14 @@ namespace Jynx
 			// Host asks emulator whether the virtual "destination" cassette has been written
 			// and is unsaved.
 
+		virtual bool CanSaveSnapshot() const = 0;
+			// Asks the emulator whether it is possible to save a state snapshot.
+			// In practice, this depends on whether the Lynx has the cassette motor ON.
+			// When the Lynx uses the tape, no snapshots can be saved because the cassette
+			// state is NOT part of the serialisation.
+			// There is theoretically a race condition on the return value, but since the
+			// user instigates tape saves/loads on the Lynx, its impossible to happen.
+
 		virtual void LoadExistingTAPFile( IFileOpener *fileOpener ) = 0;
 			// Host uses this to ask emulator to allow the Lynx to load from a TAP file.
 
@@ -148,6 +156,7 @@ namespace Jynx
 			// The host can pass a file to the emulator to be "typed in" at the Lynx
 			// prompt.  The emulator spies on the ROM key read routine and substitutes
 			// the character stream from the file.
+
 	};
 
 

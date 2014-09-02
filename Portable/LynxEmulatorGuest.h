@@ -82,6 +82,7 @@ namespace Jynx
 		virtual bool CanSaveTAPFile() const override;
 		virtual void SaveTape( IFileOpener *fileOpener ) override;
 		virtual bool IsTapeModified() const override;
+		virtual bool CanSaveSnapshot() const override;
 		virtual void SetTapeSounds( bool tapeSounds ) override;
 		virtual bool GetTapeSounds() const override;
 		virtual void RecordSoundToFile( IFileOpener *fileOpener ) override;
@@ -178,8 +179,7 @@ namespace Jynx
 		// Host platform's preferred UTF8 end of line sequence:
 		const std::string  _platformEndOfLineSequenceUTF8;
 
-		// Tape sound monitoring (ie: wire to speakers)
-		volatile bool     _hearTapeSounds;
+		volatile bool     _hearTapeSounds;    // Tape sound monitoring (ie: wire to speakers)
 
 		// Lynx text recording (snooping) on host:
 		TextRecorder         _textRecorder;
