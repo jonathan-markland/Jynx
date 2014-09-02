@@ -58,7 +58,7 @@ namespace Jynx
 		_guestObjectToLockAndUnlock->_hostObject->ThreadSleep(1);
 		while( _guestObjectToLockAndUnlock->_callWaitingAcknowledge == false )
 		{
-			_guestObjectToLockAndUnlock->_hostObject->ThreadSleep(100);
+			// _guestObjectToLockAndUnlock->_hostObject->ThreadSleep(100);
 		}
 		// Z80 thread is now suspended, waiting for actions in our destructor.
 	}
@@ -1304,7 +1304,7 @@ namespace Jynx
 				_callWaitingAcknowledge = true;
 				while( _callWaitingAcknowledge == true )
 				{
-					_hostObject->ThreadSleep(5);
+					// _hostObject->ThreadSleep(5);
 				}
 			}
 		}
