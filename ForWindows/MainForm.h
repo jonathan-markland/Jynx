@@ -72,6 +72,7 @@ public:
 
 protected:
 
+	// Menu option handlers:
 	void OnPaint( HDC dc );
 	void OnLoadStateSnapshot();
 	void OnSaveStateSnapshot();
