@@ -532,9 +532,9 @@ namespace Jynx
 
 		LynxRectangle  scaledRect;
 		scaledRect.left   = left   + projectionRectangle.left;
-		scaledRect.right  = right  + projectionRectangle.left;
+		scaledRect.right  = right  + projectionRectangle.left + 1;
 		scaledRect.top    = top    + projectionRectangle.top;
-		scaledRect.bottom = bottom + projectionRectangle.top;
+		scaledRect.bottom = bottom + projectionRectangle.top + 1;
 
 		_hostView->InvalidateAreaOfHostScreen( scaledRect );
 	}
