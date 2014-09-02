@@ -27,7 +27,7 @@
 
 namespace Jynx
 {
-	LynxUserInterfaceModel::LynxUserInterfaceModel( IHostServicesForLynxUserInterfaceModel *hostView, uint16_t *soundBuffer, size_t numSamples, const char *platformEndOfLineSequenceUTF8 )
+	LynxUserInterfaceModel::LynxUserInterfaceModel( IViewServicesForLynxUserInterfaceModel *hostView, uint16_t *soundBuffer, size_t numSamples, const char *platformEndOfLineSequenceUTF8 )
 		: _renderStyle( RenderStyle::SquarePixels )
 		, _machineType( LynxMachineType::LYNX_48K )
 		, _hostView( hostView )

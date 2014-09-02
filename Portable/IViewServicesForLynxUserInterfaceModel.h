@@ -80,7 +80,7 @@ namespace Jynx
 
 
 
-	class IHostServicesForLynxUserInterfaceModel
+	class IViewServicesForLynxUserInterfaceModel
 	{
 	public:
 

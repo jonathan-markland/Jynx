@@ -159,7 +159,7 @@
     <ClInclude Include="..\Portable\IBinarySerialiser.h" />
     <ClInclude Include="..\Portable\IFileOpener.h" />
     <ClInclude Include="..\Portable\IHostServicesForLynxEmulator.h" />
-    <ClInclude Include="..\Portable\IHostServicesForLynxUserInterfaceModel.h" />
+    <ClInclude Include="..\Portable\IViewServicesForLynxUserInterfaceModel.h" />
     <ClInclude Include="..\Portable\IHostThread.h" />
     <ClInclude Include="..\Portable\ISerialiser.h" />
     <ClInclude Include="..\Portable\Lexer.h" />

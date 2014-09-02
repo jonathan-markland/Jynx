@@ -27,7 +27,7 @@
 #include "libWinApi.h"
 
 #include "../Portable/LynxUserInterfaceModel.h"
-#include "../Portable/IHostServicesForLynxUserInterfaceModel.h"
+#include "../Portable/IViewServicesForLynxUserInterfaceModel.h"
 
 
 
@@ -37,8 +37,7 @@
 //     MAIN FORM
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
-class MainForm: public libWinApi::BaseForm
-	, public Jynx::IHostServicesForLynxUserInterfaceModel
+class MainForm: public libWinApi::BaseForm, public Jynx::IViewServicesForLynxUserInterfaceModel
 {
 public:
 

@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include "IHostServicesForLynxUserInterfaceModel.h"
+#include "IViewServicesForLynxUserInterfaceModel.h"
 #include "IHostServicesForLynxEmulator.h"
 #include "LynxEmulatorGuest.h"
 #include "UserSettingsSerialiser.h"
@@ -39,7 +39,7 @@ namespace Jynx
 		//   and create the LynxEmulatorGuest yourself.
 		// - Multithreading note:  Consider the model to be called on the MAIN thread.
 
-		LynxUserInterfaceModel( IHostServicesForLynxUserInterfaceModel *hostView, uint16_t *soundBuffer, size_t numSamples, const char *platformEndOfLineSequenceUTF8 );
+		LynxUserInterfaceModel( IViewServicesForLynxUserInterfaceModel *hostView, uint16_t *soundBuffer, size_t numSamples, const char *platformEndOfLineSequenceUTF8 );
 
 		// ILynxUserInterfaceModel:
 		void OnInitDialog();
@@ -85,7 +85,7 @@ namespace Jynx
 
 		friend class EnsureUIUpdated;
 
-		IHostServicesForLynxUserInterfaceModel  *_hostView;
+		IViewServicesForLynxUserInterfaceModel  *_hostView;
 		std::unique_ptr<LynxEmulatorGuest>       _lynxEmulator;
 		LynxMachineType::Enum  _machineType;
 		RenderStyle::Enum      _renderStyle;
