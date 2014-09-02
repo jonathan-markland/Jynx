@@ -1,8 +1,10 @@
 
 #pragma once
 
+#include <stdint.h>
 #include "IFileOpener.h"
-#include "ILynxEmulator.h" // TODO:  only really need an enum
+#include "ISerialiser.h"
+#include "LynxEmulatorEnums.h"
 
 
 namespace Jynx

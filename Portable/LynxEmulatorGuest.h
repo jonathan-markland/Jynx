@@ -21,11 +21,11 @@
 #pragma once
 
 #include <memory>
-#include "ILynxEmulator.h"
 #include "IHostServicesForLynxEmulator.h"
 #include "ISerialiser.h"
 #include "Z80\JynxZ80.h"
 #include "LynxHardware.h"
+#include "LynxEmulatorEnums.h"
 #include "SoundBufferWriter.h"
 #include "SoundRecorder.h"
 #include "TextRecorder.h"
@@ -35,19 +35,7 @@
 
 namespace Jynx
 {
-	namespace LynxTapeMode
-	{
-		enum Enum
-		{
-			SavingPermitted, LoadingPermitted
-		};
-	}
-
-
-
-
-
-	class LynxEmulatorGuest: public ILynxEmulator, public ITapeSpeedSupplier
+	class LynxEmulatorGuest: public ITapeSpeedSupplier
 	{
 	public:
 
@@ -66,34 +54,34 @@ namespace Jynx
 
 		// ILynxEmulator interface called by the client, on the MAIN thread.
 		// (These functions are threadsafe).
-		virtual void CallMeBackToInvalidateRegions() override;
-		virtual void NotifyKeyDown( int32_t guestKeyCode ) override;
-		virtual void NotifyKeyUp( int32_t guestKeyCode ) override;
-		virtual void NotifyAllKeysUp() override;
-		virtual void SaveState( IFileOpener *fileOpener ) override;
-		virtual void LoadState( IFileOpener *fileOpener ) override;
-		virtual void ResetGuest( LynxMachineType::Enum machineType ) override;
-		virtual uint32_t GetCyclesPerTimeslice() const override;
-		virtual void SetCyclesPerTimeslice( uint32_t numCycles ) override;
-		virtual void InsertBlankTape() override;
-		virtual bool CanRewindTape() const override;
-		virtual void RewindTape() override;
-		virtual void LoadExistingTAPFile( IFileOpener *fileOpener ) override;
-		virtual bool CanSaveTAPFile() const override;
-		virtual void SaveTape( IFileOpener *fileOpener ) override;
-		virtual bool IsTapeModified() const override;
-		virtual bool CanSaveSnapshot() const override;
-		virtual void SetTapeSounds( bool tapeSounds ) override;
-		virtual bool GetTapeSounds() const override;
-		virtual void RecordSoundToFile( IFileOpener *fileOpener ) override;
-		virtual void FinishRecordingSoundToFile() override;
-		virtual bool IsRecordingSoundToFile() const override;
-		virtual void RecordLynxTextToFile( IFileOpener *fileOpener ) override;
-		virtual void FinishRecordingLynxTextToFile() override;
-		virtual bool IsRecordingLynxTextToFile() const override;
-		virtual bool GetLynxRemCommandExtensionsEnabled() const override;
-		virtual void SetLynxRemCommandExtensionsEnabled( bool enable ) override;
-		virtual void TypeInTextFromFile( IFileOpener *fileOpener ) override;
+		void CallMeBackToInvalidateRegions();
+		void NotifyKeyDown( int32_t guestKeyCode );
+		void NotifyKeyUp( int32_t guestKeyCode );
+		void NotifyAllKeysUp();
+		void SaveState( IFileOpener *fileOpener );
+		void LoadState( IFileOpener *fileOpener );
+		void ResetGuest( LynxMachineType::Enum machineType );
+		uint32_t GetCyclesPerTimeslice() const;
+		void SetCyclesPerTimeslice( uint32_t numCycles );
+		void InsertBlankTape();
+		bool CanRewindTape() const;
+		void RewindTape();
+		void LoadExistingTAPFile( IFileOpener *fileOpener );
+		bool CanSaveTAPFile() const;
+		void SaveTape( IFileOpener *fileOpener );
+		bool IsTapeModified() const;
+		bool CanSaveSnapshot() const;
+		void SetTapeSounds( bool tapeSounds );
+		bool GetTapeSounds() const;
+		void RecordSoundToFile( IFileOpener *fileOpener );
+		void FinishRecordingSoundToFile();
+		bool IsRecordingSoundToFile() const;
+		void RecordLynxTextToFile( IFileOpener *fileOpener );
+		void FinishRecordingLynxTextToFile();
+		bool IsRecordingLynxTextToFile() const;
+		bool GetLynxRemCommandExtensionsEnabled() const;
+		void SetLynxRemCommandExtensionsEnabled( bool enable );
+		void TypeInTextFromFile( IFileOpener *fileOpener );
 
 		// Implementing ITapeSpeedSupplier
 		virtual uint32_t  GetLynxTapeSpeedBitsPerSecond() override;
