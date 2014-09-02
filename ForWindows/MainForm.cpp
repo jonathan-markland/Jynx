@@ -421,20 +421,7 @@ void MainForm::OnAbout()
 
 void MainForm::OnSound()
 {
-	auto hMenu = ::GetMenu( *this );
-	if( hMenu )
-	{
-		auto state = ::GetMenuState( hMenu, ID_SOUND_ENABLE, MF_BYCOMMAND );
-
-		_lynxUIModel->OnEnableDisableSound(); // do in-between
-
-		if( state != MF_CHECKED )
-		{
-			// Sound is being turned ON.
-			// PostMessage( *this, WM_ADVANCE_EMULATION, 0, 0 );
-			// TODO: What?
-		}
-	}
+	_lynxUIModel->OnEnableDisableSound();
 }
 
 
