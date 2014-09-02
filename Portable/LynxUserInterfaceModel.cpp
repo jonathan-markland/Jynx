@@ -33,6 +33,7 @@ namespace Jynx
 		, _hostView( hostView )
 		, _soundEnable( true )
 		, _platformEndOfLineSequenceUTF8(platformEndOfLineSequenceUTF8)
+		, _emulatorWantsUIStatusUpdate(false)
 	{
 		JynxZ80::Z80::InitialiseGlobalTables();  // Not absolutely ideal place to put this.
 
@@ -132,10 +133,17 @@ namespace Jynx
 
 
 
-	void LynxUserInterfaceModel::CallMeBackToInvalidateRegions()
+	void LynxUserInterfaceModel::OnTimer()
 	{
-		// Just delegate this call:
+		// (Called on the main thread)
+
 		_lynxEmulator->CallMeBackToInvalidateRegions();
+
+		if( _emulatorWantsUIStatusUpdate )
+		{
+			_emulatorWantsUIStatusUpdate = false;
+			UpdateUserInterfaceElementsOnView();
+		}
 	}
 
 
@@ -555,8 +563,10 @@ namespace Jynx
 	{ 
 		// (WARNING - Called on the Z80 thread, NOT the main thread)
 
-		// TODO: Sort this out
-		// This cannot be done on the Z80 thread:  UpdateUserInterfaceElementsOnView();
+		// Reminder:  This cannot be done on the Z80 thread:  UpdateUserInterfaceElementsOnView();
+		// So we have a mechanism to defer the UI refresh until the UI thread calls OnTimer().
+		// We can afford to defer updating the menu grey-out status until then!
+		_emulatorWantsUIStatusUpdate = true;
 	}
 
 

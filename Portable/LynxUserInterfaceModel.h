@@ -45,7 +45,7 @@ namespace Jynx
 
 		// ILynxUserInterfaceModel:
 		virtual void OnInitDialog() override;
-		virtual void CallMeBackToInvalidateRegions() override;
+		virtual void OnTimer() override;
 		virtual void NotifyAllKeysUp() override;
 		virtual void NotifyKeyDown( int32_t keyCode ) override;
 		virtual void NotifyKeyUp( int32_t keyCode ) override;
@@ -91,6 +91,7 @@ namespace Jynx
 		LynxMachineType::Enum  _machineType;
 		RenderStyle::Enum      _renderStyle;
 		bool                   _soundEnable;
+		volatile bool          _emulatorWantsUIStatusUpdate;
 
 		// Host platform's preferred UTF8 end of line sequence:
 		const std::string  _platformEndOfLineSequenceUTF8;

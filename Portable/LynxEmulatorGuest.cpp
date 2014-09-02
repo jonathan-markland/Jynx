@@ -540,7 +540,7 @@ namespace Jynx
 		// Called on MAIN thread.  (NOT Z80 thread!)
 		// Volatile variable access to _invalidateRow[] -- no sync needed.
 
-		for( uint32_t i=0; i<INV_ROWS; ++i )
+		for( uint32_t i=0; i < INV_ROWS; ++i )
 		{
 			if( _invalidateRow[i] == true )
 			{

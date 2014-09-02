@@ -236,18 +236,13 @@ void MainForm::WindowProc( libWinApi::WindowProcArgs &e )
 		uint16_t  menuCommand = 0;
 
 		//
-		// WM_HI_RES_TIMER:  If a timer is being used to time the emulation, advance it now.
-		//            (If sound is enabled, the timer is ignored because the sound 
-		//            playback also times the emulation).
+		// WM_HI_RES_TIMER:  
+		// Periodic timer for the model to perform tasks.
 		//
 
 		if( e.message == WM_HI_RES_TIMER )
 		{
-			/*if( ! _lynxUIModel->IsSoundEnabled() )
-			{
-				_lynxUIModel->AdvanceEmulation();
-			}*/
-			_lynxUIModel->CallMeBackToInvalidateRegions();
+			_lynxUIModel->OnTimer();
 			e.Result = 0;
 			return;
 		}
