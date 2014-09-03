@@ -102,7 +102,7 @@ namespace Jynx
 				++currentPosition;
 			}
 
-			_currentRecordingPos = offsetInSamples;   // remmeber for next time.
+			_currentRecordingPos = offsetInSamples;   // rememeber for next time.
 		}
 	}
 
