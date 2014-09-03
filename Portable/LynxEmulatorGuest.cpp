@@ -30,7 +30,7 @@
 
 namespace Jynx
 {
-	class ThreadHandshake
+	class EmulatorThreadInhibitor
 	{
 	public:
 
@@ -38,8 +38,8 @@ namespace Jynx
 		// the LynxEmulatorGuest from its client.  Used where we
 		// can't do a "volatile variables no locking" solution.
 
-		explicit ThreadHandshake::ThreadHandshake( LynxEmulatorGuest *guestObjectToLockAndUnlock );
-		~ThreadHandshake();
+		explicit EmulatorThreadInhibitor::EmulatorThreadInhibitor( LynxEmulatorGuest *guestObjectToLockAndUnlock );
+		~EmulatorThreadInhibitor();
 
 	private:
 
@@ -49,7 +49,7 @@ namespace Jynx
 
 
 
-	ThreadHandshake::ThreadHandshake( LynxEmulatorGuest *guestObjectToLockAndUnlock ) 
+	EmulatorThreadInhibitor::EmulatorThreadInhibitor( LynxEmulatorGuest *guestObjectToLockAndUnlock ) 
 		: _guestObjectToLockAndUnlock(guestObjectToLockAndUnlock) 
 	{
 		// Constructor called on MAIN thread.
@@ -65,7 +65,7 @@ namespace Jynx
 
 
 
-	ThreadHandshake::~ThreadHandshake() 
+	EmulatorThreadInhibitor::~EmulatorThreadInhibitor() 
 	{
 		// Destructor called on MAIN thread.
 		// Z80 thread is currently blocked on '_callWaitingAcknowledge' going 'false'.
@@ -1322,7 +1322,7 @@ namespace Jynx
 		if( guestKeyCode == 1 )
 		{
 			// The ESC key cancels the _textPlayer.
-			ThreadHandshake  handshake(this);   // (Warning: This function is called on the client's thread).
+			EmulatorThreadInhibitor  handshake(this);   // (Warning: This function is called on the client's thread).
 			_textPlayer.Reset();
 		}
 
@@ -1361,7 +1361,7 @@ namespace Jynx
 
 	void LynxEmulatorGuest::SaveState( IFileOpener *fileOpener )
 	{
-		ThreadHandshake  handshake(this);
+		EmulatorThreadInhibitor  handshake(this);
 
 		if( _devicePort & DEVICEPORT_CASSETTE_MOTOR )
 		{
@@ -1386,7 +1386,7 @@ namespace Jynx
 		// All this said, the "damage" to the user experience of a sound spit
 		// while de-serialising is mimimal as the sound will be reset anyway!
 
-		ThreadHandshake  handshake(this);
+		EmulatorThreadInhibitor  handshake(this);
 
 		InitialiseLYNX();
 
@@ -1411,7 +1411,7 @@ namespace Jynx
 
 	void LynxEmulatorGuest::ResetGuest( LynxMachineType::Enum machineType )
 	{
-		ThreadHandshake  handshake(this);
+		EmulatorThreadInhibitor  handshake(this);
 		_machineType = machineType;
 		InitialiseLYNX();
 	}
@@ -1420,7 +1420,7 @@ namespace Jynx
 
 	uint32_t LynxEmulatorGuest::GetCyclesPerTimeslice() const
 	{
-		ThreadHandshake  handshake(const_cast<LynxEmulatorGuest *>(this));  // TODO: elminate by having a copy of the state, NOT by changing the Z80!
+		EmulatorThreadInhibitor  handshake(const_cast<LynxEmulatorGuest *>(this));  // TODO: elminate by having a copy of the state, NOT by changing the Z80!
 		return _processor.GetTimesliceLength();
 	}
 
@@ -1428,7 +1428,7 @@ namespace Jynx
 
 	void LynxEmulatorGuest::SetCyclesPerTimeslice( uint32_t numCycles )
 	{
-		ThreadHandshake  handshake(this);
+		EmulatorThreadInhibitor  handshake(this);
 		_processor.SetTimesliceLength( numCycles );
 	}
 
@@ -1436,7 +1436,7 @@ namespace Jynx
 
 	void LynxEmulatorGuest::InsertBlankTape()
 	{
-		ThreadHandshake  handshake(this);
+		EmulatorThreadInhibitor  handshake(this);
 		_tapeMode = LynxTapeMode::SavingPermitted;
 		_currentWriteTape = std::make_shared<TapFileWriter>();
 	}
@@ -1445,7 +1445,7 @@ namespace Jynx
 
 	bool LynxEmulatorGuest::CanRewindTape() const
 	{
-		ThreadHandshake  handshake(const_cast<LynxEmulatorGuest *>(this)); // TODO: ideally allow volatile querying
+		EmulatorThreadInhibitor  handshake(const_cast<LynxEmulatorGuest *>(this)); // TODO: ideally allow volatile querying
 		// (Cannot rewind tape in SAVE mode, because that's meant for building a new tape!).
 		return (_tapeMode == LynxTapeMode::LoadingPermitted);
 	}
@@ -1454,7 +1454,7 @@ namespace Jynx
 
 	void LynxEmulatorGuest::RewindTape()
 	{
-		ThreadHandshake  handshake(this);
+		EmulatorThreadInhibitor  handshake(this);
 		_currentReadTape->RewindPlaybackPosition();
 	}
 
@@ -1462,7 +1462,7 @@ namespace Jynx
 
 	void LynxEmulatorGuest::LoadExistingTAPFile( IFileOpener *fileOpener )
 	{
-		ThreadHandshake  handshake(this);
+		EmulatorThreadInhibitor  handshake(this);
 		auto newTape = std::make_shared<TapFileReader>( fileOpener, this );  // throws
 		_tapeMode = LynxTapeMode::LoadingPermitted;
 		_currentReadTape = newTape;
@@ -1472,7 +1472,7 @@ namespace Jynx
 
 	bool LynxEmulatorGuest::CanSaveTAPFile() const
 	{
-		ThreadHandshake  handshake(const_cast<LynxEmulatorGuest *>(this));  // TODO: Make volatile
+		EmulatorThreadInhibitor  handshake(const_cast<LynxEmulatorGuest *>(this));  // TODO: Make volatile
 		return _currentWriteTape->IsModified();
 	}
 
@@ -1480,7 +1480,7 @@ namespace Jynx
 
 	void LynxEmulatorGuest::SaveTape( IFileOpener *fileOpener )
 	{
-		ThreadHandshake  handshake(this);
+		EmulatorThreadInhibitor  handshake(this);
 		_currentWriteTape->SaveToFile( fileOpener );
 	}
 
@@ -1488,7 +1488,7 @@ namespace Jynx
 
 	bool LynxEmulatorGuest::IsTapeModified() const
 	{
-		ThreadHandshake  handshake(const_cast<LynxEmulatorGuest *>(this));  // TODO: Make volatile
+		EmulatorThreadInhibitor  handshake(const_cast<LynxEmulatorGuest *>(this));  // TODO: Make volatile
 		return _currentWriteTape->IsModified();
 	}
 
@@ -1496,7 +1496,7 @@ namespace Jynx
 
 	bool LynxEmulatorGuest::CanSaveSnapshot() const
 	{
-		ThreadHandshake  handshake(const_cast<LynxEmulatorGuest *>(this));  // TODO: Make volatile
+		EmulatorThreadInhibitor  handshake(const_cast<LynxEmulatorGuest *>(this));  // TODO: Make volatile
 		return (_devicePort & DEVICEPORT_CASSETTE_MOTOR) ? false : true;
 	}
 
@@ -1520,7 +1520,7 @@ namespace Jynx
 
 	void LynxEmulatorGuest::RecordSoundToFile( IFileOpener *fileOpener )
 	{
-		ThreadHandshake  handshake(this);
+		EmulatorThreadInhibitor  handshake(this);
 		FinishRecordingSoundToFile(); // in case already writing a sound file!
 		_soundRecorder.StartNewFile( fileOpener );
 	}
@@ -1529,7 +1529,7 @@ namespace Jynx
 
 	void LynxEmulatorGuest::FinishRecordingSoundToFile()
 	{
-		ThreadHandshake  handshake(this);
+		EmulatorThreadInhibitor  handshake(this);
 		if( _soundRecorder.IsOpen() )
 		{
 			_soundRecorder.Close();
@@ -1540,7 +1540,7 @@ namespace Jynx
 
 	bool LynxEmulatorGuest::IsRecordingSoundToFile() const
 	{
-		ThreadHandshake  handshake(const_cast<LynxEmulatorGuest *>(this));  // TODO: Make volatile?
+		EmulatorThreadInhibitor  handshake(const_cast<LynxEmulatorGuest *>(this));  // TODO: Make volatile?
 		return _soundRecorder.IsOpen();
 	}
 
@@ -1548,7 +1548,7 @@ namespace Jynx
 
 	void LynxEmulatorGuest::RecordLynxTextToFile( IFileOpener *fileOpener )
 	{
-		ThreadHandshake  handshake(this);
+		EmulatorThreadInhibitor  handshake(this);
 		FinishRecordingLynxTextToFile(); // in case already writing a sound file!
 		_textRecorder.StartNewFile( fileOpener, _platformEndOfLineSequenceUTF8 );
 		_inhibitTextRecorder = true; // until the next CR
@@ -1558,7 +1558,7 @@ namespace Jynx
 
 	void LynxEmulatorGuest::FinishRecordingLynxTextToFile()
 	{
-		ThreadHandshake  handshake(this);  // TODO: Make volatile?
+		EmulatorThreadInhibitor  handshake(this);  // TODO: Make volatile?
 		if( _textRecorder.IsOpen() )
 		{
 			_textRecorder.Close();
@@ -1569,7 +1569,7 @@ namespace Jynx
 
 	bool LynxEmulatorGuest::IsRecordingLynxTextToFile() const
 	{
-		ThreadHandshake  handshake(const_cast<LynxEmulatorGuest *>(this));  // TODO: Make volatile?
+		EmulatorThreadInhibitor  handshake(const_cast<LynxEmulatorGuest *>(this));  // TODO: Make volatile?
 		return _textRecorder.IsOpen();
 	}
 
@@ -1590,7 +1590,7 @@ namespace Jynx
 		auto loadedText = (const char *) &fileImage.front();
 
 		// Synchronize from now on because we need member variable access with _textPlayer.SetText():
-		ThreadHandshake  handshake(this);
+		EmulatorThreadInhibitor  handshake(this);
 
 		// Look for (optional) UTF-8 BOM, because we don't want to misinterpret that
 		// as characters!
