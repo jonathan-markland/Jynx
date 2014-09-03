@@ -34,11 +34,23 @@ namespace Jynx
 	{
 	public:
 
-		// This is the synchronisation mechanism for calls into
-		// the LynxEmulatorGuest from its client.  Used where we
-		// can't do a "volatile variables no locking" solution.
-
-		explicit EmulatorThreadInhibitor::EmulatorThreadInhibitor( LynxEmulatorGuest *guestObjectToLockAndUnlock );
+		// This is a thread synchronisation mechanism used when the MAIN thread
+		// calls the public interface functions of LynxEmulatorGuest.
+		//
+		// It blocks the MAIN thread until the EMULATOR thread finishes its current
+		// burst of processing.  The EMULATOR thread then blocks and releases the
+		// MAIN thread.  The MAIN thread is then free to use the member variables
+		// of the LynxEmulatorGuest class, theoretically for as long as it wants.
+		//
+		// - However don't take too long or the sound will break up!
+		//
+		// The destructor releases the EMULATOR thread, and revokes the MAIN thread's
+		// right to access the member variables of LynxEmulatorGuest.
+		//
+		// - This object must be allocated on the stack.
+		// - Sometimes volatile variables are used instead of this.
+		
+		explicit EmulatorThreadInhibitor( LynxEmulatorGuest * );
 		~EmulatorThreadInhibitor();
 
 	private:
@@ -52,7 +64,7 @@ namespace Jynx
 	EmulatorThreadInhibitor::EmulatorThreadInhibitor( LynxEmulatorGuest *guestObjectToLockAndUnlock ) 
 		: _guestObjectToLockAndUnlock(guestObjectToLockAndUnlock) 
 	{
-		// Constructor called on MAIN thread.
+		// (Constructor called on MAIN thread).
 		_guestObjectToLockAndUnlock->_callWaitingAcknowledge = false;
 		_guestObjectToLockAndUnlock->_callWaiting = true;
 		_guestObjectToLockAndUnlock->_hostObject->ThreadSleep(1);
@@ -60,15 +72,15 @@ namespace Jynx
 		{
 			// _guestObjectToLockAndUnlock->_hostObject->ThreadSleep(100);
 		}
-		// Z80 thread is now suspended, waiting for actions in our destructor.
+		// EMULATOR thread is now suspended, waiting for actions in our destructor.
 	}
 
 
 
 	EmulatorThreadInhibitor::~EmulatorThreadInhibitor() 
 	{
-		// Destructor called on MAIN thread.
-		// Z80 thread is currently blocked on '_callWaitingAcknowledge' going 'false'.
+		// (Destructor called on MAIN thread).
+		// EMULATOR thread is currently blocked on '_callWaitingAcknowledge' going 'false'.
 		_guestObjectToLockAndUnlock->_callWaiting = false; // but SET THIS FIRST!
 		_guestObjectToLockAndUnlock->_callWaitingAcknowledge = false; // Set this SECOND!
 	}

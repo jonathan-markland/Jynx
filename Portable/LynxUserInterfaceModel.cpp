@@ -37,7 +37,7 @@ namespace Jynx
 	{
 		JynxZ80::Z80::InitialiseGlobalTables();  // Not absolutely ideal place to put this.
 
-		// Creating the LynxEmulatorGuest will create the Z80 + emulation thread.
+		// Reminder - Creating the LynxEmulatorGuest will create the EMULATOR thread.
 		_lynxEmulator = std::unique_ptr<LynxEmulatorGuest>( new LynxEmulatorGuest( this, soundBuffer, numSamples, _machineType, platformEndOfLineSequenceUTF8 ) );
 	}
 
@@ -135,7 +135,7 @@ namespace Jynx
 
 	void LynxUserInterfaceModel::OnTimer()
 	{
-		// (Called on the main thread)
+		// (Called on the MAIN thread)
 
 		_lynxEmulator->CallMeBackToInvalidateRegions();
 
@@ -563,7 +563,8 @@ namespace Jynx
 	{ 
 		// (WARNING - Called on the EMULATOR thread, NOT the MAIN thread)
 
-		// Reminder:  This cannot be done on the Z80 thread:  UpdateUserInterfaceElementsOnView();
+		// - Reminder:  This cannot be done on the EMULATOR thread:  UpdateUserInterfaceElementsOnView();
+
 		// So we have a mechanism to defer the UI refresh until the UI thread calls OnTimer().
 		// We can afford to defer updating the menu grey-out status until then!
 		_emulatorWantsUIStatusUpdate = true;
