@@ -77,9 +77,6 @@
     <ClInclude Include="Resource.h">
       <Filter>Source Files\ForWindows</Filter>
     </ClInclude>
-    <ClInclude Include="SoundThread.h">
-      <Filter>Source Files\ForWindows</Filter>
-    </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>Source Files\ForWindows</Filter>
     </ClInclude>
@@ -185,9 +182,6 @@
       <Filter>Source Files\ForWindows</Filter>
     </ClCompile>
     <ClCompile Include="Program.cpp">
-      <Filter>Source Files\ForWindows</Filter>
-    </ClCompile>
-    <ClCompile Include="SoundThread.cpp">
       <Filter>Source Files\ForWindows</Filter>
     </ClCompile>
     <ClCompile Include="WindowsFileOpener.cpp">
