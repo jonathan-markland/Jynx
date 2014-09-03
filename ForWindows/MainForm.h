@@ -63,12 +63,12 @@ public:
 	virtual void StretchBlitTheGuestScreen( int left, int top, int width, int height ) override;
 	virtual void FillBlackRectangle( int left, int top, int width, int height ) override;
 	virtual void InvalidateAreaOfHostScreen( const Jynx::LynxRectangle &area ) override;
-	virtual void  OpenChipFileStream( std::ifstream &streamToBeOpened, std::ios_base::openmode openModeRequired, Jynx::LynxRoms::Enum romRequired ) override;  // Host must open the INPUT stream for BINARY, position at BEGINNING.
-	virtual void  PaintPixelsOnHostBitmapForLynxScreenByte( uint32_t addressOffset, uint32_t lynxRedByte, uint32_t lynxGreenByte, uint32_t lynxBlueByte ) override;
+	virtual void  OpenChipFileStream_OnMainThread( std::ifstream &streamToBeOpened, std::ios_base::openmode openModeRequired, Jynx::LynxRoms::Enum romRequired ) override;  // Host must open the INPUT stream for BINARY, position at BEGINNING.
+	virtual void  PaintPixelsOnHostBitmapForLynxScreenByte_OnEmulatorThread( uint32_t addressOffset, uint32_t lynxRedByte, uint32_t lynxGreenByte, uint32_t lynxBlueByte ) override;
 	virtual std::shared_ptr<Jynx::IFileOpener>  GetUserSettingsFilePath() override;
-	virtual Jynx::IHostThread *CreateThread( Jynx::IHostServicesForLynxEmulatorThreadFunction threadFunction, void *userObject ) override;
-	virtual void ThreadSleep( uint32_t milliseconds ) override;
-	virtual void WriteSoundBufferToSoundCardOrSleep() override;
+	virtual Jynx::IHostThread *CreateThread_OnAnyThread( Jynx::IHostServicesForLynxEmulatorThreadFunction threadFunction, void *userObject ) override;
+	virtual void ThreadSleep_OnAnyThread( uint32_t milliseconds ) override;
+	virtual void WriteSoundBufferToSoundCardOrSleep_OnEmulatorThread() override;
 
 protected:
 

@@ -74,13 +74,13 @@ namespace Jynx
 		// IHostServicesForLynxEmulator:
 		// - THREADING NOTE:  The emulator object calls back into the Model on 
 		//   the EMULATOR thread, using this restricted interface.
-		virtual  void  InvalidateAreaOfGuestScreen( int32_t left, int32_t top, int32_t right, int32_t bottom ) override;
-		virtual  void  OpenChipFileStream( std::ifstream &streamToBeOpened, std::ios_base::openmode openModeRequired, LynxRoms::Enum romRequired ) override;
-		virtual  void  NotifyOutputTapeAvailbilityChanged() override;
-		virtual  void  PaintPixelsOnHostBitmapForLynxScreenByte( uint32_t addressOffset, uint32_t lynxRedByte, uint32_t lynxGreenByte, uint32_t lynxBlueByte ) override;
-		virtual  IHostThread *CreateThread( IHostServicesForLynxEmulatorThreadFunction threadFunction, void *userObject ) override;
-		virtual  void ThreadSleep( uint32_t milliseconds ) override;
-		virtual  void WriteSoundBufferToSoundCardOrSleep() override;
+		virtual  void  InvalidateAreaOfGuestScreen_OnMainThread( int32_t left, int32_t top, int32_t right, int32_t bottom ) override;
+		virtual  void  OpenChipFileStream_OnMainThread( std::ifstream &streamToBeOpened, std::ios_base::openmode openModeRequired, LynxRoms::Enum romRequired ) override;
+		virtual  void  NotifyOutputTapeAvailbilityChanged_OnEmulatorThread() override;
+		virtual  void  PaintPixelsOnHostBitmapForLynxScreenByte_OnEmulatorThread( uint32_t addressOffset, uint32_t lynxRedByte, uint32_t lynxGreenByte, uint32_t lynxBlueByte ) override;
+		virtual  IHostThread *CreateThread_OnAnyThread( IHostServicesForLynxEmulatorThreadFunction threadFunction, void *userObject ) override;
+		virtual  void ThreadSleep_OnAnyThread( uint32_t milliseconds ) override;
+		virtual  void WriteSoundBufferToSoundCardOrSleep_OnEmulatorThread() override;
 
 	private:
 

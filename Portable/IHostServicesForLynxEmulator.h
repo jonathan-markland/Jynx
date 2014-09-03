@@ -36,43 +36,47 @@ namespace Jynx
 		// Services called on the MAIN thread only:
 		//
 
-		virtual  void  OpenChipFileStream( std::ifstream &streamToBeOpened, std::ios_base::openmode openModeRequired, LynxRoms::Enum romRequired ) = 0;  
+		virtual  void  OpenChipFileStream_OnMainThread( std::ifstream &streamToBeOpened, std::ios_base::openmode openModeRequired, LynxRoms::Enum romRequired ) = 0;  
 			// (Called on the MAIN thread only)
 			// Host must open the file indicated by romRequired with the stream object
 			// passed, using the open mode passed.  This way, the host can decide where
 			// to put the ROM files.
 
-		virtual  void  InvalidateAreaOfGuestScreen( int32_t left, int32_t top, int32_t right, int32_t bottom ) = 0;
+		virtual  void  InvalidateAreaOfGuestScreen_OnMainThread( int32_t left, int32_t top, int32_t right, int32_t bottom ) = 0;
 			// (Called on the MAIN thread only)
 			// The emulator is telling the host that the given region of the Lynx's screen should
 			// be updated with the host's window manager.  The area is in Lynx screen coordinates.
 			// - Note - The main thread must call LynxEmulatorGuest::CallMeBackToInvalidateRegions() 
 			//   to get this callback.
 
-		virtual  IHostThread *CreateThread( IHostServicesForLynxEmulatorThreadFunction threadFunction, void *userObject ) = 0;
-			// (Called on the MAIN thread only)
-			// Called to create a thread on the host platform, which supports our IHostThread interface.
-
 		//
 		// Services called on the EMULATOR thread  (and NOT on the MAIN thread):
 		//
 
-		virtual  void  PaintPixelsOnHostBitmapForLynxScreenByte( uint32_t addressOffset, uint32_t lynxRedByte, uint32_t lynxGreenByte, uint32_t lynxBlueByte ) = 0;
+		virtual  void  PaintPixelsOnHostBitmapForLynxScreenByte_OnEmulatorThread( uint32_t addressOffset, uint32_t lynxRedByte, uint32_t lynxGreenByte, uint32_t lynxBlueByte ) = 0;
 			// (WARNING - Called on the EMULATOR thread, NOT the main thread)
 			// The emulator is telling the host that the Lynx has written any of the colour banks
 			// at the given addressOffset into the bank.  The host should translate the Lynx bytes
 			// and plot them on the bitmap it is used to represent the lynx screen.  The bitmap
 			// should NOT be painted with the host's Window Manager with this function!
 
-		virtual  void WriteSoundBufferToSoundCardOrSleep() = 0;
+		virtual  void WriteSoundBufferToSoundCardOrSleep_OnEmulatorThread() = 0;
 			// (WARNING - Called on the EMULATOR thread, NOT the main thread)
 			// The Z80 thread wants to be suspended until sound is ready.
 
-		virtual  void  NotifyOutputTapeAvailbilityChanged() = 0;  
+		virtual  void  NotifyOutputTapeAvailbilityChanged_OnEmulatorThread() = 0;  
 			// (WARNING - Called on the EMULATOR thread, NOT the main thread)
 			// Emulator tells the host if the tape is no longer available, so host can adjust state of menu option.
 
-		virtual  void ThreadSleep( uint32_t milliseconds ) = 0;
+		//
+		// Services that should be callable on ANY thread
+		//
+
+		virtual  IHostThread *CreateThread_OnAnyThread( IHostServicesForLynxEmulatorThreadFunction threadFunction, void *userObject ) = 0;
+			// (Called on the MAIN thread only, but should be available for any thread I think)
+			// Called to create a thread on the host platform, which supports our IHostThread interface.
+
+		virtual  void ThreadSleep_OnAnyThread( uint32_t milliseconds ) = 0;
 			// (WARNING - Called on the EMULATOR thread, NOT the main thread)
 			// Called when sound is NOT ENABLED, thus sound is NOT timing the emulation.
 			// Allows emulation thread to sleep for 20 ms.

@@ -519,7 +519,7 @@ namespace Jynx
 	//        MODEL (HOST) SERVICES TO GUEST (EMULATOR)  (IHostServicesForLynxEmulator)
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
-	void  LynxUserInterfaceModel::InvalidateAreaOfGuestScreen( int left, int top, int right, int bottom )
+	void  LynxUserInterfaceModel::InvalidateAreaOfGuestScreen_OnMainThread( int left, int top, int right, int bottom )
 	{
 		// (Called on MAIN thread only)
 
@@ -549,17 +549,17 @@ namespace Jynx
 
 
 
-	void  LynxUserInterfaceModel::OpenChipFileStream( std::ifstream &streamToBeOpened, std::ios_base::openmode openModeRequired, LynxRoms::Enum romRequired )
+	void  LynxUserInterfaceModel::OpenChipFileStream_OnMainThread( std::ifstream &streamToBeOpened, std::ios_base::openmode openModeRequired, LynxRoms::Enum romRequired )
 	{ 
 		// (Called on MAIN thread only)
 
 		// Just delegate this call.
-		_hostView->OpenChipFileStream( streamToBeOpened, openModeRequired, romRequired ); 
+		_hostView->OpenChipFileStream_OnMainThread( streamToBeOpened, openModeRequired, romRequired ); 
 	}
 
 
 
-	void  LynxUserInterfaceModel::NotifyOutputTapeAvailbilityChanged()
+	void  LynxUserInterfaceModel::NotifyOutputTapeAvailbilityChanged_OnEmulatorThread()
 	{ 
 		// (WARNING - Called on the EMULATOR thread, NOT the MAIN thread)
 
@@ -572,37 +572,38 @@ namespace Jynx
 
 
 
-	void  LynxUserInterfaceModel::PaintPixelsOnHostBitmapForLynxScreenByte( uint32_t addressOffset, uint32_t lynxRedByte, uint32_t lynxGreenByte, uint32_t lynxBlueByte ) 
+	void  LynxUserInterfaceModel::PaintPixelsOnHostBitmapForLynxScreenByte_OnEmulatorThread( 
+		uint32_t addressOffset, uint32_t lynxRedByte, uint32_t lynxGreenByte, uint32_t lynxBlueByte ) 
 	{ 
 		// (WARNING - Called on the EMULATOR thread, NOT the MAIN thread)
 
 		// Just delegate this call.
-		_hostView->PaintPixelsOnHostBitmapForLynxScreenByte( addressOffset, lynxRedByte, lynxGreenByte, lynxBlueByte ); 
+		_hostView->PaintPixelsOnHostBitmapForLynxScreenByte_OnEmulatorThread( addressOffset, lynxRedByte, lynxGreenByte, lynxBlueByte ); 
 	}
 
 
 
-	IHostThread *LynxUserInterfaceModel::CreateThread( IHostServicesForLynxEmulatorThreadFunction threadFunction, void *userObject )
+	IHostThread *LynxUserInterfaceModel::CreateThread_OnAnyThread( IHostServicesForLynxEmulatorThreadFunction threadFunction, void *userObject )
 	{
 		// Just delegate this call.
-		return _hostView->CreateThread( threadFunction, userObject );
+		return _hostView->CreateThread_OnAnyThread( threadFunction, userObject );
 	}
 
 
 
-	void LynxUserInterfaceModel::ThreadSleep( uint32_t milliseconds )
+	void LynxUserInterfaceModel::ThreadSleep_OnAnyThread( uint32_t milliseconds )
 	{
 		// (WARNING - Called on the EMULATOR thread, NOT the MAIN thread)
 
 		// Just delegate this call.
-		_hostView->ThreadSleep(milliseconds);
+		_hostView->ThreadSleep_OnAnyThread(milliseconds);
 	}
 
 
 
-	void LynxUserInterfaceModel::WriteSoundBufferToSoundCardOrSleep()
+	void LynxUserInterfaceModel::WriteSoundBufferToSoundCardOrSleep_OnEmulatorThread()
 	{
-		_hostView->WriteSoundBufferToSoundCardOrSleep();
+		_hostView->WriteSoundBufferToSoundCardOrSleep_OnEmulatorThread();
 	}
 
 

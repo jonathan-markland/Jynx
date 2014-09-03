@@ -415,6 +415,53 @@ void MainForm::OnSound()
 
 
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+//        THREAD ADAPTER to PLATFORM THREAD
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+class ThreadAdapterToMicrosoftWindows: public libWinApi::Thread, public Jynx::IHostThread
+{
+public:
+	ThreadAdapterToMicrosoftWindows( Jynx::IHostServicesForLynxEmulatorThreadFunction threadFunction, void *userObject );
+	virtual int32_t ThreadMain() override;
+	virtual void SignalToTerminateAndJoin() override;
+	virtual bool CanKeepRunning() override;
+private:
+	Jynx::IHostServicesForLynxEmulatorThreadFunction _threadFunction;
+	void *_userObject;
+};
+
+
+
+ThreadAdapterToMicrosoftWindows::ThreadAdapterToMicrosoftWindows( Jynx::IHostServicesForLynxEmulatorThreadFunction threadFunction, void *userObject )
+	: _threadFunction(threadFunction)
+	, _userObject(userObject)
+{
+	CreateAndRun();
+}
+
+int32_t ThreadAdapterToMicrosoftWindows::ThreadMain()
+{
+	_threadFunction(_userObject);
+	return 0;
+}
+
+void ThreadAdapterToMicrosoftWindows::SignalToTerminateAndJoin()
+{
+	this->RequestTermination();
+	this->WaitForTermination();
+}
+
+bool ThreadAdapterToMicrosoftWindows::CanKeepRunning()
+{
+	return ! ShouldTerminate();
+}
+
+
+
+
+
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 //        VIEW SERVICES TO MODEL  (IHostServicesForLynxUserInterfaceModel)
@@ -626,7 +673,7 @@ const wchar_t *g_RomFileNames[Jynx::LynxRoms::Count] =
 	L"lynx96-3.rom",
 };
 
-void  MainForm::OpenChipFileStream( std::ifstream &streamToBeOpened, std::ios_base::openmode openModeRequired, Jynx::LynxRoms::Enum romRequired )
+void  MainForm::OpenChipFileStream_OnMainThread( std::ifstream &streamToBeOpened, std::ios_base::openmode openModeRequired, Jynx::LynxRoms::Enum romRequired )
 {
 	// (Reminder - called on the MAIN thread only).
 
@@ -654,7 +701,7 @@ inline PIXEL_TYPE *CalcFrameBufferPixelAddress( PIXEL_TYPE *frameBufferTopLeftAd
 
 
 
-void  MainForm::PaintPixelsOnHostBitmapForLynxScreenByte( uint32_t addressOffset, uint32_t lynxRedByte, uint32_t lynxGreenByte, uint32_t lynxBlueByte )
+void  MainForm::PaintPixelsOnHostBitmapForLynxScreenByte_OnEmulatorThread( uint32_t addressOffset, uint32_t lynxRedByte, uint32_t lynxGreenByte, uint32_t lynxBlueByte )
 {
 	// (WARNING - Called on the EMULATOR thread, NOT the MAIN thread)
 
@@ -717,61 +764,21 @@ std::shared_ptr<Jynx::IFileOpener>  MainForm::GetUserSettingsFilePath()
 }
 
 
-class ThreadAdapterToMicrosoftWindows: public libWinApi::Thread, public Jynx::IHostThread
-{
-public:
-	ThreadAdapterToMicrosoftWindows( Jynx::IHostServicesForLynxEmulatorThreadFunction threadFunction, void *userObject );
-	virtual int32_t ThreadMain() override;
-	virtual void SignalToTerminateAndJoin() override;
-	virtual bool CanKeepRunning() override;
-private:
-	Jynx::IHostServicesForLynxEmulatorThreadFunction _threadFunction;
-	void *_userObject;
-};
-
-
-
-ThreadAdapterToMicrosoftWindows::ThreadAdapterToMicrosoftWindows( Jynx::IHostServicesForLynxEmulatorThreadFunction threadFunction, void *userObject )
-	: _threadFunction(threadFunction)
-	, _userObject(userObject)
-{
-	CreateAndRun();
-}
-
-int32_t ThreadAdapterToMicrosoftWindows::ThreadMain()
-{
-	_threadFunction(_userObject);
-	return 0;
-}
-
-void ThreadAdapterToMicrosoftWindows::SignalToTerminateAndJoin()
-{
-	this->RequestTermination();
-	this->WaitForTermination();
-}
-
-bool ThreadAdapterToMicrosoftWindows::CanKeepRunning()
-{
-	return ! ShouldTerminate();
-}
-
-
-
-Jynx::IHostThread *MainForm::CreateThread( Jynx::IHostServicesForLynxEmulatorThreadFunction threadFunction, void *userObject )
+Jynx::IHostThread *MainForm::CreateThread_OnAnyThread( Jynx::IHostServicesForLynxEmulatorThreadFunction threadFunction, void *userObject )
 {
 	return new ThreadAdapterToMicrosoftWindows( threadFunction, userObject );
 }
 
 
 
-void MainForm::ThreadSleep( uint32_t milliseconds )
+void MainForm::ThreadSleep_OnAnyThread( uint32_t milliseconds )
 {
 	::Sleep( milliseconds );
 }
 
 
 
-void MainForm::WriteSoundBufferToSoundCardOrSleep()
+void MainForm::WriteSoundBufferToSoundCardOrSleep_OnEmulatorThread()
 {
 	// (Called on the EMULATOR thread, NOT the MAIN thread)
 

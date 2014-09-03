@@ -67,7 +67,7 @@ namespace Jynx
 		// (Constructor called on MAIN thread).
 		_guestObjectToLockAndUnlock->_callWaitingAcknowledge = false;
 		_guestObjectToLockAndUnlock->_callWaiting = true;
-		_guestObjectToLockAndUnlock->_hostObject->ThreadSleep(1);
+		_guestObjectToLockAndUnlock->_hostObject->ThreadSleep_OnAnyThread(1);
 		while( _guestObjectToLockAndUnlock->_callWaitingAcknowledge == false )
 		{
 			// _guestObjectToLockAndUnlock->_hostObject->ThreadSleep(100);
@@ -130,7 +130,7 @@ namespace Jynx
 
 		LoadROMS();
 		InitialiseLYNX();
-		_emulationThread = _hostObject->CreateThread( &LynxEmulatorGuest::BootstrapRunThreadMainLoop, this );
+		_emulationThread = _hostObject->CreateThread_OnAnyThread( &LynxEmulatorGuest::BootstrapRunThreadMainLoop, this );
 	}
 
 
@@ -167,7 +167,7 @@ namespace Jynx
 		try
 		{
 			std::ifstream  inStream;
-			_hostObject->OpenChipFileStream( inStream, std::ios::in | std::ios::binary | std::ios::ate, romRequired );
+			_hostObject->OpenChipFileStream_OnMainThread( inStream, std::ios::in | std::ios::binary | std::ios::ate, romRequired );
 	
 			if( inStream.is_open() )
 			{
@@ -518,7 +518,7 @@ namespace Jynx
 		assert( (addressOffset >> 8) < INV_ROWS );
 		_invalidateRow[addressOffset >> 8] = true; // mark a row invalid
 
-		_hostObject->PaintPixelsOnHostBitmapForLynxScreenByte( addressOffset, r, g, b );
+		_hostObject->PaintPixelsOnHostBitmapForLynxScreenByte_OnEmulatorThread( addressOffset, r, g, b );
 	}
 
 
@@ -558,7 +558,7 @@ namespace Jynx
 			{
 				int32_t x = 0;
 				int32_t y = (i * 8);
-				_hostObject->InvalidateAreaOfGuestScreen( x, y, x+LYNX_FRAMEBUF_WIDTH, y+8 );
+				_hostObject->InvalidateAreaOfGuestScreen_OnMainThread( x, y, x+LYNX_FRAMEBUF_WIDTH, y+8 );
 				_invalidateRow[i] = false;
 			}
 		}
@@ -868,7 +868,7 @@ namespace Jynx
 	{
 		_currentReadTape->CassetteMotorOff();
 		_currentWriteTape->NotifyCassetteMotorOff();
-		_hostObject->NotifyOutputTapeAvailbilityChanged();
+		_hostObject->NotifyOutputTapeAvailbilityChanged_OnEmulatorThread();
 	}
 
 
@@ -1275,7 +1275,7 @@ namespace Jynx
 	{
 		while( _emulationThread->CanKeepRunning() )
 		{
-			_hostObject->WriteSoundBufferToSoundCardOrSleep();
+			_hostObject->WriteSoundBufferToSoundCardOrSleep_OnEmulatorThread();
 
 			// Execute Z80 code for this timeslice, and accumulate
 			// the precise number of cycles elapsed (which may not

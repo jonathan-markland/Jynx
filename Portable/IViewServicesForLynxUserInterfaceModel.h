@@ -87,6 +87,8 @@ namespace Jynx
 		// The host (view) must provide these IF it is using the (optional) user interface model class.
 		// This allows the model to request things of the host.
 
+		// - Threading note:  These are all called on the MAIN thread, unless the function name noted otherwise.
+
 		virtual void CloseDownNow() = 0;
 			// The Model tells the View to close down now.
 			// It is always appropriate for the View to perform this without question.
@@ -139,22 +141,24 @@ namespace Jynx
 			// should be marked for re-painting with the View's window manager.
 			// This area lies within the rectangle that the View previously returned in GetClientRectangle().
 
-		virtual  void  OpenChipFileStream( std::ifstream &streamToBeOpened, std::ios_base::openmode openModeRequired, LynxRoms::Enum romRequired ) = 0;
+		virtual  void  OpenChipFileStream_OnMainThread( std::ifstream &streamToBeOpened, std::ios_base::openmode openModeRequired, LynxRoms::Enum romRequired ) = 0;
 			// (See same function comments in IHostServicesForLynxEmulator).
 
-		virtual  void  PaintPixelsOnHostBitmapForLynxScreenByte( uint32_t addressOffset, uint32_t lynxRedByte, uint32_t lynxGreenByte, uint32_t lynxBlueByte ) = 0;
+		virtual  std::shared_ptr<IFileOpener>  GetUserSettingsFilePath() = 0;
+			// Obtains a file opener that holds the path to the user settings file (or where it would be if it doesn't exist yet).
+
+		virtual IHostThread *CreateThread_OnAnyThread( IHostServicesForLynxEmulatorThreadFunction threadFunction, void *userObject ) = 0;
+		virtual  void ThreadSleep_OnAnyThread( uint32_t milliseconds ) = 0;
+
+		virtual  void  PaintPixelsOnHostBitmapForLynxScreenByte_OnEmulatorThread( uint32_t addressOffset, uint32_t lynxRedByte, uint32_t lynxGreenByte, uint32_t lynxBlueByte ) = 0;
 			// The emulator does not know the pixel format of the View's bitmap that holds the Lynx screen.
 			// The view must translate the three lynx bytes given (red, green and blue) into 8 adjacent pixels
 			// at the position given by the addressOffset.  The Lynx screen is 256*256 pixels with 3 colour
 			// planes, so 32 bytes per horizonal line, addresses 0..31 are the topmost line, left to right,
 			// addresses increment down the screen.
 
-		virtual  std::shared_ptr<IFileOpener>  GetUserSettingsFilePath() = 0;
-			// Obtains a file opener that holds the path to the user settings file (or where it would be if it doesn't exist yet).
 
-		virtual IHostThread *CreateThread( IHostServicesForLynxEmulatorThreadFunction threadFunction, void *userObject ) = 0;
-		virtual  void ThreadSleep( uint32_t milliseconds ) = 0;
-		virtual  void WriteSoundBufferToSoundCardOrSleep() = 0;
+		virtual  void WriteSoundBufferToSoundCardOrSleep_OnEmulatorThread() = 0;
 	};
 
 
