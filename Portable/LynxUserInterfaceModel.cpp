@@ -521,7 +521,7 @@ namespace Jynx
 
 	void  LynxUserInterfaceModel::InvalidateAreaOfGuestScreen( int left, int top, int right, int bottom )
 	{
-		// (Called on MAIN thread only, not Z80).
+		// (Called on MAIN thread only)
 
 		// The entry coordinates are on the Lynx's screen, and we translate to pixel
 		// coordinates on the host display.  (All hosts will use square pixels these days!).
@@ -551,7 +551,7 @@ namespace Jynx
 
 	void  LynxUserInterfaceModel::OpenChipFileStream( std::ifstream &streamToBeOpened, std::ios_base::openmode openModeRequired, LynxRoms::Enum romRequired )
 	{ 
-		// (Called on MAIN thread only, not Z80).
+		// (Called on MAIN thread only)
 
 		// Just delegate this call.
 		_hostView->OpenChipFileStream( streamToBeOpened, openModeRequired, romRequired ); 
@@ -561,7 +561,7 @@ namespace Jynx
 
 	void  LynxUserInterfaceModel::NotifyOutputTapeAvailbilityChanged()
 	{ 
-		// (WARNING - Called on the Z80 thread, NOT the main thread)
+		// (WARNING - Called on the EMULATOR thread, NOT the MAIN thread)
 
 		// Reminder:  This cannot be done on the Z80 thread:  UpdateUserInterfaceElementsOnView();
 		// So we have a mechanism to defer the UI refresh until the UI thread calls OnTimer().
@@ -573,7 +573,7 @@ namespace Jynx
 
 	void  LynxUserInterfaceModel::PaintPixelsOnHostBitmapForLynxScreenByte( uint32_t addressOffset, uint32_t lynxRedByte, uint32_t lynxGreenByte, uint32_t lynxBlueByte ) 
 	{ 
-		// (WARNING - Called on the Z80 thread, NOT the main thread)
+		// (WARNING - Called on the EMULATOR thread, NOT the MAIN thread)
 
 		// Just delegate this call.
 		_hostView->PaintPixelsOnHostBitmapForLynxScreenByte( addressOffset, lynxRedByte, lynxGreenByte, lynxBlueByte ); 
@@ -591,7 +591,7 @@ namespace Jynx
 
 	void LynxUserInterfaceModel::ThreadSleep( uint32_t milliseconds )
 	{
-		// (WARNING - Called on the Z80 thread, NOT the main thread)
+		// (WARNING - Called on the EMULATOR thread, NOT the MAIN thread)
 
 		// Just delegate this call.
 		_hostView->ThreadSleep(milliseconds);

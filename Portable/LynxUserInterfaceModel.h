@@ -72,10 +72,11 @@ namespace Jynx
 		void OnTypeInTextFromFile();
 
 		// IHostServicesForLynxEmulator:
-		// The emulator object calls back into the Model (on the emulator thread!) using this restricted interface.
+		// - THREADING NOTE:  The emulator object calls back into the Model on 
+		//   the EMULATOR thread, using this restricted interface.
 		virtual  void  InvalidateAreaOfGuestScreen( int32_t left, int32_t top, int32_t right, int32_t bottom ) override;
 		virtual  void  OpenChipFileStream( std::ifstream &streamToBeOpened, std::ios_base::openmode openModeRequired, LynxRoms::Enum romRequired ) override;
-		virtual  void  NotifyOutputTapeAvailbilityChanged() override;  // Hint: call host CanSaveTAPFile() to discover state at any time.
+		virtual  void  NotifyOutputTapeAvailbilityChanged() override;
 		virtual  void  PaintPixelsOnHostBitmapForLynxScreenByte( uint32_t addressOffset, uint32_t lynxRedByte, uint32_t lynxGreenByte, uint32_t lynxBlueByte ) override;
 		virtual  IHostThread *CreateThread( IHostServicesForLynxEmulatorThreadFunction threadFunction, void *userObject ) override;
 		virtual  void ThreadSleep( uint32_t milliseconds ) override;

@@ -122,10 +122,16 @@ MainForm::MainForm( HWND hWndOwner )
 
 MainForm::~MainForm()
 {
-	// Must destroy _lynxUIModel FIRST - to clean up threads, before
-	// we destroy what the threads are using!
+	// THREADING NOTE:
+	// - Must destroy _lynxUIModel FIRST - to clean up threads, before
+	//   we destroy what the threads are using!
 	_lynxUIModel = nullptr;
 
+	//
+	// Now the EMULATOR thread is gone, we can now clean up
+	// everything that the EMULATOR thread was using:
+	//
+	
 	g_hWndToPostMessage = NULL;
 
 	if( _timeSetEventResult != NULL )
@@ -622,7 +628,7 @@ const wchar_t *g_RomFileNames[Jynx::LynxRoms::Count] =
 
 void  MainForm::OpenChipFileStream( std::ifstream &streamToBeOpened, std::ios_base::openmode openModeRequired, Jynx::LynxRoms::Enum romRequired )
 {
-	// (Reminder - called on the main thread only).
+	// (Reminder - called on the MAIN thread only).
 
 	assert( uint32_t(romRequired) < Jynx::LynxRoms::Count ); // Should be
 
@@ -650,10 +656,10 @@ inline PIXEL_TYPE *CalcFrameBufferPixelAddress( PIXEL_TYPE *frameBufferTopLeftAd
 
 void  MainForm::PaintPixelsOnHostBitmapForLynxScreenByte( uint32_t addressOffset, uint32_t lynxRedByte, uint32_t lynxGreenByte, uint32_t lynxBlueByte )
 {
-	// (WARNING - Called on the Z80 thread, NOT the main thread)
+	// (WARNING - Called on the EMULATOR thread, NOT the MAIN thread)
 
 	// Multithreading note:  In theory, we may get "tearing" with this being unsynchronised.
-	// This is deemed not to matter.  The Z80 thread CANNOT BE HELD UP without risking sound suffering!
+	// This is deemed not to matter.  The EMULATOR thread CANNOT BE HELD UP without risking sound suffering!
 
 	int32_t  destX = (addressOffset & 0x1F) << 3;
 	int32_t  destY = (addressOffset >> 5);
@@ -767,7 +773,8 @@ void MainForm::ThreadSleep( uint32_t milliseconds )
 
 void MainForm::WriteSoundBufferToSoundCardOrSleep()
 {
-	// (Called on the Z80 thread, not the MAIN thread)
+	// (Called on the EMULATOR thread, NOT the MAIN thread)
+
 	if( _lynxUIModel->IsSoundEnabled() )
 	{
 		// NOTE: The sound card "forces" us back until it's ready.
