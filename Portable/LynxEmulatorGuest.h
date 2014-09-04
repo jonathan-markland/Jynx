@@ -32,6 +32,7 @@
 #include "TextPlayer.h"
 #include "TapFileReader.h"
 #include "TapFileWriter.h"
+#include "JynxPlatformInterfacing.h"
 
 namespace Jynx
 {
@@ -180,7 +181,8 @@ namespace Jynx
 
 		// Thread sync.  Allow MAIN thread to ask EMULATOR thread to suspend.
 		volatile bool        _callWaiting;             // false normally, until MAIN thread call comes in.
-		volatile bool        _callWaitingAcknowledge;  // false normally, until EMULATOR thread realises call is waiting, then sets this true, and awaits MAIN thread returning this to false.
+		Jynx::Waitable       _callWaitingAcknowledge;  // false normally, until EMULATOR thread realises call is waiting, then sets this true, and awaits MAIN thread returning this to false.
+		Jynx::Waitable       _resumeEmulatorThread;
 
 		//
 		// SOUND BUFFER (represents ONE Z80 period precisely)

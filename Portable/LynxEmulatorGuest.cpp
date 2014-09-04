@@ -65,13 +65,9 @@ namespace Jynx
 		: _guestObjectToLockAndUnlock(guestObjectToLockAndUnlock) 
 	{
 		// (Constructor called on MAIN thread).
-		_guestObjectToLockAndUnlock->_callWaitingAcknowledge = false;
+		_guestObjectToLockAndUnlock->_callWaitingAcknowledge.Reset();
 		_guestObjectToLockAndUnlock->_callWaiting = true;
-		_guestObjectToLockAndUnlock->_hostObject->ThreadSleep_OnAnyThread(1);
-		while( _guestObjectToLockAndUnlock->_callWaitingAcknowledge == false )
-		{
-			// _guestObjectToLockAndUnlock->_hostObject->ThreadSleep(100);
-		}
+		_guestObjectToLockAndUnlock->_callWaitingAcknowledge.Wait();
 		// EMULATOR thread is now suspended, waiting for actions in our destructor.
 	}
 
@@ -82,7 +78,7 @@ namespace Jynx
 		// (Destructor called on MAIN thread).
 		// EMULATOR thread is currently blocked on '_callWaitingAcknowledge' going 'false'.
 		_guestObjectToLockAndUnlock->_callWaiting = false; // but SET THIS FIRST!
-		_guestObjectToLockAndUnlock->_callWaitingAcknowledge = false; // Set this SECOND!
+		_guestObjectToLockAndUnlock->_resumeEmulatorThread.Signal(); // release this SECOND!
 	}
 
 
@@ -114,7 +110,6 @@ namespace Jynx
 		, _machineType(initialMachineType)
 		, _platformEndOfLineSequenceUTF8(platformEndOfLineSequenceUTF8)
 		, _emulationThread(nullptr)
-		, _callWaitingAcknowledge(false)
 		, _callWaiting(false)
 	{
 		// (Reminder - Called on the client thread).
@@ -1312,11 +1307,9 @@ namespace Jynx
 
 			if( _callWaiting )
 			{
-				_callWaitingAcknowledge = true;
-				while( _callWaitingAcknowledge == true )
-				{
-					// _hostObject->ThreadSleep(5);
-				}
+				_resumeEmulatorThread.Reset();
+				_callWaitingAcknowledge.Signal(); // Releases MAIN thread to access our member variables.
+				_resumeEmulatorThread.Wait();
 			}
 		}
 	}

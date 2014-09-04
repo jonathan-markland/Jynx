@@ -162,6 +162,7 @@
     <ClInclude Include="..\Portable\IViewServicesForLynxUserInterfaceModel.h" />
     <ClInclude Include="..\Portable\IHostThread.h" />
     <ClInclude Include="..\Portable\ISerialiser.h" />
+    <ClInclude Include="..\Portable\JynxPlatformInterfacing.h" />
     <ClInclude Include="..\Portable\Lexer.h" />
     <ClInclude Include="..\Portable\LynxEmulatorEnums.h" />
     <ClInclude Include="..\Portable\LynxEmulatorGuest.h" />
@@ -220,6 +221,7 @@
     <ClCompile Include="..\Portable\Z80\JynxZ80Timings.cpp" />
     <ClCompile Include="..\Portable\Z80\JynxZ80Disassembler.cpp" />
     <ClCompile Include="AboutBoxForm.cpp" />
+    <ClCompile Include="JynxPlatformInterfacing_ForWindows.cpp" />
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="libWinApi.cpp" />
     <ClCompile Include="MainForm.cpp" />
