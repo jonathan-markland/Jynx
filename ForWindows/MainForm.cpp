@@ -303,6 +303,7 @@ void MainForm::WindowProc( libWinApi::WindowProcArgs &e )
 				case ID_EMULATION_RESET:          _lynxUIModel->OnResetEmulation(); break;
 				case ID_DISPLAY_FITTOWINDOW:      _lynxUIModel->OnFitToWindow(); break;
 				case ID_DISPLAY_SQUAREPIXELS:     _lynxUIModel->OnSquarePixels(); break;
+				case ID_DISPLAY_FILLWINDOW:       _lynxUIModel->OnFillWindow(); break;
 				case ID_SOUND_ENABLE:             OnSound(); break; // not handled by the model
 				case ID_HELP_ABOUT:               OnAbout(); break; // not handled by the model
 				default:                          return BaseForm::WindowProc( e );
@@ -511,6 +512,7 @@ const UINT MainFormTickableItems[Jynx::TickableInterfaceElements::Count] =
 	ID_SOUND_LISTENTOTAPESOUNDS,
 	ID_DISPLAY_FITTOWINDOW,
 	ID_DISPLAY_SQUAREPIXELS,
+	ID_DISPLAY_FILLWINDOW,
 	ID_EMULATION_SPEED50,
 	ID_EMULATION_SPEED100,
 	ID_EMULATION_SPEED200,
@@ -522,6 +524,8 @@ const UINT MainFormTickableItems[Jynx::TickableInterfaceElements::Count] =
 
 void MainForm::SetTickBoxState( Jynx::TickableInterfaceElements::Enum itemToSet, bool tickState )
 {
+	assert( sizeof(MainFormTickableItems) == sizeof(UINT) * sizeof(itemToSet) );
+
 	auto hMenu = ::GetMenu( *this );
 	if( hMenu )
 	{
@@ -541,6 +545,8 @@ const UINT MainFormGreyableItems[Jynx::ButtonInterfaceElements::Count] =
 
 void MainForm::SetEnabledState( Jynx::ButtonInterfaceElements::Enum itemToSet, bool enableState )
 {
+	assert( sizeof(MainFormGreyableItems) == sizeof(UINT) * sizeof(itemToSet) );
+
 	auto hMenu = ::GetMenu( *this );
 	if( hMenu )
 	{

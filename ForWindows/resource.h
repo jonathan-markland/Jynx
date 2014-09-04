@@ -34,13 +34,14 @@
 #define ID_TEXT_LYNXBASICREMCOMMANDEXTENSIONS 32799
 #define ID_SOUND_ENABLE                 32800
 #define ID_TEXT_TYPEINFROMFILE          32801
+#define ID_DISPLAY_FILLWINDOW           32802
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        312
-#define _APS_NEXT_COMMAND_VALUE         32802
+#define _APS_NEXT_COMMAND_VALUE         32803
 #define _APS_NEXT_CONTROL_VALUE         1000
 #define _APS_NEXT_SYMED_VALUE           310
 #endif

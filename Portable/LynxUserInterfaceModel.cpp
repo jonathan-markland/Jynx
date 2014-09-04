@@ -88,10 +88,15 @@ namespace Jynx
 		{
 			return GetBestFitProjectionArea( r.right, r.bottom );
 		}
-		else 
+		else if( _renderStyle == RenderStyle::SquarePixels )
 		{
 			// TODO: Really need "fit rectangle in rectangle" function to generalised for rectangles.  Is OK for now, since lynx screen is square.
 			return GetSquarePixelsProjectionArea( r.right, r.bottom, LYNX_FRAMEBUF_HEIGHT ); 
+		}
+		else
+		{
+			assert( _renderStyle == RenderStyle::FillWindow );
+			return r;
 		}
 	}
 
@@ -310,6 +315,15 @@ namespace Jynx
 		// The View calls this because an option has (somehow!) been selected in the UI (menu/button/icon/whatever).
 
 		SetRenderStyle( RenderStyle::SquarePixels );
+	}
+
+
+
+	void LynxUserInterfaceModel::OnFillWindow()
+	{
+		// The View calls this because an option has (somehow!) been selected in the UI (menu/button/icon/whatever).
+
+		SetRenderStyle( RenderStyle::FillWindow );
 	}
 
 
@@ -634,6 +648,7 @@ namespace Jynx
 		bool tick96K        = (_machineType == LynxMachineType::LYNX_96K);
 		bool tickSquare     = (_renderStyle == RenderStyle::SquarePixels);
 		bool tickFitWindow  = (_renderStyle == RenderStyle::FitToWindow);
+		bool tickFillWindow = (_renderStyle == RenderStyle::FillWindow);
 		bool tickTapeSounds = _lynxEmulator->GetTapeSounds();
 		bool tickRemExtensions = _lynxEmulator->GetLynxRemCommandExtensionsEnabled();
 		bool tickSound      = _soundEnable;
@@ -655,6 +670,7 @@ namespace Jynx
 		_hostView->SetTickBoxState( TickableInterfaceElements::Lynx96K, tick96K );
 		_hostView->SetTickBoxState( TickableInterfaceElements::ListenToTapeSounds, tickTapeSounds );
 		_hostView->SetTickBoxState( TickableInterfaceElements::FitToWindow, tickFitWindow );
+		_hostView->SetTickBoxState( TickableInterfaceElements::FillWindow, tickFillWindow );
 		_hostView->SetTickBoxState( TickableInterfaceElements::UseSquarePixels, tickSquare );
 		_hostView->SetTickBoxState( TickableInterfaceElements::LynxBasicRemCommandExtensions, tickRemExtensions );
 		_hostView->SetTickBoxState( TickableInterfaceElements::SoundEnableDisable, tickSound );

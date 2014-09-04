@@ -32,7 +32,7 @@ namespace Jynx
 	{
 		enum Enum
 		{
-			FitToWindow, SquarePixels
+			FitToWindow, SquarePixels, FillWindow
 		};
 	}
 

@@ -69,6 +69,7 @@ BEGIN
     BEGIN
         MENUITEM "Fit to &Window",              ID_DISPLAY_FITTOWINDOW
         MENUITEM "Use &Square Pixels",          ID_DISPLAY_SQUAREPIXELS
+        MENUITEM "&Fill Window",                ID_DISPLAY_FILLWINDOW
     END
     POPUP "&Sound"
     BEGIN

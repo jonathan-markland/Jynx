@@ -32,7 +32,7 @@ namespace Jynx
 	{
 		enum Enum
 		{
-			Lynx48K, Lynx96K, ListenToTapeSounds, FitToWindow, UseSquarePixels,
+			Lynx48K, Lynx96K, ListenToTapeSounds, FitToWindow, UseSquarePixels, FillWindow,
 			Speed50, Speed100, Speed200, Speed400, Speed800, LynxBasicRemCommandExtensions,
 			SoundEnableDisable,
 		

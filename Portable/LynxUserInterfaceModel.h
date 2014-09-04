@@ -64,6 +64,7 @@ namespace Jynx
 		void OnResetEmulation();
 		void OnFitToWindow();
 		void OnSquarePixels();
+		void OnFillWindow();
 		void OnRecordLynxTextToFile();
 		void OnFinishRecordingLynxText();
 		void OnLynxBasicRemCommandExtensions();
