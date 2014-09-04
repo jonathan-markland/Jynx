@@ -134,9 +134,6 @@
     <ClInclude Include="..\Portable\UserSettingsSerialiser.h">
       <Filter>Source Files\Portable</Filter>
     </ClInclude>
-    <ClInclude Include="..\Portable\IHostThread.h">
-      <Filter>Source Files\Portable</Filter>
-    </ClInclude>
     <ClInclude Include="..\Portable\LynxEmulatorEnums.h">
       <Filter>Source Files\Portable</Filter>
     </ClInclude>

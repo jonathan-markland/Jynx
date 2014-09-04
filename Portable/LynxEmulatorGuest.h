@@ -141,7 +141,7 @@ namespace Jynx
 		friend class EmulatorThreadInhibitor;
 
 		IHostServicesForLynxEmulator * const _hostObject;     // Safe to read on ANY thread (not changed once constructed).
-		IHostThread *_emulationThread;                        // The "EMULATOR thread".
+		Jynx::Thread _emulationThread;                        // The "EMULATOR thread".
 
 		// Machine type being emulated
 		LynxMachineType::Enum _machineType;

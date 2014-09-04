@@ -583,24 +583,6 @@ namespace Jynx
 
 
 
-	IHostThread *LynxUserInterfaceModel::CreateThread_OnAnyThread( IHostServicesForLynxEmulatorThreadFunction threadFunction, void *userObject )
-	{
-		// Just delegate this call.
-		return _hostView->CreateThread_OnAnyThread( threadFunction, userObject );
-	}
-
-
-
-	void LynxUserInterfaceModel::ThreadSleep_OnAnyThread( uint32_t milliseconds )
-	{
-		// (WARNING - Called on the EMULATOR thread, NOT the MAIN thread)
-
-		// Just delegate this call.
-		_hostView->ThreadSleep_OnAnyThread(milliseconds);
-	}
-
-
-
 	void LynxUserInterfaceModel::WriteSoundBufferToSoundCardOrSleep_OnEmulatorThread()
 	{
 		_hostView->WriteSoundBufferToSoundCardOrSleep_OnEmulatorThread();

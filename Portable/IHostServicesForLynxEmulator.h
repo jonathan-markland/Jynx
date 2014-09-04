@@ -22,7 +22,6 @@
 
 #include <stdint.h>
 #include "LynxRoms.h"
-#include "IHostThread.h"
 
 namespace Jynx
 {
@@ -67,19 +66,6 @@ namespace Jynx
 		virtual  void  NotifyOutputTapeAvailbilityChanged_OnEmulatorThread() = 0;  
 			// (WARNING - Called on the EMULATOR thread, NOT the main thread)
 			// Emulator tells the host if the tape is no longer available, so host can adjust state of menu option.
-
-		//
-		// Services that should be callable on ANY thread
-		//
-
-		virtual  IHostThread *CreateThread_OnAnyThread( IHostServicesForLynxEmulatorThreadFunction threadFunction, void *userObject ) = 0;
-			// (Called on the MAIN thread only, but should be available for any thread I think)
-			// Called to create a thread on the host platform, which supports our IHostThread interface.
-
-		virtual  void ThreadSleep_OnAnyThread( uint32_t milliseconds ) = 0;
-			// (WARNING - Called on the EMULATOR thread, NOT the main thread)
-			// Called when sound is NOT ENABLED, thus sound is NOT timing the emulation.
-			// Allows emulation thread to sleep for 20 ms.
 
 	};
 

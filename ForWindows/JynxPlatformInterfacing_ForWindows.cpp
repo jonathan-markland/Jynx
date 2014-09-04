@@ -85,3 +85,100 @@ namespace Jynx
 	}
 
 }
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+//     THREAD
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+namespace Jynx
+{
+	enum { DefaultStackSizeBytes = 1048576 };
+
+
+
+	DWORD WINAPI ThreadBootstrappingProcedure( LPVOID parameter ) // static member function
+	{
+		// Call derived class to perform thread tasks.
+		auto thisThread = reinterpret_cast<Thread *>( parameter );
+		thisThread->GetThreadFunction()( thisThread->GetUserObjectForThreadFunction() );
+		return 0;
+	}
+
+
+
+	Thread::Thread()
+		: _shouldTerminate(false)
+		, _platformSpecificImplementation(nullptr)
+		, _threadFunction(nullptr)
+		, _userObjectForThreadFunction(nullptr)
+	{
+	}
+
+
+
+	Thread::~Thread()
+	{
+		if( _platformSpecificImplementation != NULL )
+		{
+			RequestTermination(); // Reminder - calls THIS CLASS ONLY (derived is gone at this point)
+			WaitForTermination();
+			CloseHandle( (HANDLE) _platformSpecificImplementation );
+			_platformSpecificImplementation = NULL;
+		}
+	}
+
+
+
+	void Thread::CreateAndRun( ThreadFunction threadFunction, void *userObject )
+	{
+		if( _platformSpecificImplementation == NULL )
+		{
+			_threadFunction = threadFunction;
+			_userObjectForThreadFunction = userObject;
+			DWORD threadId = 0; // not massively important to store this
+			_platformSpecificImplementation = ::CreateThread( NULL, DefaultStackSizeBytes, &ThreadBootstrappingProcedure, this, STACK_SIZE_PARAM_IS_A_RESERVATION, &threadId );
+			if( _platformSpecificImplementation != NULL ) return;
+			throw std::exception( "The system is out of resources, cannot create a new thread." );
+		}
+		else
+		{
+			throw std::exception( "Thread object is already created." );
+		}
+	}
+
+
+
+	void Thread::RequestTermination()
+	{
+		_shouldTerminate = true;
+	}
+	
+	
+	
+	void Thread::WaitForTermination()
+	{
+		if( _platformSpecificImplementation != NULL )
+		{
+			::WaitForSingleObject( (HANDLE) _platformSpecificImplementation, INFINITE );
+		}
+		else
+		{
+			throw std::exception( "No thread created." );
+		}
+	}
+
+
+
+	bool Thread::ShouldTerminate() const
+	{
+		return _shouldTerminate;
+	}
+}
+
+
+
+
+
+
+

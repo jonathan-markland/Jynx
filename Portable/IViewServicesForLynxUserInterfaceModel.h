@@ -24,7 +24,6 @@
 #include "IFileOpener.h"
 #include "LynxRectangle.h"
 #include "LynxRoms.h"
-#include "IHostThread.h"
 
 
 namespace Jynx
@@ -146,9 +145,6 @@ namespace Jynx
 
 		virtual  std::shared_ptr<IFileOpener>  GetUserSettingsFilePath() = 0;
 			// Obtains a file opener that holds the path to the user settings file (or where it would be if it doesn't exist yet).
-
-		virtual IHostThread *CreateThread_OnAnyThread( IHostServicesForLynxEmulatorThreadFunction threadFunction, void *userObject ) = 0;
-		virtual  void ThreadSleep_OnAnyThread( uint32_t milliseconds ) = 0;
 
 		virtual  void  PaintPixelsOnHostBitmapForLynxScreenByte_OnEmulatorThread( uint32_t addressOffset, uint32_t lynxRedByte, uint32_t lynxGreenByte, uint32_t lynxBlueByte ) = 0;
 			// The emulator does not know the pixel format of the View's bitmap that holds the Lynx screen.

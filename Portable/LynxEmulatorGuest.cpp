@@ -109,7 +109,6 @@ namespace Jynx
 		, _hostObject(hostObject)
 		, _machineType(initialMachineType)
 		, _platformEndOfLineSequenceUTF8(platformEndOfLineSequenceUTF8)
-		, _emulationThread(nullptr)
 		, _callWaiting(false)
 	{
 		// (Reminder - Called on the client thread).
@@ -125,7 +124,7 @@ namespace Jynx
 
 		LoadROMS();
 		InitialiseLYNX();
-		_emulationThread = _hostObject->CreateThread_OnAnyThread( &LynxEmulatorGuest::BootstrapRunThreadMainLoop, this );
+		_emulationThread.CreateAndRun( &LynxEmulatorGuest::BootstrapRunThreadMainLoop, this );
 	}
 
 
@@ -133,11 +132,8 @@ namespace Jynx
 	LynxEmulatorGuest::~LynxEmulatorGuest()
 	{
 		// (Called on main thread)
-		if( _emulationThread != nullptr )
-		{
-			_emulationThread->SignalToTerminateAndJoin();
-			_emulationThread = nullptr;
-		}
+		_emulationThread.RequestTermination();
+		_emulationThread.WaitForTermination();
 	}
 
 
@@ -1268,7 +1264,7 @@ namespace Jynx
 
 	void LynxEmulatorGuest::RunThreadMainLoop()
 	{
-		while( _emulationThread->CanKeepRunning() )
+		while( ! _emulationThread.ShouldTerminate() )
 		{
 			_hostObject->WriteSoundBufferToSoundCardOrSleep_OnEmulatorThread();
 

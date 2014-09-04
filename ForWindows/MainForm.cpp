@@ -414,55 +414,6 @@ void MainForm::OnSound()
 
 
 
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-//        THREAD ADAPTER to PLATFORM THREAD
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-class ThreadAdapterToMicrosoftWindows: public libWinApi::Thread, public Jynx::IHostThread
-{
-public:
-	ThreadAdapterToMicrosoftWindows( Jynx::IHostServicesForLynxEmulatorThreadFunction threadFunction, void *userObject );
-	virtual int32_t ThreadMain() override;
-	virtual void SignalToTerminateAndJoin() override;
-	virtual bool CanKeepRunning() override;
-private:
-	Jynx::IHostServicesForLynxEmulatorThreadFunction _threadFunction;
-	void *_userObject;
-};
-
-
-
-ThreadAdapterToMicrosoftWindows::ThreadAdapterToMicrosoftWindows( Jynx::IHostServicesForLynxEmulatorThreadFunction threadFunction, void *userObject )
-	: _threadFunction(threadFunction)
-	, _userObject(userObject)
-{
-	CreateAndRun();
-}
-
-int32_t ThreadAdapterToMicrosoftWindows::ThreadMain()
-{
-	_threadFunction(_userObject);
-	return 0;
-}
-
-void ThreadAdapterToMicrosoftWindows::SignalToTerminateAndJoin()
-{
-	this->RequestTermination();
-	this->WaitForTermination();
-}
-
-bool ThreadAdapterToMicrosoftWindows::CanKeepRunning()
-{
-	return ! ShouldTerminate();
-}
-
-
-
-
-
-
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 //        VIEW SERVICES TO MODEL  (IHostServicesForLynxUserInterfaceModel)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -764,17 +715,8 @@ std::shared_ptr<Jynx::IFileOpener>  MainForm::GetUserSettingsFilePath()
 }
 
 
-Jynx::IHostThread *MainForm::CreateThread_OnAnyThread( Jynx::IHostServicesForLynxEmulatorThreadFunction threadFunction, void *userObject )
-{
-	return new ThreadAdapterToMicrosoftWindows( threadFunction, userObject );
-}
 
 
-
-void MainForm::ThreadSleep_OnAnyThread( uint32_t milliseconds )
-{
-	::Sleep( milliseconds );
-}
 
 
 
