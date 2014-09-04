@@ -136,9 +136,19 @@ namespace Jynx
 		{
 			_threadFunction = threadFunction;
 			_userObjectForThreadFunction = userObject;
+			
 			DWORD threadId = 0; // not massively important to store this
-			_platformSpecificImplementation = ::CreateThread( NULL, DefaultStackSizeBytes, &ThreadBootstrappingProcedure, this, STACK_SIZE_PARAM_IS_A_RESERVATION, &threadId );
+			
+			_platformSpecificImplementation = ::CreateThread(  // TODO: _beginthreadex() here would avoid an 80-byte leak with the MSVCRT library
+				NULL, 
+				DefaultStackSizeBytes, 
+				&ThreadBootstrappingProcedure, 
+				this, 
+				STACK_SIZE_PARAM_IS_A_RESERVATION, 
+				&threadId );
+
 			if( _platformSpecificImplementation != NULL ) return;
+			
 			throw std::exception( "The system is out of resources, cannot create a new thread." );
 		}
 		else

@@ -55,7 +55,7 @@ namespace Jynx
 
 	private:
 
-		LynxEmulatorGuest * const _guestObjectToLockAndUnlock;
+		LynxEmulatorGuest * _guestObjectToLockAndUnlock;
 
 	};
 
@@ -65,10 +65,17 @@ namespace Jynx
 		: _guestObjectToLockAndUnlock(guestObjectToLockAndUnlock) 
 	{
 		// (Constructor called on MAIN thread).
-		_guestObjectToLockAndUnlock->_callWaitingAcknowledge.Reset();
-		_guestObjectToLockAndUnlock->_callWaiting = true;
-		_guestObjectToLockAndUnlock->_callWaitingAcknowledge.Wait();
-		// EMULATOR thread is now suspended, waiting for actions in our destructor.
+		if( _guestObjectToLockAndUnlock->_callWaiting == false ) // re-entrancy detection.
+		{
+			_guestObjectToLockAndUnlock->_callWaitingAcknowledge.Reset();
+			_guestObjectToLockAndUnlock->_callWaiting = true;
+			_guestObjectToLockAndUnlock->_callWaitingAcknowledge.Wait();
+			// EMULATOR thread is now suspended, waiting for actions in our destructor.
+		}
+		else
+		{
+			_guestObjectToLockAndUnlock = nullptr; // disable destructor because this was a re-entrant usage of this class.
+		}
 	}
 
 
@@ -77,8 +84,11 @@ namespace Jynx
 	{
 		// (Destructor called on MAIN thread).
 		// EMULATOR thread is currently blocked on '_callWaitingAcknowledge' going 'false'.
-		_guestObjectToLockAndUnlock->_callWaiting = false; // but SET THIS FIRST!
-		_guestObjectToLockAndUnlock->_resumeEmulatorThread.Signal(); // release this SECOND!
+		if( _guestObjectToLockAndUnlock != nullptr )
+		{
+			_guestObjectToLockAndUnlock->_callWaiting = false; // but SET THIS FIRST!
+			_guestObjectToLockAndUnlock->_resumeEmulatorThread.Signal(); // release this SECOND!
+		}
 	}
 
 
@@ -1600,14 +1610,11 @@ namespace Jynx
 			&& fileImage[2] == 0xBF )   // Short-circuit logic on if() is safe because of NUL appended above.
 		{
 			// UTF-8 BOM
-			// TODO: translate UTF-8 to bytes in range 0-255?
-			// Also we need to interpret all possible host line endings.
-			// Perhaps also remove strange characters.
 			_textPlayer.SetText( &loadedText[3] );
 		}
 		else
 		{
-			// Assume no UTF-8 BOM
+			// Assume no UTF-8 BOM, which covers ASCII.
 			_textPlayer.SetText( &loadedText[0] );
 		}
 	}

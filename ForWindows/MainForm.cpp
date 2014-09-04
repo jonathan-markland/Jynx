@@ -524,7 +524,8 @@ const UINT MainFormTickableItems[Jynx::TickableInterfaceElements::Count] =
 
 void MainForm::SetTickBoxState( Jynx::TickableInterfaceElements::Enum itemToSet, bool tickState )
 {
-	assert( sizeof(MainFormTickableItems) == sizeof(UINT) * sizeof(itemToSet) );
+	assert( itemToSet >= 0 && itemToSet <= Jynx::TickableInterfaceElements::Count );
+	assert( sizeof(MainFormTickableItems) == (sizeof(UINT) * Jynx::TickableInterfaceElements::Count) );
 
 	auto hMenu = ::GetMenu( *this );
 	if( hMenu )
@@ -545,7 +546,8 @@ const UINT MainFormGreyableItems[Jynx::ButtonInterfaceElements::Count] =
 
 void MainForm::SetEnabledState( Jynx::ButtonInterfaceElements::Enum itemToSet, bool enableState )
 {
-	assert( sizeof(MainFormGreyableItems) == sizeof(UINT) * sizeof(itemToSet) );
+	assert( itemToSet >= 0 && itemToSet <= Jynx::ButtonInterfaceElements::Count );
+	assert( sizeof(MainFormGreyableItems) == (sizeof(UINT) * Jynx::ButtonInterfaceElements::Count) );
 
 	auto hMenu = ::GetMenu( *this );
 	if( hMenu )
