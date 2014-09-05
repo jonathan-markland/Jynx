@@ -46,4 +46,21 @@ namespace Jynx
 	}
 
 
+
+	void SaveFileFromVector( IFileOpener *fileOpener, const std::vector<uint8_t> &fileImage )
+	{
+		std::ofstream  outStream;
+
+		fileOpener->OpenOutputStream( outStream, std::ios::binary | std::ios::out );
+
+		if( ! fileImage.empty() ) // begin() on an empty vector raise debug assert on Windows
+		{
+			auto startAddress = &(*fileImage.begin());
+			outStream.write( (const char *) startAddress, fileImage.size() );
+		}
+
+		outStream.close();
+	}
+
+
 } // end namespace Jynx

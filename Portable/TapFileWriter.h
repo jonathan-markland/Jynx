@@ -44,8 +44,9 @@ namespace Jynx
 	{
 	public:
 
-		// A one-file-only TAP file saver.
-		// Must construct afresh for each file to save!
+		// A multi-file TAP file saver.
+		// Saves from the Lynx will just append.
+		// Client must construct afresh for starting a new tape!
 
 		TapFileWriter();
 
@@ -57,8 +58,12 @@ namespace Jynx
 		void NotifyCassetteMotorOff();
 		void WriteSignal( uint8_t speakerLevel, uint64_t z80CycleCounter );
 
-		void SaveToFile( IFileOpener * );
-	
+		std::vector<uint8_t>  GetTapFileImage();  
+			// This design allows the EMULATION thread to be suspended for a tiny
+			// amount of time only, when saving a TAP file to the host.  This
+			// completely avoids the disc access time.
+			// Throws std::runtime_error exception if nothing to save.
+
 	private:
 
 		TapWriterState::Enum  _state;

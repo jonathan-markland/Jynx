@@ -869,7 +869,7 @@ namespace Jynx
 	{
 		_currentReadTape->CassetteMotorOff();
 		_currentWriteTape->NotifyCassetteMotorOff();
-		_hostObject->NotifyOutputTapeAvailbilityChanged_OnEmulatorThread();
+		_hostObject->NotifyOutputTapeAvailbilityChanged_OnAnyThread();
 	}
 
 
@@ -1450,6 +1450,7 @@ namespace Jynx
 		EmulatorThreadInhibitor  handshake(this);
 		_tapeMode = LynxTapeMode::SavingPermitted;
 		_currentWriteTape = std::make_shared<TapFileWriter>();
+		_hostObject->NotifyOutputTapeAvailbilityChanged_OnAnyThread();
 	}
 
 
@@ -1491,16 +1492,19 @@ namespace Jynx
 
 	void LynxEmulatorGuest::SaveTape( IFileOpener *fileOpener )
 	{
-		EmulatorThreadInhibitor  handshake(this);
-		_currentWriteTape->SaveToFile( fileOpener );
-	}
+		std::vector<uint8_t> tapFileImage;
 
+		{
+			// (We only need to block emulator thread for this scope only)
+			EmulatorThreadInhibitor  handshake(this);
+			tapFileImage = _currentWriteTape->GetTapFileImage();
+		}
 
-
-	bool LynxEmulatorGuest::IsTapeModified() const
-	{
-		EmulatorThreadInhibitor  handshake(const_cast<LynxEmulatorGuest *>(this));  // TODO: Make volatile
-		return _currentWriteTape->IsModified();
+		// Main thread can now do all the saving:
+		SaveFileFromVector( fileOpener, tapFileImage );
+		
+		// Revert to a blank tape after saving, and signal MAIN thread to update UI:
+		InsertBlankTape();
 	}
 
 

@@ -239,20 +239,17 @@ namespace Jynx
 
 
 	
-	void TapFileWriter::SaveToFile( IFileOpener *fileOpener )
+	std::vector<uint8_t>  TapFileWriter::GetTapFileImage()
 	{
 		if( _state == TapWriterState::MotorOff && ! HasFailed() && ! IsTapeEmpty() )  // TODO: maybe UI needs to know this instead:  CanSaveToTapFile()
 		{
-			std::ofstream  outStream;
-			fileOpener->OpenOutputStream( outStream, std::ios::binary | std::ios::out );
-			auto startAddress = &(*_dataVector.begin());
-			outStream.write( (const char *) startAddress, _dataVector.size() );
-			outStream.close();
+			return _dataVector;
 		}
 		else
 		{
 			throw std::runtime_error( "Cannot save TAP file.  There is no successfully generated tape to save." );
 		}
 	}
+
 
 } // end namespace Jynx

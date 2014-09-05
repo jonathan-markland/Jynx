@@ -186,7 +186,7 @@ namespace Jynx
 
 	bool LynxUserInterfaceModel::CanRiskLosingModifiedTape() const
 	{
-		if( _lynxEmulator->IsTapeModified() )
+		if( _lynxEmulator->CanSaveTAPFile() )
 		{
 			return _hostView->AskYesNoQuestion( "This action will lose the unsaved tape!\n\nDo you wish to proceed?", "Warning" );
 		}
@@ -573,9 +573,10 @@ namespace Jynx
 
 
 
-	void  LynxUserInterfaceModel::NotifyOutputTapeAvailbilityChanged_OnEmulatorThread()
+	void  LynxUserInterfaceModel::NotifyOutputTapeAvailbilityChanged_OnAnyThread()
 	{ 
-		// (WARNING - Called on the EMULATOR thread, NOT the MAIN thread)
+		// (WARNING - Called on EITHER the emulator or main thread!)
+		// (May be called with the EMULATOR suspended!)
 
 		// - Reminder:  This cannot be done on the EMULATOR thread:  UpdateUserInterfaceElementsOnView();
 

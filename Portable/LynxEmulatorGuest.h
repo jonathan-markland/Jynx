@@ -70,7 +70,6 @@ namespace Jynx
 		void LoadExistingTAPFile( IFileOpener *fileOpener );
 		bool CanSaveTAPFile() const;
 		void SaveTape( IFileOpener *fileOpener );
-		bool IsTapeModified() const;
 		bool CanSaveSnapshot() const;
 		void SetTapeSounds( bool tapeSounds );
 		bool GetTapeSounds() const;

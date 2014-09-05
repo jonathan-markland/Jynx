@@ -63,7 +63,7 @@ namespace Jynx
 			// (WARNING - Called on the EMULATOR thread, NOT the main thread)
 			// The Z80 thread wants to be suspended until sound is ready.
 
-		virtual  void  NotifyOutputTapeAvailbilityChanged_OnEmulatorThread() = 0;  
+		virtual  void  NotifyOutputTapeAvailbilityChanged_OnAnyThread() = 0;  
 			// (WARNING - Called on the EMULATOR thread, NOT the main thread)
 			// Emulator tells the host if the tape is no longer available, so host can adjust state of menu option.
 

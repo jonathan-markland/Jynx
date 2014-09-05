@@ -27,5 +27,6 @@
 namespace Jynx
 {
 	void LoadFileIntoVector( IFileOpener *fileOpener, std::vector<uint8_t> &result );  // throws std stream exceptions
+	void SaveFileFromVector( IFileOpener *fileOpener, const std::vector<uint8_t> &fileImage );   // throws std stream exceptions
 
 } // end namespace Jynx
