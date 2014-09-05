@@ -110,18 +110,19 @@ BEGIN
     LTEXT           "Jynx - Emulation of the 1983 Camputers Lynx 48K / 96K",IDC_STATIC,61,24,194,8,SS_NOPREFIX
     LTEXT           "V1.0.3  (C) 2014   Jonathan Markland",IDC_STATIC,61,36,204,8
     DEFPUSHBUTTON   "OK",IDOK,119,253,50,14,WS_GROUP
-    LTEXT           "Original Camputers Lynx hardware - John Shrieff",IDC_STATIC,61,97,172,8
-    LTEXT           "Original Lynx BASIC and firmware - Davis Jansons",IDC_STATIC,61,108,171,8
-    LTEXT           "~ With thanks for creating my first computer  ~",IDC_STATIC,61,73,188,8
-    LTEXT           "~ With thanks ~",IDC_STATIC,61,129,185,8
-    LTEXT           "The curator of camputerslynx.info - but where is the site now?",IDC_STATIC,61,142,208,8
-    LTEXT           "~ LICENCE AGREEMENT ~",IDC_STATIC,61,177,185,8
-    LTEXT           "This program comes with ABSOLUTELY NO WARRANTY,",IDC_STATIC,61,189,185,8
-    LTEXT           "and is licensed under the GNU General Public License Version 3",IDC_STATIC,61,199,203,8
-    LTEXT           "See   http://www.gnu.org/licenses/   for your rights.",IDC_STATIC,61,210,185,8
-    LTEXT           "The many excellent Z80 reference sites on the Web (See code).",IDC_STATIC,61,153,208,8
-    LTEXT           "www.github.com/jonathan-markland/jynx",IDC_STATIC,61,47,204,8
-    LTEXT           "The team at Camputers",IDC_STATIC,61,86,171,8
+    LTEXT           "Original Camputers Lynx hardware - John Shrieff",IDC_STATIC,61,106,172,8
+    LTEXT           "Original Lynx BASIC and firmware - Davis Jansons",IDC_STATIC,61,117,171,8
+    LTEXT           "~ With thanks for creating my first computer  ~",IDC_STATIC,61,82,188,8
+    LTEXT           "~ With thanks ~",IDC_STATIC,61,138,185,8
+    LTEXT           "The curator of camputerslynx.info - but where is the site now?",IDC_STATIC,61,151,208,8
+    LTEXT           "~ LICENCE AGREEMENT ~",IDC_STATIC,61,186,185,8
+    LTEXT           "This program comes with ABSOLUTELY NO WARRANTY,",IDC_STATIC,61,198,185,8
+    LTEXT           "and is licensed under the GNU General Public License Version 3",IDC_STATIC,61,208,203,8
+    LTEXT           "See   http://www.gnu.org/licenses/   for your rights.",IDC_STATIC,61,219,185,8
+    LTEXT           "The many excellent Z80 reference sites on the Web (See code).",IDC_STATIC,61,162,208,8
+    LTEXT           "The team at Camputers",IDC_STATIC,61,95,171,8
+    EDITTEXT        IDC_EDIT_BLOG,61,54,199,12,ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
+    EDITTEXT        IDC_EDIT_GITHUB,60,233,206,12,ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
 END
 
 

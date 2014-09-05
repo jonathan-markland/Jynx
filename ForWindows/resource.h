@@ -8,6 +8,9 @@
 #define IDD_MAINFORM                    310
 #define IDB_BITMAP1                     311
 #define IDB_BITMAP_LYNX_PAW             311
+#define IDC_EDIT_BLOG                   1000
+#define IDC_EDIT_BLOG2                  1001
+#define IDC_EDIT_GITHUB                 1001
 #define ID_FILE_LOADSTATESNAPSHOT       32771
 #define ID_FILE_SAVESTATESNAPSHOT       32772
 #define ID_EMULATION_LYNX48K            32773
@@ -42,7 +45,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        312
 #define _APS_NEXT_COMMAND_VALUE         32803
-#define _APS_NEXT_CONTROL_VALUE         1000
+#define _APS_NEXT_CONTROL_VALUE         1001
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

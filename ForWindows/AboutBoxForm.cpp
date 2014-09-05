@@ -46,6 +46,12 @@ void AboutBoxForm::WindowProc( libWinApi::WindowProcArgs &e )
 bool AboutBoxForm::OnInitDialog()
 {
 	libWinApi::CenterWindow( *this, GetOwner() );
+
+	auto hWndEditGitHub = ::GetDlgItem( *this, IDC_EDIT_GITHUB );
+	auto hWndEditBlog   = ::GetDlgItem( *this, IDC_EDIT_BLOG );
+	::SetWindowText( hWndEditGitHub, L"http://www.github.com/jonathan-markland/jynx" );
+	::SetWindowText( hWndEditBlog,   L"http://jynx-emulator.tumblr.com/" );
+
 	return BaseForm::OnInitDialog();
 }
 
