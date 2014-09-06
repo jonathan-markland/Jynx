@@ -96,6 +96,9 @@ please contact me on GitHub (see above).</i></p>
 
 <h2>Emulation Menu</h2>
 
+<h3>Pause</h3>
+<p>Pauses the emulator until you untick this box.  You can load a snapshot in this state, but it will not start until you un-pause.</p>
+
 <h3>Lynx 48K / Lynx 96K</h3>
 <p>These options select which Lynx model you would like to emulate.  Changing the Lynx model will require a reset of the guest machine!</p>
 
@@ -117,6 +120,11 @@ please contact me on GitHub (see above).</i></p>
 <h3>Use Square Pixels</h3>
 <p>Projects the Lynx's display so it fits within the host's window with the largest size possible, while mapping each guest pixel onto an integral number of pixels on the host monitor.  As you re-size the display, the projects will "jump" between different sizes.</p>
 
+<h3>Fill window</h3>
+<p>Stretch the Lynx's display to fill the window, ignoring aspect ratio.</p>
+
+<h3>Full screen</h3>
+<p>Toggle full screen.  You can still get the menus in full screen mode.  Press Alt-F for File (etc).  Hint: Cursor left/right moves between menus.  Alt-F4 to Exit.</p>
 
 
 
@@ -166,6 +174,15 @@ please contact me on GitHub (see above).</i></p>
 
 
 
+<h2>Technical menu</h2>
+
+<h3>Pause emulation just after TAP has loaded</h3>
+<p>Intended to help people wanting to save snapshots just before their game's main screen appears!</p>
+
+
+
+
+
 <h2>Help menu</h2>
 
 <h3>About</h3>
@@ -174,11 +191,36 @@ please contact me on GitHub (see above).</i></p>
 
 
 
-<h1>User Settings File</h2>
+<h1>User Settings File</h1>
 
 <p>On Microsoft Windows systems, the program saves user settings in the current user's "non-roaming" application data folder.</p> 
 
 <p><i>Please don't fiddle with this file!  If you get it wrong, the program will ignore it on startup.</i></p> 
+
+<h1>Command Line</h1>
+
+<p>I've received feedback on the emulator, and I've added a command line parameter set.</p>
+
+<p>Parameters are given by a switch name with two minus signs in front.  This may be followed by a space and a parameter value. All switches are optional. Examples of usage:</p>
+
+<table cellspacing=8>
+	<tr>
+		<td>--settings</td><td>Specify alternative location for settings file.</td>
+	</tr>
+	<tr>
+		<td>--snapshot</td><td>Specify lynxsnapshot file to be immediately loaded on startup.</td>
+	</tr>
+	<tr>
+		<td>--games</td><td>Put emulator into games mode. Does not pester on exit, and does not SAVE the settings file.</td>
+	</tr>
+</table>
+
+<p>Example command line:</p>
+
+<p><code>
+jynx.exe --settings "C:\users\jonathan\documents\Alternative Settings.txt" --snapshot "C:\users\jonathan\documents\snapshots\AIR RAID.lynxsnapshot" --games
+<code>
+</p>
 
 <h1>Limitations</h1>
 
