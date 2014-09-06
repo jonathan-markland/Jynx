@@ -2070,3 +2070,61 @@ namespace libWinApi
 
 }
 
+
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+//     COMMAND LINE APPS
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+namespace libWinApi
+{
+	bool SplitCommandLine( const wchar_t *Str, std::vector<std::wstring> *out_Strings )
+	{
+		// The parsing is in the style of a Windows command line where filepaths
+		// can have spaces, and thus are enclosed in double-quotes.  The double
+		// quotes are stripped off in the list of strings that are returned.
+
+		std::vector<std::wstring>  Strings;
+		std::wstring  tmp;
+		bool InQuote = false;
+		for(;;)
+		{
+			auto ch = *Str;
+			if( ch == 0 )
+			{
+				if( ! InQuote )
+				{
+					if( ! tmp.empty() )
+					{
+						Strings.push_back(tmp); // flush final
+					}
+					out_Strings->swap( Strings );
+					return true;
+				}
+				return false;
+			}
+			else if( ch == L' ' && ! InQuote )
+			{
+				if( ! tmp.empty() )
+				{
+					Strings.push_back(tmp);
+					tmp.clear();
+				}
+			}
+			else if( ch != L'\"' )
+			{
+				tmp.push_back(ch);
+			}
+			else
+			{
+				InQuote = ! InQuote;
+			}
+			++Str;
+		}
+	}
+}
+
+
+
+

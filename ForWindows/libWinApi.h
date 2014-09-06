@@ -653,3 +653,14 @@ namespace libWinApi
 }
 
 
+
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+//     COMMAND LINE APPS
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+namespace libWinApi
+{
+	bool SplitCommandLine( const wchar_t *Str, std::vector<std::wstring> *out_Strings );
+}

@@ -25,7 +25,45 @@
 #include "assert.h"
 #include <exception>
 #include <memory>
+#include <vector>
+#include <string>
 #include "MainForm.h"
+
+
+
+void SyntaxError()
+{
+	throw std::runtime_error( "Syntax error in command line string" );
+}			
+
+
+void MissingOperand()
+{
+	throw std::runtime_error( "Command line parameter is missing an operand." );
+}
+
+
+
+bool ParseParamAndValue( const std::vector<std::wstring> &paramList, size_t &i, const wchar_t *switchString, std::wstring *out_variable )
+{
+	if( i < paramList.size() )
+	{
+		if( paramList[i] == switchString )
+		{
+			++i;
+			if( i >= paramList.size() ) MissingOperand();
+			if( paramList[i][0] == L'-' ) MissingOperand();
+			*out_variable = paramList[i];
+			++i;
+			return true;
+		}
+	}
+	return false;
+}
+
+
+
+
 
 
 int APIENTRY _tWinMain(
@@ -36,14 +74,33 @@ int APIENTRY _tWinMain(
 {
 	try
 	{
+		// Command line parse:
+		std::vector<std::wstring>  paramList;
+		if( ! libWinApi::SplitCommandLine( lpCmdLine, &paramList ) )
+		{
+			SyntaxError();
+		}
+
+		// Parsed Parameters
+		std::wstring  settingsFilePath;
+		std::wstring  snapshotFilePath;
+		size_t i=0;
+		while( i < paramList.size() )
+		{
+			     if( ParseParamAndValue( paramList, i, L"--settings", &settingsFilePath ) ) {}
+			else if( ParseParamAndValue( paramList, i, L"--snapshot", &snapshotFilePath ) ) {}
+			else throw std::runtime_error( "Unrecognised content on command line." );
+		}
+
+		// Show main form:
 		auto mainForm = std::make_shared<MainForm>( (HWND) NULL );
 		mainForm->ShowAndMaximise();
 		mainForm->DoModal();
+		return 0;
 	}
 	catch( const std::exception &e )
 	{
 		MessageBoxA( NULL, e.what(), "Program cannot continue running", MB_OK | MB_ICONERROR );
+		return 1;
 	}
-
-	return 0;
 }
