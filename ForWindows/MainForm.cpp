@@ -221,9 +221,14 @@ bool  MainForm::OnInitDialog()
 
 	g_hWndToPostMessage = GetHWND();
 
-	libWinApi::CenterWindowPercent( *this, 85, GetOwner() );
+	// Centre window placement BEFORE calling model's OnInitDialog() as 
+	// that may cause go full screen as settings file is loaded!
+	libWinApi::CenterWindowPercent( *this, 85, GetOwner() ); 
+	_restorationAfterFullScreen = libWinApi::WindowStyleAndPositionInformation( *this );
+
 	_lynxUIModel->OnInitDialog();
-	return BaseForm::OnInitDialog();
+	auto result = BaseForm::OnInitDialog();
+	return result;
 }
 
 
@@ -304,7 +309,8 @@ void MainForm::WindowProc( libWinApi::WindowProcArgs &e )
 				case ID_DISPLAY_FITTOWINDOW:      _lynxUIModel->OnFitToWindow(); break;
 				case ID_DISPLAY_SQUAREPIXELS:     _lynxUIModel->OnSquarePixels(); break;
 				case ID_DISPLAY_FILLWINDOW:       _lynxUIModel->OnFillWindow(); break;
-				case ID_SOUND_ENABLE:             OnSound(); break; // not handled by the model
+				case ID_SOUND_ENABLE:             _lynxUIModel->OnEnableDisableSound(); break;
+				case ID_FULL_SCREEN_ENABLE:       _lynxUIModel->OnEnableDisableFullScreen(); break;
 				case ID_HELP_ABOUT:               OnAbout(); break; // not handled by the model
 				default:                          return BaseForm::WindowProc( e );
 			}
@@ -404,11 +410,6 @@ void MainForm::OnAbout()
 }
 
 
-
-void MainForm::OnSound()
-{
-	_lynxUIModel->OnEnableDisableSound();
-}
 
 
 
@@ -520,6 +521,7 @@ const UINT MainFormTickableItems[Jynx::TickableInterfaceElements::Count] =
 	ID_EMULATION_SPEED800,
 	ID_TEXT_LYNXBASICREMCOMMANDEXTENSIONS,
 	ID_SOUND_ENABLE,
+	ID_FULL_SCREEN_ENABLE
 };
 
 void MainForm::SetTickBoxState( Jynx::TickableInterfaceElements::Enum itemToSet, bool tickState )
@@ -531,6 +533,22 @@ void MainForm::SetTickBoxState( Jynx::TickableInterfaceElements::Enum itemToSet,
 	if( hMenu )
 	{
 		CheckMenuItem( hMenu, MainFormTickableItems[itemToSet], tickState ? MF_CHECKED : 0 );
+	}
+
+	if( itemToSet == Jynx::TickableInterfaceElements::ShowFullScreen )
+	{
+		auto previouslyFullScreen = libWinApi::IsWindowFullScreen( *this );
+		if( tickState != previouslyFullScreen )
+		{
+			if( tickState )
+			{
+				_restorationAfterFullScreen = libWinApi::GoFullScreen( *this );
+			}
+			else
+			{
+				_restorationAfterFullScreen.Restore();
+			}
+		}
 	}
 }
 

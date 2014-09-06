@@ -32,6 +32,7 @@ namespace Jynx
 		, _machineType( LynxMachineType::LYNX_48K )
 		, _hostView( hostView )
 		, _soundEnable( true )
+		, _showFullScreen( false )
 		, _platformEndOfLineSequenceUTF8(platformEndOfLineSequenceUTF8)
 		, _emulatorWantsUIStatusUpdate(false)
 	{
@@ -523,6 +524,25 @@ namespace Jynx
 
 
 
+	void LynxUserInterfaceModel::OnEnableDisableFullScreen()
+	{
+		// The View calls this because an option has (somehow!) been selected in the UI (menu/button/icon/whatever).
+
+		_showFullScreen = ! _showFullScreen;
+		UpdateUserInterfaceElementsOnView();
+	}
+
+
+
+	bool LynxUserInterfaceModel::IsFullScreenEnabled()
+	{
+		// The view calls this when it wants to know if full screen mode is enabled.
+		// (I admit this is a trivial service for the model to be supplying, but it unifies all future hosts).
+		return _showFullScreen;
+	}
+
+
+
 
 
 
@@ -653,6 +673,7 @@ namespace Jynx
 		bool tickTapeSounds = _lynxEmulator->GetTapeSounds();
 		bool tickRemExtensions = _lynxEmulator->GetLynxRemCommandExtensionsEnabled();
 		bool tickSound      = _soundEnable;
+		bool tickFullScreen = _showFullScreen;
 
 		//
 		// Decide what menu items need to be greyed out:
@@ -675,6 +696,7 @@ namespace Jynx
 		_hostView->SetTickBoxState( TickableInterfaceElements::UseSquarePixels, tickSquare );
 		_hostView->SetTickBoxState( TickableInterfaceElements::LynxBasicRemCommandExtensions, tickRemExtensions );
 		_hostView->SetTickBoxState( TickableInterfaceElements::SoundEnableDisable, tickSound );
+		_hostView->SetTickBoxState( TickableInterfaceElements::ShowFullScreen, tickFullScreen );
 	
 		_hostView->SetEnabledState( ButtonInterfaceElements::RewindTape, greyRewind );
 		_hostView->SetEnabledState( ButtonInterfaceElements::FinishRecording, greyFinishRec );
@@ -737,6 +759,7 @@ namespace Jynx
 				_machineType,
 				_renderStyle,
 				_soundEnable,
+				_showFullScreen,
 				_lynxEmulator->GetCyclesPerTimeslice(),
 				_lynxEmulator->GetTapeSounds(),
 				_lynxEmulator->GetLynxRemCommandExtensionsEnabled() );
@@ -759,6 +782,7 @@ namespace Jynx
 			_machineType = userSettings.GetMachineType();
 			_renderStyle = userSettings.GetRenderStyle();
 			_soundEnable = userSettings.GetSoundEnable();
+			_showFullScreen = userSettings.GetFullScreenEnable();
 			_lynxEmulator->SetCyclesPerTimeslice( userSettings.GetCyclesPerTimeslice() );
 			_lynxEmulator->SetTapeSounds( userSettings.GetTapeSounds() );
 			_lynxEmulator->SetLynxRemCommandExtensionsEnabled( userSettings.GetRemExtensions() );

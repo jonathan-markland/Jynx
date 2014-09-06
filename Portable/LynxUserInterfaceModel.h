@@ -70,6 +70,8 @@ namespace Jynx
 		void OnLynxBasicRemCommandExtensions();
 		void OnEnableDisableSound();
 		bool IsSoundEnabled();
+		void OnEnableDisableFullScreen();
+		bool IsFullScreenEnabled();
 		void OnTypeInTextFromFile();
 
 		// IHostServicesForLynxEmulator:
@@ -90,6 +92,7 @@ namespace Jynx
 		LynxMachineType::Enum  _machineType;
 		RenderStyle::Enum      _renderStyle;
 		bool                   _soundEnable;
+		bool                   _showFullScreen;
 		volatile bool          _emulatorWantsUIStatusUpdate;
 
 		// Host platform's preferred UTF8 end of line sequence:

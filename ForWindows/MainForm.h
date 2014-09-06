@@ -98,7 +98,6 @@ private:
 	void SaveSnapshot( const wchar_t *pathName );
 	void SetCycles( Jynx::LynxZ80Cycles::Enum cyclesEnum );
 	void SelectTimingMechanism();
-	void OnSound();
 
 	HDC     _dc;         // Is only set when asking the model to paint.
 	HANDLE  _hbicon;
@@ -113,6 +112,8 @@ private:
 
 	libWinApi::WaveOutputStream  *_waveOutStream;
 	std::vector<uint16_t>         _soundBuffer;
+
+	libWinApi::WindowStyleAndPositionInformation  _restorationAfterFullScreen;
 
 };
 

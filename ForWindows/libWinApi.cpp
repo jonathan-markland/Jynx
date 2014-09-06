@@ -1118,11 +1118,51 @@ namespace libWinApi
 
 
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+//     MONITOR
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
 namespace libWinApi
 {
 	HMONITOR  MonitorFromWindow( HWND hWnd )
 	{
-		return ::MonitorFromWindow( hWnd, MONITOR_DEFAULTTONEAREST );
+		auto result = ::MonitorFromWindow( hWnd, MONITOR_DEFAULTTONEAREST );
+		assert( result != NULL );
+		return result;
+	}
+
+
+
+	RECT GetMonitorRectangle( HMONITOR hMonitor )
+	{
+		MONITORINFO mi;
+		memset( &mi, 0, sizeof(mi) );
+		mi.cbSize = sizeof(MONITORINFO);
+		if( ::GetMonitorInfo( hMonitor, &mi ) )
+		{
+			return mi.rcMonitor;
+		}
+		assert(false);
+		return MakeRECT(0,0,0,0);
+	}
+
+
+
+	RECT  GetWindowClientToScreenRectangle( HWND h )
+	{
+		RECT r;
+		if( ::GetClientRect( h, &r ) )
+		{
+			auto p = (POINT *) &r;
+			::ClientToScreen( h, &p[0] );
+			::ClientToScreen( h, &p[1] );
+		}
+		else
+		{
+			assert(false);
+			r = MakeRECT(0,0,0,0);
+		}
+		return r;
 	}
 
 
@@ -1932,4 +1972,101 @@ namespace libWinApi
 	}
 }
 
+
+
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+//     FULL SCREEN WINDOW SUPPORT
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+namespace libWinApi
+{
+	WindowStyleAndPositionInformation::WindowStyleAndPositionInformation()
+		: _hWnd(NULL)
+		, _previousStyles(0) // not essential
+	{
+		memset( &_previousPlacement, 0, sizeof(_previousPlacement) );  // not essential
+	}
+
+
+
+	WindowStyleAndPositionInformation::WindowStyleAndPositionInformation( HWND hWnd )
+	{
+		_hWnd = hWnd;
+		if( hWnd != NULL )
+		{
+			_previousStyles = ::GetWindowLongPtr( hWnd, GWL_STYLE );
+			::GetWindowPlacement( hWnd, &_previousPlacement );
+		}
+	}
+
+
+
+	void WindowStyleAndPositionInformation::Restore()
+	{
+		if( _hWnd != NULL )
+		{
+			::SetWindowLongPtr( _hWnd, GWL_STYLE, _previousStyles );
+			::SetWindowPlacement( _hWnd, &_previousPlacement );
+		}
+	}
+
+
+
+	enum { StylesForFullScreenWindows = WS_POPUP | WS_VISIBLE | WS_SYSMENU };
+
+
+
+	WindowStyleAndPositionInformation  GoFullScreen( HWND hWnd )
+	{
+		auto restorationInfo = WindowStyleAndPositionInformation( hWnd );
+
+		// Remove styles to make it borderless.
+		// Raymond Chen says this is the approved way of making the Taskbar disappear.
+		::SetWindowLongPtr( hWnd, GWL_STYLE, StylesForFullScreenWindows );
+
+		auto hThisWindowsMonitor      = libWinApi::MonitorFromWindow( hWnd );
+		auto monitorRectangle         = libWinApi::GetMonitorRectangle( hThisWindowsMonitor );
+		auto thisWindowClientToScreen = libWinApi::GetWindowClientToScreenRectangle( hWnd );
+
+		// (Doing all this pushes the MENU off the top of the screen -- we've already gotten rid of the window border).
+
+		// In desktop coordinates:  Calculate delta from client rectangle edges to monitor:
+		auto deltaLeft   = monitorRectangle.left   - thisWindowClientToScreen.left;
+		auto deltaTop    = monitorRectangle.top    - thisWindowClientToScreen.top;
+		auto deltaRight  = monitorRectangle.right  - thisWindowClientToScreen.right;
+		auto deltaBottom = monitorRectangle.bottom - thisWindowClientToScreen.bottom;
+
+		// Reposition window:
+		WINDOWPLACEMENT wpl;
+		::GetWindowPlacement( hWnd, &wpl );
+		wpl.rcNormalPosition.left   += deltaLeft;
+		wpl.rcNormalPosition.top    += deltaTop;
+		wpl.rcNormalPosition.right  += deltaRight;
+		wpl.rcNormalPosition.bottom += deltaBottom;
+		::SetWindowPlacement( hWnd, &wpl );
+
+		return restorationInfo;
+	}
+
+
+
+	bool IsWindowFullScreen( HWND hWnd )
+	{
+		auto windowStyle = ::GetWindowLongPtr( hWnd, GWL_STYLE );
+
+		auto hThisWindowsMonitor      = libWinApi::MonitorFromWindow( hWnd );
+		auto monitorRectangle         = libWinApi::GetMonitorRectangle( hThisWindowsMonitor );
+		auto thisWindowClientToScreen = libWinApi::GetWindowClientToScreenRectangle( hWnd );
+
+		return 
+			thisWindowClientToScreen.left      <= monitorRectangle.left
+			&& thisWindowClientToScreen.right  >= monitorRectangle.right
+			&& thisWindowClientToScreen.top    <= monitorRectangle.top
+			&& thisWindowClientToScreen.bottom >= monitorRectangle.bottom
+			&& ! (windowStyle & WS_THICKFRAME);
+	}
+
+}
 

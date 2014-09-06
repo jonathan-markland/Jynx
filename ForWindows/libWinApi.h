@@ -151,6 +151,9 @@ namespace libWinApi
 
 	POINT LParamToPoint( LPARAM lParam );    // for use with unpacking coordinates from mouse messages  (SIGNED coordinates!)
 
+	HMONITOR  MonitorFromWindow( HWND hWnd );
+	RECT  GetMonitorRectangle( HMONITOR hMonitor );
+	RECT  GetWindowClientToScreenRectangle( HWND hWnd );
 	void  CenterWindow( HWND hWnd, HWND hWndOwner );
 	void  CenterWindowAboutScreenPoint( HWND hWnd, POINT p, bool LimitToScreen );
 	void  CenterWindowPercent( HWND hWnd, INT32 HeightPercent, HWND hWndMeasureAgainst );
@@ -625,5 +628,28 @@ namespace libWinApi
 
 
 
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+//     FULL SCREEN WINDOW SUPPORT
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+namespace libWinApi
+{
+	class WindowStyleAndPositionInformation
+	{
+	public:
+		WindowStyleAndPositionInformation();
+		explicit WindowStyleAndPositionInformation( HWND hWnd );
+		void Restore();
+	private:
+		HWND _hWnd;
+		long _previousStyles;
+		WINDOWPLACEMENT _previousPlacement;
+	};
+
+	WindowStyleAndPositionInformation  GoFullScreen( HWND hWnd );
+	bool IsWindowFullScreen( HWND hWnd );
+}
 
 

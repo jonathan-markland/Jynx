@@ -37,12 +37,14 @@ namespace Jynx
 		LynxMachineType::Enum  machineType,
 		RenderStyle::Enum      renderStyle,
 		bool                   soundEnable,
+		bool                   fullScreenEnable,
 		uint32_t               cyclesPerTimeslice,
 		bool                   tapeSounds,
 		bool                   remExtensions )
 			: _machineType( machineType )
 			, _renderStyle( renderStyle )
 			, _soundEnable( soundEnable )
+			, _fullScreenEnable( fullScreenEnable )
 			, _cyclesPerTimeslice( cyclesPerTimeslice )
 			, _tapeSounds( tapeSounds )
 			, _remExtensions( remExtensions )
@@ -61,11 +63,19 @@ namespace Jynx
 
 	void UserSettings::SerialiseFields( ISerialiser *serialiser )
 	{
-		int versionNumber = 1; // TODO: Sort out version on the next version!
+		int versionNumber = 2; // For when writing.
 		serialiser->Field(     "FileVersion",   versionNumber );
 		serialiser->FieldEnum( "MachineType",   _machineType );
 		serialiser->FieldEnum( "RenderStyle",   _renderStyle );
 		serialiser->Field(     "SoundEnable",   _soundEnable );
+		if( versionNumber >= 2 )
+		{
+			serialiser->Field( "FullScreenEnable",   _fullScreenEnable );
+		}
+		else
+		{
+			_fullScreenEnable = false;
+		}
 		serialiser->FieldEnum( "CyclesPerTimeslice",   _cyclesPerTimeslice );
 		serialiser->Field(     "TapeSounds",    _tapeSounds );
 		serialiser->Field(     "RemExtensions", _remExtensions );

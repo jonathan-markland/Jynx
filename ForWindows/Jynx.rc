@@ -70,6 +70,8 @@ BEGIN
         MENUITEM "Fit to &Window",              ID_DISPLAY_FITTOWINDOW
         MENUITEM "Use &Square Pixels",          ID_DISPLAY_SQUAREPIXELS
         MENUITEM "&Fill Window",                ID_DISPLAY_FILLWINDOW
+        MENUITEM SEPARATOR
+        MENUITEM "Full screen",                 ID_FULL_SCREEN_ENABLE
     END
     POPUP "&Sound"
     BEGIN

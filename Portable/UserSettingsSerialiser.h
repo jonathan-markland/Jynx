@@ -53,24 +53,27 @@ namespace Jynx
 			LynxMachineType::Enum  machineType,
 			RenderStyle::Enum      renderStyle,
 			bool                   soundEnable,
+			bool                   fullScreenEnable,
 			uint32_t               cyclesPerTimeslice,
 			bool                   tapeSounds,
 			bool                   remExtensions );
 
 		void SaveToFile( IFileOpener *, const std::string endOfLineSequence );
 
-		LynxMachineType::Enum  GetMachineType()   const { return _machineType; }
-		RenderStyle::Enum      GetRenderStyle()   const { return _renderStyle; }
+		LynxMachineType::Enum  GetMachineType()        const { return _machineType; }
+		RenderStyle::Enum      GetRenderStyle()        const { return _renderStyle; }
 		uint32_t               GetCyclesPerTimeslice() const { return _cyclesPerTimeslice; }
-		bool                   GetSoundEnable()   const { return _soundEnable; }
-		bool                   GetTapeSounds()    const { return _tapeSounds; }
-		bool                   GetRemExtensions() const { return _remExtensions; }
+		bool                   GetSoundEnable()        const { return _soundEnable; }
+		bool                   GetFullScreenEnable()   const { return _fullScreenEnable; }
+		bool                   GetTapeSounds()         const { return _tapeSounds; }
+		bool                   GetRemExtensions()      const { return _remExtensions; }
 
 	private:
 
 		LynxMachineType::Enum  _machineType;
 		RenderStyle::Enum      _renderStyle;
 		bool                   _soundEnable;
+		bool                   _fullScreenEnable;
 		uint32_t               _cyclesPerTimeslice;
 		bool                   _tapeSounds;
 		bool                   _remExtensions;
