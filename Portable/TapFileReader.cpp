@@ -63,6 +63,19 @@ namespace Jynx
 
 	void TapFileReader::CassetteMotorOff()
 	{
+		// In order to support the "Pause Emulator after TAP load" feature, we do this:
+
+		size_t allowance = 17;  
+			// The Lynx doesn't seem to consume the whole TAP necessarily, this is how many _waveData entries it doesn't consume.
+			// This is used as a flexible "allowance" when deciding whether the Lynx has consumed the tape or not.
+
+		if( _tapeSpeedSupplier->GetPauseAfterTapLoadEnable()
+			&& _waveData.size() > allowance
+			&& _playbackWaveDataIndex >= (_waveData.size() - allowance) )
+		{
+			// We decided that the Lynx did consume this tape, so pause the emulator:
+			_tapeSpeedSupplier->SetPauseMode( true );  
+		}
 	}
 
 

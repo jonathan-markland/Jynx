@@ -84,9 +84,12 @@ namespace Jynx
 		void TypeInTextFromFile( IFileOpener *fileOpener );
 		void SetPauseMode( bool pauseMode );
 		bool GetPauseMode() const;
+		void SetPauseAfterTapLoadEnable( bool pauseAfterTapLoadEnable );
+		bool GetPauseAfterTapLoadEnable() const;
 
 		// Implementing ITapeSpeedSupplier
 		virtual uint32_t  GetLynxTapeSpeedBitsPerSecond() override;
+		virtual bool GetPauseAfterTapLoadEnable() override;
 
 	private:
 
@@ -171,6 +174,7 @@ namespace Jynx
 
 		volatile bool     _hearTapeSounds;    // Tape sound monitoring (ie: wire to speakers)
 		volatile bool     _pauseMode;
+		volatile bool     _pauseAfterTapLoadEnable;
 
 		// Lynx text recording (snooping) on host:
 		TextRecorder         _textRecorder;

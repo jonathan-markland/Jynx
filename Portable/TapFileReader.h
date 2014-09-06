@@ -38,6 +38,8 @@ namespace Jynx
 		// before creating the waveform.
 
 		virtual uint32_t  GetLynxTapeSpeedBitsPerSecond() = 0;
+		virtual bool GetPauseAfterTapLoadEnable() = 0;
+		virtual void SetPauseMode( bool pauseMode ) = 0;
 	};
 
 

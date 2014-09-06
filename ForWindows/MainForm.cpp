@@ -298,6 +298,7 @@ void MainForm::WindowProc( libWinApi::WindowProcArgs &e )
 				case ID_EMULATION_SPEED400:       _lynxUIModel->OnSetCycles( Jynx::LynxZ80Cycles::At400 ); break;
 				case ID_EMULATION_SPEED800:       _lynxUIModel->OnSetCycles( Jynx::LynxZ80Cycles::At800 ); break;
 				case ID_EMULATION_PAUSE:          _lynxUIModel->OnPause(); break;
+				case ID_TECHNICAL_PAUSEAFTERTAPLOAD:         _lynxUIModel->OnPauseAfterTapLoad(); break;
 				case ID_SOUND_LISTENTOTAPESOUNDS: _lynxUIModel->OnListenToTapeSounds(); break;
 				case ID_SOUND_RECORDTOFILE:       _lynxUIModel->OnRecordToFile(); break;
 				case ID_SOUND_FINISHRECORDING:    _lynxUIModel->OnFinishRecording(); break;
@@ -522,7 +523,8 @@ const UINT MainFormTickableItems[Jynx::TickableInterfaceElements::Count] =
 	ID_TEXT_LYNXBASICREMCOMMANDEXTENSIONS,
 	ID_SOUND_ENABLE,
 	ID_FULL_SCREEN_ENABLE,
-	ID_EMULATION_PAUSE
+	ID_EMULATION_PAUSE,
+	ID_TECHNICAL_PAUSEAFTERTAPLOAD,
 };
 
 void MainForm::SetTickBoxState( Jynx::TickableInterfaceElements::Enum itemToSet, bool tickState )

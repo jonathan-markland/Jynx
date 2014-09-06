@@ -497,6 +497,17 @@ namespace Jynx
 
 
 
+	void LynxUserInterfaceModel::OnPauseAfterTapLoad()
+	{
+		// The View calls this because an option has (somehow!) been selected in the UI (menu/button/icon/whatever).
+
+		auto currentState = _lynxEmulator->GetPauseAfterTapLoadEnable();
+		_lynxEmulator->SetPauseAfterTapLoadEnable( ! currentState );
+		UpdateUserInterfaceElementsOnView();
+	}
+
+
+
 	bool LynxUserInterfaceModel::UserAllowsReset()
 	{
 		return _hostView->AskYesNoQuestion( "This action will RESET the emulator!\n\nDo you wish to proceed?", "Warning" );
@@ -684,6 +695,7 @@ namespace Jynx
 		bool tickTapeSounds = _lynxEmulator->GetTapeSounds();
 		bool tickRemExtensions = _lynxEmulator->GetLynxRemCommandExtensionsEnabled();
 		bool tickPaused        = _lynxEmulator->GetPauseMode();
+		bool tickPauseAfterTap = _lynxEmulator->GetPauseAfterTapLoadEnable();
 		bool tickSound      = _soundEnable;
 		bool tickFullScreen = _showFullScreen;
 
@@ -710,6 +722,7 @@ namespace Jynx
 		_hostView->SetTickBoxState( TickableInterfaceElements::SoundEnableDisable, tickSound );
 		_hostView->SetTickBoxState( TickableInterfaceElements::ShowFullScreen, tickFullScreen );
 		_hostView->SetTickBoxState( TickableInterfaceElements::Paused, tickPaused );
+		_hostView->SetTickBoxState( TickableInterfaceElements::PausedAfterTapLoad, tickPauseAfterTap );
 	
 		_hostView->SetEnabledState( ButtonInterfaceElements::RewindTape, greyRewind );
 		_hostView->SetEnabledState( ButtonInterfaceElements::FinishRecording, greyFinishRec );

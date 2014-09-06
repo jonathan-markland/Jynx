@@ -93,6 +93,10 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Enable Lynx Basic REM command extensions", ID_TEXT_LYNXBASICREMCOMMANDEXTENSIONS
     END
+    POPUP "Tec&hnical"
+    BEGIN
+        MENUITEM "Pause emulation just after TAP has loaded", ID_TECHNICAL_PAUSEAFTERTAPLOAD
+	END
     POPUP "&Help"
     BEGIN
         MENUITEM "&About ...",                  ID_HELP_ABOUT

@@ -121,6 +121,7 @@ namespace Jynx
 		, _platformEndOfLineSequenceUTF8(platformEndOfLineSequenceUTF8)
 		, _callWaiting(false)
 		, _pauseMode(false)
+		, _pauseAfterTapLoadEnable(false)
 	{
 		// (Reminder - Called on the client thread).
 
@@ -899,6 +900,14 @@ namespace Jynx
 
 
 
+	bool LynxEmulatorGuest::GetPauseAfterTapLoadEnable()
+	{
+		return _pauseAfterTapLoadEnable;
+	}
+
+
+
+
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 	//     LYNX "TAPE" speed conversion
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -1654,6 +1663,20 @@ namespace Jynx
 	{
 		// (Volatile access)
 		_pauseMode = pauseMode;
+	}
+
+
+	bool LynxEmulatorGuest::GetPauseAfterTapLoadEnable() const
+	{
+		// (Volatile access)
+		return _pauseAfterTapLoadEnable;
+	}
+
+
+	void LynxEmulatorGuest::SetPauseAfterTapLoadEnable( bool pauseAfterTapLoadEnable )
+	{
+		// (Volatile access)
+		_pauseAfterTapLoadEnable = pauseAfterTapLoadEnable;
 	}
 
 
