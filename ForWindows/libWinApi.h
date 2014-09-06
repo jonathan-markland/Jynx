@@ -644,7 +644,7 @@ namespace libWinApi
 		void Restore();
 	private:
 		HWND _hWnd;
-		long _previousStyles;
+		LONG_PTR _previousStyles;
 		WINDOWPLACEMENT _previousPlacement;
 	};
 
