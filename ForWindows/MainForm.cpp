@@ -224,7 +224,6 @@ bool  MainForm::OnInitDialog()
 	// Centre window placement BEFORE calling model's OnInitDialog() as 
 	// that may cause go full screen as settings file is loaded!
 	libWinApi::CenterWindowPercent( *this, 85, GetOwner() ); 
-	_restorationAfterFullScreen = libWinApi::WindowStyleAndPositionInformation( *this );
 
 	_lynxUIModel->OnInitDialog();
 	auto result = BaseForm::OnInitDialog();

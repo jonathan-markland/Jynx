@@ -2014,7 +2014,7 @@ namespace libWinApi
 
 
 
-	enum { StylesForFullScreenWindows = WS_POPUP | WS_VISIBLE | WS_SYSMENU };
+	enum { StylesForFullScreenWindows = WS_POPUP | WS_SYSMENU };  // do NOT include visible.
 
 
 
@@ -2022,30 +2022,30 @@ namespace libWinApi
 	{
 		auto restorationInfo = WindowStyleAndPositionInformation( hWnd );
 
+		auto windowVisible = ::IsWindowVisible(hWnd);
+
 		// Remove styles to make it borderless.
 		// Raymond Chen says this is the approved way of making the Taskbar disappear.
-		::SetWindowLongPtr( hWnd, GWL_STYLE, StylesForFullScreenWindows );
+		::SetWindowLongPtr( hWnd, GWL_STYLE, StylesForFullScreenWindows | ( windowVisible ? WS_VISIBLE : 0 ) ); // don't change visibility!!
 
 		auto hThisWindowsMonitor      = libWinApi::MonitorFromWindow( hWnd );
 		auto monitorRectangle         = libWinApi::GetMonitorRectangle( hThisWindowsMonitor );
-		auto thisWindowClientToScreen = libWinApi::GetWindowClientToScreenRectangle( hWnd );
 
 		// (Doing all this pushes the MENU off the top of the screen -- we've already gotten rid of the window border).
-
-		// In desktop coordinates:  Calculate delta from client rectangle edges to monitor:
-		auto deltaLeft   = monitorRectangle.left   - thisWindowClientToScreen.left;
-		auto deltaTop    = monitorRectangle.top    - thisWindowClientToScreen.top;
-		auto deltaRight  = monitorRectangle.right  - thisWindowClientToScreen.right;
-		auto deltaBottom = monitorRectangle.bottom - thisWindowClientToScreen.bottom;
+		auto menuHeightPixels = ::GetSystemMetrics( SM_CYMENU );
 
 		// Reposition window:
 		WINDOWPLACEMENT wpl;
-		::GetWindowPlacement( hWnd, &wpl );
-		wpl.rcNormalPosition.left   += deltaLeft;
-		wpl.rcNormalPosition.top    += deltaTop;
-		wpl.rcNormalPosition.right  += deltaRight;
-		wpl.rcNormalPosition.bottom += deltaBottom;
-		::SetWindowPlacement( hWnd, &wpl );
+		memset( &wpl, 0, sizeof(wpl) );
+		wpl.length = sizeof(wpl);
+		if( ::GetWindowPlacement( hWnd, &wpl ) )
+		{
+			if( ! windowVisible ) wpl.showCmd = SW_HIDE;
+			wpl.rcNormalPosition = monitorRectangle;
+			wpl.rcNormalPosition.top -= menuHeightPixels;
+			if( ! ::SetWindowPlacement( hWnd, &wpl ) ) assert(false);
+		}
+		else assert(false);
 
 		return restorationInfo;
 	}
