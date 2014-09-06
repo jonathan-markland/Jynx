@@ -41,7 +41,8 @@ class MainForm: public libWinApi::BaseForm, public Jynx::IViewServicesForLynxUse
 {
 public:
 
-	MainForm( HWND hWndOwner );
+	MainForm( HWND hWndOwner, const wchar_t *settingsFilePath, const wchar_t *snapshotFilePath, bool gamesMode );
+
 	enum { IDD = IDD_MAINFORM };
 	virtual ~MainForm() override;
 
@@ -114,6 +115,10 @@ private:
 	std::vector<uint16_t>         _soundBuffer;
 
 	libWinApi::WindowStyleAndPositionInformation  _restorationAfterFullScreen;
+
+	std::wstring  _settingsFilePath;
+	std::wstring  _snapshotFilePath;
+	bool _gamesMode;
 
 };
 

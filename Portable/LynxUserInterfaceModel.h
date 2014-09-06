@@ -39,7 +39,8 @@ namespace Jynx
 		//   and create the LynxEmulatorGuest yourself.
 		// - Multithreading note:  Consider the model to be called on the MAIN thread.
 
-		LynxUserInterfaceModel( IViewServicesForLynxUserInterfaceModel *hostView, uint16_t *soundBuffer, size_t numSamples, const char *platformEndOfLineSequenceUTF8 );
+		LynxUserInterfaceModel( 
+			IViewServicesForLynxUserInterfaceModel *hostView, uint16_t *soundBuffer, size_t numSamples, const char *platformEndOfLineSequenceUTF8, bool gamesMode );
 
 		// ILynxUserInterfaceModel:
 		void OnInitDialog();
@@ -75,6 +76,7 @@ namespace Jynx
 		void OnTypeInTextFromFile();
 		void OnPause();
 		void OnPauseAfterTapLoad();
+		void ForceLoadSpecificSnapshot( IFileOpener *fileOpener ); // enable view to load the command-line default snapshot file.
 
 		// IHostServicesForLynxEmulator:
 		// - THREADING NOTE:  The emulator object calls back into the Model on 
@@ -95,6 +97,7 @@ namespace Jynx
 		RenderStyle::Enum      _renderStyle;
 		bool                   _soundEnable;
 		bool                   _showFullScreen;
+		bool                   _gamesMode;
 		volatile bool          _emulatorWantsUIStatusUpdate;
 
 		// Host platform's preferred UTF8 end of line sequence:

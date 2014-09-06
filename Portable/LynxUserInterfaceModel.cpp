@@ -27,7 +27,7 @@
 
 namespace Jynx
 {
-	LynxUserInterfaceModel::LynxUserInterfaceModel( IViewServicesForLynxUserInterfaceModel *hostView, uint16_t *soundBuffer, size_t numSamples, const char *platformEndOfLineSequenceUTF8 )
+	LynxUserInterfaceModel::LynxUserInterfaceModel( IViewServicesForLynxUserInterfaceModel *hostView, uint16_t *soundBuffer, size_t numSamples, const char *platformEndOfLineSequenceUTF8, bool gamesMode )
 		: _renderStyle( RenderStyle::SquarePixels )
 		, _machineType( LynxMachineType::LYNX_48K )
 		, _hostView( hostView )
@@ -35,6 +35,7 @@ namespace Jynx
 		, _showFullScreen( false )
 		, _platformEndOfLineSequenceUTF8(platformEndOfLineSequenceUTF8)
 		, _emulatorWantsUIStatusUpdate(false)
+		, _gamesMode(gamesMode)
 	{
 		JynxZ80::Z80::InitialiseGlobalTables();  // Not absolutely ideal place to put this.
 
@@ -200,6 +201,18 @@ namespace Jynx
 	{
 		// The View calls this to handle the case where the "exit" button/menu/close box has been selected in the UI.
 
+		// If a snapshot file was issued on the command line, we assume its "games mode" so we do NOT pester
+		// the user for shutdown confirmation:
+
+		if( _gamesMode )
+		{
+			// ** Crucially note we do NOT require saving the settings file in games mode! **
+			_hostView->CloseDownNow();
+			return;
+		}
+
+		// Normal usage mode:
+
 		if( _hostView->AskYesNoQuestion( "Are you sure you want to close the Lynx emulator?", "Warning" ) )
 		{
 			if( CanRiskLosingModifiedTape() )
@@ -297,7 +310,10 @@ namespace Jynx
 		// The View calls this because an option has (somehow!) been selected in the UI (menu/button/icon/whatever).
 
 		_lynxEmulator->RewindTape();
-		_hostView->TellUser( "Tape rewound.", "Note" );
+		if( ! _gamesMode )
+		{
+			_hostView->TellUser( "Tape rewound.", "Note" );
+		}
 	}
 
 
@@ -378,6 +394,14 @@ namespace Jynx
 				_lynxEmulator->LoadState( fileOpener.get() );  // throws
 			}
 		}
+	}
+
+
+
+	void LynxUserInterfaceModel::ForceLoadSpecificSnapshot( IFileOpener *fileOpener )
+	{
+		EnsureUIUpdated uiUpdater(this);
+		_lynxEmulator->LoadState( fileOpener );  // throws
 	}
 
 
@@ -510,6 +534,7 @@ namespace Jynx
 
 	bool LynxUserInterfaceModel::UserAllowsReset()
 	{
+		if( _gamesMode ) return true;
 		return _hostView->AskYesNoQuestion( "This action will RESET the emulator!\n\nDo you wish to proceed?", "Warning" );
 	}
 

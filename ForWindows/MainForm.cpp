@@ -58,13 +58,16 @@ void CALLBACK MainFormTimerProcedure(
 
 
 
-MainForm::MainForm( HWND hWndOwner )
+MainForm::MainForm( HWND hWndOwner, const wchar_t *settingsFilePath, const wchar_t *snapshotFilePath, bool gamesMode )
 	: BaseForm( hWndOwner, MainForm::IDD )
 	, _lynxUIModel( nullptr )
 	, _guestScreenBitmap(NULL)
 	, _timeBeginPeriodResult(0)
 	, _timeSetEventResult(0)
 	, _waveOutStream(nullptr)
+	, _settingsFilePath(settingsFilePath)
+	, _snapshotFilePath(snapshotFilePath)
+	, _gamesMode(gamesMode)
 {
 	//
 	// Sound
@@ -115,7 +118,7 @@ MainForm::MainForm( HWND hWndOwner )
 		this, 
 		&_soundBuffer.front(), 
 		_soundBuffer.size(), 
-		"\r\n" ) );  // The preferred end of line sequence on the WINDOWS platform.  (Think: Notepad.exe!)
+		"\r\n", _gamesMode ) );  // The preferred end of line sequence on the WINDOWS platform.  (Think: Notepad.exe!)
 }
 
 
@@ -226,6 +229,13 @@ bool  MainForm::OnInitDialog()
 	libWinApi::CenterWindowPercent( *this, 85, GetOwner() ); 
 
 	_lynxUIModel->OnInitDialog();
+	
+	if( ! _snapshotFilePath.empty() )
+	{
+		// Load the snapshot file that the user specified on the command line:
+		_lynxUIModel->ForceLoadSpecificSnapshot( &WindowsFileOpener( _snapshotFilePath.c_str() ) );
+	}
+
 	auto result = BaseForm::OnInitDialog();
 	return result;
 }
@@ -734,12 +744,24 @@ std::wstring  GetJynxAppDataPath()
 
 std::shared_ptr<Jynx::IFileOpener>  MainForm::GetUserSettingsFilePath()
 {
-	auto jynxAppDataPath = GetJynxAppDataPath();
-	if( ! jynxAppDataPath.empty() )
+	if( _settingsFilePath.empty() )
 	{
-		auto fullPath = jynxAppDataPath + L"\\JynxEmulatorSettings.config";
-		return std::make_shared<WindowsFileOpener>( fullPath );
+		// The user did not specify a settings file path on the command line.
+		// Use the platform preferred location for settings files:
+
+		auto jynxAppDataPath = GetJynxAppDataPath();
+		if( ! jynxAppDataPath.empty() )
+		{
+			auto fullPath = jynxAppDataPath + L"\\JynxEmulatorSettings.config";
+			return std::make_shared<WindowsFileOpener>( fullPath );
+		}
 	}
+	else
+	{
+		// Use the path the user specified on the command line:
+		return std::make_shared<WindowsFileOpener>( _settingsFilePath );
+	}
+
 	return nullptr;
 }
 

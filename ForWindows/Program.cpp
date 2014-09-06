@@ -63,6 +63,22 @@ bool ParseParamAndValue( const std::vector<std::wstring> &paramList, size_t &i, 
 
 
 
+bool ParseParam( const std::vector<std::wstring> &paramList, size_t &i, const wchar_t *switchString, bool *out_variable )
+{
+	if( i < paramList.size() )
+	{
+		if( paramList[i] == switchString )
+		{
+			++i;
+			*out_variable = true;
+			return true;
+		}
+	}
+	return false;
+}
+
+
+
 
 
 
@@ -84,16 +100,18 @@ int APIENTRY _tWinMain(
 		// Parsed Parameters
 		std::wstring  settingsFilePath;
 		std::wstring  snapshotFilePath;
+		bool gamesMode = false;
 		size_t i=0;
 		while( i < paramList.size() )
 		{
 			     if( ParseParamAndValue( paramList, i, L"--settings", &settingsFilePath ) ) {}
 			else if( ParseParamAndValue( paramList, i, L"--snapshot", &snapshotFilePath ) ) {}
+			else if( ParseParam( paramList, i, L"--games", &gamesMode ) ) {}
 			else throw std::runtime_error( "Unrecognised content on command line." );
 		}
 
 		// Show main form:
-		auto mainForm = std::make_shared<MainForm>( (HWND) NULL );
+		auto mainForm = std::make_shared<MainForm>( (HWND) NULL, settingsFilePath.c_str(), snapshotFilePath.c_str(), gamesMode );
 		mainForm->ShowAndMaximise();
 		mainForm->DoModal();
 		return 0;
