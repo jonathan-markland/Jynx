@@ -120,6 +120,7 @@ namespace Jynx
 		, _machineType(initialMachineType)
 		, _platformEndOfLineSequenceUTF8(platformEndOfLineSequenceUTF8)
 		, _callWaiting(false)
+		, _pauseMode(false)
 	{
 		// (Reminder - Called on the client thread).
 
@@ -1278,15 +1279,18 @@ namespace Jynx
 		{
 			_hostObject->WriteSoundBufferToSoundCardOrSleep_OnEmulatorThread();
 
-			// Execute Z80 code for this timeslice, and accumulate
-			// the precise number of cycles elapsed (which may not
-			// precisely be what we asked for, but the design supports
-			// correcting this in later timeslices):
+			if( ! _pauseMode )
+			{
+				// Execute Z80 code for this timeslice, and accumulate
+				// the precise number of cycles elapsed (which may not
+				// precisely be what we asked for, but the design supports
+				// correcting this in later timeslices):
 
-			auto cycleCountBefore = _processor.GetRemainingCycles();
-			_processor.RunForTimeslice();
-			auto cycleCountAfter  = _processor.GetRemainingCycles();
-			_z80CycleCounter += (cycleCountAfter - cycleCountBefore) + _processor.GetTimesliceLength();
+				auto cycleCountBefore = _processor.GetRemainingCycles();
+				_processor.RunForTimeslice();
+				auto cycleCountAfter  = _processor.GetRemainingCycles();
+				_z80CycleCounter += (cycleCountAfter - cycleCountBefore) + _processor.GetTimesliceLength();
+			}
 
 			// Sound:
 
@@ -1294,7 +1298,7 @@ namespace Jynx
 
 			// Are we recording the sound to a file?
 
-			if( _soundRecorder.IsOpen() )
+			if( _soundRecorder.IsOpen() && ! _pauseMode )
 			{
 				_soundBufferWriter.SerialiseSoundBufferContent( &_soundRecorder );
 			}
@@ -1636,6 +1640,20 @@ namespace Jynx
 	{
 		// (Volatile access)
 		_watchingCommands = enable;
+	}
+
+
+	bool LynxEmulatorGuest::GetPauseMode() const
+	{
+		// (Volatile access)
+		return _pauseMode;
+	}
+
+
+	void LynxEmulatorGuest::SetPauseMode( bool pauseMode )
+	{
+		// (Volatile access)
+		_pauseMode = pauseMode;
 	}
 
 

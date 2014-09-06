@@ -73,6 +73,7 @@ namespace Jynx
 		void OnEnableDisableFullScreen();
 		bool IsFullScreenEnabled();
 		void OnTypeInTextFromFile();
+		void OnPause();
 
 		// IHostServicesForLynxEmulator:
 		// - THREADING NOTE:  The emulator object calls back into the Model on 

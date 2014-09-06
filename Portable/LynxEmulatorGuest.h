@@ -82,6 +82,8 @@ namespace Jynx
 		bool GetLynxRemCommandExtensionsEnabled() const;
 		void SetLynxRemCommandExtensionsEnabled( bool enable );
 		void TypeInTextFromFile( IFileOpener *fileOpener );
+		void SetPauseMode( bool pauseMode );
+		bool GetPauseMode() const;
 
 		// Implementing ITapeSpeedSupplier
 		virtual uint32_t  GetLynxTapeSpeedBitsPerSecond() override;
@@ -168,6 +170,7 @@ namespace Jynx
 		const std::string  _platformEndOfLineSequenceUTF8;
 
 		volatile bool     _hearTapeSounds;    // Tape sound monitoring (ie: wire to speakers)
+		volatile bool     _pauseMode;
 
 		// Lynx text recording (snooping) on host:
 		TextRecorder         _textRecorder;
