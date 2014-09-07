@@ -56,7 +56,10 @@ namespace Jynx
 			bool                   fullScreenEnable,
 			uint32_t               cyclesPerTimeslice,
 			bool                   tapeSounds,
-			bool                   remExtensions );
+			bool                   remExtensions,
+			bool                   maxSpeedCassette,
+			bool                   maxSpeedConsole,
+			bool                   maxSpeedAlways );
 
 		void SaveToFile( IFileOpener *, const std::string endOfLineSequence );
 
@@ -67,6 +70,9 @@ namespace Jynx
 		bool                   GetFullScreenEnable()   const { return _fullScreenEnable; }
 		bool                   GetTapeSounds()         const { return _tapeSounds; }
 		bool                   GetRemExtensions()      const { return _remExtensions; }
+		bool                   GetMaxSpeedCassette()   const { return _maxSpeedCassette; }
+		bool                   GetMaxSpeedConsole()    const { return _maxSpeedConsole; }
+		bool                   GetMaxSpeedAlways()     const { return _maxSpeedAlways; }
 
 	private:
 
@@ -77,6 +83,9 @@ namespace Jynx
 		uint32_t               _cyclesPerTimeslice;
 		bool                   _tapeSounds;
 		bool                   _remExtensions;
+		bool                   _maxSpeedCassette;
+		bool                   _maxSpeedConsole;
+		bool                   _maxSpeedAlways;
 
 		void SerialiseFields( ISerialiser *serialiser );
 

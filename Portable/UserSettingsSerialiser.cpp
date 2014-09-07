@@ -40,7 +40,10 @@ namespace Jynx
 		bool                   fullScreenEnable,
 		uint32_t               cyclesPerTimeslice,
 		bool                   tapeSounds,
-		bool                   remExtensions )
+		bool                   remExtensions,
+		bool                   maxSpeedCassette,
+		bool                   maxSpeedConsole,
+		bool                   maxSpeedAlways )
 			: _machineType( machineType )
 			, _renderStyle( renderStyle )
 			, _soundEnable( soundEnable )
@@ -48,6 +51,9 @@ namespace Jynx
 			, _cyclesPerTimeslice( cyclesPerTimeslice )
 			, _tapeSounds( tapeSounds )
 			, _remExtensions( remExtensions )
+			, _maxSpeedCassette(maxSpeedCassette)
+			, _maxSpeedConsole(maxSpeedConsole)
+			, _maxSpeedAlways(maxSpeedAlways)
 	{
 	}
 
@@ -63,7 +69,7 @@ namespace Jynx
 
 	void UserSettings::SerialiseFields( ISerialiser *serialiser )
 	{
-		int versionNumber = 2; // For when writing.
+		int versionNumber = 3; // For when writing.
 		serialiser->Field(     "FileVersion",   versionNumber );
 		serialiser->FieldEnum( "MachineType",   _machineType );
 		serialiser->FieldEnum( "RenderStyle",   _renderStyle );
@@ -74,13 +80,26 @@ namespace Jynx
 		}
 		else
 		{
+			// Only executed if reading.
 			_fullScreenEnable = false;
 		}
 		serialiser->FieldEnum( "CyclesPerTimeslice",   _cyclesPerTimeslice );
 		serialiser->Field(     "TapeSounds",    _tapeSounds );
 		serialiser->Field(     "RemExtensions", _remExtensions );
+		if( versionNumber >= 3 )
+		{
+			serialiser->Field( "MaxSpeedCassette", _maxSpeedCassette );
+			serialiser->Field( "MaxSpeedConsole",  _maxSpeedConsole );
+			serialiser->Field( "MaxSpeedAlways",   _maxSpeedAlways );
+		}
+		else
+		{
+			// Only executed if reading.
+			_maxSpeedCassette = true;
+			_maxSpeedConsole  = false;
+			_maxSpeedAlways   = false;
+		}
 	}
-
 
 }
 

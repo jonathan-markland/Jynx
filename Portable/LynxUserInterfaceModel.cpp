@@ -852,7 +852,10 @@ namespace Jynx
 				_showFullScreen,
 				_lynxEmulator->GetCyclesPerTimeslice(),
 				_lynxEmulator->GetTapeSounds(),
-				_lynxEmulator->GetLynxRemCommandExtensionsEnabled() );
+				_lynxEmulator->GetLynxRemCommandExtensionsEnabled(),
+				_lynxEmulator->GetEnableSpeedMaxModeWhenUsingCassette(),
+				_lynxEmulator->GetEnableSpeedMaxModeWhenInBetweenConsoleCommands(),
+				_lynxEmulator->GetEnableSpeedMaxModeBecauseUserWantsItPermanently() );
 
 			userSettings.SaveToFile( &*fileOpener, _platformEndOfLineSequenceUTF8 );
 		}
@@ -869,6 +872,7 @@ namespace Jynx
 			UserSettings userSettings( &*fileOpener );
 
 			// Now that the file has loaded successfully, we know we can use the information in it!
+			// (Or, of course, the defaults that the UserSettings object applies, if it's down-level version).
 			_machineType = userSettings.GetMachineType();
 			_renderStyle = userSettings.GetRenderStyle();
 			_soundEnable = userSettings.GetSoundEnable();
@@ -876,6 +880,9 @@ namespace Jynx
 			_lynxEmulator->SetCyclesPerTimeslice( userSettings.GetCyclesPerTimeslice() );
 			_lynxEmulator->SetTapeSounds( userSettings.GetTapeSounds() );
 			_lynxEmulator->SetLynxRemCommandExtensionsEnabled( userSettings.GetRemExtensions() );
+			_lynxEmulator->SetEnableSpeedMaxModeWhenUsingCassette( userSettings.GetMaxSpeedCassette() );
+			_lynxEmulator->SetEnableSpeedMaxModeWhenInBetweenConsoleCommands( userSettings.GetMaxSpeedConsole() );
+			_lynxEmulator->SetEnableSpeedMaxModeBecauseUserWantsItPermanently( userSettings.GetMaxSpeedAlways() );
 
 			_lynxEmulator->ResetGuest( _machineType );
 
