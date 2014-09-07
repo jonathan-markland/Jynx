@@ -79,6 +79,9 @@ namespace Jynx
 		void OnPauseAfterTapLoad();
 		void ForceLoadSpecificSnapshot( IFileOpener *fileOpener ); // enable view to load the command-line default snapshot file.
 		void OnTypeTapeDirectoryIntoLynx();
+		void OnSpeedMaxCassette();
+		void OnSpeedMaxConsoleCommands();
+		void OnSpeedMaxPermanently();
 
 		// IHostServicesForLynxEmulator:
 		// - THREADING NOTE:  The emulator object calls back into the Model on 

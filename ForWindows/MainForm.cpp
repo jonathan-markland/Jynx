@@ -324,6 +324,11 @@ void MainForm::WindowProc( libWinApi::WindowProcArgs &e )
 				case ID_DISPLAY_FILLWINDOW:       _lynxUIModel->OnFillWindow(); break;
 				case ID_SOUND_ENABLE:             _lynxUIModel->OnEnableDisableSound(); break;
 				case ID_FULL_SCREEN_ENABLE:       _lynxUIModel->OnEnableDisableFullScreen(); break;
+
+		//case ID_FULL_SCREEN_ENABLE:       _lynxUIModel->OnSpeedMaxCassette(); break;
+		//case ID_FULL_SCREEN_ENABLE:       _lynxUIModel->OnSpeedMaxConsoleCommands(); break;
+		//case ID_FULL_SCREEN_ENABLE:       _lynxUIModel->OnSpeedMaxPermanently(); break;
+
 				case ID_HELP_ABOUT:               OnAbout(); break; // not handled by the model
 				default:                          return BaseForm::WindowProc( e );
 			}

@@ -596,9 +596,32 @@ namespace Jynx
 	void LynxUserInterfaceModel::OnTypeTapeDirectoryIntoLynx()
 	{
 		// The View calls this because an option has (somehow!) been selected in the UI (menu/button/icon/whatever).
-
-
 		_lynxEmulator->TypeTapeDirectoryIntoLynx();
+	}
+
+
+
+	void LynxUserInterfaceModel::OnSpeedMaxCassette()
+	{
+		// The View calls this because an option has (somehow!) been selected in the UI (menu/button/icon/whatever).
+		_lynxEmulator->SetEnableSpeedMaxModeWhenUsingCassette( ! _lynxEmulator->GetEnableSpeedMaxModeWhenUsingCassette() );
+		UpdateUserInterfaceElementsOnView();
+	}
+
+
+	void LynxUserInterfaceModel::OnSpeedMaxConsoleCommands()
+	{
+		// The View calls this because an option has (somehow!) been selected in the UI (menu/button/icon/whatever).
+		_lynxEmulator->SetEnableSpeedMaxModeWhenInBetweenConsoleCommands( ! _lynxEmulator->GetEnableSpeedMaxModeWhenInBetweenConsoleCommands() );
+		UpdateUserInterfaceElementsOnView();
+	}
+
+
+	void LynxUserInterfaceModel::OnSpeedMaxPermanently()
+	{
+		// The View calls this because an option has (somehow!) been selected in the UI (menu/button/icon/whatever).
+		_lynxEmulator->SetEnableSpeedMaxModeBecauseUserWantsItPermanently( ! _lynxEmulator->GetEnableSpeedMaxModeBecauseUserWantsItPermanently() );
+		UpdateUserInterfaceElementsOnView();
 	}
 
 
