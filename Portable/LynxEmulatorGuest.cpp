@@ -122,7 +122,11 @@ namespace Jynx
 		, _callWaiting(false)
 		, _pauseMode(false)
 		, _pauseAfterTapLoadEnable(false)
+		, _canEnableSpeedMaxModeWhenUsingCassette(true)  // default true for the HyperSpin guys I think.
+		, _canEnableSpeedMaxModeWhenInBetweenConsoleCommands(false)
+		, _speedMaxModeBecauseUserWantsItPermanently(false)
 		, _speedMaxModeBecauseOfCassette(false)
+		, _speedMaxModeBecauseWeAreInBetweenConsoleCommands(false)
 	{
 		// (Reminder - Called on the client thread).
 
@@ -862,7 +866,10 @@ namespace Jynx
 		// When the Lynx LOADs, we can then serve data at the speed it is expecting.  Of course,
 		// this would never have happened on a real system!  The lynx would have ignored files
 		// saved at unexpected speeds.  (See Lynx BASIC "TAPE" command).
-		_speedMaxModeBecauseOfCassette = true;
+		if( _canEnableSpeedMaxModeWhenUsingCassette )
+		{
+			_speedMaxModeBecauseOfCassette = true;
+		}
 		_currentReadTape->CassetteMotorOn();
 		_currentWriteTape->NotifyCassetteMotorOn();
 	}
@@ -1061,7 +1068,7 @@ namespace Jynx
 
 
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-	//     TEXT SPOOLING FEATURE
+	//     SPYING ON LYNX OPERATION
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 	void LynxEmulatorGuest::Z80_OnAboutToBranch()
@@ -1115,10 +1122,11 @@ namespace Jynx
 						ProcessLynxCommand();
 					}
 				}
+
 			}
 
 			//
-			// 09BD : Spy on the key read routine.  (Same on 48K and 96K lynxes).
+			// 09BD : Spy on the key read routine's ENTRY POINT.  (Same on 48K and 96K lynxes).
 			//
 
 			else if( programCounter == 0x9BD )  
@@ -1130,6 +1138,8 @@ namespace Jynx
 				// flashing rubbish!
 				_inhibitTextRecorder = true;
 
+				// If the text player is in operation, we don't let the Lynx execute its key read routine,
+				// and instead we poke a character directly into the Z80 A register, and force a subroutine return:
 				if( _textPlayer.HasText() )
 				{
 					auto cpuRegisters = _processor.GetSerialisableVariables(); // take copy
@@ -1153,10 +1163,65 @@ namespace Jynx
 						// Update state
 						_processor.SetSerialisableVariables( cpuRegisters );
 					}
+					
+					if( ! _textPlayer.HasText() )
+					{
+						// Text player done, so this is definately the case:
+						_speedMaxModeBecauseWeAreInBetweenConsoleCommands = false;
+					}
+				}
+				else
+				{
+					// When the lynx reads a key, AND the text player isn't in operation,
+					// we know we're definately done with processing console commands, so:
+					_speedMaxModeBecauseWeAreInBetweenConsoleCommands = false;
+				}
+			}
+
+		}
+	}
+
+
+
+	void LynxEmulatorGuest::Z80_OnAboutToReturn()
+	{
+		// Is the Lynx ROM switched in?
+		// If not, the addresses won't apply!
+
+		if( (_bankPort & 1) == 0 )
+		{
+			auto programCounter = _processor.GetSerialisableVariables()._programCounter;
+
+			//
+			// C9 at 0A44: Spy on the key read routine's EXIT POINT.  (Same on 48K and 96K lynxes).
+			//
+
+			if( programCounter == 0xA45 )  // PC already incremented though, so check for A45!
+			{
+				// The Lynx is about to return from the key read routine, with the key code in A.
+
+				if( _canEnableSpeedMaxModeWhenInBetweenConsoleCommands == true )
+				{
+					if( _textPlayer.HasText() )
+					{
+						_speedMaxModeBecauseWeAreInBetweenConsoleCommands = true;
+					}
+					else
+					{
+						auto cpuRegisters = _processor.GetSerialisableVariables(); // take copy
+						if( (cpuRegisters._AF & 0xFF00) == 0x0D00 )
+						{
+							// The user just pressed the ENTER key.
+							_speedMaxModeBecauseWeAreInBetweenConsoleCommands = true;
+						}
+					}
 				}
 			}
 		}
 	}
+
+
+
 
 
 
@@ -1289,7 +1354,11 @@ namespace Jynx
 	{
 		while( ! _emulationThread.ShouldTerminate() )
 		{
-			auto speedMaxMode = _speedMaxModeBecauseOfCassette;  // will add other conditions.
+			// Read the volatile bool variables any of which can enable speed max mode:
+			auto speedMaxMode = 
+				_speedMaxModeBecauseOfCassette
+				|| _speedMaxModeBecauseWeAreInBetweenConsoleCommands
+				|| _speedMaxModeBecauseUserWantsItPermanently;
 
 			if( ! speedMaxMode )
 			{
@@ -1718,6 +1787,48 @@ namespace Jynx
 	}
 
 
+	bool LynxEmulatorGuest::GetEnableSpeedMaxModeWhenUsingCassette() const
+	{
+		// (Volatile access)
+		return _canEnableSpeedMaxModeWhenUsingCassette;
+	}
+
+
+	void LynxEmulatorGuest::SetEnableSpeedMaxModeWhenUsingCassette( bool newSetting )
+	{
+		// (Volatile access)
+		_canEnableSpeedMaxModeWhenUsingCassette = newSetting;
+	}
+
+
+	bool LynxEmulatorGuest::GetEnableSpeedMaxModeWhenInBetweenConsoleCommands() const
+	{
+		// (Volatile access)
+		return _canEnableSpeedMaxModeWhenInBetweenConsoleCommands;
+	}
+
+
+	void LynxEmulatorGuest::SetEnableSpeedMaxModeWhenInBetweenConsoleCommands( bool newSetting )
+	{
+		// (Volatile access)
+		_canEnableSpeedMaxModeWhenInBetweenConsoleCommands = newSetting;
+	}
+
+
+	bool LynxEmulatorGuest::GetEnableSpeedMaxModeBecauseUserWantsItPermanently() const
+	{
+		// (Volatile access)
+		return _speedMaxModeBecauseUserWantsItPermanently;
+	}
+
+
+	void LynxEmulatorGuest::SetEnableSpeedMaxModeBecauseUserWantsItPermanently( bool newSetting )
+	{
+		// (Volatile access)
+		_speedMaxModeBecauseUserWantsItPermanently = newSetting;
+	}
+
+
 } // end namespace Jynx
 
 
@@ -1762,4 +1873,12 @@ void JynxZ80::Z80ImplementationBaseClass::OnAboutToBranch()
 	// a branch of some kind (ie: not just run of the mill PC incrementing!)
 	// This is our "spy hook" point.
 	Jynx::g_LynxEmulatorGuestSingleton->Z80_OnAboutToBranch();
+}
+
+void JynxZ80::Z80ImplementationBaseClass::OnAboutToReturn()
+{
+	// The Z80 is about to re-load the program counter as a result of
+	// a branch of some kind (ie: not just run of the mill PC incrementing!)
+	// This is our "spy hook" point.
+	Jynx::g_LynxEmulatorGuestSingleton->Z80_OnAboutToReturn();
 }

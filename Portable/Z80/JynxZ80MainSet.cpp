@@ -1003,6 +1003,7 @@ namespace JynxZ80
 	INLINE_FUNCTION void Z80::DoSubroutineReturn()
 	{
 		Spend(6);
+		OnAboutToReturn();
 		DoPopSixteenBitsIntoRegister( _programCounter );
 	}
 

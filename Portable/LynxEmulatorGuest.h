@@ -88,6 +88,12 @@ namespace Jynx
 		void SetPauseAfterTapLoadEnable( bool pauseAfterTapLoadEnable );
 		bool GetPauseAfterTapLoadEnable() const;
 		void TypeTapeDirectoryIntoLynx();
+		bool GetEnableSpeedMaxModeWhenUsingCassette() const;
+		void SetEnableSpeedMaxModeWhenUsingCassette( bool newSetting );
+		bool GetEnableSpeedMaxModeWhenInBetweenConsoleCommands() const;
+		void SetEnableSpeedMaxModeWhenInBetweenConsoleCommands( bool newSetting );
+		bool GetEnableSpeedMaxModeBecauseUserWantsItPermanently() const;
+		void SetEnableSpeedMaxModeBecauseUserWantsItPermanently( bool newSetting );
 
 		// Implementing ITapeSpeedSupplier
 		virtual uint32_t  GetLynxTapeSpeedBitsPerSecond() override;
@@ -102,6 +108,7 @@ namespace Jynx
 		friend void    JynxZ80::Z80ImplementationBaseClass::GuestWriteIOSpace( uint16_t portNumber, uint8_t dataByte );
 		friend uint8_t JynxZ80::Z80ImplementationBaseClass::GuestReadIOSpace( uint16_t portNumber );
 		friend void    JynxZ80::Z80ImplementationBaseClass::OnAboutToBranch();
+		friend void    JynxZ80::Z80ImplementationBaseClass::OnAboutToReturn();
 
 		// Interface called by the Z80 emulator:
 		uint8_t  Z80_AddressRead(  uint16_t address );
@@ -109,6 +116,7 @@ namespace Jynx
 		void     Z80_AddressWrite( uint16_t address,    uint8_t dataByte );
 		void     Z80_IOSpaceWrite( uint16_t portNumber, uint8_t dataByte );
 		void     Z80_OnAboutToBranch();
+		void     Z80_OnAboutToReturn();
 
 	private:
 
@@ -178,9 +186,15 @@ namespace Jynx
 		volatile bool     _pauseMode;
 		volatile bool     _pauseAfterTapLoadEnable;
 
+		// SpeedMax mode controllers set by the user (but also see _speedMaxModeBecauseUserWantsItPermanently):
+		volatile bool     _canEnableSpeedMaxModeWhenUsingCassette;
+		volatile bool     _canEnableSpeedMaxModeWhenInBetweenConsoleCommands;
+
 		// Volatile bools, any of which enable speed max mode.
 		// Allows multiple parties to force this mode on (true), or say they don't care (false).
-		volatile bool     _speedMaxModeBecauseOfCassette;
+		volatile bool     _speedMaxModeBecauseOfCassette;                     // Asserted when _canEnableSpeedMaxModeWhenUsingCassette is true AND cassette motor is turned ON.  Always de-asserted when cassette motor turned OFF.
+		volatile bool     _speedMaxModeBecauseWeAreInBetweenConsoleCommands;  // Asserted when _canEnableSpeedMaxModeWhenInBetweenConsoleCommands is true AND 
+		volatile bool     _speedMaxModeBecauseUserWantsItPermanently;         // The user configures this directly.
 
 		// Lynx text recording (snooping) on host:
 		TextRecorder         _textRecorder;

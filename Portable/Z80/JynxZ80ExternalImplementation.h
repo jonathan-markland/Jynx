@@ -138,6 +138,7 @@ namespace JynxZ80
 		NO_INLINE  static uint8_t GuestRead( uint16_t address );
 		NO_INLINE  static uint8_t GuestReadIOSpace( uint16_t port );
 		NO_INLINE  static void OnAboutToBranch();
+		NO_INLINE  static void OnAboutToReturn();
 	};
 
 }
