@@ -41,7 +41,7 @@ class MainForm: public libWinApi::BaseForm, public Jynx::IViewServicesForLynxUse
 {
 public:
 
-	MainForm( HWND hWndOwner, const wchar_t *settingsFilePath, const wchar_t *snapshotFilePath, bool gamesMode );
+	MainForm( HWND hWndOwner, const wchar_t *settingsFilePath, const wchar_t *snapshotFilePath, bool gamesMode, const wchar_t *tapFilePath );
 
 	enum { IDD = IDD_MAINFORM };
 	virtual ~MainForm() override;
@@ -99,6 +99,7 @@ private:
 
 	std::wstring  _settingsFilePath;
 	std::wstring  _snapshotFilePath;
+	std::wstring  _tapFilePath;
 	bool _gamesMode;
 
 };

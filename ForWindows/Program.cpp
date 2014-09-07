@@ -100,18 +100,20 @@ int APIENTRY _tWinMain(
 		// Parsed Parameters
 		std::wstring  settingsFilePath;
 		std::wstring  snapshotFilePath;
+		std::wstring  tapFilePath;
 		bool gamesMode = false;
 		size_t i=0;
 		while( i < paramList.size() )
 		{
 			     if( ParseParamAndValue( paramList, i, L"--settings", &settingsFilePath ) ) {}
 			else if( ParseParamAndValue( paramList, i, L"--snapshot", &snapshotFilePath ) ) {}
+			else if( ParseParamAndValue( paramList, i, L"--run",      &tapFilePath ) ) {}
 			else if( ParseParam( paramList, i, L"--games", &gamesMode ) ) {}
 			else throw std::runtime_error( "Unrecognised content on command line." );
 		}
 
 		// Show main form:
-		auto mainForm = std::make_shared<MainForm>( (HWND) NULL, settingsFilePath.c_str(), snapshotFilePath.c_str(), gamesMode );
+		auto mainForm = std::make_shared<MainForm>( (HWND) NULL, settingsFilePath.c_str(), snapshotFilePath.c_str(), gamesMode, tapFilePath.c_str() );
 		mainForm->ShowAndMaximise();
 		mainForm->DoModal();
 		return 0;

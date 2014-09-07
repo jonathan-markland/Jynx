@@ -410,6 +410,14 @@ namespace Jynx
 
 
 
+	void LynxUserInterfaceModel::ForceLoadSpecificTape( IFileOpener *fileOpener )
+	{
+		EnsureUIUpdated uiUpdater(this);
+		_lynxEmulator->RunExistingTAPFile( fileOpener );  // throws
+	}
+
+
+
 	void LynxUserInterfaceModel::OnSaveStateSnapshot()
 	{
 		// The View calls this because an option has (somehow!) been selected in the UI (menu/button/icon/whatever).

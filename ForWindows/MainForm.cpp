@@ -58,7 +58,7 @@ void CALLBACK MainFormTimerProcedure(
 
 
 
-MainForm::MainForm( HWND hWndOwner, const wchar_t *settingsFilePath, const wchar_t *snapshotFilePath, bool gamesMode )
+MainForm::MainForm( HWND hWndOwner, const wchar_t *settingsFilePath, const wchar_t *snapshotFilePath, bool gamesMode, const wchar_t *tapFilePath )
 	: BaseForm( hWndOwner, MainForm::IDD )
 	, _lynxUIModel( nullptr )
 	, _guestScreenBitmap(NULL)
@@ -67,6 +67,7 @@ MainForm::MainForm( HWND hWndOwner, const wchar_t *settingsFilePath, const wchar
 	, _waveOutStream(nullptr)
 	, _settingsFilePath(settingsFilePath)
 	, _snapshotFilePath(snapshotFilePath)
+	, _tapFilePath(tapFilePath)
 	, _gamesMode(gamesMode)
 {
 	//
@@ -234,6 +235,11 @@ bool  MainForm::OnInitDialog()
 	{
 		// Load the snapshot file that the user specified on the command line:
 		_lynxUIModel->ForceLoadSpecificSnapshot( &WindowsFileOpener( _snapshotFilePath.c_str() ) );
+	}
+	else if( ! _tapFilePath.empty() )
+	{
+		// Load the cassette file that the user specified on the command line:
+		_lynxUIModel->ForceLoadSpecificTape( &WindowsFileOpener( _tapFilePath.c_str() ) );
 	}
 
 	auto result = BaseForm::OnInitDialog();

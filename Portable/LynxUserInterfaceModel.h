@@ -78,6 +78,7 @@ namespace Jynx
 		void OnPause();
 		void OnPauseAfterTapLoad();
 		void ForceLoadSpecificSnapshot( IFileOpener *fileOpener ); // enable view to load the command-line default snapshot file.
+		void ForceLoadSpecificTape( IFileOpener *fileOpener ); // enable view to load the command-line default TAP file.
 		void OnTypeTapeDirectoryIntoLynx();
 		void OnSpeedMaxCassette();
 		void OnSpeedMaxConsoleCommands();
