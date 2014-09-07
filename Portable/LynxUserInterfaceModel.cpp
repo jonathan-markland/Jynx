@@ -204,60 +204,52 @@ namespace Jynx
 		// If a snapshot file was issued on the command line, we assume its "games mode" so we do NOT pester
 		// the user for shutdown confirmation:
 
-		if( _gamesMode )
+		if( ! _gamesMode )
 		{
-			// ** Crucially note we do NOT require saving the settings file in games mode! **
-			_hostView->CloseDownNow();
-			return;
+			if( ! _hostView->AskYesNoQuestion( "Are you sure you want to close the Lynx emulator?", "Warning" ) ) return;
 		}
 
-		// Normal usage mode:
+		if( ! CanRiskLosingModifiedTape() ) return;
 
-		if( _hostView->AskYesNoQuestion( "Are you sure you want to close the Lynx emulator?", "Warning" ) )
+		try
 		{
-			if( CanRiskLosingModifiedTape() )
-			{
-				try
-				{
-					_lynxEmulator->FinishRecordingSoundToFile();
-				}
-				catch( std::ofstream::failure e )
-				{
-					// TODO: Should we delete this?  Should FinishRecordingSoundToFile() delete the file?
-					std::string message;
-					message += "Failed to save the WAVE file!  The file may be incomplete.  ";
-					message += e.what();
-					_hostView->TellUser( message.c_str(), "Error" );
-				}
-
-				try
-				{
-					_lynxEmulator->FinishRecordingLynxTextToFile();
-				}
-				catch( std::ofstream::failure e )
-				{
-					// TODO: Should we delete this?  Should FinishRecordingLynxTextToFile() delete the file?
-					std::string message;
-					message += "Failed to save the text file!  The file may be incomplete.  ";
-					message += e.what();
-					_hostView->TellUser( message.c_str(), "Error" );
-				}
-
-				try
-				{
-					SaveUserSettings();
-				}
-				catch( std::ofstream::failure e )
-				{
-					std::string message;
-					message += "Failed to save the user options file!  ";
-					message += e.what();
-					_hostView->TellUser( message.c_str(), "Error" );
-				}
-
-				_hostView->CloseDownNow();
-			}
+			_lynxEmulator->FinishRecordingSoundToFile();
 		}
+		catch( std::ofstream::failure e )
+		{
+			// TODO: Should we delete this?  Should FinishRecordingSoundToFile() delete the file?
+			std::string message;
+			message += "Failed to save the WAVE file!  The file may be incomplete.  ";
+			message += e.what();
+			_hostView->TellUser( message.c_str(), "Error" );
+		}
+
+		try
+		{
+			_lynxEmulator->FinishRecordingLynxTextToFile();
+		}
+		catch( std::ofstream::failure e )
+		{
+			// TODO: Should we delete this?  Should FinishRecordingLynxTextToFile() delete the file?
+			std::string message;
+			message += "Failed to save the text file!  The file may be incomplete.  ";
+			message += e.what();
+			_hostView->TellUser( message.c_str(), "Error" );
+		}
+
+		try
+		{
+			SaveUserSettings();
+		}
+		catch( std::ofstream::failure e )
+		{
+			std::string message;
+			message += "Failed to save the user options file!  ";
+			message += e.what();
+			_hostView->TellUser( message.c_str(), "Error" );
+		}
+
+		_hostView->CloseDownNow();
 	}
 
 
