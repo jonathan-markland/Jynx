@@ -122,6 +122,7 @@ namespace Jynx
 		, _callWaiting(false)
 		, _pauseMode(false)
 		, _pauseAfterTapLoadEnable(false)
+		, _speedMaxModeBecauseOfCassette(false)
 	{
 		// (Reminder - Called on the client thread).
 
@@ -861,6 +862,7 @@ namespace Jynx
 		// When the Lynx LOADs, we can then serve data at the speed it is expecting.  Of course,
 		// this would never have happened on a real system!  The lynx would have ignored files
 		// saved at unexpected speeds.  (See Lynx BASIC "TAPE" command).
+		_speedMaxModeBecauseOfCassette = true;
 		_currentReadTape->CassetteMotorOn();
 		_currentWriteTape->NotifyCassetteMotorOn();
 	}
@@ -869,6 +871,7 @@ namespace Jynx
 
 	void LynxEmulatorGuest::CassetteMotorOff()
 	{
+		_speedMaxModeBecauseOfCassette = false;
 		_currentReadTape->CassetteMotorOff();
 		_currentWriteTape->NotifyCassetteMotorOff();
 		_hostObject->NotifyOutputTapeAvailbilityChanged_OnAnyThread();
@@ -1286,7 +1289,12 @@ namespace Jynx
 	{
 		while( ! _emulationThread.ShouldTerminate() )
 		{
-			_hostObject->WriteSoundBufferToSoundCardOrSleep_OnEmulatorThread();
+			auto speedMaxMode = _speedMaxModeBecauseOfCassette;  // will add other conditions.
+
+			if( ! speedMaxMode )
+			{
+				_hostObject->WriteSoundBufferToSoundCardOrSleep_OnEmulatorThread();
+			}
 
 			if( ! _pauseMode )
 			{

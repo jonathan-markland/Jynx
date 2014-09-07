@@ -178,6 +178,10 @@ namespace Jynx
 		volatile bool     _pauseMode;
 		volatile bool     _pauseAfterTapLoadEnable;
 
+		// Volatile bools, any of which enable speed max mode.
+		// Allows multiple parties to force this mode on (true), or say they don't care (false).
+		volatile bool     _speedMaxModeBecauseOfCassette;
+
 		// Lynx text recording (snooping) on host:
 		TextRecorder         _textRecorder;
 		bool                 _inhibitTextRecorder;
