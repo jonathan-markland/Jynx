@@ -1638,6 +1638,21 @@ namespace Jynx
 
 
 
+	void LynxEmulatorGuest::TypeTapeDirectoryIntoLynx()
+	{
+		EmulatorThreadInhibitor  handshake(this);
+		if( _currentReadTape != nullptr )
+		{
+			_textPlayer.SetText( _currentReadTape->GetTapeDirectory().c_str() );
+		}
+		else
+		{
+			_textPlayer.SetText( "REM There is no tape inserted.\r" );
+		}
+	}
+
+
+
 	bool LynxEmulatorGuest::GetLynxRemCommandExtensionsEnabled() const
 	{
 		// (Volatile access)

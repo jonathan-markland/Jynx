@@ -41,14 +41,15 @@ IDR_MAINFRAME MENU
 BEGIN
     POPUP "&File"
     BEGIN
-        MENUITEM "Open TAP file ...",           ID_FILE_OPENTAPFILE
-        MENUITEM "Rewind Tape",                 ID_FILE_REWINDTAPE
+        MENUITEM "&Open TAP file ...",           ID_FILE_OPENTAPFILE
+        MENUITEM "&Rewind Tape",                 ID_FILE_REWINDTAPE
+        MENUITEM "Tape &Directory (at BASIC prompt)",     ID_FILE_DIRECTORY
         MENUITEM SEPARATOR
-        MENUITEM "New Output Tape",             ID_FILE_INSERTBLANKTAPE
-        MENUITEM "Save As TAP file...",         ID_FILE_SAVETAPE
+        MENUITEM "&New Output Tape",             ID_FILE_INSERTBLANKTAPE
+        MENUITEM "&Save As TAP file...",         ID_FILE_SAVETAPE
         MENUITEM SEPARATOR
-        MENUITEM "Load State Snapshot ...",     ID_FILE_LOADSTATESNAPSHOT
-        MENUITEM "Save State Snapshot ...",     ID_FILE_SAVESTATESNAPSHOT
+        MENUITEM "Load S&tate Snapshot ...",     ID_FILE_LOADSTATESNAPSHOT
+        MENUITEM "S&ave State Snapshot ...",     ID_FILE_SAVESTATESNAPSHOT
         MENUITEM SEPARATOR
         MENUITEM "E&xit",                       ID_FILE_EXIT
     END

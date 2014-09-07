@@ -86,6 +86,7 @@ namespace Jynx
 		bool GetPauseMode() const;
 		void SetPauseAfterTapLoadEnable( bool pauseAfterTapLoadEnable );
 		bool GetPauseAfterTapLoadEnable() const;
+		void TypeTapeDirectoryIntoLynx();
 
 		// Implementing ITapeSpeedSupplier
 		virtual uint32_t  GetLynxTapeSpeedBitsPerSecond() override;

@@ -85,6 +85,14 @@ namespace Jynx
 	//     PLAYBACK
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
+	std::string  TapFileReader::GetTapeDirectory() const
+	{
+		return _tapFileSplitter.GetTapeDirectory();
+	}
+
+
+
+
 	void TapFileReader::RewindPlaybackPosition()
 	{
 		SetPositionToFile(0);

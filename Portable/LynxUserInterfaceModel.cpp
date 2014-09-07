@@ -589,7 +589,13 @@ namespace Jynx
 	}
 
 
+	void LynxUserInterfaceModel::OnTypeTapeDirectoryIntoLynx()
+	{
+		// The View calls this because an option has (somehow!) been selected in the UI (menu/button/icon/whatever).
 
+
+		_lynxEmulator->TypeTapeDirectoryIntoLynx();
+	}
 
 
 

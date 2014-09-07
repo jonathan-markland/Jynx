@@ -52,6 +52,9 @@ namespace Jynx
 			// - bitsPerSecond should be the "TAPE" speed the Lynx is currently 
 			//   expecting: { 600, 900, 1200, 1500, 1800, 2100 } for TAPE 0-5 resp.
 
+		std::string  GetTapeDirectory() const;
+			// Retrieves text giving tape content and file types (LOAD / MLOAD).
+
 	private:
 
 		std::vector<std::string>  _fileNames;  // In the block after the FIRST sync, the Lynx stores the file name, in quotes.

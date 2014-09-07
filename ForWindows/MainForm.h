@@ -69,28 +69,6 @@ public:
 	virtual std::shared_ptr<Jynx::IFileOpener>  GetUserSettingsFilePath() override;
 	virtual void WriteSoundBufferToSoundCardOrSleep_OnEmulatorThread() override;
 
-protected:
-
-	// Menu option handlers:
-	void OnPaint( HDC dc );
-	void OnLoadStateSnapshot();
-	void OnSaveStateSnapshot();
-	void OnEmulation48K();
-	void OnEmulation96K();
-	void OnResetEmulation();
-	void OnFitToWindow();
-	void OnSquarePixels();
-	void OnRewindAudioTape();
-	void OnNewAudioTape();
-	void OnOpenTAPFile();
-	void OnSaveTAPFileAs();
-	void OnAbout();
-	void OnListenToTapeSounds();
-	void OnRecordToFile();
-	void OnFinishRecording();
-	void OnLynxBasicRemCommandExtensions();
-	void OnEnableDisableSound();
-
 private:
 
 	bool CanRiskLosingModifiedTape() const;
@@ -99,6 +77,9 @@ private:
 	void SaveSnapshot( const wchar_t *pathName );
 	void SetCycles( Jynx::LynxZ80Cycles::Enum cyclesEnum );
 	void SelectTimingMechanism();
+	void OnPaint( HDC dc );
+	void OnAbout();
+	void OnSound();
 
 	HDC     _dc;         // Is only set when asking the model to paint.
 	HANDLE  _hbicon;

@@ -68,6 +68,9 @@ namespace Jynx
 		void RewindPlaybackPosition();
 		uint8_t GetSampleAtTime( uint64_t cycleCounterNow );
 
+		// Get Tape Directory
+		std::string  GetTapeDirectory() const;
+
 	private:
 
 		TapFileSplitter _tapFileSplitter;

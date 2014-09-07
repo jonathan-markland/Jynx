@@ -25,67 +25,9 @@
 #include "FileLoader.h"
 
 
+
 namespace Jynx
 {
-	TapFileSplitter::TapFileSplitter()
-	{
-		// The constructor for an empty tape.
-	}
-
-
-
-	TapFileSplitter::TapFileSplitter( IFileOpener *tapFile )
-	{
-		LoadAndParseTapFile( tapFile );
-	}
-
-
-
-	size_t TapFileSplitter::GetNumberOfFiles() const
-	{
-		assert( _fileNames.size() == _contentImages.size() ); // should always be so.
-		return _fileNames.size();
-	}
-
-
-
-	std::vector<uint16_t>  TapFileSplitter::GenerateWaveformForFile( size_t fileIndex, uint32_t bitsPerSecond )
-	{
-		std::vector<uint16_t>  resultWave;
-
-		// Seed constants deduced from analysis of the signal tape files.  (At Lynx TAPE 0, 600bps).
-		// "Bits per second" is from Camputers documentation, it may or may not have ever been accurate, I don't know.
-		// We don't need to care - everything is calculated in Z80 cycles anyway, and I'm only interested in RATIOs.
-
-		uint32_t zeroSeed = (0x80C * 600) / bitsPerSecond;
-		uint32_t oneSeed  = (0xFB1 * 600) / bitsPerSecond;
-
-		SignalWriter  signalWriter( resultWave, 
-			SignalLengthInfo( zeroSeed,  zeroSeed + 0x57,  zeroSeed + 0x11F ),    // Signal length information (in Z80 cycles) for a ZERO  (at "TAPE 0" speed).
-			SignalLengthInfo( oneSeed,   oneSeed + 0x121,  oneSeed + 0x1F7) );    // Signal length information (in Z80 cycles) for a ONE   (at "TAPE 0" speed).
-
-			//SignalLengthInfo( 0x80C,  0x863,  0x92B ),    // Signal length information (in Z80 cycles) for a ZERO  (at "TAPE 0" speed).
-			//SignalLengthInfo( 0xFB1, 0x10D2, 0x11A8 ) );  // Signal length information (in Z80 cycles) for a ONE   (at "TAPE 0" speed).
-
-		auto &thisFileName    = _fileNames[fileIndex];
-		auto &thisFileContent = _contentImages[fileIndex];
-
-		signalWriter.WriteSyncAndA5();
-		signalWriter.WriteByte( 0x22 );
-		signalWriter.WriteBytes( (const uint8_t *) (thisFileName.c_str()), thisFileName.size() );
-		signalWriter.WriteByte( 0x22 );
-		signalWriter.WriteExtraHighCycles( 0x1F1 );
-		signalWriter.WriteSyncAndA5();
-		if( ! thisFileContent.empty() )  // avoid library assert on address-take if vector empty.
-		{
-			signalWriter.WriteBytes( &thisFileContent.front(), thisFileContent.size() );
-		}
-
-		return resultWave;
-	}
-
-
-
 	class TapFileLexer
 	{
 	public:
@@ -170,7 +112,8 @@ namespace Jynx
 				auto length = (uint32_t) ((lengthHigh << 8) | lengthLow);
 				if( byte == 'B' ) length += 3;  // Basic files have 3 extra bytes NOT accounted in the length.
 				if( byte == 'M' ) length += 7;  // "Machine code" files have 7 extra bytes NOT accounted in the length.
-				if( length <= SpaceRemaining() )
+				auto spaceRemaining = SpaceRemaining();
+				if( length <= spaceRemaining )
 				{
 					// Lift out the file data, including the 3 bytes we've just processed, and return that:
 					auto resultVector = std::vector<uint8_t>( _position - 3, _position + length );
@@ -191,6 +134,72 @@ namespace Jynx
 	}
 
 
+
+
+
+}
+
+
+
+
+namespace Jynx
+{
+	TapFileSplitter::TapFileSplitter()
+	{
+		// The constructor for an empty tape.
+	}
+
+
+
+	TapFileSplitter::TapFileSplitter( IFileOpener *tapFile )
+	{
+		LoadAndParseTapFile( tapFile );
+	}
+
+
+
+	size_t TapFileSplitter::GetNumberOfFiles() const
+	{
+		assert( _fileNames.size() == _contentImages.size() ); // should always be so.
+		return _fileNames.size();
+	}
+
+
+
+	std::vector<uint16_t>  TapFileSplitter::GenerateWaveformForFile( size_t fileIndex, uint32_t bitsPerSecond )
+	{
+		std::vector<uint16_t>  resultWave;
+
+		// Seed constants deduced from analysis of the signal tape files.  (At Lynx TAPE 0, 600bps).
+		// "Bits per second" is from Camputers documentation, it may or may not have ever been accurate, I don't know.
+		// We don't need to care - everything is calculated in Z80 cycles anyway, and I'm only interested in RATIOs.
+
+		uint32_t zeroSeed = (0x80C * 600) / bitsPerSecond;
+		uint32_t oneSeed  = (0xFB1 * 600) / bitsPerSecond;
+
+		SignalWriter  signalWriter( resultWave, 
+			SignalLengthInfo( zeroSeed,  zeroSeed + 0x57,  zeroSeed + 0x11F ),    // Signal length information (in Z80 cycles) for a ZERO  (at "TAPE 0" speed).
+			SignalLengthInfo( oneSeed,   oneSeed + 0x121,  oneSeed + 0x1F7) );    // Signal length information (in Z80 cycles) for a ONE   (at "TAPE 0" speed).
+
+			//SignalLengthInfo( 0x80C,  0x863,  0x92B ),    // Signal length information (in Z80 cycles) for a ZERO  (at "TAPE 0" speed).
+			//SignalLengthInfo( 0xFB1, 0x10D2, 0x11A8 ) );  // Signal length information (in Z80 cycles) for a ONE   (at "TAPE 0" speed).
+
+		auto &thisFileName    = _fileNames[fileIndex];
+		auto &thisFileContent = _contentImages[fileIndex];
+
+		signalWriter.WriteSyncAndA5();
+		signalWriter.WriteByte( 0x22 );
+		signalWriter.WriteBytes( (const uint8_t *) (thisFileName.c_str()), thisFileName.size() );
+		signalWriter.WriteByte( 0x22 );
+		signalWriter.WriteExtraHighCycles( 0x1F1 );
+		signalWriter.WriteSyncAndA5();
+		if( ! thisFileContent.empty() )  // avoid library assert on address-take if vector empty.
+		{
+			signalWriter.WriteBytes( &thisFileContent.front(), thisFileContent.size() );
+		}
+
+		return resultWave;
+	}
 
 
 
@@ -224,5 +233,46 @@ namespace Jynx
 		_fileNames.swap( fileNames );
 		_contentImages.swap( contentImages );
 	}
+
+
+
+	std::string  TapFileSplitter::GetTapeDirectory() const
+	{
+		// Retrieves text giving tape content and file types (LOAD / MLOAD).
+
+		std::string  directoryString;
+
+		assert( _contentImages.size() == _fileNames.size() ); // should always be from the LoadAndParseTapFile() result.
+
+		for( size_t  i=0; i<_fileNames.size(); i++ )
+		{
+			assert( _contentImages[i].size() > 0 ); // should always be from the LoadAndParseTapFile() result.
+			auto fileType = _contentImages[i][0];
+			directoryString += "REM "; // so is suitable for automated "typing" into the Lynx.
+			if( fileType == 'B' )
+			{
+				directoryString += "LOAD \"";
+			}
+			else if( fileType == 'M' )
+			{
+				directoryString += "MLOAD \"";
+			}
+			else 
+			{
+				directoryString += "UNKNOWN FILE TYPE \"";  // should never happen.
+			}
+			directoryString += _fileNames[i];
+			directoryString += "\"\r"; // Lynx compatible line ending.
+		}
+
+		if( _fileNames.empty() )
+		{
+			directoryString += "REM No files on tape.\r";
+		}
+
+		return directoryString;
+	}
+
+
 
 } // end namespace Jynx

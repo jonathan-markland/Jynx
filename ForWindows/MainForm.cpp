@@ -299,6 +299,7 @@ void MainForm::WindowProc( libWinApi::WindowProcArgs &e )
 				case ID_FILE_INSERTBLANKTAPE:     _lynxUIModel->OnNewAudioTape(); break;
 				case ID_FILE_SAVETAPE:            _lynxUIModel->OnSaveTAPFileAs(); break;
 				case ID_FILE_REWINDTAPE:          _lynxUIModel->OnRewindAudioTape(); break;
+				case ID_FILE_DIRECTORY:           _lynxUIModel->OnTypeTapeDirectoryIntoLynx(); break;
 				case ID_FILE_EXIT:                _lynxUIModel->OnExit(); break;
 				case ID_EMULATION_LYNX48K:        _lynxUIModel->OnEmulation48K(); break;
 				case ID_EMULATION_LYNX96K:        _lynxUIModel->OnEmulation96K(); break;
