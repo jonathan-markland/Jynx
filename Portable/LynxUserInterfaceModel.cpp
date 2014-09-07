@@ -754,6 +754,9 @@ namespace Jynx
 		bool tickRemExtensions = _lynxEmulator->GetLynxRemCommandExtensionsEnabled();
 		bool tickPaused        = _lynxEmulator->GetPauseMode();
 		bool tickPauseAfterTap = _lynxEmulator->GetPauseAfterTapLoadEnable();
+		bool tickMaxSpeedCassette = _lynxEmulator->GetEnableSpeedMaxModeWhenUsingCassette();
+		bool tickMaxSpeedConsole  = _lynxEmulator->GetEnableSpeedMaxModeWhenInBetweenConsoleCommands();
+		bool tickMaxSpeedAlways   = _lynxEmulator->GetEnableSpeedMaxModeBecauseUserWantsItPermanently();
 		bool tickSound      = _soundEnable;
 		bool tickFullScreen = _showFullScreen;
 
@@ -781,7 +784,10 @@ namespace Jynx
 		_hostView->SetTickBoxState( TickableInterfaceElements::ShowFullScreen, tickFullScreen );
 		_hostView->SetTickBoxState( TickableInterfaceElements::Paused, tickPaused );
 		_hostView->SetTickBoxState( TickableInterfaceElements::PausedAfterTapLoad, tickPauseAfterTap );
-	
+		_hostView->SetTickBoxState( TickableInterfaceElements::MaxSpeedCassette, tickMaxSpeedCassette );
+		_hostView->SetTickBoxState( TickableInterfaceElements::MaxSpeedConsole,  tickMaxSpeedConsole );
+		_hostView->SetTickBoxState( TickableInterfaceElements::MaxSpeedAlways,   tickMaxSpeedAlways );
+
 		_hostView->SetEnabledState( ButtonInterfaceElements::RewindTape, greyRewind );
 		_hostView->SetEnabledState( ButtonInterfaceElements::FinishRecording, greyFinishRec );
 		_hostView->SetEnabledState( ButtonInterfaceElements::SaveTape, greySaveTapAs );

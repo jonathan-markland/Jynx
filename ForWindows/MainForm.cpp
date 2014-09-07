@@ -546,6 +546,9 @@ const UINT MainFormTickableItems[Jynx::TickableInterfaceElements::Count] =
 	ID_DISPLAY_FULLSCREENENABLE,
 	ID_EMULATION_PAUSE,
 	ID_EMULATION_PAUSEAFTERTAPLOAD,
+	ID_SPEED_MAXSPEEDCASSETTE,
+	ID_SPEED_MAXSPEEDCONSOLE,
+	ID_SPEED_MAXSPEEDALWAYS,
 };
 
 void MainForm::SetTickBoxState( Jynx::TickableInterfaceElements::Enum itemToSet, bool tickState )
