@@ -267,6 +267,18 @@ namespace Jynx
 
 
 
+	void LynxUserInterfaceModel::OnRunTAPFile()
+	{
+		auto fileOpener = _hostView->ShowOpenFileDialog( LoadableFileTypes::TAP );
+		if( fileOpener )
+		{
+			EnsureUIUpdated uiUpdater(this);
+			_lynxEmulator->RunExistingTAPFile( fileOpener.get() ); // throws
+		}
+	}
+
+
+
 	void LynxUserInterfaceModel::OnOpenTAPFile()
 	{
 		// The View calls this because an option has (somehow!) been selected in the UI (menu/button/icon/whatever).

@@ -41,6 +41,7 @@ IDR_MAINFRAME MENU
 BEGIN
     POPUP "&File"
     BEGIN
+        MENUITEM "&Run TAP file ...",            ID_FILE_RUNTAPFILE
         MENUITEM "&Open TAP file ...",           ID_FILE_OPENTAPFILE
         MENUITEM "&Rewind Tape",                 ID_FILE_REWINDTAPE
         MENUITEM "Tape &Directory (at BASIC prompt)",     ID_FILE_DIRECTORY

@@ -51,6 +51,7 @@ namespace Jynx
 		void OnPaint();
 		void OnLoadStateSnapshot();
 		void OnSaveStateSnapshot();
+		void OnRunTAPFile();
 		void OnOpenTAPFile();
 		void OnNewAudioTape();
 		void OnSaveTAPFileAs();

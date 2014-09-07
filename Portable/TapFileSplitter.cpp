@@ -236,7 +236,7 @@ namespace Jynx
 
 
 
-	std::string  TapFileSplitter::GetTapeDirectory() const
+	std::string  TapFileSplitter::GetTapeDirectory( TapeDirectoryStyle::Enum styleRequired ) const
 	{
 		// Retrieves text giving tape content and file types (LOAD / MLOAD).
 
@@ -244,33 +244,51 @@ namespace Jynx
 
 		assert( _contentImages.size() == _fileNames.size() ); // should always be from the LoadAndParseTapFile() result.
 
-		for( size_t  i=0; i<_fileNames.size(); i++ )
-		{
-			assert( _contentImages[i].size() > 0 ); // should always be from the LoadAndParseTapFile() result.
-			auto fileType = _contentImages[i][0];
-			directoryString += "REM "; // so is suitable for automated "typing" into the Lynx.
-			if( fileType == 'B' )
-			{
-				directoryString += "LOAD \"";
-			}
-			else if( fileType == 'M' )
-			{
-				directoryString += "MLOAD \"";
-			}
-			else 
-			{
-				directoryString += "UNKNOWN FILE TYPE \"";  // should never happen.
-			}
-			directoryString += _fileNames[i];
-			directoryString += "\"\r"; // Lynx compatible line ending.
-		}
-
 		if( _fileNames.empty() )
 		{
 			directoryString += "REM No files on tape.\r";
 		}
+		else if( styleRequired == TapeDirectoryStyle::REMCommandListing )
+		{
+			for( size_t  i=0; i<_fileNames.size(); i++ )
+			{
+				directoryString += "REM "; // so is suitable for automated "typing" into the Lynx.
+				AppendLynxLoadCommandForFile( i, directoryString );
+				directoryString += "\"\r"; // Lynx compatible line ending.
+			}
+		}
+		else if( styleRequired == TapeDirectoryStyle::LoadCommands )
+		{
+			directoryString += "TAPE 5\r";
+			AppendLynxLoadCommandForFile( 0, directoryString );
+			directoryString += "\"\r"; // Lynx compatible line ending.
+		}
+		else assert(false);
 
 		return directoryString;
+	}
+
+
+
+	void TapFileSplitter::AppendLynxLoadCommandForFile( size_t fileIndex, std::string &directoryString ) const
+	{
+		assert( _contentImages[fileIndex].size() > 0 ); // should always be from the LoadAndParseTapFile() result.
+
+		auto fileType = _contentImages[fileIndex][0];
+		if( fileType == 'B' )
+		{
+			directoryString += "LOAD \"";
+		}
+		else if( fileType == 'M' )
+		{
+			directoryString += "MLOAD \"";
+		}
+		else 
+		{
+			directoryString += "UNKNOWN FILE TYPE \"";  // should never happen.
+		}
+
+		directoryString += _fileNames[fileIndex];
 	}
 
 

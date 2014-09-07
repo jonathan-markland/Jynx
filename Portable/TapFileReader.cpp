@@ -85,9 +85,9 @@ namespace Jynx
 	//     PLAYBACK
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
-	std::string  TapFileReader::GetTapeDirectory() const
+	std::string  TapFileReader::GetTapeDirectory( TapeDirectoryStyle::Enum styleRequired ) const
 	{
-		return _tapFileSplitter.GetTapeDirectory();
+		return _tapFileSplitter.GetTapeDirectory( styleRequired );
 	}
 
 

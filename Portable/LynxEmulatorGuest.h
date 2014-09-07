@@ -67,6 +67,7 @@ namespace Jynx
 		void InsertBlankTape();
 		bool CanRewindTape() const;
 		void RewindTape();
+		void RunExistingTAPFile( IFileOpener *fileOpener );
 		void LoadExistingTAPFile( IFileOpener *fileOpener );
 		bool CanSaveTAPFile() const;
 		void SaveTape( IFileOpener *fileOpener );

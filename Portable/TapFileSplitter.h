@@ -28,6 +28,16 @@
 
 namespace Jynx
 {
+	namespace TapeDirectoryStyle
+	{
+		enum Enum
+		{
+			LoadCommands, REMCommandListing
+		};
+	}
+
+
+
 	class TapFileSplitter
 	{
 	public:
@@ -52,7 +62,7 @@ namespace Jynx
 			// - bitsPerSecond should be the "TAPE" speed the Lynx is currently 
 			//   expecting: { 600, 900, 1200, 1500, 1800, 2100 } for TAPE 0-5 resp.
 
-		std::string  GetTapeDirectory() const;
+		std::string  GetTapeDirectory( TapeDirectoryStyle::Enum styleRequired ) const;
 			// Retrieves text giving tape content and file types (LOAD / MLOAD).
 
 	private:
@@ -61,6 +71,8 @@ namespace Jynx
 		std::vector< std::vector<uint8_t> >  _contentImages;  // In the block after the second sync, the type-stamp, data-length and raw data are encoded.
 
 		void LoadAndParseTapFile( IFileOpener *tapFileOpener );
+		void AppendLynxLoadCommandForFile( size_t fileIndex, std::string &directoryString ) const;
+
 
 	};
 

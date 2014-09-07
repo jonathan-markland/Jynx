@@ -1485,6 +1485,21 @@ namespace Jynx
 
 
 
+	void LynxEmulatorGuest::RunExistingTAPFile( IFileOpener *fileOpener )
+	{
+		ResetGuest( _machineType );  // API -- thus no thread inhibit needed
+		LoadExistingTAPFile( fileOpener );  // API -- thus no thread inhibit needed
+
+		EmulatorThreadInhibitor  handshake(this);
+
+		if( _currentReadTape != nullptr )
+		{
+			_textPlayer.SetText( _currentReadTape->GetTapeDirectory( TapeDirectoryStyle::LoadCommands ).c_str() );
+		}
+	}
+
+
+
 	void LynxEmulatorGuest::LoadExistingTAPFile( IFileOpener *fileOpener )
 	{
 		EmulatorThreadInhibitor  handshake(this);
@@ -1643,7 +1658,7 @@ namespace Jynx
 		EmulatorThreadInhibitor  handshake(this);
 		if( _currentReadTape != nullptr )
 		{
-			_textPlayer.SetText( _currentReadTape->GetTapeDirectory().c_str() );
+			_textPlayer.SetText( _currentReadTape->GetTapeDirectory( TapeDirectoryStyle::REMCommandListing ).c_str() );
 		}
 		else
 		{

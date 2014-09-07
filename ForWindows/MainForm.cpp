@@ -295,6 +295,7 @@ void MainForm::WindowProc( libWinApi::WindowProcArgs &e )
 			{
 				case ID_FILE_LOADSTATESNAPSHOT:   _lynxUIModel->OnLoadStateSnapshot(); break;
 				case ID_FILE_SAVESTATESNAPSHOT:   _lynxUIModel->OnSaveStateSnapshot(); break;
+				case ID_FILE_RUNTAPFILE:          _lynxUIModel->OnRunTAPFile(); break;
 				case ID_FILE_OPENTAPFILE:         _lynxUIModel->OnOpenTAPFile(); break;
 				case ID_FILE_INSERTBLANKTAPE:     _lynxUIModel->OnNewAudioTape(); break;
 				case ID_FILE_SAVETAPE:            _lynxUIModel->OnSaveTAPFileAs(); break;
