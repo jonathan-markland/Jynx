@@ -30,7 +30,7 @@ p { font-family: Georgia, serif;  font-size: 100%; }
 
 <p>I will try to keep an up to date notice of <a href="http://www.jynx-emulator.tumblr.com">where to get a FULL VERSION DOWNLOAD on my Tumblr Blog!</a></p>
 
-<p>If you use GitHub, you should unzip the Jynx .ZIP to a spare folder, then copy the ROM files in.  <a href="http://www.emu-france.com/emulateurs/10-ordinateurs/109-camputers-lynx/">I'm not putting the ROM files on GitHub so you will have to install Pete's PALE emulator, and get them from his "Program Files (x86)\Pale" folder.</a>  These are the file names you need:</p>
+<p>I feel I ought to release stuff on GitHub, so if you download the ROMLESS version from there, you should unzip the Jynx .ZIP to a spare folder, then copy the ROM files in.  <a href="http://www.emu-france.com/emulateurs/10-ordinateurs/109-camputers-lynx/">I'm not putting the ROM files on GitHub so you will have to install Pete's PALE emulator, and get them from his "Program Files (x86)\Pale" folder.</a>  These are the file names you need:</p>
 
 <ul>
 <li>lynx48-1.rom</li>
@@ -51,6 +51,7 @@ p { font-family: Georgia, serif;  font-size: 100%; }
 <li><a href="http://www.emu-france.com/emulateurs/10-ordinateurs/109-camputers-lynx/">Emu France have other Camputers Lynx emulators.</a></li>
 <li><a href="http://www.theregister.co.uk/2013/03/20/feature_the_story_of_the_camputers_lynx/">The Register have an excellent article on the Lynx.</a></li>
 <li><a href="http://elborg.dk">Frank's Lynx Web Site.  <i>Frank is a really sound guy, and has loads of Lynx stuff!</i></a></li>
+<li><a href="http://www.hyperspin-fe.com/">Hyperspin strives for the best emulation experience, from the comfort of your own home.</a></li>
 </ul>
 
 <h3>Notices</h3>
@@ -64,15 +65,19 @@ please contact me on GitHub (see above).</i></p>
 
 <h2>File Menu</h2>
 
-<h3>Open TAP file ...</h3>
+<h3>Run TAP file ...</h3>
+<p>The easiest way to get started with a tape.  When you select your tape, this resets the emulator, types in the load command needed, and away you go. <i>Select your variety of Lynx first!</i></p>
 
+<h3>Open TAP file ...</h3>
 <p>Allows the user to open a Lynx tape file (*.TAP).  The file can be loaded with <code>LOAD "FILENAME"</code> or <code>MLOAD "FILENAME"</code> at the Lynx Basic prompt, depending on whether it is basic or machine code.  Unfortunately you just have to know!</p>
 <p>You can find out by loading the TAP file into a text editor.  This contains the file name (in quotes) at the very start of the TAP file, followed by a letter 'B' for Basic, or 'M' for machine code.</p>
-
 <p>You can use the Lynx BASIC "TAPE" command to speed up loading, e.g.: <code>TAPE 5</code>.  Unlike real cassette recorders, the emulator will supply TAP file data at the rate the Lynx expects.</p>
 
 <h3>Rewind Tape</h3>
 <p>Rewinds the virtual cassette recorder to the start.</p>
+
+<h3>Tape Directory</h3>
+<p>Lists the tape directory for the current TAP by "typing it out" as REM statements on the lynx prompt!</p>
 
 <h3>New Output Tape</h3>
 <p>Prepares a new, blank, "virtual cassette" onto which you can save a files with the Lynx Basic <code>SAVE</code> command, or the Lynx machine-code monitor (MON).</p>
@@ -99,14 +104,34 @@ please contact me on GitHub (see above).</i></p>
 <h3>Pause</h3>
 <p>Pauses the emulator until you untick this box.  You can load a snapshot in this state, but it will not start until you un-pause.</p>
 
+<h3>Reset Guest Machine</h3>
+<p>This option resets the guest machine with a simulated hardware reset.  This will lose the contents of the Lynx's memory completely.</p>
+
 <h3>Lynx 48K / Lynx 96K</h3>
 <p>These options select which Lynx model you would like to emulate.  Changing the Lynx model will require a reset of the guest machine!</p>
+
+<h3>Pause emulation after tape load</h3>
+<p>Intended to help people wanting to save snapshots just before their game's main screen appears!</p>
+
+
+
+
+
+
+<h2>Speed Menu</h2>
 
 <h3>Speed 50% / 100% / 200% / 400% / 800%</h3>
 <p>These options change the speed of the emulation.  This will affect the pitch of the sound, um... <i>and ability to type.</i></p>
 
-<h3>Reset Guest Machine</h3>
-<p>This option resets the guest machine with a simulated hardware reset.  This will lose the contents of the Lynx's memory completely.</p>
+<h3>Super speed cassette</h3>
+<p>The system will engage super-speed mode when loading or saving tapes.</p>
+
+<h3>Super speed console</h3>
+<p>Warp speed is engaged by the system at the BASIC prompt.  <i>This may interfere in the running of programs, to you may need to turn it off.  But try it out nontheless.</i></p>
+
+<h3>Super speed always</h3>
+<p>Give a 15 year old the Starship Enterprise, and this is what you would get...</p>
+
 
 
 
@@ -174,12 +199,6 @@ please contact me on GitHub (see above).</i></p>
 
 
 
-<h2>Technical menu</h2>
-
-<h3>Pause emulation just after TAP has loaded</h3>
-<p>Intended to help people wanting to save snapshots just before their game's main screen appears!</p>
-
-
 
 
 
@@ -211,14 +230,21 @@ please contact me on GitHub (see above).</i></p>
 		<td>--snapshot</td><td>Specify lynxsnapshot file to be immediately loaded on startup.</td>
 	</tr>
 	<tr>
+		<td>--run</td><td>Specify TAP file to be immediately loaded on startup (--snapshot overrides this).</td>
+	</tr>
+	<tr>
 		<td>--games</td><td>Put emulator into games mode. Does not pester on exit, and does not SAVE the settings file.</td>
 	</tr>
 </table>
 
-<p>Example command line:</p>
+<p>Example command lines:</p>
 
 <p><code>
 jynx.exe --settings "C:\users\jonathan\documents\Alternative Settings.txt" --snapshot "C:\users\jonathan\documents\snapshots\AIR RAID.lynxsnapshot" --games
+<code>
+</p>
+<p><code>
+jynx.exe --settings "C:\users\jonathan\documents\Alternative Settings.txt" --run "C:\users\jonathan\documents\snapshots\AIR RAID.TAP"
 <code>
 </p>
 
