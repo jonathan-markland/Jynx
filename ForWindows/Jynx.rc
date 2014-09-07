@@ -42,6 +42,7 @@ BEGIN
     POPUP "&File"
     BEGIN
         MENUITEM "&Run TAP file ...",            ID_FILE_RUNTAPFILE
+        MENUITEM SEPARATOR
         MENUITEM "&Open TAP file ...",           ID_FILE_OPENTAPFILE
         MENUITEM "&Rewind Tape",                 ID_FILE_REWINDTAPE
         MENUITEM "Tape &Directory (at BASIC prompt)",     ID_FILE_DIRECTORY
@@ -57,17 +58,25 @@ BEGIN
     POPUP "&Emulation"
     BEGIN
         MENUITEM "&Pause",                      ID_EMULATION_PAUSE
-        MENUITEM SEPARATOR
-        MENUITEM "Speed &50%",                   ID_EMULATION_SPEED50
-        MENUITEM "Speed &100%",                  ID_EMULATION_SPEED100
-        MENUITEM "Speed &200%",                  ID_EMULATION_SPEED200
-        MENUITEM "Speed &400%",                  ID_EMULATION_SPEED400
-        MENUITEM "Speed &800%",                  ID_EMULATION_SPEED800
+		MENUITEM SEPARATOR
+        MENUITEM "&Reset Guest Machine",        ID_EMULATION_RESET
         MENUITEM SEPARATOR
         MENUITEM "Lynx 48&K",                   ID_EMULATION_LYNX48K
         MENUITEM "Lynx 9&6K",                   ID_EMULATION_LYNX96K
 		MENUITEM SEPARATOR
-        MENUITEM "&Reset Guest Machine",        ID_EMULATION_RESET
+        MENUITEM "Pause after tape load",       ID_EMULATION_PAUSEAFTERTAPLOAD
+    END
+    POPUP "S&peed"
+    BEGIN
+        MENUITEM "Speed &50%",                   ID_SPEED_SPEED50
+        MENUITEM "Speed &100%",                  ID_SPEED_SPEED100
+        MENUITEM "Speed &200%",                  ID_SPEED_SPEED200
+        MENUITEM "Speed &400%",                  ID_SPEED_SPEED400
+        MENUITEM "Speed &800%",                  ID_SPEED_SPEED800
+		MENUITEM SEPARATOR
+		MENUITEM "Super speed cassette",         ID_SPEED_MAXSPEEDCASSETTE
+		MENUITEM "Super speed console",          ID_SPEED_MAXSPEEDCONSOLE
+		MENUITEM "Super speed always",           ID_SPEED_MAXSPEEDALWAYS
     END
     POPUP "&Display"
     BEGIN
@@ -75,7 +84,7 @@ BEGIN
         MENUITEM "Use &Square Pixels",          ID_DISPLAY_SQUAREPIXELS
         MENUITEM "&Fill Window",                ID_DISPLAY_FILLWINDOW
         MENUITEM SEPARATOR
-        MENUITEM "Full screen",                 ID_FULL_SCREEN_ENABLE
+        MENUITEM "Full screen",                 ID_DISPLAY_FULLSCREENENABLE
     END
     POPUP "&Sound"
     BEGIN
@@ -89,16 +98,12 @@ BEGIN
     POPUP "&Text"
     BEGIN
         MENUITEM "Record Lynx Text to file ...", ID_TEXT_RECORDLYNXTEXT
-        MENUITEM "Stop Recording Lynx Text",    ID_TEXT_STOPRECORDINGLYNXTEXT
+        MENUITEM "Stop Recording Lynx Text",     ID_TEXT_STOPRECORDINGLYNXTEXT
         MENUITEM SEPARATOR
-        MENUITEM "Type in text from file ...",  ID_TEXT_TYPEINFROMFILE
+        MENUITEM "Type in text from file ...",   ID_TEXT_TYPEINFROMFILE
         MENUITEM SEPARATOR
         MENUITEM "Enable Lynx Basic REM command extensions", ID_TEXT_LYNXBASICREMCOMMANDEXTENSIONS
     END
-    POPUP "Tec&hnical"
-    BEGIN
-        MENUITEM "Pause emulation just after TAP has loaded", ID_TECHNICAL_PAUSEAFTERTAPLOAD
-	END
     POPUP "&Help"
     BEGIN
         MENUITEM "&About ...",                  ID_HELP_ABOUT

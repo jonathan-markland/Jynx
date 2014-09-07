@@ -302,32 +302,36 @@ void MainForm::WindowProc( libWinApi::WindowProcArgs &e )
 				case ID_FILE_REWINDTAPE:          _lynxUIModel->OnRewindAudioTape(); break;
 				case ID_FILE_DIRECTORY:           _lynxUIModel->OnTypeTapeDirectoryIntoLynx(); break;
 				case ID_FILE_EXIT:                _lynxUIModel->OnExit(); break;
-				case ID_EMULATION_LYNX48K:        _lynxUIModel->OnEmulation48K(); break;
-				case ID_EMULATION_LYNX96K:        _lynxUIModel->OnEmulation96K(); break;
-				case ID_EMULATION_SPEED50:        _lynxUIModel->OnSetCycles( Jynx::LynxZ80Cycles::At50 ); break;
-				case ID_EMULATION_SPEED100:       _lynxUIModel->OnSetCycles( Jynx::LynxZ80Cycles::At100 ); break;
-				case ID_EMULATION_SPEED200:       _lynxUIModel->OnSetCycles( Jynx::LynxZ80Cycles::At200 ); break;
-				case ID_EMULATION_SPEED400:       _lynxUIModel->OnSetCycles( Jynx::LynxZ80Cycles::At400 ); break;
-				case ID_EMULATION_SPEED800:       _lynxUIModel->OnSetCycles( Jynx::LynxZ80Cycles::At800 ); break;
-				case ID_EMULATION_PAUSE:          _lynxUIModel->OnPause(); break;
-				case ID_TECHNICAL_PAUSEAFTERTAPLOAD:         _lynxUIModel->OnPauseAfterTapLoad(); break;
+
+				case ID_EMULATION_PAUSE:		      _lynxUIModel->OnPause(); break;
+				case ID_EMULATION_RESET:		      _lynxUIModel->OnResetEmulation(); break;
+				case ID_EMULATION_LYNX48K:		      _lynxUIModel->OnEmulation48K(); break;
+				case ID_EMULATION_LYNX96K:		      _lynxUIModel->OnEmulation96K(); break;
+				case ID_EMULATION_PAUSEAFTERTAPLOAD:  _lynxUIModel->OnPauseAfterTapLoad(); break;
+
+				case ID_SPEED_SPEED50:            _lynxUIModel->OnSetCycles( Jynx::LynxZ80Cycles::At50 ); break;
+				case ID_SPEED_SPEED100:           _lynxUIModel->OnSetCycles( Jynx::LynxZ80Cycles::At100 ); break;
+				case ID_SPEED_SPEED200:           _lynxUIModel->OnSetCycles( Jynx::LynxZ80Cycles::At200 ); break;
+				case ID_SPEED_SPEED400:           _lynxUIModel->OnSetCycles( Jynx::LynxZ80Cycles::At400 ); break;
+				case ID_SPEED_SPEED800:           _lynxUIModel->OnSetCycles( Jynx::LynxZ80Cycles::At800 ); break;
+				case ID_SPEED_MAXSPEEDCASSETTE:   _lynxUIModel->OnSpeedMaxCassette(); break;
+				case ID_SPEED_MAXSPEEDCONSOLE:    _lynxUIModel->OnSpeedMaxConsoleCommands(); break;
+				case ID_SPEED_MAXSPEEDALWAYS:     _lynxUIModel->OnSpeedMaxPermanently(); break;
+
 				case ID_SOUND_LISTENTOTAPESOUNDS: _lynxUIModel->OnListenToTapeSounds(); break;
 				case ID_SOUND_RECORDTOFILE:       _lynxUIModel->OnRecordToFile(); break;
 				case ID_SOUND_FINISHRECORDING:    _lynxUIModel->OnFinishRecording(); break;
-				case ID_TEXT_RECORDLYNXTEXT:      _lynxUIModel->OnRecordLynxTextToFile(); break;
+				case ID_SOUND_ENABLE:             _lynxUIModel->OnEnableDisableSound(); break;
+
+				case ID_TEXT_RECORDLYNXTEXT:                 _lynxUIModel->OnRecordLynxTextToFile(); break;
 				case ID_TEXT_STOPRECORDINGLYNXTEXT:          _lynxUIModel->OnFinishRecordingLynxText(); break;
 				case ID_TEXT_TYPEINFROMFILE:                 _lynxUIModel->OnTypeInTextFromFile(); break;
 				case ID_TEXT_LYNXBASICREMCOMMANDEXTENSIONS:  _lynxUIModel->OnLynxBasicRemCommandExtensions(); break;
-				case ID_EMULATION_RESET:          _lynxUIModel->OnResetEmulation(); break;
-				case ID_DISPLAY_FITTOWINDOW:      _lynxUIModel->OnFitToWindow(); break;
-				case ID_DISPLAY_SQUAREPIXELS:     _lynxUIModel->OnSquarePixels(); break;
-				case ID_DISPLAY_FILLWINDOW:       _lynxUIModel->OnFillWindow(); break;
-				case ID_SOUND_ENABLE:             _lynxUIModel->OnEnableDisableSound(); break;
-				case ID_FULL_SCREEN_ENABLE:       _lynxUIModel->OnEnableDisableFullScreen(); break;
 
-		//case ID_FULL_SCREEN_ENABLE:       _lynxUIModel->OnSpeedMaxCassette(); break;
-		//case ID_FULL_SCREEN_ENABLE:       _lynxUIModel->OnSpeedMaxConsoleCommands(); break;
-		//case ID_FULL_SCREEN_ENABLE:       _lynxUIModel->OnSpeedMaxPermanently(); break;
+				case ID_DISPLAY_FITTOWINDOW:            _lynxUIModel->OnFitToWindow(); break;
+				case ID_DISPLAY_SQUAREPIXELS:           _lynxUIModel->OnSquarePixels(); break;
+				case ID_DISPLAY_FILLWINDOW:             _lynxUIModel->OnFillWindow(); break;
+				case ID_DISPLAY_FULLSCREENENABLE:       _lynxUIModel->OnEnableDisableFullScreen(); break;
 
 				case ID_HELP_ABOUT:               OnAbout(); break; // not handled by the model
 				default:                          return BaseForm::WindowProc( e );
@@ -532,16 +536,16 @@ const UINT MainFormTickableItems[Jynx::TickableInterfaceElements::Count] =
 	ID_DISPLAY_FITTOWINDOW,
 	ID_DISPLAY_SQUAREPIXELS,
 	ID_DISPLAY_FILLWINDOW,
-	ID_EMULATION_SPEED50,
-	ID_EMULATION_SPEED100,
-	ID_EMULATION_SPEED200,
-	ID_EMULATION_SPEED400,
-	ID_EMULATION_SPEED800,
+	ID_SPEED_SPEED50,
+	ID_SPEED_SPEED100,
+	ID_SPEED_SPEED200,
+	ID_SPEED_SPEED400,
+	ID_SPEED_SPEED800,
 	ID_TEXT_LYNXBASICREMCOMMANDEXTENSIONS,
 	ID_SOUND_ENABLE,
-	ID_FULL_SCREEN_ENABLE,
+	ID_DISPLAY_FULLSCREENENABLE,
 	ID_EMULATION_PAUSE,
-	ID_TECHNICAL_PAUSEAFTERTAPLOAD,
+	ID_EMULATION_PAUSEAFTERTAPLOAD,
 };
 
 void MainForm::SetTickBoxState( Jynx::TickableInterfaceElements::Enum itemToSet, bool tickState )
