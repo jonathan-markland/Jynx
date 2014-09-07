@@ -2009,6 +2009,7 @@ namespace libWinApi
 		{
 			::SetWindowLongPtr( _hWnd, GWL_STYLE, _previousStyles );
 			::SetWindowPlacement( _hWnd, &_previousPlacement );
+			::InvalidateRect( _hWnd, NULL, FALSE );
 		}
 	}
 
@@ -2046,6 +2047,9 @@ namespace libWinApi
 			if( ! ::SetWindowPlacement( hWnd, &wpl ) ) assert(false);
 		}
 		else assert(false);
+
+		// Invalidate:
+		::InvalidateRect( hWnd, NULL, FALSE );
 
 		return restorationInfo;
 	}
