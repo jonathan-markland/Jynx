@@ -832,6 +832,15 @@ namespace Jynx
 
 
 
+	bool LynxEmulatorGuest::IsTapeInOperation() const
+	{
+		return ( _level != 0  // <-- added for crazy things that Level 9 do!  (Turn tape motor ON all the time when keyboard scanning).
+				&& _devicePort & DEVICEPORT_CASSETTE_MOTOR );
+	}
+
+
+
+
 
 	uint8_t  LynxEmulatorGuest::Z80_IOSpaceRead( uint16_t portNumber )
 	{
@@ -844,8 +853,7 @@ namespace Jynx
 			// -- although I have insufficient documentation on this!  I deduced when the supply the
 			// cassette value in bit 0 of port 0x0080
 
-			if( _level != 0  // <-- added for crazy things that Level 9 do!  (Turn tape motor ON all the time when keyboard scanning).
-				&& _devicePort & DEVICEPORT_CASSETTE_MOTOR )
+			if( IsTapeInOperation() )
 			{
 				if( (portNumber & 0xFC6) == 0x0080 ) // <-- Mask per Lynx User Magazine Issue 1.  The lynx appears to only read from this port specifically, when reading tapes.
 				{
@@ -1498,7 +1506,7 @@ namespace Jynx
 	{
 		EmulatorThreadInhibitor  handshake(this);
 
-		if( _devicePort & DEVICEPORT_CASSETTE_MOTOR )
+		if( IsTapeInOperation() )
 		{
 			throw std::runtime_error( "Cannot save a snapshot while the cassette is in operation." );
 		}
@@ -1651,7 +1659,7 @@ namespace Jynx
 	bool LynxEmulatorGuest::CanSaveSnapshot() const
 	{
 		EmulatorThreadInhibitor  handshake(const_cast<LynxEmulatorGuest *>(this));  // TODO: Make volatile
-		return (_devicePort & DEVICEPORT_CASSETTE_MOTOR) ? false : true;
+		return ! IsTapeInOperation();
 	}
 
 

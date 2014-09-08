@@ -150,6 +150,8 @@ namespace Jynx
 		std::string  GetLynxCommandLine() const;
 		void ProcessLynxCommand();
 
+		bool IsTapeInOperation() const;
+
 	private:
 
 		friend class EmulatorThreadInhibitor;
