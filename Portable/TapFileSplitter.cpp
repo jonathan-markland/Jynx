@@ -78,6 +78,18 @@ namespace Jynx
 
 	std::string TapFileLexer::ExpectFileName()
 	{
+		// Some TAPs have a spurious A5 at the start:
+		if( _position[0] == 0xA5 )
+		{
+			++_position;  // consume the 0xA5 only.  These sort of redundant A5s will be re-constituted by the replay, and do not need to be part of the data.
+		}
+
+		// Check for type 'A' files (no file name portion):
+		if( _position[0] == 'A' )
+		{
+			return std::string(); // There is no name string with an 'A' format TAP (as used by Level-9 adventures)
+		}
+
 		if( _position[0] == '\"' )
 		{
 			++_position;
@@ -93,6 +105,7 @@ namespace Jynx
 			++_position; // skip second "
 			return fileName;
 		}
+
 		RaiseError();
 		return std::string(); // never executed
 	}
@@ -101,29 +114,47 @@ namespace Jynx
 
 	std::vector<uint8_t> TapFileLexer::ExpectFileBody()
 	{
-		if( SpaceRemaining() >= 3 )  // The type, and the two bytes of the length.
+		auto positionOfFileStart = _position;
+
+		// Read file type letter:
+		if( SpaceRemaining() < 1 ) RaiseError();
+		auto fileTypeLetter = _position[0];
+
+		// Read header now we know the type:
+		uint8_t  lengthLow  = 0;
+		uint8_t  lengthHigh = 0;
+		if( fileTypeLetter == 'A' ) // 'A' type files used by Level 9 games, possibly others?
 		{
-			auto byte = _position[0];
-			if( byte == 'B' || byte == 'M' )  // Lynx basic or machine code.
-			{
-				auto lengthLow  = _position[1];
-				auto lengthHigh = _position[2];
-				_position += 3;
-				auto length = (uint32_t) ((lengthHigh << 8) | lengthLow);
-				if( byte == 'B' ) length += 3;  // Basic files have 3 extra bytes NOT accounted in the length.
-				if( byte == 'M' ) length += 7;  // "Machine code" files have 7 extra bytes NOT accounted in the length.
-				auto spaceRemaining = SpaceRemaining();
-				if( length <= spaceRemaining )
-				{
-					// Lift out the file data, including the 3 bytes we've just processed, and return that:
-					auto resultVector = std::vector<uint8_t>( _position - 3, _position + length );
-					_position += length;
-					return resultVector;
-				}
-			}
+			if( SpaceRemaining() < 5 ) RaiseError();
+			lengthLow  = _position[3];
+			lengthHigh = _position[4];
+			_position += 5;
 		}
-		RaiseError();
-		return std::vector<uint8_t>(); // never executed
+		else if( fileTypeLetter == 'B' || fileTypeLetter == 'M' )  // Lynx basic or machine code.
+		{
+			if( SpaceRemaining() < 3 ) RaiseError();
+			lengthLow  = _position[1];
+			lengthHigh = _position[2];
+			_position += 3;
+		}
+		else RaiseError();
+
+		// Determine the image length (as recorded in the file):
+		auto payloadLength = (uint32_t) ((lengthHigh << 8) | lengthLow);
+
+		// Increase the length to include other known data:
+		if( fileTypeLetter == 'B' ) payloadLength += 3;   // Basic files have 3 extra bytes after the payload
+		if( fileTypeLetter == 'M' ) payloadLength += 7;   // "Machine code" files have 7 extra bytes after the payload
+		if( fileTypeLetter == 'A' ) payloadLength += 12;  // "A" files have 12 extra bytes after the payload
+
+		// Check it fits the file:
+		auto spaceRemaining = SpaceRemaining();
+		if( payloadLength > spaceRemaining ) RaiseError();
+
+		// Copy out the raw file data, starting at the file type byte:
+		_position += payloadLength;
+		auto resultVector = std::vector<uint8_t>( positionOfFileStart, _position );
+		return resultVector;
 	}
 
 
@@ -187,12 +218,24 @@ namespace Jynx
 		auto &thisFileName    = _fileNames[fileIndex];
 		auto &thisFileContent = _contentImages[fileIndex];
 
+		// Initial SYNC + A5 applies to all file types:
 		signalWriter.WriteSyncAndA5();
-		signalWriter.WriteByte( 0x22 );
-		signalWriter.WriteBytes( (const uint8_t *) (thisFileName.c_str()), thisFileName.size() );
-		signalWriter.WriteByte( 0x22 );
-		signalWriter.WriteExtraHighCycles( 0x1F1 );
-		signalWriter.WriteSyncAndA5();
+		
+		// Types 'B' and 'M' require the file name portion and a second SYNC + A5:
+		if( ! thisFileContent.empty() )  // avoid library assert on address-take if vector empty.
+		{
+			auto fileTypeLetter = thisFileContent[0];
+			if( fileTypeLetter == 'B' || fileTypeLetter == 'M' )
+			{
+				signalWriter.WriteByte( 0x22 );
+				signalWriter.WriteBytes( (const uint8_t *) (thisFileName.c_str()), thisFileName.size() );
+				signalWriter.WriteByte( 0x22 );
+				signalWriter.WriteExtraHighCycles( 0x1F1 );
+				signalWriter.WriteSyncAndA5();
+			}
+		}
+
+		// All types emit the file payload:
 		if( ! thisFileContent.empty() )  // avoid library assert on address-take if vector empty.
 		{
 			signalWriter.WriteBytes( &thisFileContent.front(), thisFileContent.size() );
