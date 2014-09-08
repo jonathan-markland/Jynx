@@ -183,6 +183,7 @@ namespace Jynx
 		// Host platform's preferred UTF8 end of line sequence:
 		const std::string  _platformEndOfLineSequenceUTF8;
 
+		volatile LynxScreenRendering::Enum   _screenRendering;  // Added to support Level 9 games.
 		volatile bool     _hearTapeSounds;    // Tape sound monitoring (ie: wire to speakers)
 		volatile bool     _pauseMode;
 		volatile bool     _pauseAfterTapLoadEnable;

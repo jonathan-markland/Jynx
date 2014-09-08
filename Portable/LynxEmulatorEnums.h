@@ -44,4 +44,12 @@ namespace Jynx
 
 
 
+	namespace LynxScreenRendering
+	{
+		enum Enum
+		{
+			NormalRGB, GreenOnly, GreenOnlyTranslatedToBlueAndCyan, BlackAndWhiteTV
+		};
+	}
+
 }

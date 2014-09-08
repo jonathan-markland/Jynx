@@ -128,6 +128,7 @@ namespace Jynx
 		, _speedMaxModeBecauseOfCassette(false)
 		, _speedMaxModeBecauseWeAreInBetweenConsoleCommands(false)
 		, _level(0)
+		, _screenRendering( LynxScreenRendering::NormalRGB )
 	{
 		// (Reminder - Called on the client thread).
 
@@ -242,6 +243,7 @@ namespace Jynx
 		// Video image composition selectors
 		//
 
+		_screenRendering  = LynxScreenRendering::NormalRGB;
 		_sourceVideoRED   = nullptr;
 		_sourceVideoGREEN = nullptr;
 		_sourceVideoBLUE  = nullptr;
@@ -521,14 +523,33 @@ namespace Jynx
 		// record HIGH RESOLUTION invalid regions, in case just a small section has changed.
 
 		assert( addressOffset < 0x2000 );
-		uint32_t  r = (*_sourceVideoRED)[addressOffset];
-		uint32_t  b = (*_sourceVideoBLUE)[addressOffset];
 		uint32_t  g = (*_sourceVideoGREEN)[addressOffset];
+
+		if( _screenRendering == LynxScreenRendering::NormalRGB )
+		{
+			uint32_t  r = (*_sourceVideoRED)[addressOffset];
+			uint32_t  b = (*_sourceVideoBLUE)[addressOffset];
+			_hostObject->PaintPixelsOnHostBitmapForLynxScreenByte_OnEmulatorThread( addressOffset, r, g, b );
+		}
+		else if( _screenRendering == LynxScreenRendering::GreenOnly )
+		{
+			// Green only display for Level 9 games.
+			_hostObject->PaintPixelsOnHostBitmapForLynxScreenByte_OnEmulatorThread( addressOffset, 0, g, 0 );
+		}
+		else if( _screenRendering == LynxScreenRendering::GreenOnlyTranslatedToBlueAndCyan )
+		{
+			// Green only display for Level 9 games.
+			_hostObject->PaintPixelsOnHostBitmapForLynxScreenByte_OnEmulatorThread( addressOffset, 0, g, 255 );
+		}
+		else if( _screenRendering == LynxScreenRendering::BlackAndWhiteTV )
+		{
+			// Green only display for Level 9 games.
+			_hostObject->PaintPixelsOnHostBitmapForLynxScreenByte_OnEmulatorThread( addressOffset, g, g, g );
+		}
+		
 
 		assert( (addressOffset >> 8) < INV_ROWS );
 		_invalidateRow[addressOffset >> 8] = true; // mark a row invalid
-
-		_hostObject->PaintPixelsOnHostBitmapForLynxScreenByte_OnEmulatorThread( addressOffset, r, g, b );
 	}
 
 
