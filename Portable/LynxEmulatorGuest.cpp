@@ -693,34 +693,37 @@ namespace Jynx
 
 		if( (portNumber & DEVICEPORT_DECODING_MASK) == 0x80 )
 		{
-			if( _devicePort != dataByte ) // optimise by ignoring repeated writes of same value.
+			auto oldSetting = _devicePort;
+
+			dataByte &= 0x3F; // Bit 7 kept zero according to spec, and let's wire the mono-stable (bit 6) to 0
+
+			if( oldSetting != dataByte ) // optimise by ignoring repeated writes of same value.
 			{
-				dataByte &= 0x3F; // Bit 7 kept zero according to spec, and let's wire the mono-stable (bit 6) to 0
+				// Update our record of the port status (which may simultaneously change several things):
+				// Must do this first, so any routines we call out to (below) see the new port settings:
+				_devicePort = dataByte;
 
 				// Use XOR to detect *change* in the DEVICEPORT_USE_ALT_GREEN bit:
-				if( (_devicePort ^ dataByte) & DEVICEPORT_USE_ALT_GREEN )
+				if( (oldSetting ^ dataByte) & DEVICEPORT_USE_ALT_GREEN )
 				{
 					// We are changing the GREEN / ALTERNATIVE GREEN selector
 					// so a re-construction and invalidate of the display is needed.
 					// We don't do it right now, we flag for it at the next frame:
 					_recompositeWholeScreen = true;
-					_devicePort = dataByte;
 					UpdateVideoSources();
 				}
 
 				// Use XOR to detect *change* in either/both of the DEVICEPORT_NOT_CASEN_BANK3 or DEVICEPORT_NOT_CASEN_BANK2 bits:
-				if( (_devicePort ^ dataByte) & (DEVICEPORT_NOT_CASEN_BANK3 | DEVICEPORT_NOT_CASEN_BANK2) )
+				if( (oldSetting ^ dataByte) & (DEVICEPORT_NOT_CASEN_BANK3 | DEVICEPORT_NOT_CASEN_BANK2) )
 				{
 					// Bits "NOT CASEN BANK3" or "NOT CASEN BANK2" have changed.
 					// This affects bank switching:
-					_devicePort = dataByte;
 					UpdateBankSwitchFromPorts();
 				}
 			
 				// Use XOR to detect *change* in CASSETTE MOTOR control bit:
-				if( (_devicePort ^ dataByte) & DEVICEPORT_CASSETTE_MOTOR )
+				if( (oldSetting ^ dataByte) & DEVICEPORT_CASSETTE_MOTOR )
 				{
-					_devicePort = dataByte;
 					if( dataByte & DEVICEPORT_CASSETTE_MOTOR )
 					{
 						CassetteMotorOn();
@@ -730,8 +733,6 @@ namespace Jynx
 						CassetteMotorOff();
 					}
 				}
-
-				_devicePort = dataByte;
 			}
 		}
 
