@@ -127,6 +127,7 @@ namespace Jynx
 		, _speedMaxModeBecauseUserWantsItPermanently(false)
 		, _speedMaxModeBecauseOfCassette(false)
 		, _speedMaxModeBecauseWeAreInBetweenConsoleCommands(false)
+		, _level(0)
 	{
 		// (Reminder - Called on the client thread).
 
@@ -226,6 +227,7 @@ namespace Jynx
 		_mc6845Select = 0;
 		ZeroInitialiseMemory( _mc6845Regs );
 		InitialiseAllArrayElementsVolatile( _keyboard, (uint8_t) 0xFF );  // -ve logic
+		_level = 0;
 
 		//
 		// Initialise bank switching selectors.
@@ -786,6 +788,8 @@ namespace Jynx
 			// Bits 5..0 contain the level:
 			auto level = dataByte & 0x3F;
 
+			_level = level;
+
 			if( _devicePort & DEVICEPORT_CASSETTE_MOTOR )
 			{
 				CassetteWrite( level );
@@ -795,7 +799,7 @@ namespace Jynx
 					SpeakerWrite( level >> 2 ); 
 				}
 			}
-			else
+			else if( _devicePort & DEVICEPORT_SPEAKER )
 			{
 				// Write to speaker.
 				SpeakerWrite( level ); 
@@ -814,18 +818,26 @@ namespace Jynx
 		{
 			// If the cassette motor is enabled, we are loading from tape.
 			// Bit 0 is a "level sensor" which detects whether the level is below or above the middle.
-			// Since the keyboard shares the same port as the cassette we must include the key states:
-			if( _devicePort & DEVICEPORT_CASSETTE_MOTOR )
+
+			// Since the keyboard shares the same port as the cassette we must include the key states
+			// -- although I have insufficient documentation on this!  I deduced when the supply the
+			// cassette value in bit 0 of port 0x0080
+
+			if( _level != 0  // <-- added for crazy things that Level 9 do!  (Turn tape motor ON all the time when keyboard scanning).
+				&& _devicePort & DEVICEPORT_CASSETTE_MOTOR )
 			{
-				// (It seems cassette loading terminates immediately unless the key information is 
-				// returned here.  Fixing the top 7 bits at "0"s wasn't a good idea!).
-				auto cassetteBit0 = CassetteRead();
-				if( _hearTapeSounds )
+				if( (portNumber & 0xFC6) == 0x0080 ) // <-- Mask per Lynx User Magazine Issue 1.  The lynx appears to only read from this port specifically, when reading tapes.
 				{
-					// Listen to tape loading (quieten it a bit):
-					SpeakerWrite( cassetteBit0 << 3 ); 
+					// (It seems cassette loading terminates immediately unless the key information is 
+					// returned here.  Fixing the top 7 bits at "0"s wasn't a good idea!).
+					auto cassetteBit0 = CassetteRead();
+					if( _hearTapeSounds )
+					{
+						// Listen to tape loading (quieten it a bit):
+						SpeakerWrite( cassetteBit0 << 3 ); 
+					}
+					return ReadLynxKeyboard(portNumber) & 0xFE | cassetteBit0;
 				}
-				return ReadLynxKeyboard(portNumber) & 0xFE | cassetteBit0;
 			}
 
 			// Read of keyboard only (cassette motor not active):
