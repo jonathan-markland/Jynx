@@ -55,17 +55,6 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "E&xit",                       ID_FILE_EXIT
     END
-    POPUP "&Emulation"
-    BEGIN
-        MENUITEM "&Pause",                      ID_EMULATION_PAUSE
-        MENUITEM SEPARATOR
-        MENUITEM "&Reset Guest Machine",        ID_EMULATION_RESET
-        MENUITEM SEPARATOR
-        MENUITEM "Lynx 48&K",                   ID_EMULATION_LYNX48K
-        MENUITEM "Lynx 9&6K",                   ID_EMULATION_LYNX96K
-        MENUITEM SEPARATOR
-        MENUITEM "Pause after tape load",       ID_EMULATION_PAUSEAFTERTAPLOAD
-    END
     POPUP "S&peed"
     BEGIN
         MENUITEM "Speed &50%",                  ID_SPEED_SPEED50
@@ -77,6 +66,17 @@ BEGIN
         MENUITEM "Super speed cassette",        ID_SPEED_MAXSPEEDCASSETTE
         MENUITEM "Super speed console",         ID_SPEED_MAXSPEEDCONSOLE
         MENUITEM "Super speed always",          ID_SPEED_MAXSPEEDALWAYS
+        MENUITEM SEPARATOR
+        MENUITEM "&Pause",                      ID_EMULATION_PAUSE
+    END
+    POPUP "&Emulation"
+    BEGIN
+        MENUITEM "Lynx 48&K",                   ID_EMULATION_LYNX48K
+        MENUITEM "Lynx 9&6K",                   ID_EMULATION_LYNX96K
+        MENUITEM SEPARATOR
+        MENUITEM "Pause after tape load",       ID_EMULATION_PAUSEAFTERTAPLOAD
+        MENUITEM SEPARATOR
+        MENUITEM "&Reset Guest Machine",        ID_EMULATION_RESET
     END
     POPUP "&Display"
     BEGIN
