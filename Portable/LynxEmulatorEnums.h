@@ -48,7 +48,7 @@ namespace Jynx
 	{
 		enum Enum
 		{
-			NormalRGB, GreenOnly, GreenOnlyTranslatedToBlueAndCyan, BlackAndWhiteTV, GreenScreenMonitor
+			NormalRGB, GreenOnly, Level9, BlackAndWhiteTV, GreenScreenMonitor
 		};
 	}
 

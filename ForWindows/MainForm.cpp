@@ -711,6 +711,13 @@ inline PIXEL_TYPE *CalcFrameBufferPixelAddress( PIXEL_TYPE *frameBufferTopLeftAd
 
 
 
+void MainForm::TranslateRGBXColourPaletteToHostValues( const uint32_t *eightEntryColourPalette, uint32_t *eightEntryTranslatedValues )
+{
+	// Nothing to do here, the format this host requires is the same as the emulator uses.
+}
+
+
+
 void  MainForm::PaintPixelsOnHostBitmap_OnEmulatorThread( uint32_t addressOffset, const uint32_t *eightPixelsData )
 {
 	// (WARNING - Called on the EMULATOR thread, NOT the MAIN thread)

@@ -120,6 +120,8 @@ namespace Jynx
 
 	private:
 
+		void UpdatePalette();
+
 		void SetGuestHardwareToResetState();
 		void InitialiseLYNX();
 		void LoadROMS();
@@ -215,6 +217,14 @@ namespace Jynx
 		volatile bool        _callWaiting;             // false normally, until MAIN thread call comes in.
 		Jynx::Waitable       _callWaitingAcknowledge;  // false normally, until EMULATOR thread realises call is waiting, then sets this true, and awaits MAIN thread returning this to false.
 		Jynx::Waitable       _resumeEmulatorThread;
+
+		//
+		// COLOUR PALETTE (indexed by lynx colour 0..7)
+		// Interpretation depends on the host.
+		//
+
+		uint32_t   _colourPalette[8];  // TODO: persistence?
+		uint32_t   _translatedColourPalette[8];  // Translated by host after most recent palette change.
 
 		//
 		// SOUND BUFFER (represents ONE Z80 period precisely)

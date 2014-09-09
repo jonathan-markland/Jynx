@@ -52,11 +52,18 @@ namespace Jynx
 		// Services called on the EMULATOR thread  (and NOT on the MAIN thread):
 		//
 
+		virtual  void TranslateRGBXColourPaletteToHostValues( const uint32_t *eightEntryColourPalette, uint32_t *eightEntryTranslatedValues ) = 0;
+			// (WARNING - Called on the EMULATOR thread, NOT the main thread)
+			// Host has the opportunity to change the RGBX values in the 8-entry array
+			// to something more convenient for the host.
+			// By default, the translated pixel format is the same as a the original values format.
+
 		virtual  void  PaintPixelsOnHostBitmap_OnEmulatorThread( uint32_t addressOffset, const uint32_t *eightPixelsData ) = 0;
 			// (WARNING - Called on the EMULATOR thread, NOT the main thread)
 			// The emulator is telling the host that the Lynx has written any of the colour banks
-			// at the given addressOffset into the bank.  The host should translate the Lynx bytes
-			// and plot them on the bitmap it is used to represent the lynx screen.  The bitmap
+			// at the given addressOffset into the bank.  The host should accept the 8 adjacent
+			// pixels in the array passed, and write them to its bitmap.  The pixel format is the
+			// format that host itself indicated in the translation.  The bitmap
 			// should NOT be painted with the host's Window Manager with this function!
 
 		virtual  void WriteSoundBufferToSoundCardOrSleep_OnEmulatorThread() = 0;
@@ -70,3 +77,4 @@ namespace Jynx
 	};
 
 } // end namespace Jynx
+

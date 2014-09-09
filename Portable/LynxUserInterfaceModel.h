@@ -91,7 +91,8 @@ namespace Jynx
 		virtual  void  OpenChipFileStream_OnMainThread( std::ifstream &streamToBeOpened, std::ios_base::openmode openModeRequired, LynxRoms::Enum romRequired ) override;
 		virtual  void  NotifyOutputTapeAvailbilityChanged_OnAnyThread() override;
 		virtual  void  PaintPixelsOnHostBitmap_OnEmulatorThread( uint32_t addressOffset, const uint32_t *eightPixelsData ) override;
-		virtual  void WriteSoundBufferToSoundCardOrSleep_OnEmulatorThread() override;
+		virtual  void  WriteSoundBufferToSoundCardOrSleep_OnEmulatorThread() override;
+		virtual  void  TranslateRGBXColourPaletteToHostValues( const uint32_t *eightEntryColourPalette, uint32_t *eightEntryTranslatedValues ) override;
 
 	private:
 

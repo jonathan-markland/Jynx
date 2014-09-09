@@ -245,6 +245,7 @@ namespace Jynx
 		//
 
 		_screenRendering  = LynxScreenRendering::NormalRGB;
+		UpdatePalette();
 		_sourceVideoRED   = nullptr;
 		_sourceVideoGREEN = nullptr;
 		_sourceVideoBLUE  = nullptr;
@@ -509,9 +510,77 @@ namespace Jynx
 	//     SCREEN
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
-	inline uint32_t  RGBToGrey( uint8_t r, uint8_t g, uint8_t b ) 
-	{ 
-		return ((uint32_t(b) * 29) + (uint32_t(g) * 150) + (uint32_t(r) * 77)) >> 8; 
+	void LynxEmulatorGuest::UpdatePalette()
+	{
+		// Fill the palette with RGBA values.
+		// Then ask the host to translate the palette to target values.
+		// We will quote the target values through the pixel rendering main interface.
+
+		if( _screenRendering == LynxScreenRendering::NormalRGB )
+		{
+			_colourPalette[0] = 0x000000;
+			_colourPalette[1] = 0xFF0000;
+			_colourPalette[2] = 0x0000FF;
+			_colourPalette[3] = 0xFF00FF;
+			_colourPalette[4] = 0x00FF00;
+			_colourPalette[5] = 0xFFFF00;
+			_colourPalette[6] = 0x00FFFF;
+			_colourPalette[7] = 0xFFFFFF;
+		}
+		else if( _screenRendering == LynxScreenRendering::BlackAndWhiteTV )
+		{
+			_colourPalette[0] = 0x000000;
+			_colourPalette[1] = 0x444444;
+			_colourPalette[2] = 0x666666;
+			_colourPalette[3] = 0x888888;
+			_colourPalette[4] = 0xAAAAAA;
+			_colourPalette[5] = 0xCCCCCC;
+			_colourPalette[6] = 0xDDDDDD;
+			_colourPalette[7] = 0xFFFFFF;
+		}
+		else if( _screenRendering == LynxScreenRendering::GreenScreenMonitor )
+		{
+			_colourPalette[0] = 0x000000;
+			_colourPalette[1] = 0x004400;
+			_colourPalette[2] = 0x006600;
+			_colourPalette[3] = 0x008800;
+			_colourPalette[4] = 0x00AA00;
+			_colourPalette[5] = 0x00CC00;
+			_colourPalette[6] = 0x00DD00;
+			_colourPalette[7] = 0x00FF00;
+		}
+		else if( _screenRendering == LynxScreenRendering::GreenOnly )
+		{
+			_colourPalette[0] = 0x000000;
+			_colourPalette[1] = 0x000000;
+			_colourPalette[2] = 0x000000;
+			_colourPalette[3] = 0x000000;
+			_colourPalette[4] = 0x00FF00;
+			_colourPalette[5] = 0x00FF00;
+			_colourPalette[6] = 0x00FF00;
+			_colourPalette[7] = 0x00FF00;
+		}
+		else if( _screenRendering == LynxScreenRendering::Level9 )
+		{
+			_colourPalette[0] = 0x000000;
+			_colourPalette[1] = 0x200000;
+			_colourPalette[2] = 0x000020;
+			_colourPalette[3] = 0x200020;
+			_colourPalette[4] = 0xCCFFFF;
+			_colourPalette[5] = 0xDDFFFF;
+			_colourPalette[6] = 0xEEFFFF;
+			_colourPalette[7] = 0xFFFFFF;
+		}
+
+		// Establish default translations:
+		for( uint32_t  i=0; i<8; i++ )
+		{
+			_translatedColourPalette[i] = _colourPalette[i];
+		}
+
+		// Allow hosts to translate the values to whatever they desire to use
+		// directly as pixel values / indices:
+		_hostObject->TranslateRGBXColourPaletteToHostValues( _colourPalette, _translatedColourPalette );
 	}
 
 	void LynxEmulatorGuest::ComposeHostBitmapPixelsForLynxScreenAddress( uint32_t addressOffset )
@@ -533,88 +602,22 @@ namespace Jynx
 		uint32_t  lynxGreenByte = (*_sourceVideoGREEN)[addressOffset];
 		uint32_t  lynxBlueByte  = (*_sourceVideoBLUE)[addressOffset];
 
-		uint8_t   pixelDataRGBA[8 * 4];
+		uint32_t   pixelDataRGBA[8];
 
-		if( _screenRendering == LynxScreenRendering::NormalRGB )
+		auto pixelAddress = &pixelDataRGBA[0];
+		uint8_t pixelMask = 0x80;
+		while( pixelMask != 0 )
 		{
-			auto pixelAddress = &pixelDataRGBA[0];
-			uint8_t pixelMask = 0x80;
-			while( pixelMask != 0 )
-			{
-				pixelAddress[0] = ( lynxRedByte   & pixelMask ) ? 255 : 0;
-				pixelAddress[1] = ( lynxGreenByte & pixelMask ) ? 255 : 0;
-				pixelAddress[2] = ( lynxBlueByte  & pixelMask ) ? 255 : 0;
-				pixelAddress[3] = 0xFF;
-				pixelMask >>= 1;
-				pixelAddress += 4;
-			}
-		}
-		else if( _screenRendering == LynxScreenRendering::BlackAndWhiteTV )
-		{
-			auto pixelAddress = &pixelDataRGBA[0];
-			uint8_t pixelMask = 0x80;
-			while( pixelMask != 0 )
-			{
-				auto r = ( lynxRedByte   & pixelMask ) ? 255 : 0;
-				auto g = ( lynxGreenByte & pixelMask ) ? 255 : 0;
-				auto b = ( lynxBlueByte  & pixelMask ) ? 255 : 0;
-				auto grey = RGBToGrey( r,g,b );
-				pixelAddress[0] = grey;
-				pixelAddress[1] = grey;
-				pixelAddress[2] = grey;
-				pixelAddress[3] = 0xFF;
-				pixelMask >>= 1;
-				pixelAddress += 4;
-			}
-		}
-		else if( _screenRendering == LynxScreenRendering::GreenScreenMonitor )
-		{
-			auto pixelAddress = &pixelDataRGBA[0];
-			uint8_t pixelMask = 0x80;
-			while( pixelMask != 0 )
-			{
-				auto r = ( lynxRedByte   & pixelMask ) ? 255 : 0;
-				auto g = ( lynxGreenByte & pixelMask ) ? 255 : 0;
-				auto b = ( lynxBlueByte  & pixelMask ) ? 255 : 0;
-				auto grey = RGBToGrey( r,g,b );
-				pixelAddress[0] = 0;
-				pixelAddress[1] = grey;
-				pixelAddress[2] = 0;
-				pixelAddress[3] = 0xFF;
-				pixelMask >>= 1;
-				pixelAddress += 4;
-			}
-		}
-		else if( _screenRendering == LynxScreenRendering::GreenOnly )
-		{
-			auto pixelAddress = &pixelDataRGBA[0];
-			uint8_t pixelMask = 0x80;
-			while( pixelMask != 0 )
-			{
-				pixelAddress[0] = 0;
-				pixelAddress[1] = ( lynxGreenByte & pixelMask ) ? 255 : 0;
-				pixelAddress[2] = 0;
-				pixelAddress[3] = 0xFF;
-				pixelMask >>= 1;
-				pixelAddress += 4;
-			}
-		}
-		else if( _screenRendering == LynxScreenRendering::GreenOnlyTranslatedToBlueAndCyan )
-		{
-			auto pixelAddress = &pixelDataRGBA[0];
-			uint8_t pixelMask = 0x80;
-			while( pixelMask != 0 )
-			{
-				pixelAddress[0] = 0;
-				pixelAddress[1] = ( lynxGreenByte & pixelMask ) ? 255 : 0;
-				pixelAddress[2] = 0xFF;
-				pixelAddress[3] = 0xFF;
-				pixelMask >>= 1;
-				pixelAddress += 4;
-			}
+			auto lynxInkNumber = 0;
+			if( lynxBlueByte  & pixelMask )  lynxInkNumber |= 1;
+			if( lynxRedByte   & pixelMask )  lynxInkNumber |= 2;
+			if( lynxGreenByte & pixelMask )  lynxInkNumber |= 4;
+			*pixelAddress = _translatedColourPalette[lynxInkNumber];
+			pixelMask >>= 1;
+			++pixelAddress;
 		}
 
-		_hostObject->PaintPixelsOnHostBitmap_OnEmulatorThread( addressOffset, (const uint32_t *) pixelDataRGBA );
+		_hostObject->PaintPixelsOnHostBitmap_OnEmulatorThread( addressOffset, pixelDataRGBA );
 
 		assert( (addressOffset >> 8) < INV_ROWS );
 		_invalidateRow[addressOffset >> 8] = true; // mark a row invalid

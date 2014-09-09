@@ -712,6 +712,13 @@ namespace Jynx
 
 
 
+	void  LynxUserInterfaceModel::TranslateRGBXColourPaletteToHostValues( const uint32_t *eightEntryColourPalette, uint32_t *eightEntryTranslatedValues )
+	{
+		_hostView->TranslateRGBXColourPaletteToHostValues( eightEntryColourPalette, eightEntryTranslatedValues );
+	}
+
+
+
 
 
 
