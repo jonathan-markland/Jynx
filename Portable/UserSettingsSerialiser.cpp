@@ -43,7 +43,8 @@ namespace Jynx
 		bool                   remExtensions,
 		bool                   maxSpeedCassette,
 		bool                   maxSpeedConsole,
-		bool                   maxSpeedAlways )
+		bool                   maxSpeedAlways,
+		LynxColourSet::Enum    colourSet )
 			: _machineType( machineType )
 			, _renderStyle( renderStyle )
 			, _soundEnable( soundEnable )
@@ -54,6 +55,7 @@ namespace Jynx
 			, _maxSpeedCassette(maxSpeedCassette)
 			, _maxSpeedConsole(maxSpeedConsole)
 			, _maxSpeedAlways(maxSpeedAlways)
+			, _colourSet(colourSet)
 	{
 	}
 
@@ -69,7 +71,7 @@ namespace Jynx
 
 	void UserSettings::SerialiseFields( ISerialiser *serialiser )
 	{
-		int versionNumber = 3; // For when writing.
+		int versionNumber = 4; // For when writing.
 		serialiser->Field(     "FileVersion",   versionNumber );
 		serialiser->FieldEnum( "MachineType",   _machineType );
 		serialiser->FieldEnum( "RenderStyle",   _renderStyle );
@@ -98,6 +100,15 @@ namespace Jynx
 			_maxSpeedCassette = true;
 			_maxSpeedConsole  = false;
 			_maxSpeedAlways   = false;
+		}
+		if( versionNumber >= 4 )
+		{
+			serialiser->FieldEnum( "ColourSet", _colourSet );
+		}
+		else
+		{
+			// Only executed if reading.
+			_colourSet = LynxColourSet::NormalRGB;
 		}
 	}
 

@@ -44,7 +44,7 @@ namespace Jynx
 
 
 
-	namespace LynxScreenRendering
+	namespace LynxColourSet
 	{
 		enum Enum
 		{

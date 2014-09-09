@@ -128,7 +128,7 @@ namespace Jynx
 		, _speedMaxModeBecauseOfCassette(false)
 		, _speedMaxModeBecauseWeAreInBetweenConsoleCommands(false)
 		, _level(0)
-		, _screenRendering( LynxScreenRendering::NormalRGB )
+		, _colourSet( LynxColourSet::NormalRGB )
 	{
 		// (Reminder - Called on the client thread).
 
@@ -244,7 +244,6 @@ namespace Jynx
 		// Video image composition selectors
 		//
 
-		_screenRendering  = LynxScreenRendering::NormalRGB;
 		UpdatePalette();
 		_sourceVideoRED   = nullptr;
 		_sourceVideoGREEN = nullptr;
@@ -516,7 +515,7 @@ namespace Jynx
 		// Then ask the host to translate the palette to target values.
 		// We will quote the target values through the pixel rendering main interface.
 
-		if( _screenRendering == LynxScreenRendering::NormalRGB )
+		if( _colourSet == LynxColourSet::NormalRGB )
 		{
 			_colourPalette[0] = 0x000000;
 			_colourPalette[1] = 0xFF0000;
@@ -527,7 +526,7 @@ namespace Jynx
 			_colourPalette[6] = 0x00FFFF;
 			_colourPalette[7] = 0xFFFFFF;
 		}
-		else if( _screenRendering == LynxScreenRendering::BlackAndWhiteTV )
+		else if( _colourSet == LynxColourSet::BlackAndWhiteTV )
 		{
 			_colourPalette[0] = 0x000000;
 			_colourPalette[1] = 0x444444;
@@ -538,7 +537,7 @@ namespace Jynx
 			_colourPalette[6] = 0xDDDDDD;
 			_colourPalette[7] = 0xFFFFFF;
 		}
-		else if( _screenRendering == LynxScreenRendering::GreenScreenMonitor )
+		else if( _colourSet == LynxColourSet::GreenScreenMonitor )
 		{
 			_colourPalette[0] = 0x000000;
 			_colourPalette[1] = 0x004400;
@@ -549,7 +548,7 @@ namespace Jynx
 			_colourPalette[6] = 0x00DD00;
 			_colourPalette[7] = 0x00FF00;
 		}
-		else if( _screenRendering == LynxScreenRendering::GreenOnly )
+		else if( _colourSet == LynxColourSet::GreenOnly )
 		{
 			_colourPalette[0] = 0x000000;
 			_colourPalette[1] = 0x000000;
@@ -560,7 +559,7 @@ namespace Jynx
 			_colourPalette[6] = 0x00FF00;
 			_colourPalette[7] = 0x00FF00;
 		}
-		else if( _screenRendering == LynxScreenRendering::Level9 )
+		else if( _colourSet == LynxColourSet::Level9 )
 		{
 			_colourPalette[0] = 0x000000;
 			_colourPalette[1] = 0x200000;
@@ -1984,6 +1983,25 @@ namespace Jynx
 	{
 		// (Volatile access)
 		_speedMaxModeBecauseUserWantsItPermanently = newSetting;
+	}
+
+
+	LynxColourSet::Enum  LynxEmulatorGuest::GetLynxColourSet() const
+	{
+		// (Volatile access)
+		return _colourSet;
+	}
+
+
+	void LynxEmulatorGuest::SetLynxColourSet( LynxColourSet::Enum screenRendering )
+	{
+		EmulatorThreadInhibitor  handshake(this);
+		if( _colourSet != screenRendering )
+		{
+			_colourSet = screenRendering;
+			UpdatePalette();
+			_recompositeWholeScreen = true;
+		}
 	}
 
 

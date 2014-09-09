@@ -617,6 +617,7 @@ namespace Jynx
 	}
 
 
+
 	void LynxUserInterfaceModel::OnSpeedMaxConsoleCommands()
 	{
 		// The View calls this because an option has (somehow!) been selected in the UI (menu/button/icon/whatever).
@@ -625,10 +626,19 @@ namespace Jynx
 	}
 
 
+
 	void LynxUserInterfaceModel::OnSpeedMaxPermanently()
 	{
 		// The View calls this because an option has (somehow!) been selected in the UI (menu/button/icon/whatever).
 		_lynxEmulator->SetEnableSpeedMaxModeBecauseUserWantsItPermanently( ! _lynxEmulator->GetEnableSpeedMaxModeBecauseUserWantsItPermanently() );
+		UpdateUserInterfaceElementsOnView();
+	}
+
+
+
+	void LynxUserInterfaceModel::OnChangeColourSet( LynxColourSet::Enum colourSet )
+	{
+		_lynxEmulator->SetLynxColourSet( colourSet );
 		UpdateUserInterfaceElementsOnView();
 	}
 
@@ -727,15 +737,27 @@ namespace Jynx
 	//     EMULATION SPEEDS SUPPORTED BY THE USER INTERFACE
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
-	enum { NumEmulationSpeeds = 5 };
-
-	struct EmulationSpeed
+	template<typename VALUE>
+	struct ValueToMenuItemMap
 	{
 		TickableInterfaceElements::Enum  interfaceItem;
-		uint32_t  z80CyclesPerTimeslice;
+		VALUE  enumerationValue;
 	};
 
-	EmulationSpeed  CycleCountToMenuOptionLookupTable[NumEmulationSpeeds] =
+	template<typename VALUE, size_t N>
+	void UpdateMenuExclusiveSelectionGroup( IViewServicesForLynxUserInterfaceModel *hostView, ValueToMenuItemMap<VALUE> (&mappingsArray)[N], VALUE memberToActivate )
+	{
+		for( int i=0; i < N; i++ )
+		{
+			bool foundThisTime = (memberToActivate == mappingsArray[i].enumerationValue);
+			hostView->SetTickBoxState( mappingsArray[i].interfaceItem, foundThisTime );
+		}
+	}
+
+
+
+
+	ValueToMenuItemMap<uint32_t>  CycleCountToMenuOptionLookupTable[5] =
 	{
 		TickableInterfaceElements::Speed50,     LynxZ80Cycles::At50,     //  2MHz
 		TickableInterfaceElements::Speed100,    LynxZ80Cycles::At100,    //  4Mhz
@@ -746,6 +768,15 @@ namespace Jynx
 
 
 
+
+	ValueToMenuItemMap<LynxColourSet::Enum>  ColourSetToMenuOptionLookupTable[5] = 
+	{
+		TickableInterfaceElements::ColourSetNormalRGB,            LynxColourSet::NormalRGB,
+		TickableInterfaceElements::ColourSetGreenOnly,            LynxColourSet::GreenOnly,
+		TickableInterfaceElements::ColourSetLevel9,               LynxColourSet::Level9,
+		TickableInterfaceElements::ColourSetBlackAndWhiteTV,      LynxColourSet::BlackAndWhiteTV,
+		TickableInterfaceElements::ColourSetGreenScreenMonitor,   LynxColourSet::GreenScreenMonitor,
+	};
 
 
 
@@ -813,15 +844,8 @@ namespace Jynx
 		//   but we'll honour the tampered speed setting!
 		//
 
-		auto numCycles = _lynxEmulator->GetCyclesPerTimeslice();
-
-		for( int i=0; i < NumEmulationSpeeds; i++ )
-		{
-			auto menuOptionId  = CycleCountToMenuOptionLookupTable[i].interfaceItem;
-			auto thisCycles    = CycleCountToMenuOptionLookupTable[i].z80CyclesPerTimeslice;
-			bool foundThisTime = (numCycles == thisCycles);
-			_hostView->SetTickBoxState( menuOptionId, foundThisTime );
-		}
+		UpdateMenuExclusiveSelectionGroup( _hostView, CycleCountToMenuOptionLookupTable, _lynxEmulator->GetCyclesPerTimeslice() );
+		UpdateMenuExclusiveSelectionGroup( _hostView, ColourSetToMenuOptionLookupTable, _lynxEmulator->GetLynxColourSet() );
 	}
 
 
@@ -869,7 +893,8 @@ namespace Jynx
 				_lynxEmulator->GetLynxRemCommandExtensionsEnabled(),
 				_lynxEmulator->GetEnableSpeedMaxModeWhenUsingCassette(),
 				_lynxEmulator->GetEnableSpeedMaxModeWhenInBetweenConsoleCommands(),
-				_lynxEmulator->GetEnableSpeedMaxModeBecauseUserWantsItPermanently() );
+				_lynxEmulator->GetEnableSpeedMaxModeBecauseUserWantsItPermanently(),
+				_lynxEmulator->GetLynxColourSet() );
 
 			userSettings.SaveToFile( &*fileOpener, _platformEndOfLineSequenceUTF8 );
 		}
@@ -897,6 +922,7 @@ namespace Jynx
 			_lynxEmulator->SetEnableSpeedMaxModeWhenUsingCassette( userSettings.GetMaxSpeedCassette() );
 			_lynxEmulator->SetEnableSpeedMaxModeWhenInBetweenConsoleCommands( userSettings.GetMaxSpeedConsole() );
 			_lynxEmulator->SetEnableSpeedMaxModeBecauseUserWantsItPermanently( userSettings.GetMaxSpeedAlways() );
+			_lynxEmulator->SetLynxColourSet( userSettings.GetColourSet() );
 
 			_lynxEmulator->ResetGuest( _machineType );
 

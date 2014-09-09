@@ -83,6 +83,7 @@ namespace Jynx
 		void OnSpeedMaxCassette();
 		void OnSpeedMaxConsoleCommands();
 		void OnSpeedMaxPermanently();
+		void OnChangeColourSet( LynxColourSet::Enum colourSet );
 
 		// IHostServicesForLynxEmulator:
 		// - THREADING NOTE:  The emulator object calls back into the Model on 

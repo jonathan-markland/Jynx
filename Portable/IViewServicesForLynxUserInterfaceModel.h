@@ -36,6 +36,11 @@ namespace Jynx
 			Speed50, Speed100, Speed200, Speed400, Speed800, LynxBasicRemCommandExtensions,
 			SoundEnableDisable, ShowFullScreen, Paused, PausedAfterTapLoad,
 			MaxSpeedCassette, MaxSpeedConsole, MaxSpeedAlways,
+			ColourSetNormalRGB,
+			ColourSetGreenOnly,
+			ColourSetLevel9,
+			ColourSetBlackAndWhiteTV,
+			ColourSetGreenScreenMonitor,
 
 			Count // always last
 		};

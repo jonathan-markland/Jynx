@@ -84,6 +84,12 @@ BEGIN
         MENUITEM "Use &Square Pixels",          ID_DISPLAY_SQUAREPIXELS
         MENUITEM "&Fill Window",                ID_DISPLAY_FILLWINDOW
         MENUITEM SEPARATOR
+        MENUITEM "Normal Lynx colours",         ID_DISPLAY_COLOURSET_NORMALRGB
+        MENUITEM "Green screen monitor",        ID_DISPLAY_COLOURSET_GREENSCREENMONITOR
+        MENUITEM "Black and white TV",          ID_DISPLAY_COLOURSET_BLACKANDWHITETV
+        MENUITEM "Level 9 game colours",        ID_DISPLAY_COLOURSET_LEVEL9
+        MENUITEM "Green channel only",          ID_DISPLAY_COLOURSET_GREENONLY
+        MENUITEM SEPARATOR
         MENUITEM "Full screen",                 ID_DISPLAY_FULLSCREENENABLE
     END
     POPUP "&Sound"

@@ -59,7 +59,8 @@ namespace Jynx
 			bool                   remExtensions,
 			bool                   maxSpeedCassette,
 			bool                   maxSpeedConsole,
-			bool                   maxSpeedAlways );
+			bool                   maxSpeedAlways,
+			LynxColourSet::Enum    colourSet );
 
 		void SaveToFile( IFileOpener *, const std::string endOfLineSequence );
 
@@ -73,6 +74,7 @@ namespace Jynx
 		bool                   GetMaxSpeedCassette()   const { return _maxSpeedCassette; }
 		bool                   GetMaxSpeedConsole()    const { return _maxSpeedConsole; }
 		bool                   GetMaxSpeedAlways()     const { return _maxSpeedAlways; }
+		LynxColourSet::Enum    GetColourSet()          const { return _colourSet; }
 
 	private:
 
@@ -86,6 +88,7 @@ namespace Jynx
 		bool                   _maxSpeedCassette;
 		bool                   _maxSpeedConsole;
 		bool                   _maxSpeedAlways;
+		LynxColourSet::Enum    _colourSet;
 
 		void SerialiseFields( ISerialiser *serialiser );
 

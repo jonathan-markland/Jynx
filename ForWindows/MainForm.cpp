@@ -339,6 +339,12 @@ void MainForm::WindowProc( libWinApi::WindowProcArgs &e )
 				case ID_DISPLAY_FILLWINDOW:             _lynxUIModel->OnFillWindow(); break;
 				case ID_DISPLAY_FULLSCREENENABLE:       _lynxUIModel->OnEnableDisableFullScreen(); break;
 
+				case ID_DISPLAY_COLOURSET_NORMALRGB:            _lynxUIModel->OnChangeColourSet( Jynx::LynxColourSet::NormalRGB ); break;
+				case ID_DISPLAY_COLOURSET_GREENONLY:            _lynxUIModel->OnChangeColourSet( Jynx::LynxColourSet::GreenOnly ); break;
+				case ID_DISPLAY_COLOURSET_LEVEL9:               _lynxUIModel->OnChangeColourSet( Jynx::LynxColourSet::Level9 ); break;
+				case ID_DISPLAY_COLOURSET_BLACKANDWHITETV:      _lynxUIModel->OnChangeColourSet( Jynx::LynxColourSet::BlackAndWhiteTV ); break;
+				case ID_DISPLAY_COLOURSET_GREENSCREENMONITOR:   _lynxUIModel->OnChangeColourSet( Jynx::LynxColourSet::GreenScreenMonitor ); break;
+
 				case ID_HELP_ABOUT:               OnAbout(); break; // not handled by the model
 				default:                          return BaseForm::WindowProc( e );
 			}
@@ -555,6 +561,11 @@ const UINT MainFormTickableItems[Jynx::TickableInterfaceElements::Count] =
 	ID_SPEED_MAXSPEEDCASSETTE,
 	ID_SPEED_MAXSPEEDCONSOLE,
 	ID_SPEED_MAXSPEEDALWAYS,
+	ID_DISPLAY_COLOURSET_NORMALRGB,
+	ID_DISPLAY_COLOURSET_GREENONLY,
+	ID_DISPLAY_COLOURSET_LEVEL9,
+	ID_DISPLAY_COLOURSET_BLACKANDWHITETV,
+	ID_DISPLAY_COLOURSET_GREENSCREENMONITOR,
 };
 
 void MainForm::SetTickBoxState( Jynx::TickableInterfaceElements::Enum itemToSet, bool tickState )
