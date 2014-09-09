@@ -228,6 +228,7 @@ namespace Jynx
 		_mc6845Select = 0;
 		ZeroInitialiseMemory( _mc6845Regs );
 		InitialiseAllArrayElementsVolatile( _keyboard, (uint8_t) 0xFF );  // -ve logic
+		InitialiseAllArrayElements( _keyboardSweepDetect, false ); 
 		_level = 0;
 
 		//
@@ -603,19 +604,91 @@ namespace Jynx
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 
-	uint8_t  LynxEmulatorGuest::ReadLynxKeyboard( uint16_t portNumber ) const
+	uint8_t  LynxEmulatorGuest::ReadLynxKeyboard( uint16_t portNumber )
 	{
 		// Bits A11..A8 are the index into _keyboard[].
 		// Bits A15..A12 are not decoded.
 		assert( (portNumber & DEVICEPORT_DECODING_MASK) == 0x80 ); // Should have been checked by the caller.
 
-		if( ! _textPlayer.HasText() )  // When active, the _textPlayer disables direct keyboard reading.
+		portNumber &= DEVICEPORT_KEYBOARD_DECODING_MASK;  // The Lynx doesn't decode all the bits.
+
+		//
+		// Handle port reading when text player active:
+		//
+
+		if( _textPlayer.HasText() )  
 		{
-			return _keyboard[ (portNumber >> 8) & 0x0F ];
+			// When active, the _textPlayer disables direct keyboard reading, so we lie and say "result 0xFF".
+			// If the user allows, we also assert speed-max mode with the text player:
+			if( _canEnableSpeedMaxModeWhenInBetweenConsoleCommands == true )
+			{
+				_speedMaxModeBecauseWeAreInBetweenConsoleCommands = true;
+			}
+			return 0xFF; 
 		}
-		return 0xFF;
+
+		//
+		// Handle normal port reading:
+		//
+
+		uint32_t portIndex = portNumber >> 8;
+		if( portIndex < 10 )
+		{
+			auto result = _keyboard[portIndex];   // NB: volatile read
+
+			auto cleanSweepSeen = DoKeyboardCleanSweepDetection( portIndex );
+			if( cleanSweepSeen )
+			{
+				// The Lynx has just done a clean-sweep read of the keyboard ports
+				// resulting in a NO KEYS HELD DOWN result.  This our signal that
+				// a command-prompt has returned, so let's disable speed max mode:
+				_speedMaxModeBecauseWeAreInBetweenConsoleCommands = false;
+			}
+
+			// If the user allows, then enable speed-max mode when RETURN is pressed
+			// (as we assume this is entering a console command for which the user wants
+			// host-speed performance).
+			if( _canEnableSpeedMaxModeWhenInBetweenConsoleCommands == true )
+			{
+				if( portNumber == 0x0980 && ((_keyboard[9] & 0x08) == 0) )  // RETURN key DOWN?
+				{
+					_speedMaxModeBecauseWeAreInBetweenConsoleCommands = true;
+				}
+			}
+
+			// Return the keyboard port byte:
+			return result;
+		}
+
+		return 0xFF;  // Port out of range of keyboard.
 	}
 
+
+
+	bool LynxEmulatorGuest::DoKeyboardCleanSweepDetection( uint8_t portIndex )
+	{
+		assert( portIndex < 10 );
+
+		if( _keyboardSweepDetect[portIndex] == true )
+		{
+			// Oops this isn't a clean sweep!  This port has already been read before we saw a clean sweep.  Start over:
+			InitialiseAllArrayElements( _keyboardSweepDetect, false );
+			_keyboardSweepDetect[portIndex] = true;
+			return false;
+		}
+
+		// Looking clean so far:
+		_keyboardSweepDetect[portIndex] = true;
+		for( auto flag : _keyboardSweepDetect )
+		{
+			if( flag == false )
+			{
+				return false; // no clean sweep seen until all values are 'true'.
+			}
+		}
+
+		return true;
+	}
 
 
 
@@ -857,6 +930,11 @@ namespace Jynx
 			{
 				if( (portNumber & 0xFC6) == 0x0080 ) // <-- Mask per Lynx User Magazine Issue 1.  The lynx appears to only read from this port specifically, when reading tapes.
 				{
+					if( _canEnableSpeedMaxModeWhenUsingCassette )
+					{
+						_speedMaxModeBecauseOfCassette = true;
+					}
+
 					// (It seems cassette loading terminates immediately unless the key information is 
 					// returned here.  Fixing the top 7 bits at "0"s wasn't a good idea!).
 					auto cassetteBit0 = CassetteRead();
@@ -908,10 +986,6 @@ namespace Jynx
 		// When the Lynx LOADs, we can then serve data at the speed it is expecting.  Of course,
 		// this would never have happened on a real system!  The lynx would have ignored files
 		// saved at unexpected speeds.  (See Lynx BASIC "TAPE" command).
-		if( _canEnableSpeedMaxModeWhenUsingCassette )
-		{
-			_speedMaxModeBecauseOfCassette = true;
-		}
 		_currentReadTape->CassetteMotorOn();
 		_currentWriteTape->NotifyCassetteMotorOn();
 	}
@@ -1205,18 +1279,6 @@ namespace Jynx
 						// Update state
 						_processor.SetSerialisableVariables( cpuRegisters );
 					}
-					
-					if( ! _textPlayer.HasText() )
-					{
-						// Text player done, so this is definately the case:
-						_speedMaxModeBecauseWeAreInBetweenConsoleCommands = false;
-					}
-				}
-				else
-				{
-					// When the lynx reads a key, AND the text player isn't in operation,
-					// we know we're definately done with processing console commands, so:
-					_speedMaxModeBecauseWeAreInBetweenConsoleCommands = false;
 				}
 			}
 
@@ -1227,39 +1289,7 @@ namespace Jynx
 
 	void LynxEmulatorGuest::Z80_OnAboutToReturn()
 	{
-		// Is the Lynx ROM switched in?
-		// If not, the addresses won't apply!
-
-		if( (_bankPort & 1) == 0 )
-		{
-			auto programCounter = _processor.GetSerialisableVariables()._programCounter;
-
-			//
-			// C9 at 0A44: Spy on the key read routine's EXIT POINT.  (Same on 48K and 96K lynxes).
-			//
-
-			if( programCounter == 0xA45 )  // PC already incremented though, so check for A45!
-			{
-				// The Lynx is about to return from the key read routine, with the key code in A.
-
-				if( _canEnableSpeedMaxModeWhenInBetweenConsoleCommands == true )
-				{
-					if( _textPlayer.HasText() )
-					{
-						_speedMaxModeBecauseWeAreInBetweenConsoleCommands = true;
-					}
-					else
-					{
-						auto cpuRegisters = _processor.GetSerialisableVariables(); // take copy
-						if( (cpuRegisters._AF & 0xFF00) == 0x0D00 )
-						{
-							// The user just pressed the ENTER key.
-							_speedMaxModeBecauseWeAreInBetweenConsoleCommands = true;
-						}
-					}
-				}
-			}
-		}
+		// TODO: remove?
 	}
 
 
@@ -1470,9 +1500,12 @@ namespace Jynx
 		}
 
 		// (Warning: Called on client's thread -- volatile accessing only here).
-		auto registerIndex = (guestKeyCode >> 3) & 15;
-		auto orMask = 0x80 >> (guestKeyCode & 7);
-		_keyboard[registerIndex] &= ~orMask;
+		uint32_t registerIndex = (guestKeyCode >> 3) & 15;
+		if( registerIndex < 10 )
+		{
+			auto orMask = 0x80 >> (guestKeyCode & 7);
+			_keyboard[registerIndex] &= ~orMask;
+		}
 	}
 
 
@@ -1481,9 +1514,12 @@ namespace Jynx
 	{
 		// (Warning: Called on client's thread -- volatile accessing only here).
 
-		auto registerIndex = (guestKeyCode >> 3) & 15;
-		auto orMask = 0x80 >> (guestKeyCode & 7);
-		_keyboard[registerIndex] |= orMask;
+		uint32_t registerIndex = (guestKeyCode >> 3) & 15;
+		if( registerIndex < 10 )
+		{
+			auto orMask = 0x80 >> (guestKeyCode & 7);
+			_keyboard[registerIndex] |= orMask;
+		}
 	}
 
 
@@ -1840,6 +1876,11 @@ namespace Jynx
 	{
 		// (Volatile access)
 		_canEnableSpeedMaxModeWhenUsingCassette = newSetting;
+		if( newSetting == false )
+		{
+			// Immediate turn off may be necessary as other cases may not trigger!
+			_speedMaxModeBecauseOfCassette = false; 
+		}
 	}
 
 
@@ -1854,6 +1895,11 @@ namespace Jynx
 	{
 		// (Volatile access)
 		_canEnableSpeedMaxModeWhenInBetweenConsoleCommands = newSetting;
+		if( newSetting == false )
+		{
+			// Immediate turn off may be necessary as other cases may not trigger!
+			_speedMaxModeBecauseWeAreInBetweenConsoleCommands = false; 
+		}
 	}
 
 
