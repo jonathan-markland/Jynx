@@ -509,6 +509,10 @@ namespace Jynx
 	//     SCREEN
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
+	inline uint32_t  RGBToGrey( uint8_t r, uint8_t g, uint8_t b ) 
+	{ 
+		return ((uint32_t(b) * 29) + (uint32_t(g) * 150) + (uint32_t(r) * 77)) >> 8; 
+	}
 
 	void LynxEmulatorGuest::ComposeHostBitmapPixelsForLynxScreenAddress( uint32_t addressOffset )
 	{
@@ -524,30 +528,93 @@ namespace Jynx
 		// record HIGH RESOLUTION invalid regions, in case just a small section has changed.
 
 		assert( addressOffset < 0x2000 );
-		uint32_t  g = (*_sourceVideoGREEN)[addressOffset];
+
+		uint32_t  lynxRedByte   = (*_sourceVideoRED)[addressOffset];
+		uint32_t  lynxGreenByte = (*_sourceVideoGREEN)[addressOffset];
+		uint32_t  lynxBlueByte  = (*_sourceVideoBLUE)[addressOffset];
+
+		uint8_t   pixelDataRGBA[8 * 4];
 
 		if( _screenRendering == LynxScreenRendering::NormalRGB )
 		{
-			uint32_t  r = (*_sourceVideoRED)[addressOffset];
-			uint32_t  b = (*_sourceVideoBLUE)[addressOffset];
-			_hostObject->PaintPixelsOnHostBitmapForLynxScreenByte_OnEmulatorThread( addressOffset, r, g, b );
-		}
-		else if( _screenRendering == LynxScreenRendering::GreenOnly )
-		{
-			// Green only display for Level 9 games.
-			_hostObject->PaintPixelsOnHostBitmapForLynxScreenByte_OnEmulatorThread( addressOffset, 0, g, 0 );
-		}
-		else if( _screenRendering == LynxScreenRendering::GreenOnlyTranslatedToBlueAndCyan )
-		{
-			// Green only display for Level 9 games.
-			_hostObject->PaintPixelsOnHostBitmapForLynxScreenByte_OnEmulatorThread( addressOffset, 0, g, 255 );
+			auto pixelAddress = &pixelDataRGBA[0];
+			uint8_t pixelMask = 0x80;
+			while( pixelMask != 0 )
+			{
+				pixelAddress[0] = ( lynxRedByte   & pixelMask ) ? 255 : 0;
+				pixelAddress[1] = ( lynxGreenByte & pixelMask ) ? 255 : 0;
+				pixelAddress[2] = ( lynxBlueByte  & pixelMask ) ? 255 : 0;
+				pixelAddress[3] = 0xFF;
+				pixelMask >>= 1;
+				pixelAddress += 4;
+			}
 		}
 		else if( _screenRendering == LynxScreenRendering::BlackAndWhiteTV )
 		{
-			// Green only display for Level 9 games.
-			_hostObject->PaintPixelsOnHostBitmapForLynxScreenByte_OnEmulatorThread( addressOffset, g, g, g );
+			auto pixelAddress = &pixelDataRGBA[0];
+			uint8_t pixelMask = 0x80;
+			while( pixelMask != 0 )
+			{
+				auto r = ( lynxRedByte   & pixelMask ) ? 255 : 0;
+				auto g = ( lynxGreenByte & pixelMask ) ? 255 : 0;
+				auto b = ( lynxBlueByte  & pixelMask ) ? 255 : 0;
+				auto grey = RGBToGrey( r,g,b );
+				pixelAddress[0] = grey;
+				pixelAddress[1] = grey;
+				pixelAddress[2] = grey;
+				pixelAddress[3] = 0xFF;
+				pixelMask >>= 1;
+				pixelAddress += 4;
+			}
 		}
-		
+		else if( _screenRendering == LynxScreenRendering::GreenScreenMonitor )
+		{
+			auto pixelAddress = &pixelDataRGBA[0];
+			uint8_t pixelMask = 0x80;
+			while( pixelMask != 0 )
+			{
+				auto r = ( lynxRedByte   & pixelMask ) ? 255 : 0;
+				auto g = ( lynxGreenByte & pixelMask ) ? 255 : 0;
+				auto b = ( lynxBlueByte  & pixelMask ) ? 255 : 0;
+				auto grey = RGBToGrey( r,g,b );
+				pixelAddress[0] = 0;
+				pixelAddress[1] = grey;
+				pixelAddress[2] = 0;
+				pixelAddress[3] = 0xFF;
+				pixelMask >>= 1;
+				pixelAddress += 4;
+			}
+		}
+		else if( _screenRendering == LynxScreenRendering::GreenOnly )
+		{
+			auto pixelAddress = &pixelDataRGBA[0];
+			uint8_t pixelMask = 0x80;
+			while( pixelMask != 0 )
+			{
+				pixelAddress[0] = 0;
+				pixelAddress[1] = ( lynxGreenByte & pixelMask ) ? 255 : 0;
+				pixelAddress[2] = 0;
+				pixelAddress[3] = 0xFF;
+				pixelMask >>= 1;
+				pixelAddress += 4;
+			}
+		}
+		else if( _screenRendering == LynxScreenRendering::GreenOnlyTranslatedToBlueAndCyan )
+		{
+			auto pixelAddress = &pixelDataRGBA[0];
+			uint8_t pixelMask = 0x80;
+			while( pixelMask != 0 )
+			{
+				pixelAddress[0] = 0;
+				pixelAddress[1] = ( lynxGreenByte & pixelMask ) ? 255 : 0;
+				pixelAddress[2] = 0xFF;
+				pixelAddress[3] = 0xFF;
+				pixelMask >>= 1;
+				pixelAddress += 4;
+			}
+		}
+
+		_hostObject->PaintPixelsOnHostBitmap_OnEmulatorThread( addressOffset, (const uint32_t *) pixelDataRGBA );
 
 		assert( (addressOffset >> 8) < INV_ROWS );
 		_invalidateRow[addressOffset >> 8] = true; // mark a row invalid

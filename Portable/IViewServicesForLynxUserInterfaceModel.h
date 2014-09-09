@@ -147,7 +147,7 @@ namespace Jynx
 		virtual  std::shared_ptr<IFileOpener>  GetUserSettingsFilePath() = 0;
 			// Obtains a file opener that holds the path to the user settings file (or where it would be if it doesn't exist yet).
 
-		virtual  void  PaintPixelsOnHostBitmapForLynxScreenByte_OnEmulatorThread( uint32_t addressOffset, uint32_t lynxRedByte, uint32_t lynxGreenByte, uint32_t lynxBlueByte ) = 0;
+		virtual  void  PaintPixelsOnHostBitmap_OnEmulatorThread( uint32_t addressOffset, const uint32_t *eightPixelsData ) = 0;
 			// The emulator does not know the pixel format of the View's bitmap that holds the Lynx screen.
 			// The view must translate the three lynx bytes given (red, green and blue) into 8 adjacent pixels
 			// at the position given by the addressOffset.  The Lynx screen is 256*256 pixels with 3 colour

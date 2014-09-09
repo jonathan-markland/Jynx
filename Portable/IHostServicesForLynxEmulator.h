@@ -52,7 +52,7 @@ namespace Jynx
 		// Services called on the EMULATOR thread  (and NOT on the MAIN thread):
 		//
 
-		virtual  void  PaintPixelsOnHostBitmapForLynxScreenByte_OnEmulatorThread( uint32_t addressOffset, uint32_t lynxRedByte, uint32_t lynxGreenByte, uint32_t lynxBlueByte ) = 0;
+		virtual  void  PaintPixelsOnHostBitmap_OnEmulatorThread( uint32_t addressOffset, const uint32_t *eightPixelsData ) = 0;
 			// (WARNING - Called on the EMULATOR thread, NOT the main thread)
 			// The emulator is telling the host that the Lynx has written any of the colour banks
 			// at the given addressOffset into the bank.  The host should translate the Lynx bytes

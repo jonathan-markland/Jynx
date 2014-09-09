@@ -711,7 +711,7 @@ inline PIXEL_TYPE *CalcFrameBufferPixelAddress( PIXEL_TYPE *frameBufferTopLeftAd
 
 
 
-void  MainForm::PaintPixelsOnHostBitmapForLynxScreenByte_OnEmulatorThread( uint32_t addressOffset, uint32_t lynxRedByte, uint32_t lynxGreenByte, uint32_t lynxBlueByte )
+void  MainForm::PaintPixelsOnHostBitmap_OnEmulatorThread( uint32_t addressOffset, const uint32_t *eightPixelsData )
 {
 	// (WARNING - Called on the EMULATOR thread, NOT the MAIN thread)
 
@@ -720,28 +720,9 @@ void  MainForm::PaintPixelsOnHostBitmapForLynxScreenByte_OnEmulatorThread( uint3
 
 	int32_t  destX = (addressOffset & 0x1F) << 3;
 	int32_t  destY = (addressOffset >> 5);
-
-	auto pixelAddress = CalcFrameBufferPixelAddress( (uint32_t *) _screenInfo.BaseAddress, _screenInfo.BytesPerScanLine, destX, destY );
-	uint8_t pixelMask = 0x80;
-	while( pixelMask != 0 )
-	{
-		uint32_t hostPixelValue = 0;
-		if( lynxRedByte & pixelMask ) 
-		{
-			hostPixelValue |= RGB(255,0,0);
-		}
-		if( lynxGreenByte & pixelMask )
-		{
-			hostPixelValue |= RGB(0,255,0);
-		}
-		if( lynxBlueByte & pixelMask )
-		{
-			hostPixelValue |= RGB(0,0,255);
-		}
-		pixelMask >>= 1;
-		*pixelAddress = hostPixelValue;
-		++pixelAddress;
-	}
+	auto destinationPixelAddress = CalcFrameBufferPixelAddress( (uint32_t *) _screenInfo.BaseAddress, _screenInfo.BytesPerScanLine, destX, destY );
+	auto endPixelAddress = destinationPixelAddress + 8;
+	std::copy_n( eightPixelsData, 8, destinationPixelAddress );
 }
 
 

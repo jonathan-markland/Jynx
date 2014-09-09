@@ -695,13 +695,12 @@ namespace Jynx
 
 
 
-	void  LynxUserInterfaceModel::PaintPixelsOnHostBitmapForLynxScreenByte_OnEmulatorThread( 
-		uint32_t addressOffset, uint32_t lynxRedByte, uint32_t lynxGreenByte, uint32_t lynxBlueByte ) 
+	void  LynxUserInterfaceModel::PaintPixelsOnHostBitmap_OnEmulatorThread( uint32_t addressOffset, const uint32_t *eightPixelsData )
 	{ 
 		// (WARNING - Called on the EMULATOR thread, NOT the MAIN thread)
 
 		// Just delegate this call.
-		_hostView->PaintPixelsOnHostBitmapForLynxScreenByte_OnEmulatorThread( addressOffset, lynxRedByte, lynxGreenByte, lynxBlueByte ); 
+		_hostView->PaintPixelsOnHostBitmap_OnEmulatorThread( addressOffset, eightPixelsData ); 
 	}
 
 
