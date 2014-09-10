@@ -313,6 +313,7 @@ void MainForm::WindowProc( libWinApi::WindowProcArgs &e )
 				case ID_EMULATION_RESET:		      _lynxUIModel->OnResetEmulation(); break;
 				case ID_EMULATION_LYNX48K:		      _lynxUIModel->OnEmulation48K(); break;
 				case ID_EMULATION_LYNX96K:		      _lynxUIModel->OnEmulation96K(); break;
+				case ID_EMULATION_LYNX96KSCORPION:    _lynxUIModel->OnEmulation96KScorpion(); break;
 				case ID_EMULATION_PAUSEAFTERTAPLOAD:  _lynxUIModel->OnPauseAfterTapLoad(); break;
 
 				case ID_SPEED_SPEED50:            _lynxUIModel->OnSetCycles( Jynx::LynxZ80Cycles::At50 ); break;
@@ -544,6 +545,7 @@ const UINT MainFormTickableItems[Jynx::TickableInterfaceElements::Count] =
 {
 	ID_EMULATION_LYNX48K,
 	ID_EMULATION_LYNX96K,
+	ID_EMULATION_LYNX96KSCORPION,
 	ID_SOUND_LISTENTOTAPESOUNDS,
 	ID_DISPLAY_FITTOWINDOW,
 	ID_DISPLAY_SQUAREPIXELS,
@@ -692,6 +694,7 @@ const wchar_t *g_RomFileNames[Jynx::LynxRoms::Count] =
 	L"lynx96-1.rom",
 	L"lynx96-2.rom",
 	L"lynx96-3.rom",
+	L"lynx96-3-scorpion.rom",
 };
 
 void  MainForm::OpenChipFileStream_OnMainThread( std::ifstream &streamToBeOpened, std::ios_base::openmode openModeRequired, Jynx::LynxRoms::Enum romRequired )

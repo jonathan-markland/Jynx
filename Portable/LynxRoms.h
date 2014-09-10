@@ -33,6 +33,7 @@ namespace Jynx
 			Lynx96_1,
 			Lynx96_2,
 			Lynx96_3,
+			Lynx96_3_Scorpion,
 
 			Count  // Always last.
 		};

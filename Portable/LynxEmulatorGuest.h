@@ -62,6 +62,7 @@ namespace Jynx
 		void SaveState( IFileOpener *fileOpener );
 		void LoadState( IFileOpener *fileOpener );
 		void ResetGuest( LynxMachineType::Enum machineType );
+		LynxMachineType::Enum  GetMachineType() const;
 		uint32_t GetCyclesPerTimeslice() const;
 		void SetCyclesPerTimeslice( uint32_t numCycles );
 		void InsertBlankTape();
@@ -165,7 +166,7 @@ namespace Jynx
 		Jynx::Thread _emulationThread;                        // The "EMULATOR thread".
 
 		// Machine type being emulated
-		LynxMachineType::Enum _machineType;
+		volatile LynxMachineType::Enum _machineType;
 
 		// Tape mode (not serialised)
 		LynxTapeMode::Enum  _tapeMode;
@@ -288,6 +289,7 @@ namespace Jynx
 		CHIP  _lynxROM_96_1;
 		CHIP  _lynxROM_96_2;
 		CHIP  _lynxROM_96_3;
+		CHIP  _lynxROM_96_3_Scorpion;
 
 		//
 		// The Lynx's chip set  (8K ROMs/RAMs)
@@ -303,7 +305,7 @@ namespace Jynx
 
 		CHIP            _lynxROM_0000;         // 0000 .. 1FFF
 		CHIP            _lynxROM_2000;         // 2000 .. 3FFF
-		CHIP            _lynxROM_4000;         // 4000 .. 5FFF   (LYNX 96K) Basic extension -- not on 48K machine.
+		CHIP            _lynxROM_4000;         // 4000 .. 5FFF   (LYNX 96K) Basic extension / Scorpion ROM -- not on 48K machine.
 											   // E000 .. FFFF   (Any extension rom -- not used on this emulator, default address decoding returns 0xFF).
 									   
 		///

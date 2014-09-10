@@ -29,7 +29,6 @@ namespace Jynx
 {
 	LynxUserInterfaceModel::LynxUserInterfaceModel( IViewServicesForLynxUserInterfaceModel *hostView, uint16_t *soundBuffer, size_t numSamples, const char *platformEndOfLineSequenceUTF8, bool gamesMode )
 		: _renderStyle( RenderStyle::SquarePixels )
-		, _machineType( LynxMachineType::LYNX_48K )
 		, _hostView( hostView )
 		, _soundEnable( true )
 		, _showFullScreen( false )
@@ -40,7 +39,7 @@ namespace Jynx
 		JynxZ80::Z80::InitialiseGlobalTables();  // Not absolutely ideal place to put this.
 
 		// Reminder - Creating the LynxEmulatorGuest will create the EMULATOR thread.
-		_lynxEmulator = std::unique_ptr<LynxEmulatorGuest>( new LynxEmulatorGuest( this, soundBuffer, numSamples, _machineType, platformEndOfLineSequenceUTF8 ) );
+		_lynxEmulator = std::unique_ptr<LynxEmulatorGuest>( new LynxEmulatorGuest( this, soundBuffer, numSamples, LynxMachineType::LYNX_48K, platformEndOfLineSequenceUTF8 ) );
 	}
 
 
@@ -373,13 +372,25 @@ namespace Jynx
 
 
 
+	void LynxUserInterfaceModel::OnEmulation96KScorpion()
+	{
+		// The View calls this because an option has (somehow!) been selected in the UI (menu/button/icon/whatever).
+
+		if( UserAllowsReset() )
+		{
+			SetMachineTypeAndReset( LynxMachineType::LYNX_96K_Scorpion );
+		}
+	}
+
+
+
 	void LynxUserInterfaceModel::OnResetEmulation()
 	{
 		// The View calls this because an option has (somehow!) been selected in the UI (menu/button/icon/whatever).
 
 		if( UserAllowsReset() )
 		{
-			SetMachineTypeAndReset( _machineType );  // ie: don't change machine type
+			SetMachineTypeAndReset( _lynxEmulator->GetMachineType() );  // ie: don't change machine type
 		}
 	}
 
@@ -790,8 +801,10 @@ namespace Jynx
 		// Decide what we need the tick state to be for the menu items:
 		//
 
-		bool tick48K        = (_machineType == LynxMachineType::LYNX_48K);
-		bool tick96K        = (_machineType == LynxMachineType::LYNX_96K);
+		auto machineType = _lynxEmulator->GetMachineType();
+		bool tick48K        = (machineType == LynxMachineType::LYNX_48K);
+		bool tick96K        = (machineType == LynxMachineType::LYNX_96K);
+		bool tick96KScorpion= (machineType == LynxMachineType::LYNX_96K_Scorpion);
 		bool tickSquare     = (_renderStyle == RenderStyle::SquarePixels);
 		bool tickFitWindow  = (_renderStyle == RenderStyle::FitToWindow);
 		bool tickFillWindow = (_renderStyle == RenderStyle::FillWindow);
@@ -820,6 +833,7 @@ namespace Jynx
 
 		_hostView->SetTickBoxState( TickableInterfaceElements::Lynx48K, tick48K );
 		_hostView->SetTickBoxState( TickableInterfaceElements::Lynx96K, tick96K );
+		_hostView->SetTickBoxState( TickableInterfaceElements::Lynx96KScorpion, tick96KScorpion );
 		_hostView->SetTickBoxState( TickableInterfaceElements::ListenToTapeSounds, tickTapeSounds );
 		_hostView->SetTickBoxState( TickableInterfaceElements::FitToWindow, tickFitWindow );
 		_hostView->SetTickBoxState( TickableInterfaceElements::FillWindow, tickFillWindow );
@@ -865,8 +879,7 @@ namespace Jynx
 
 	void LynxUserInterfaceModel::SetMachineTypeAndReset( LynxMachineType::Enum machineType )
 	{
-		_machineType = machineType;
-		_lynxEmulator->ResetGuest( _machineType );
+		_lynxEmulator->ResetGuest( machineType );
 		UpdateUserInterfaceElementsOnView();
 	}
 
@@ -884,7 +897,7 @@ namespace Jynx
 		if( fileOpener != nullptr )
 		{
 			UserSettings userSettings(
-				_machineType,
+				_lynxEmulator->GetMachineType(),
 				_renderStyle,
 				_soundEnable,
 				_showFullScreen,
@@ -912,7 +925,6 @@ namespace Jynx
 
 			// Now that the file has loaded successfully, we know we can use the information in it!
 			// (Or, of course, the defaults that the UserSettings object applies, if it's down-level version).
-			_machineType = userSettings.GetMachineType();
 			_renderStyle = userSettings.GetRenderStyle();
 			_soundEnable = userSettings.GetSoundEnable();
 			_showFullScreen = userSettings.GetFullScreenEnable();
@@ -924,7 +936,7 @@ namespace Jynx
 			_lynxEmulator->SetEnableSpeedMaxModeBecauseUserWantsItPermanently( userSettings.GetMaxSpeedAlways() );
 			_lynxEmulator->SetLynxColourSet( userSettings.GetColourSet() );
 
-			_lynxEmulator->ResetGuest( _machineType );
+			_lynxEmulator->ResetGuest( userSettings.GetMachineType() );
 
 			// Update UI:
 			_hostView->InvalidateAreaOfHostScreen( _hostView->GetClientRectangle() );

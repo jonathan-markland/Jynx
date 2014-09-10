@@ -40,6 +40,7 @@ namespace Jynx
 		virtual void Field(    const char *tagName, int32_t  &field ) = 0;
 		virtual void Field(    const char *tagName, bool     &field ) = 0;
 		virtual void Binary(   void *baseAddress,   uintptr_t blockSize ) = 0;
+		virtual void RaiseError() = 0;
 
 		// Serialise enums:
 

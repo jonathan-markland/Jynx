@@ -59,6 +59,7 @@ namespace Jynx
 		void OnExit();
 		void OnEmulation48K();
 		void OnEmulation96K();
+		void OnEmulation96KScorpion();
 		void OnSetCycles( LynxZ80Cycles::Enum numCycles );
 		void OnListenToTapeSounds();
 		void OnRecordToFile();
@@ -101,7 +102,6 @@ namespace Jynx
 
 		IViewServicesForLynxUserInterfaceModel  *_hostView;
 		std::unique_ptr<LynxEmulatorGuest>       _lynxEmulator;
-		LynxMachineType::Enum  _machineType;
 		RenderStyle::Enum      _renderStyle;
 		bool                   _soundEnable;
 		bool                   _showFullScreen;

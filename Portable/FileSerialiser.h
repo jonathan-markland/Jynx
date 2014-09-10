@@ -41,6 +41,7 @@ namespace Jynx
 		virtual void Field( const char *tagName, int32_t &field ) override;
 		virtual void Field( const char *tagName, bool &field ) override;
 		virtual void Binary( void *baseAddress, uintptr_t blockSize ) override;
+		virtual void RaiseError() override;
 		void Close();
 	private:
 		void EndLine();
@@ -61,6 +62,7 @@ namespace Jynx
 		virtual void Field( const char *tagName, int32_t &field ) override;
 		virtual void Field( const char *tagName, bool &field ) override;
 		virtual void Binary( void *baseAddress, uintptr_t blockSize ) override;
+		virtual void RaiseError() override;
 		void Close();
 	private:
 		std::ifstream  _inStream;

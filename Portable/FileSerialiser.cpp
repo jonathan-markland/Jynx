@@ -116,6 +116,13 @@ namespace Jynx
 	}
 
 
+	void OutputFileSerialiser::RaiseError()
+	{
+		// This should not really happen because it implies a check fail on the state BEING WRITTEN.
+		throw std::runtime_error( "File saving failed because internal data values cannot be represented in the file." );
+	}
+
+
 
 
 
@@ -245,6 +252,14 @@ namespace Jynx
 	{
 		_fileImage.clear();
 	}
+
+
+
+	void InputFileSerialiser::RaiseError()
+	{
+		_lexer.Error();
+	}
+
 
 
 

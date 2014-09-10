@@ -166,6 +166,7 @@ namespace Jynx
 		Load8KBChipFile( _lynxROM_96_1, LynxRoms::Lynx96_1 );
 		Load8KBChipFile( _lynxROM_96_2, LynxRoms::Lynx96_2 );
 		Load8KBChipFile( _lynxROM_96_3, LynxRoms::Lynx96_3 );
+		Load8KBChipFile( _lynxROM_96_3_Scorpion, LynxRoms::Lynx96_3_Scorpion );
 	}
 
 
@@ -287,6 +288,12 @@ namespace Jynx
 			CopyArrayMemory( _lynxROM_2000, _lynxROM_96_2 );
 			CopyArrayMemory( _lynxROM_4000, _lynxROM_96_3 );
 		}
+		else if( _machineType == LynxMachineType::LYNX_96K_Scorpion )
+		{
+			CopyArrayMemory( _lynxROM_0000, _lynxROM_96_1 );
+			CopyArrayMemory( _lynxROM_2000, _lynxROM_96_2 );
+			CopyArrayMemory( _lynxROM_4000, _lynxROM_96_3_Scorpion );
+		}
 		else assert(false);
 	}
 
@@ -387,8 +394,9 @@ namespace Jynx
 			{
 				MapReflections( _addressSpaceWRITE1, &_lynxRAM_8000, &_lynxRAM_6000 );
 			}
-			else if( _machineType == LynxMachineType::LYNX_96K )
+			else 
 			{
+				assert( _machineType == LynxMachineType::LYNX_96K || _machineType == LynxMachineType::LYNX_96K_Scorpion );
 				_addressSpaceWRITE1[0] = &_lynxRAM_0000;
 				_addressSpaceWRITE1[1] = &_lynxRAM_2000;
 				_addressSpaceWRITE1[2] = &_lynxRAM_4000;
@@ -398,7 +406,6 @@ namespace Jynx
 				_addressSpaceWRITE1[6] = &_lynxRAM_C000;
 				_addressSpaceWRITE1[7] = &_lynxRAM_E000;
 			}
-			else assert(false);
 		}
 		else
 		{
@@ -441,8 +448,9 @@ namespace Jynx
 			{
 				MapReflections( _addressSpaceREAD, &_lynxRAM_8000, &_lynxRAM_6000 );
 			}
-			else if( _machineType == LynxMachineType::LYNX_96K )
+			else
 			{
+				assert( _machineType == LynxMachineType::LYNX_96K || _machineType == LynxMachineType::LYNX_96K_Scorpion );
 				_addressSpaceREAD[0] = &_lynxRAM_0000;
 				_addressSpaceREAD[1] = &_lynxRAM_2000;
 				_addressSpaceREAD[2] = &_lynxRAM_4000;
@@ -452,7 +460,6 @@ namespace Jynx
 				_addressSpaceREAD[6] = &_lynxRAM_C000;
 				_addressSpaceREAD[7] = &_lynxRAM_E000;
 			}
-			else assert(false);
 
 			++readCount;
 		}
@@ -493,11 +500,11 @@ namespace Jynx
 			{
 				_addressSpaceREAD[2] = nullptr; // extended ROM not present, MUST return 0xFF for the region.
 			}
-			else if( _machineType == LynxMachineType::LYNX_96K )
+			else
 			{
+				assert( _machineType == LynxMachineType::LYNX_96K || _machineType == LynxMachineType::LYNX_96K_Scorpion );
 				_addressSpaceREAD[2] = &_lynxROM_4000;  // The 96K machine has an extended ROM.
 			}
-			else assert(false);
 		}
 	}
 
@@ -1161,17 +1168,29 @@ namespace Jynx
 	{
 		// (Reminder - this does not need to support the cassette)
 
-		int32_t version = 1; // For Writing
-		int32_t machine = (_machineType == LynxMachineType::LYNX_48K) ? 48 : 96;  // For Writing
+		// Translate for writing (ignored for reading):
+		int32_t machine = 0;
+		     if(_machineType == LynxMachineType::LYNX_48K)          { machine = 48; }
+		else if(_machineType == LynxMachineType::LYNX_96K)          { machine = 96; }
+		else if(_machineType == LynxMachineType::LYNX_96K_Scorpion) { machine = 960; }
+		else assert(false); // unrecognised enum value
 
 		serialiser.OpenTag( "camputers_lynx" );
 
-		serialiser.Field( "version",         version );
-		// TODO:  Check version
-		assert( version == 1 );
+		int32_t version = 1; // For Writing
+		serialiser.Field( "version", version );
+		if( version != 1 )
+		{
+			serialiser.RaiseError();
+		}
 
 		serialiser.Field( "machine",         machine );
-		_machineType = (machine == 48) ? LynxMachineType::LYNX_48K : LynxMachineType::LYNX_96K; // for Reading
+
+		// For reading:
+		     if(machine == 48)  { _machineType = LynxMachineType::LYNX_48K; }
+		else if(machine == 96)  { _machineType = LynxMachineType::LYNX_96K; }
+		else if(machine == 960) { _machineType = LynxMachineType::LYNX_96K_Scorpion; }
+		else serialiser.RaiseError();
 
 		//
 		// Z80
@@ -1216,7 +1235,7 @@ namespace Jynx
 
 		serialiser.Binary( "LynxROM_0000",       _lynxROM_0000 );
 		serialiser.Binary( "LynxROM_2000",       _lynxROM_2000 );
-		if( _machineType == LynxMachineType::LYNX_96K )
+		if( _machineType == LynxMachineType::LYNX_96K || _machineType == LynxMachineType::LYNX_96K_Scorpion )
 		{
 			serialiser.Binary( "LynxROM_4000",       _lynxROM_4000 );
 		}
@@ -1225,7 +1244,7 @@ namespace Jynx
 		// RAM serialisation.
 		//
 
-		if( _machineType == LynxMachineType::LYNX_96K )
+		if( _machineType == LynxMachineType::LYNX_96K || _machineType == LynxMachineType::LYNX_96K_Scorpion )
 		{
 			serialiser.Binary( "LynxRAM_0000",       _lynxRAM_0000 );
 			serialiser.Binary( "LynxRAM_2000",       _lynxRAM_2000 );
@@ -1233,7 +1252,7 @@ namespace Jynx
 		}
 		serialiser.Binary( "LynxRAM_6000",       _lynxRAM_6000 );
 		serialiser.Binary( "LynxRAM_8000",       _lynxRAM_8000 );
-		if( _machineType == LynxMachineType::LYNX_96K )
+		if( _machineType == LynxMachineType::LYNX_96K || _machineType == LynxMachineType::LYNX_96K_Scorpion )
 		{
 			serialiser.Binary( "LynxRAM_A000",       _lynxRAM_A000 );
 			serialiser.Binary( "LynxRAM_C000",       _lynxRAM_C000 );
@@ -1665,6 +1684,13 @@ namespace Jynx
 		EmulatorThreadInhibitor  handshake(this);
 		_machineType = machineType;
 		InitialiseLYNX();
+	}
+
+
+
+	LynxMachineType::Enum  LynxEmulatorGuest::GetMachineType() const
+	{
+		return _machineType;
 	}
 
 
