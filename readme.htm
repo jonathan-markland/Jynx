@@ -99,25 +99,6 @@ please contact me on GitHub (see above).</i></p>
 
 
 
-<h2>Emulation Menu</h2>
-
-<h3>Pause</h3>
-<p>Pauses the emulator until you untick this box.  You can load a snapshot in this state, but it will not start until you un-pause.</p>
-
-<h3>Reset Guest Machine</h3>
-<p>This option resets the guest machine with a simulated hardware reset.  This will lose the contents of the Lynx's memory completely.</p>
-
-<h3>Lynx 48K / Lynx 96K</h3>
-<p>These options select which Lynx model you would like to emulate.  Changing the Lynx model will require a reset of the guest machine!</p>
-
-<h3>Pause emulation after tape load</h3>
-<p>Intended to help people wanting to save snapshots just before their game's main screen appears!</p>
-
-
-
-
-
-
 <h2>Speed Menu</h2>
 
 <h3>Speed 50% / 100% / 200% / 400% / 800%</h3>
@@ -127,10 +108,29 @@ please contact me on GitHub (see above).</i></p>
 <p>The system will engage super-speed mode when loading or saving tapes.</p>
 
 <h3>Super speed console</h3>
-<p>Warp speed is engaged by the system at the BASIC prompt.  <i>This may interfere in the running of programs, to you may need to turn it off.  But try it out nontheless.</i></p>
+<p>Warp speed is engaged by the system when RETURN is pressed.  This continues until the Lynx performs a full-keyboard scanning sweep that returns no keys held down.  Then the system returns to the speed set by the 50%..800% options.  (The keyboard sweep is how we detect the BASIC / INPUT prompt appears / GET$/GETN/KEY$/KEYN is used). <i>This may interfere in the running of programs, particularly games.  No sound can be produced.  You may need to turn this feature off.  But try it out nontheless.</i></p>
 
 <h3>Super speed always</h3>
 <p>Give a 15 year old the Starship Enterprise, and this is what you would get...</p>
+
+
+
+
+
+<h2>Emulation Menu</h2>
+
+<h3>Pause</h3>
+<p>Pauses the emulator until you untick this box.  You can load a snapshot in this state, but it will not start until you un-pause.</p>
+
+<h3>Lynx 48K / Lynx 96K / Lynx 96K + Scorpion ROM</h3>
+<p>These options select which Lynx model you would like to emulate.  Changing the Lynx model will require a reset of the guest machine!</p>
+
+<h3>Pause emulation after tape load</h3>
+<p>Intended to help people wanting to save snapshots just before their game's main screen appears!</p>
+
+<h3>Reset guest machine</h3>
+<p>This option resets the guest machine with a simulated hardware reset.  This will lose the contents of the Lynx's memory completely.</p>
+
 
 
 
@@ -148,8 +148,17 @@ please contact me on GitHub (see above).</i></p>
 <h3>Fill window</h3>
 <p>Stretch the Lynx's display to fill the window, ignoring aspect ratio.</p>
 
+<h3>Normal Lynx Colours / Green screen monitor / Black and white TV</h3>
+<p>Colour sets to emulate various 80's display devices.</p>
+
+<h3>Level 9 game colours / Show green channel only</h3>
+<p>Colour sets intended for use with Level 9 adventure games.  These store data in the RED and BLUE screen memory, so this shows up on the display.  However, I do not emulate the feature on the Lynx that can hide the RED and BLUE displays (it was rarely used).  So, to be able to read the display while playing these games, use this option.</p>
+
 <h3>Full screen</h3>
 <p>Toggle full screen.  You can still get the menus in full screen mode.  Press Alt-F for File (etc).  Hint: Cursor left/right moves between menus.  Alt-F4 to Exit.</p>
+
+
+
 
 
 
@@ -172,6 +181,8 @@ please contact me on GitHub (see above).</i></p>
 <p>Allows the host to play Lynx sounds.  If you have a problem with sound, you should turn it off using this.</p>
 
 <p><i>On the Microsoft Window platform, with sound ON, the emulation timing is effectively performed by the Windows sound sub-system.  With sound off, a regular Windows timer is used to time the emulation.  This may result in a slight discrepancy in speeds.</i></p>
+
+
 
 
 
