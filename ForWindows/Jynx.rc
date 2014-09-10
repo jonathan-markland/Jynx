@@ -44,14 +44,14 @@ BEGIN
         MENUITEM "&Run TAP file ...",           ID_FILE_RUNTAPFILE
         MENUITEM SEPARATOR
         MENUITEM "&Open TAP file ...",          ID_FILE_OPENTAPFILE
-        MENUITEM "&Rewind Tape",                ID_FILE_REWINDTAPE
-        MENUITEM "Tape &Directory (at BASIC prompt)", ID_FILE_DIRECTORY
+        MENUITEM "&Rewind tape",                ID_FILE_REWINDTAPE
+        MENUITEM "Tape &directory (at BASIC prompt)", ID_FILE_DIRECTORY
         MENUITEM SEPARATOR
-        MENUITEM "&New Output Tape",            ID_FILE_INSERTBLANKTAPE
-        MENUITEM "&Save As TAP file...",        ID_FILE_SAVETAPE
+        MENUITEM "&New output tape",            ID_FILE_INSERTBLANKTAPE
+        MENUITEM "&Save as TAP file...",        ID_FILE_SAVETAPE
         MENUITEM SEPARATOR
-        MENUITEM "Load S&tate Snapshot ...",    ID_FILE_LOADSTATESNAPSHOT
-        MENUITEM "S&ave State Snapshot ...",    ID_FILE_SAVESTATESNAPSHOT
+        MENUITEM "Load s&tate snapshot ...",    ID_FILE_LOADSTATESNAPSHOT
+        MENUITEM "S&ave state snapshot ...",    ID_FILE_SAVESTATESNAPSHOT
         MENUITEM SEPARATOR
         MENUITEM "E&xit",                       ID_FILE_EXIT
     END
@@ -77,19 +77,19 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "&Pause after tape load",       ID_EMULATION_PAUSEAFTERTAPLOAD
         MENUITEM SEPARATOR
-        MENUITEM "&Reset Guest Machine",        ID_EMULATION_RESET
+        MENUITEM "&Reset guest machine",        ID_EMULATION_RESET
     END
     POPUP "&Display"
     BEGIN
-        MENUITEM "Fit to &Window",              ID_DISPLAY_FITTOWINDOW
-        MENUITEM "Use &Square Pixels",          ID_DISPLAY_SQUAREPIXELS
-        MENUITEM "&Fill Window",                ID_DISPLAY_FILLWINDOW
+        MENUITEM "Fit to &window",              ID_DISPLAY_FITTOWINDOW
+        MENUITEM "Use &square pixels",          ID_DISPLAY_SQUAREPIXELS
+        MENUITEM "&Fill window",                ID_DISPLAY_FILLWINDOW
         MENUITEM SEPARATOR
         MENUITEM "Normal Lynx colours",         ID_DISPLAY_COLOURSET_NORMALRGB
         MENUITEM "Green screen monitor",        ID_DISPLAY_COLOURSET_GREENSCREENMONITOR
         MENUITEM "Black and white TV",          ID_DISPLAY_COLOURSET_BLACKANDWHITETV
         MENUITEM "Level 9 game colours",        ID_DISPLAY_COLOURSET_LEVEL9
-        MENUITEM "Green channel only",          ID_DISPLAY_COLOURSET_GREENONLY
+        MENUITEM "Show green channel only",     ID_DISPLAY_COLOURSET_GREENONLY
         MENUITEM SEPARATOR
         MENUITEM "Full screen",                 ID_DISPLAY_FULLSCREENENABLE
     END
@@ -104,12 +104,12 @@ BEGIN
     END
     POPUP "&Text"
     BEGIN
-        MENUITEM "Record Lynx Text to file ...", ID_TEXT_RECORDLYNXTEXT
-        MENUITEM "Stop Recording Lynx Text",    ID_TEXT_STOPRECORDINGLYNXTEXT
+        MENUITEM "Record Lynx text to file ...", ID_TEXT_RECORDLYNXTEXT
+        MENUITEM "Stop recording Lynx text",    ID_TEXT_STOPRECORDINGLYNXTEXT
         MENUITEM SEPARATOR
         MENUITEM "Type in text from file ...",  ID_TEXT_TYPEINFROMFILE
         MENUITEM SEPARATOR
-        MENUITEM "Enable Lynx Basic REM command extensions", ID_TEXT_LYNXBASICREMCOMMANDEXTENSIONS
+        MENUITEM "Enable Lynx BASIC REM command extensions", ID_TEXT_LYNXBASICREMCOMMANDEXTENSIONS
     END
     POPUP "&Help"
     BEGIN
