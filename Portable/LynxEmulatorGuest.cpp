@@ -725,6 +725,9 @@ namespace Jynx
 				}
 			}
 
+			// (NB: Doing the test the above order means that holding RETURN down does not
+			// cause the screen to rapidly wipe out).
+
 			// Return the keyboard port byte:
 			return result;
 		}
