@@ -208,6 +208,16 @@ namespace Jynx
 		_z80CycleCounter = 0;  // may as well reset this
 
 		//
+		// These also need to be cleared on a reset, because reset
+		// aborts expected code paths.  The other variable (_speedMaxModeBecauseUserWantsItPermanently)
+		// does not need to be reset here, because that's the direct user toggle variable
+		// connected to the menu.
+		//
+
+		_speedMaxModeBecauseOfCassette = false;
+		_speedMaxModeBecauseWeAreInBetweenConsoleCommands = false;
+
+		//
 		// Screen invalidation
 		//
 
@@ -972,7 +982,7 @@ namespace Jynx
 					SpeakerWrite( level >> 2 ); 
 				}
 			}
-			else if( _devicePort & DEVICEPORT_SPEAKER )
+			else // if( _devicePort & DEVICEPORT_SPEAKER ) // <-- Hmm... interesting... this disabled the sound on Invaders!
 			{
 				// Write to speaker.
 				SpeakerWrite( level ); 
