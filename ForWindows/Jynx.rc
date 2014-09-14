@@ -63,9 +63,9 @@ BEGIN
         MENUITEM "Speed &400%",                 ID_SPEED_SPEED400
         MENUITEM "Speed &800%",                 ID_SPEED_SPEED800
         MENUITEM SEPARATOR
-        MENUITEM "Super speed cassette",        ID_SPEED_MAXSPEEDCASSETTE
-        MENUITEM "Super speed console",         ID_SPEED_MAXSPEEDCONSOLE
-        MENUITEM "Super speed always",          ID_SPEED_MAXSPEEDALWAYS
+        MENUITEM "Super speed &cassette",        ID_SPEED_MAXSPEEDCASSETTE
+        MENUITEM "Super speed c&onsole",         ID_SPEED_MAXSPEEDCONSOLE
+        MENUITEM "Super speed &always",          ID_SPEED_MAXSPEEDALWAYS
         MENUITEM SEPARATOR
         MENUITEM "&Pause",                      ID_EMULATION_PAUSE
     END
@@ -85,31 +85,31 @@ BEGIN
         MENUITEM "Use &square pixels",          ID_DISPLAY_SQUAREPIXELS
         MENUITEM "&Fill window",                ID_DISPLAY_FILLWINDOW
         MENUITEM SEPARATOR
-        MENUITEM "Normal Lynx colours",         ID_DISPLAY_COLOURSET_NORMALRGB
-        MENUITEM "Green screen monitor",        ID_DISPLAY_COLOURSET_GREENSCREENMONITOR
-        MENUITEM "Black and white TV",          ID_DISPLAY_COLOURSET_BLACKANDWHITETV
-        MENUITEM "Level 9 game colours",        ID_DISPLAY_COLOURSET_LEVEL9
-        MENUITEM "Show green channel only",     ID_DISPLAY_COLOURSET_GREENONLY
+        MENUITEM "Normal &Lynx colours",        ID_DISPLAY_COLOURSET_NORMALRGB
+        MENUITEM "&Green screen monitor",       ID_DISPLAY_COLOURSET_GREENSCREENMONITOR
+        MENUITEM "&Black and white TV",         ID_DISPLAY_COLOURSET_BLACKANDWHITETV
+        MENUITEM "Level &9 game colours",       ID_DISPLAY_COLOURSET_LEVEL9
+        MENUITEM "Show green &channel only",    ID_DISPLAY_COLOURSET_GREENONLY
         MENUITEM SEPARATOR
-        MENUITEM "Full screen",                 ID_DISPLAY_FULLSCREENENABLE
+        MENUITEM "F&ull screen",                ID_DISPLAY_FULLSCREENENABLE
     END
     POPUP "&Sound"
     BEGIN
-        MENUITEM "Record sound to file ...",    ID_SOUND_RECORDTOFILE
-        MENUITEM "Finish recording",            ID_SOUND_FINISHRECORDING
+        MENUITEM "&Record sound to file ...",    ID_SOUND_RECORDTOFILE
+        MENUITEM "&Finish recording",            ID_SOUND_FINISHRECORDING
         MENUITEM SEPARATOR
-        MENUITEM "Listen to tape sounds",       ID_SOUND_LISTENTOTAPESOUNDS
+        MENUITEM "&Listen to tape sounds",       ID_SOUND_LISTENTOTAPESOUNDS
         MENUITEM SEPARATOR
-        MENUITEM "Enable sound",                ID_SOUND_ENABLE
+        MENUITEM "&Enable sound",                ID_SOUND_ENABLE
     END
     POPUP "&Text"
     BEGIN
-        MENUITEM "Record Lynx text to file ...", ID_TEXT_RECORDLYNXTEXT
-        MENUITEM "Stop recording Lynx text",    ID_TEXT_STOPRECORDINGLYNXTEXT
+        MENUITEM "&Record Lynx text to file ...", ID_TEXT_RECORDLYNXTEXT
+        MENUITEM "&Stop recording Lynx text",     ID_TEXT_STOPRECORDINGLYNXTEXT
         MENUITEM SEPARATOR
-        MENUITEM "Type in text from file ...",  ID_TEXT_TYPEINFROMFILE
+        MENUITEM "&Type in text from file ...",   ID_TEXT_TYPEINFROMFILE
         MENUITEM SEPARATOR
-        MENUITEM "Enable Lynx BASIC REM command extensions", ID_TEXT_LYNXBASICREMCOMMANDEXTENSIONS
+        MENUITEM "&Enable Lynx BASIC REM command extensions", ID_TEXT_LYNXBASICREMCOMMANDEXTENSIONS
     END
     POPUP "&Help"
     BEGIN
