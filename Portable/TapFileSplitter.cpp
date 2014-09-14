@@ -43,7 +43,7 @@ namespace Jynx
 		const uint8_t *_position;
 		const uint8_t *_endPosition;
 
-		void RaiseError();
+		void RaiseError() const;
 
 		size_t SpaceRemaining() const;
 
@@ -64,7 +64,8 @@ namespace Jynx
 
 	bool TapFileLexer::End() const
 	{
-		return _position[0] == 0;
+		if( _position > _endPosition ) RaiseError();
+		return _position == _endPosition;
 	}
 
 
@@ -154,12 +155,22 @@ namespace Jynx
 		// Copy out the raw file data, starting at the file type byte:
 		_position += payloadLength;
 		auto resultVector = std::vector<uint8_t>( positionOfFileStart, _position );
+
+		// Unfortunately, a minority of TAPs, particularly BASIC ones, have a spurious zero
+		// at the end.  However, we can skip this, if found, because TAP files always begin
+		// with 0x22 0x41 (or the also-spurious 0xA5), never 0x00.
+		while( SpaceRemaining() > 0 )  // Must do this test, so we don't mistake our own NUL terminator for a spurious zero!
+		{
+			if( *_position != 0 ) break;
+			++_position;  // move past spurious zero
+		}
+
 		return resultVector;
 	}
 
 
 
-	void TapFileLexer::RaiseError()
+	void TapFileLexer::RaiseError() const
 	{
 		throw std::runtime_error( "Failed to parse TAP file." );
 	}
