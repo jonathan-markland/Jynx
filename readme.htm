@@ -264,10 +264,9 @@ jynx.exe --settings "C:\users\jonathan\documents\Alternative Settings.txt" --run
 <p>What's not emulated?</p>
 
 <ul>
-<li>The 6845.  So the screen doesn't shake on AIR-RAID, and Star Rover is a dead loss.  A partial emulation might be feasible without too much work, but full CRTC emulation, causing picture rolling!... No.</li>
 <li>Suspending the Z80 while waiting for the line-blanking period to begin.</li>
 <li>The Serial port.  This is dull - and anyway there's ways of getting text in and out of the emulator.</li>
-<li>The slower access ROM!  I didn't know about this until reading through the various Lynx magazines, and I uncovered this gem of a fact.  It may be the emulation runs ~12% too fast because of this?</li>
+<li>The slower access ROM!  I didn't know about this until reading through the various Lynx magazines, and I uncovered this gem of a fact.  I have reduced the performance to compensate, but this is always, never mind when the ROM is accessed. </li>
 <li>Hardware interrupts.  The Lynx basically didn't use them!  At least, not for the area of the Lynx I am emulating.</li>
 </ul>
 
