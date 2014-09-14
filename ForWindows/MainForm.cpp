@@ -359,6 +359,11 @@ void MainForm::WindowProc( libWinApi::WindowProcArgs &e )
 			_lynxUIModel->NotifyAllKeysUp();   // Let's make sure we don't have stuck keys, switching away from the app!
 		}
 
+		if( e.message == WM_LBUTTONDBLCLK )
+		{
+			_lynxUIModel->OnEnableDisableFullScreen();
+		}
+
 		//
 		// WM_WINDOWPOSCHANGED
 		//
