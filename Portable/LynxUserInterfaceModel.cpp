@@ -120,9 +120,42 @@ namespace Jynx
 
 		auto projWidth  = projectionRectangle.right - projectionRectangle.left;
 		auto projHeight = projectionRectangle.bottom - projectionRectangle.top;
+		auto projOffsetX6845 = (projWidth * _lynxEmulator->Get6845OffsetPixelsX()) / w;
+		auto projOffsetY6845 = (projHeight * _lynxEmulator->Get6845OffsetPixelsY()) / h;
+		bool isShifted = projOffsetX6845 != 0 || projOffsetY6845 != 0;
 
 		// CONTENT
-		_hostView->StretchBlitTheGuestScreen( projectionRectangle.left, projectionRectangle.top, projWidth, projHeight );
+		if( ! isShifted )
+		{
+			// FOR SPEED - This is the "straight on" display, 6845 R12 and R13 are both zero.
+			_hostView->StretchBlitTheGuestScreen( projectionRectangle.left, projectionRectangle.top, projWidth, projHeight );
+		}
+		else
+		{
+			// THe 6845 address registers R12,R13 have shifted the display.
+
+			_hostView->SetViewport( projectionRectangle.left, projectionRectangle.top, projWidth, projHeight );
+
+			auto tileSlideUpAmount = (4 * projHeight) / h;  // 4 = 6845 num scanlines per char  TODO: sort out
+
+			// Origin offsetting:
+			auto ox = projectionRectangle.left - projOffsetX6845;
+			auto oy = projectionRectangle.top - projOffsetY6845;
+
+			// TOP LEFT TILE
+			_hostView->StretchBlitTheGuestScreen( ox, oy, projWidth, projHeight );
+
+			// TOP RIGHT TILE
+			_hostView->StretchBlitTheGuestScreen( ox + projWidth, oy - tileSlideUpAmount, projWidth, projHeight );
+
+			// BOTTOM LEFT TILE
+			_hostView->StretchBlitTheGuestScreen( ox, oy + projHeight, projWidth, projHeight );
+
+			// BOTTOM RIGHT TILE
+			_hostView->StretchBlitTheGuestScreen( ox + projWidth, (oy - tileSlideUpAmount) + projHeight, projWidth, projHeight );
+
+			_hostView->CancelViewport();
+		}
 
 		// ABOVE
 		_hostView->FillBlackRectangle( 0, 0, clientRect.right, projectionRectangle.top );

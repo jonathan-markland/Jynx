@@ -97,6 +97,8 @@ namespace Jynx
 		void SetEnableSpeedMaxModeBecauseUserWantsItPermanently( bool newSetting );
 		LynxColourSet::Enum  GetLynxColourSet() const;
 		void SetLynxColourSet( LynxColourSet::Enum colourSet );
+		int32_t Get6845OffsetPixelsX() const;
+		int32_t Get6845OffsetPixelsY() const;
 
 		// Implementing ITapeSpeedSupplier
 		virtual uint32_t  GetLynxTapeSpeedBitsPerSecond() override;
@@ -148,6 +150,8 @@ namespace Jynx
 		uint8_t CassetteRead();
 
 		void SpeakerWrite( uint8_t dataByte );
+		void Write6845( uint8_t regIndex, uint8_t dataByte );
+		void Recalculate6845Variables( uint32_t screenStartAddress6845 );
 
 		void Serialise( ISerialiser &serialiser );
 
@@ -174,7 +178,7 @@ namespace Jynx
 		std::shared_ptr<TapFileWriter>  _currentWriteTape;
 	
 		// Screen area invalidation recording system (guest-side):
-		enum { INV_ROWS = 32 };          // The vertical height of the screen is divided into this many rows for invalidation recording.
+		enum { INV_ROWS = 32 };          // The vertical height of the screen is divided into this many rows for invalidation recording.  (This is irrespective of 6845 start address alteration).
 		volatile bool  _invalidateRow[INV_ROWS];  // Set true when an individual bit is drawn
 		bool  _recompositeWholeScreen;   // Do we need to recomposite whole screen because of change in Lynx screen register that affects the whole display?
 
@@ -188,7 +192,12 @@ namespace Jynx
 		uint8_t  _level;              // Most recent write to speaker level port
 		volatile uint8_t  _keyboard[10];       // Lynx keyboard ports (not persistent).
 		bool     _keyboardSweepDetect[10];     // ports 0..9
-	
+
+		// 6845 associated variables:
+		uint32_t           _screenStartAddress6845;      // R12 and R13 in a convenient store.  Value is an offset, units in 6845-characters.
+		volatile int32_t   _horizontalOffsetPixels6845;  // horizontal offset in BITMAP pixels, corresponding to R12 and R12 (display start address).  Will be 0..248 in steps of 8.
+		volatile int32_t   _verticalOffsetPixels6845;    // vertical offset in BITMAP pixels, corresponding to R12 and R12 (display start address).    Will be 0..252 in steps of 4.
+
 		// Host platform's preferred UTF8 end of line sequence:
 		const std::string  _platformEndOfLineSequenceUTF8;
 

@@ -129,11 +129,21 @@ namespace Jynx
 			// a rectangular area.  The View must return the pixel-area into which the Lynx screen
 			// (and associated black border) can be rendered.
 
+		virtual void SetViewport( int left, int top, int width, int height ) = 0;
+			// The View must set a rectangle clipping zone viewport at the area specified.
+			// Coordinates are in host pixels within the host window's drawing area.
+			// This will only be called once -- no nesting required.
+
+		virtual void CancelViewport() = 0;
+			// The View must cancel the previously set viewport, restoring the original.
+
 		virtual void StretchBlitTheGuestScreen( int left, int top, int width, int height ) = 0;
 			// The Model assists the View with calculating position for painting the 
 			// Lynx screen bitmap.  The View must render the Lynx bitmap into the area given.
 			// This should be done with something like StretchBlt() on Windows.  The View
 			// must have created the 256*256 bitmap for the Lynx screen, on its initialisation.
+			// If SetViewport has been called, this must be clipped by the viewport.
+			// This will be called 4 times if the 6845 has been used to offset the display.
 
 		virtual void FillBlackRectangle( int left, int top, int width, int height ) = 0;
 			// The Model assists the View with calculating position for painting black

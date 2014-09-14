@@ -69,6 +69,7 @@ MainForm::MainForm( HWND hWndOwner, const wchar_t *settingsFilePath, const wchar
 	, _snapshotFilePath(snapshotFilePath)
 	, _tapFilePath(tapFilePath)
 	, _gamesMode(gamesMode)
+	, _saveDC(0)
 {
 	//
 	// Sound
@@ -635,6 +636,29 @@ Jynx::LynxRectangle  MainForm::GetClientRectangle()
 	area.bottom = r.bottom;
 
 	return area;
+}
+
+
+
+void MainForm::SetViewport( int left, int top, int width, int height )
+{
+	if( _dc != NULL ) // If this is NULL, program will be terminating because of posted quit message, anyway!
+	{
+		assert( _saveDC == 0 );
+		_saveDC = ::SaveDC( _dc );
+		::IntersectClipRect( _dc, left, top, left+width, top+height );
+	}
+}
+
+
+
+void MainForm::CancelViewport()
+{
+	if( _dc != NULL && _saveDC != 0 )
+	{
+		::RestoreDC( _dc, _saveDC );
+		_saveDC = 0;
+	}
 }
 
 

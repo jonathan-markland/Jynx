@@ -61,6 +61,8 @@ public:
 	virtual void SetTickBoxState( Jynx::TickableInterfaceElements::Enum itemToSet, bool tickState ) override;
 	virtual void SetEnabledState( Jynx::ButtonInterfaceElements::Enum itemToSet, bool enableState ) override;
 	virtual Jynx::LynxRectangle GetClientRectangle() override;
+	virtual void SetViewport( int left, int top, int width, int height ) override;
+	virtual void CancelViewport() override;
 	virtual void StretchBlitTheGuestScreen( int left, int top, int width, int height ) override;
 	virtual void FillBlackRectangle( int left, int top, int width, int height ) override;
 	virtual void InvalidateAreaOfHostScreen( const Jynx::LynxRectangle &area ) override;
@@ -85,6 +87,7 @@ private:
 	HDC     _dc;         // Is only set when asking the model to paint.
 	HANDLE  _hbicon;
 	HANDLE  _hsicon;
+	int     _saveDC;
 
 	std::unique_ptr<Jynx::LynxUserInterfaceModel> _lynxUIModel;  // Reminder - Emulator is within this.
 	libWinApi::FrameBufferInfo        _screenInfo;
