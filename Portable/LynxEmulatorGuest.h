@@ -151,7 +151,8 @@ namespace Jynx
 
 		void SpeakerWrite( uint8_t dataByte );
 		void Write6845( uint8_t regIndex, uint8_t dataByte );
-		void Recalculate6845Variables( uint32_t screenStartAddress6845 );
+		void Recalculate6845VariablesFromPorts();
+		uint32_t GetRangeMaskedScreenStartAddress6845() const;
 
 		void Serialise( ISerialiser &serialiser );
 
@@ -194,7 +195,7 @@ namespace Jynx
 		bool     _keyboardSweepDetect[10];     // ports 0..9
 
 		// 6845 associated variables:
-		uint32_t           _screenStartAddress6845;      // R12 and R13 in a convenient store.  Value is an offset, units in 6845-characters.
+		uint32_t           _rangeMaskedScreenStartAddress6845;      // R12 and R13 in a convenient store.  Value is an offset, units in 6845-characters.
 		volatile int32_t   _horizontalOffsetPixels6845;  // horizontal offset in BITMAP pixels, corresponding to R12 and R12 (display start address).  Will be 0..248 in steps of 8.
 		volatile int32_t   _verticalOffsetPixels6845;    // vertical offset in BITMAP pixels, corresponding to R12 and R12 (display start address).    Will be 0..252 in steps of 4.
 

@@ -245,7 +245,7 @@ namespace Jynx
 		_bankPort     = BANKPORT_INITIALISATION_VALUE;
 		_mc6845Select = 0;
 		ZeroInitialiseMemory( _mc6845Regs );
-		Recalculate6845Variables( 0 );
+		Recalculate6845VariablesFromPorts();
 		InitialiseAllArrayElementsVolatile( _keyboard, (uint8_t) 0xFF );  // -ve logic
 		InitialiseAllArrayElements( _keyboardSweepDetect, false ); 
 		_level = 0;
@@ -371,6 +371,7 @@ namespace Jynx
 	{
 		UpdateVideoSources();
 		UpdateBankSwitchFromPorts();
+		Recalculate6845VariablesFromPorts();
 	}
 
 
@@ -643,7 +644,7 @@ namespace Jynx
 
 		_hostObject->PaintPixelsOnHostBitmap_OnEmulatorThread( addressOffset, pixelDataRGBA );
 
-		if( _screenStartAddress6845 != 0 )
+		if( _rangeMaskedScreenStartAddress6845 != 0 )
 		{
 			// Since supporting register 12 and 13 on the 6845, we need to adjust for the 6845 start address,
 			// because the invalidation recording does not know about the 6845, only the display "straight on".
@@ -653,7 +654,7 @@ namespace Jynx
 			auto horizontalChar = addressOffset & 0x1F;
 			auto verticalChar   = (addressOffset / (32*4)) & 0x3F;
 			auto charOffset     = (verticalChar * 32) + horizontalChar;
-			auto adjustedOffset = (charOffset - _screenStartAddress6845) & LYNX_DISPLAY_DIMENSIONS_6845_CHARS_MASK;
+			auto adjustedOffset = (charOffset - _rangeMaskedScreenStartAddress6845) & LYNX_DISPLAY_DIMENSIONS_6845_CHARS_MASK;
 			auto invRowIndex    = adjustedOffset / 64;
 
 			assert( invRowIndex >= 0 && invRowIndex < INV_ROWS );
@@ -1200,16 +1201,26 @@ namespace Jynx
 	//    WRITE TO 6845
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
+
+	uint32_t LynxEmulatorGuest::GetRangeMaskedScreenStartAddress6845() const
+	{
+		// We are only interested in the *offset* into the display, 
+		// not any higher order bits that the Lynx may program!
+		return (_mc6845Regs[12] << 8 | _mc6845Regs[13]) & LYNX_DISPLAY_DIMENSIONS_6845_CHARS_MASK;
+	}
+
+
+
+
 	void LynxEmulatorGuest::Write6845( uint8_t regIndex, uint8_t dataByte )
 	{
 		_mc6845Regs[ regIndex ] = dataByte;
 
 		if( regIndex == 12 || regIndex == 13 )
 		{
-			auto screenStartAddress6845 = (_mc6845Regs[12] << 8 | _mc6845Regs[13]) & LYNX_DISPLAY_DIMENSIONS_6845_CHARS_MASK;  // We are only interested in the *offset* into the display, not any higher order bits that the Lynx may program!
-			if( _screenStartAddress6845 != screenStartAddress6845 ) // optimise away no-change.
+			if( _rangeMaskedScreenStartAddress6845 != GetRangeMaskedScreenStartAddress6845() ) // optimise away no-change.
 			{
-				Recalculate6845Variables( screenStartAddress6845 );
+				Recalculate6845VariablesFromPorts();
 				MarkWholeScreenInvalid();
 			}
 		}
@@ -1218,7 +1229,7 @@ namespace Jynx
 
 
 
-	void LynxEmulatorGuest::Recalculate6845Variables( uint32_t screenStartAddress6845 )
+	void LynxEmulatorGuest::Recalculate6845VariablesFromPorts()
 	{
 		// Notes: 
 		// - Lynx screen bytes are 8 * 1 pixels.
@@ -1226,13 +1237,14 @@ namespace Jynx
 		// - There are 32 bytes per row, so bits (0..4)*8 give the horizontal offset in pixels.
 		// - 256/4 = 64 "rows" per screen, so (bits 5..10)*4 are the vertical offset in pixels.
 
-		assert( screenStartAddress6845 < LYNX_DISPLAY_DIMENSIONS_6845_CHARS );
-		_screenStartAddress6845 = screenStartAddress6845;
+		auto rangeMaskedScreenStartAddress6845 = GetRangeMaskedScreenStartAddress6845();
+
+		_rangeMaskedScreenStartAddress6845 = rangeMaskedScreenStartAddress6845;
 
 		auto charHeight6845 = 4;
-		auto horizontalOffsetBytes  = screenStartAddress6845 & 0x1F;
+		auto horizontalOffsetBytes  = rangeMaskedScreenStartAddress6845 & 0x1F;
 		_horizontalOffsetPixels6845 = horizontalOffsetBytes * 8;
-		_verticalOffsetPixels6845   = (screenStartAddress6845 / 32) * charHeight6845;
+		_verticalOffsetPixels6845   = (rangeMaskedScreenStartAddress6845 / 32) * charHeight6845;
 	}
 
 
