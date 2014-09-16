@@ -130,7 +130,7 @@ FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     CONTROL         311,IDC_STATIC,"Static",SS_BITMAP,14,14,32,30
     LTEXT           "Jynx - Emulation of the 1983 Camputers Lynx 48K / 96K",IDC_STATIC,61,24,194,8,SS_NOPREFIX
-    LTEXT           "V1.0.7  (C) 2014   Jonathan Markland",IDC_STATIC,61,36,204,8
+    LTEXT           "V1.0.8  (C) 2014   Jonathan Markland",IDC_STATIC,61,36,204,8
     DEFPUSHBUTTON   "OK",IDOK,119,253,50,14,WS_GROUP
     LTEXT           "Original Camputers Lynx hardware - John Shrieff",IDC_STATIC,61,106,172,8
     LTEXT           "Original Lynx BASIC and firmware - Davis Jansons",IDC_STATIC,61,117,171,8
@@ -154,8 +154,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,7,0
- PRODUCTVERSION 1,0,7,0
+ FILEVERSION 1,0,8,0
+ PRODUCTVERSION 1,0,8,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -172,12 +172,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Jonathan Markland"
             VALUE "FileDescription", "Emulation of the 1983 Camputers Lynx 48K / 96K"
-            VALUE "FileVersion", "1.0.7.0"
+            VALUE "FileVersion", "1.0.8.0"
             VALUE "InternalName", "Jynx.exe"
             VALUE "LegalCopyright", " © 2014 Jonathan Markland"
             VALUE "OriginalFilename", "Jynx.exe"
             VALUE "ProductName", "Emulation of the Camputers Lynx"
-            VALUE "ProductVersion", "1.0.7.0"
+            VALUE "ProductVersion", "1.0.8.0"
         END
     END
     BLOCK "VarFileInfo"

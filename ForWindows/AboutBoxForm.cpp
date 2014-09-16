@@ -50,7 +50,7 @@ bool AboutBoxForm::OnInitDialog()
 	auto hWndEditGitHub = ::GetDlgItem( *this, IDC_EDIT_GITHUB );
 	auto hWndEditBlog   = ::GetDlgItem( *this, IDC_EDIT_BLOG );
 	::SetWindowText( hWndEditGitHub, L"http://www.github.com/jonathan-markland/jynx" );
-	::SetWindowText( hWndEditBlog,   L"http://jynx-emulator.tumblr.com/" );
+	::SetWindowText( hWndEditBlog,   L"http://jynxemulator.wordpress.com/" );
 
 	return BaseForm::OnInitDialog();
 }
