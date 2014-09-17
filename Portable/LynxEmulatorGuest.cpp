@@ -134,7 +134,6 @@ namespace Jynx
 		, _speedMaxModeBecauseUserWantsItPermanently(false)
 		, _speedMaxModeBecauseOfCassette(false)
 		, _speedMaxModeBecauseWeAreInBetweenConsoleCommands(false)
-		, _level(0)
 		, _colourSet( LynxColourSet::NormalRGB )
 	{
 		// (Reminder - Called on the client thread).
@@ -248,8 +247,7 @@ namespace Jynx
 		Recalculate6845VariablesFromPorts();
 		InitialiseAllArrayElementsVolatile( _keyboard, (uint8_t) 0xFF );  // -ve logic
 		InitialiseAllArrayElements( _keyboardSweepDetect, false ); 
-		_level = 0;
-
+		
 		//
 		// Initialise bank switching selectors.
 		//
@@ -1000,11 +998,10 @@ namespace Jynx
 			// Bits 5..0 contain the level:
 			auto level = dataByte & 0x3F;
 
-			_level = level;
-
-			if( _devicePort & DEVICEPORT_CASSETTE_MOTOR )
+			if( _mc6845Regs[12] & 0x10 )  // Camputers use 6845 output MA12 as a switch to enable outputting.
 			{
 				CassetteWrite( level );
+
 				if( _hearTapeSounds )
 				{
 					// Listen to tape saving (quieten it a bit!):
@@ -1025,8 +1022,8 @@ namespace Jynx
 
 	bool LynxEmulatorGuest::IsTapeInOperation() const
 	{
-		return ( _level != 0  // <-- added for crazy things that Level 9 do!  (Turn tape motor ON all the time when keyboard scanning).
-				&& _devicePort & DEVICEPORT_CASSETTE_MOTOR );
+		return _devicePort & DEVICEPORT_CASSETTE_MOTOR 
+			&& (_mc6845Regs[12] & 0x30) ? true : false;
 	}
 
 
@@ -1044,7 +1041,7 @@ namespace Jynx
 			// -- although I have insufficient documentation on this!  I deduced when the supply the
 			// cassette value in bit 0 of port 0x0080
 
-			if( IsTapeInOperation() )
+			if( _mc6845Regs[12] & 0x20 ) // Camputers use this output of the 6845 as a switch to enable cassette reading on the keyboard port (if MA13 is high).
 			{
 				if( (portNumber & 0xFC6) == 0x0080 ) // <-- Mask per Lynx User Magazine Issue 1.  The lynx appears to only read from this port specifically, when reading tapes.
 				{

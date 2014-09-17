@@ -190,7 +190,6 @@ namespace Jynx
 		uint8_t  _mc6845Select;       // 6845 register selector
 		uint8_t  _mc6845Regs[32];     // 6845 register values store
 		uint64_t _z80CycleCounter;    // Total cycle counter // TODO: serialise -- but only the cassette creation relies on it, and we don't & can't easily serialise the state of that.
-		uint8_t  _level;              // Most recent write to speaker level port
 		volatile uint8_t  _keyboard[10];       // Lynx keyboard ports (not persistent).
 		bool     _keyboardSweepDetect[10];     // ports 0..9
 
