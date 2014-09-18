@@ -150,7 +150,6 @@ namespace Jynx
 		uint8_t CassetteRead();
 
 		void SpeakerWrite( uint8_t dataByte );
-		void Write6845( uint8_t regIndex, uint8_t dataByte );
 		void Recalculate6845VariablesFromPorts();
 		uint32_t GetRangeMaskedScreenStartAddress6845() const;
 

@@ -969,12 +969,17 @@ namespace Jynx
 		else if( (portNumber & 0xC7) == 0x86 )
 		{
 			// 6845 display generator
-			_mc6845Select = dataByte;   // TODO: 6845 doesn't have 256 registers.  Are top 3 bits ignored?
+			_mc6845Select = dataByte;
 		}
 		else if( (portNumber & 0xC7) == 0x87 )
 		{
 			// 6845 display generator
-			Write6845( _mc6845Select & 0x1F, dataByte );
+			auto &thisReg = _mc6845Regs[ _mc6845Select & 0x1F ];
+			if( thisReg != dataByte ) // optimise away no change
+			{
+				thisReg = dataByte;
+				Recalculate6845VariablesFromPorts();
+			}
 		}
 
 		//
@@ -1209,39 +1214,27 @@ namespace Jynx
 
 
 
-	void LynxEmulatorGuest::Write6845( uint8_t regIndex, uint8_t dataByte )
-	{
-		_mc6845Regs[ regIndex ] = dataByte;
-
-		if( regIndex == 12 || regIndex == 13 )
-		{
-			if( _rangeMaskedScreenStartAddress6845 != GetRangeMaskedScreenStartAddress6845() ) // optimise away no-change.
-			{
-				Recalculate6845VariablesFromPorts();
-				MarkWholeScreenInvalid();
-			}
-		}
-	}
-
-
-
-
 	void LynxEmulatorGuest::Recalculate6845VariablesFromPorts()
 	{
-		// Notes: 
-		// - Lynx screen bytes are 8 * 1 pixels.
-		// - 6845's "Character height" is programmed at 4 pixels (assumed here).
-		// - There are 32 bytes per row, so bits (0..4)*8 give the horizontal offset in pixels.
-		// - 256/4 = 64 "rows" per screen, so (bits 5..10)*4 are the vertical offset in pixels.
+		// We only do anything for the bits of R12 and R13 used for screen start address.
 
 		auto rangeMaskedScreenStartAddress6845 = GetRangeMaskedScreenStartAddress6845();
+		if( _rangeMaskedScreenStartAddress6845 != rangeMaskedScreenStartAddress6845 ) // optimise away no-change.
+		{
+			_rangeMaskedScreenStartAddress6845 = rangeMaskedScreenStartAddress6845;
 
-		_rangeMaskedScreenStartAddress6845 = rangeMaskedScreenStartAddress6845;
+			// Notes: 
+			// - Lynx screen bytes are 8 * 1 pixels.
+			// - 6845's "Character height" is programmed at 4 pixels (assumed here).
+			// - There are 32 bytes per row, so bits (0..4)*8 give the horizontal offset in pixels.
+			// - 256/4 = 64 "rows" per screen, so (bits 5..10)*4 are the vertical offset in pixels.
 
-		auto charHeight6845 = 4;
-		auto horizontalOffsetBytes  = rangeMaskedScreenStartAddress6845 & 0x1F;
-		_horizontalOffsetPixels6845 = horizontalOffsetBytes * 8;
-		_verticalOffsetPixels6845   = (rangeMaskedScreenStartAddress6845 / 32) * charHeight6845;
+			auto charHeight6845 = 4;
+			auto horizontalOffsetBytes  = rangeMaskedScreenStartAddress6845 & 0x1F;
+			_horizontalOffsetPixels6845 = horizontalOffsetBytes * 8;
+			_verticalOffsetPixels6845   = (rangeMaskedScreenStartAddress6845 / 32) * charHeight6845;
+			MarkWholeScreenInvalid();
+		}
 	}
 
 
