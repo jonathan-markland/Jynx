@@ -16,6 +16,7 @@
 					<Add option="-std=c++11" />
 					<Add option="-g" />
 					<Add directory="../Portable" />
+					<Add directory="ForLinux" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -25,6 +26,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add directory="ForLinux" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -97,8 +99,11 @@
 			<Option virtualFolder="Portable/" />
 		</Unit>
 		<Unit filename="../Portable/ZeroInitialiseMemory.h" />
+		<Unit filename="LinuxGtkMenu.cpp" />
+		<Unit filename="LinuxGtkMenu.h" />
 		<Unit filename="Linux_Thread.cpp" />
 		<Unit filename="Linux_Waitable.cpp" />
+		<Unit filename="Resource.h" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<envvars />
