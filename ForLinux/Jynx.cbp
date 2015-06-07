@@ -98,12 +98,8 @@
 		</Unit>
 		<Unit filename="../Portable/ZeroInitialiseMemory.h" />
 		<Unit filename="Linux_Thread.cpp" />
-		<Unit filename="Linux_Waitable.cpp">
-			<Option compile="0" />
-		</Unit>
-		<Unit filename="main.c">
-			<Option compilerVar="CC" />
-		</Unit>
+		<Unit filename="Linux_Waitable.cpp" />
+		<Unit filename="main.cpp" />
 		<Extensions>
 			<envvars />
 			<code_completion />
