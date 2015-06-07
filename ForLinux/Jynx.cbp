@@ -5,6 +5,7 @@
 		<Option title="Jynx" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
+		<Option virtualFolders="Portable/;" />
 		<Build>
 			<Target title="Debug">
 				<Option output="bin/Debug/Jynx" prefix_auto="1" extension_auto="1" />
@@ -12,7 +13,9 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-std=c++11" />
 					<Add option="-g" />
+					<Add directory="../Portable" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -35,6 +38,63 @@
 		<Linker>
 			<Add option="`pkg-config gtk+-2.0 --libs`" />
 		</Linker>
+		<Unit filename="../Portable/FileLoader.cpp" />
+		<Unit filename="../Portable/FileLoader.h" />
+		<Unit filename="../Portable/FileSerialiser.cpp" />
+		<Unit filename="../Portable/FileSerialiser.h" />
+		<Unit filename="../Portable/IBinarySerialiser.h" />
+		<Unit filename="../Portable/IFileOpener.h" />
+		<Unit filename="../Portable/IHostServicesForLynxEmulator.h" />
+		<Unit filename="../Portable/ISerialiser.h" />
+		<Unit filename="../Portable/IViewServicesForLynxUserInterfaceModel.h" />
+		<Unit filename="../Portable/JynxPlatformInterfacing.h" />
+		<Unit filename="../Portable/Lexer.cpp" />
+		<Unit filename="../Portable/Lexer.h" />
+		<Unit filename="../Portable/LynxEmulatorEnums.h" />
+		<Unit filename="../Portable/LynxEmulatorGuest.cpp" />
+		<Unit filename="../Portable/LynxEmulatorGuest.h" />
+		<Unit filename="../Portable/LynxHardware.h" />
+		<Unit filename="../Portable/LynxRectangle.cpp" />
+		<Unit filename="../Portable/LynxRectangle.h" />
+		<Unit filename="../Portable/LynxRoms.h" />
+		<Unit filename="../Portable/LynxUserInterfaceModel.cpp" />
+		<Unit filename="../Portable/LynxUserInterfaceModel.h" />
+		<Unit filename="../Portable/SignalWriter.cpp" />
+		<Unit filename="../Portable/SignalWriter.h" />
+		<Unit filename="../Portable/SoundBufferWriter.cpp" />
+		<Unit filename="../Portable/SoundBufferWriter.h" />
+		<Unit filename="../Portable/SoundRecorder.cpp" />
+		<Unit filename="../Portable/SoundRecorder.h" />
+		<Unit filename="../Portable/TapFileReader.cpp" />
+		<Unit filename="../Portable/TapFileReader.h" />
+		<Unit filename="../Portable/TapFileSplitter.cpp" />
+		<Unit filename="../Portable/TapFileSplitter.h" />
+		<Unit filename="../Portable/TapFileWriter.cpp" />
+		<Unit filename="../Portable/TapFileWriter.h" />
+		<Unit filename="../Portable/TextPlayer.cpp" />
+		<Unit filename="../Portable/TextPlayer.h" />
+		<Unit filename="../Portable/TextRecorder.cpp" />
+		<Unit filename="../Portable/TextRecorder.h" />
+		<Unit filename="../Portable/UserSettingsSerialiser.cpp" />
+		<Unit filename="../Portable/UserSettingsSerialiser.h" />
+		<Unit filename="../Portable/Z80/IZ80DisassemblerStream.h" />
+		<Unit filename="../Portable/Z80/JynxZ80.cpp" />
+		<Unit filename="../Portable/Z80/JynxZ80.h" />
+		<Unit filename="../Portable/Z80/JynxZ80Declarations.h" />
+		<Unit filename="../Portable/Z80/JynxZ80Disassembler.cpp" />
+		<Unit filename="../Portable/Z80/JynxZ80Disassembler.h" />
+		<Unit filename="../Portable/Z80/JynxZ80DisassemblyData.h" />
+		<Unit filename="../Portable/Z80/JynxZ80ExternalImplementation.h" />
+		<Unit filename="../Portable/Z80/JynxZ80MainSet.cpp" />
+		<Unit filename="../Portable/Z80/JynxZ80Shared.cpp" />
+		<Unit filename="../Portable/Z80/JynxZ80Shared.h" />
+		<Unit filename="../Portable/Z80/JynxZ80Timings.cpp" />
+		<Unit filename="../Portable/Z80/JynxZ80Timings.h" />
+		<Unit filename="../Portable/Z80/JynxZ80_CB.cpp" />
+		<Unit filename="../Portable/Z80/JynxZ80_ED.cpp">
+			<Option virtualFolder="Portable/" />
+		</Unit>
+		<Unit filename="../Portable/ZeroInitialiseMemory.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
