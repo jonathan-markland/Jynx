@@ -1,22 +1,22 @@
 //
 // Jynx - Jonathan's Lynx Emulator (Camputers Lynx 48K/96K models).
 // Copyright (C) 2014  Jonathan Markland
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 
+//
 //		jynx_emulator {at} yahoo {dot} com
-// 
+//
 
 #pragma once
 
@@ -28,7 +28,7 @@
 
 namespace Jynx
 {
-	class LynxUserInterfaceModel: 
+	class LynxUserInterfaceModel:
 		public IHostServicesForLynxEmulator
 	{
 	public:
@@ -39,7 +39,7 @@ namespace Jynx
 		//   and create the LynxEmulatorGuest yourself.
 		// - Multithreading note:  Consider the model to be called on the MAIN thread.
 
-		LynxUserInterfaceModel( 
+		LynxUserInterfaceModel(
 			IViewServicesForLynxUserInterfaceModel *hostView, uint16_t *soundBuffer, size_t numSamples, const char *platformEndOfLineSequenceUTF8, bool gamesMode );
 
 		// ILynxUserInterfaceModel:
@@ -87,7 +87,7 @@ namespace Jynx
 		void OnChangeColourSet( LynxColourSet::Enum colourSet );
 
 		// IHostServicesForLynxEmulator:
-		// - THREADING NOTE:  The emulator object calls back into the Model on 
+		// - THREADING NOTE:  The emulator object calls back into the Model on
 		//   the EMULATOR thread, using this restricted interface.
 		virtual  void  InvalidateAreaOfGuestScreen_OnMainThread( int32_t left, int32_t top, int32_t right, int32_t bottom ) override;
 		virtual  void  OpenChipFileStream_OnMainThread( std::ifstream &streamToBeOpened, std::ios_base::openmode openModeRequired, LynxRoms::Enum romRequired ) override;
@@ -120,7 +120,38 @@ namespace Jynx
 		bool UserAllowsReset();
 
 		void SaveUserSettings();
+            // throws std::ofstream::failure
+
 		void LoadUserSettings();
+            // throws const std::invalid_argument on parse error
+            // throws const std::ifstream::failure
+
+        void ReportWithPrefix( const char *messageToPrefix, const std::exception &e );
+
+        template<typename FILE_OPERATION>
+        void DoWithFileHandlingErrorReportsToUser( const char *messageToPrefix, FILE_OPERATION fileOperation )
+        {
+            try
+            {
+                fileOperation();
+            }
+            catch( std::invalid_argument &e )
+            {
+                ReportWithPrefix( messageToPrefix, e );
+            }
+            catch( std::ifstream::failure &e )
+            {
+                ReportWithPrefix( messageToPrefix, e );
+            }
+            catch( std::ofstream::failure &e )
+            {
+                // TODO: Should we delete the failed file?
+                ReportWithPrefix( messageToPrefix, e );
+            }
+        }
+
+
+
 
 	};
 

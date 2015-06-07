@@ -54,6 +54,9 @@ namespace Jynx
 	{
 	public:
 		InputFileSerialiser( IFileOpener *fileOpener );
+            // throws const std::invalid_argument on parse error
+            // throws const std::ifstream::failure
+
 		virtual void OpenTag( const char *tagName ) override;
 		virtual void CloseTag( const char *tagName ) override;
 		virtual void Field( const char *tagName, unsigned char &field ) override;

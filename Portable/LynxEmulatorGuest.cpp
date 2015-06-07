@@ -204,7 +204,7 @@ namespace Jynx
 			// Drop to re-raise below, because otherwise a horrible message is raised to the user.
 		}
 
-		throw std::runtime_error( "One or more of the ROM files are missing.  Please refer to the readme.htm file for information." );  // very base class std::exception should terminate program.
+		throw std::runtime_error( "One or more of the ROM files are missing or damaged.  Please refer to the readme.htm file for information." );  // very base class std::exception should terminate program.
 	}
 
 
@@ -1722,7 +1722,7 @@ namespace Jynx
 
 		OutputFileSerialiser  outputSerialiser( fileOpener, _platformEndOfLineSequenceUTF8 );
 		Serialise( outputSerialiser );
-		return true;
+        return true;
 	}
 
 
@@ -1752,6 +1752,11 @@ namespace Jynx
 			// TODO: Do we need to do both of the following?
 			MarkWholeScreenInvalid();
 			_recompositeWholeScreen = true;
+		}
+		catch( const std::invalid_argument & ) // parse error
+		{
+			InitialiseLYNX();
+			throw;
 		}
 		catch( const std::ifstream::failure & )
 		{

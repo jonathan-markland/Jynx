@@ -46,7 +46,7 @@ namespace Jynx
 			// The constructor for an empty tape.
 
 		explicit TapFileSplitter( IFileOpener *tapFile );
-			// If the above fails, to parse the TAP file, we throw a std::invalid_argument.
+            // Throws std::invalid_argument if parse fails.
 
 		size_t GetNumberOfFiles() const;
 			// Return number of files containing in this TAP.
@@ -71,6 +71,8 @@ namespace Jynx
 		std::vector< std::vector<uint8_t> >  _contentImages;  // In the block after the second sync, the type-stamp, data-length and raw data are encoded.
 
 		void LoadAndParseTapFile( IFileOpener *tapFileOpener );
+            // Throws std::invalid_argument if parse fails.
+
 		void AppendLynxLoadCommandForFile( size_t fileIndex, std::string &directoryString ) const;
 
 

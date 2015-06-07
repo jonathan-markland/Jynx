@@ -53,7 +53,11 @@ namespace Jynx
 		{
 			LoadUserSettings();
 		}
-		catch( std::ifstream::failure e )
+		catch( const std::invalid_argument & ) // parse error
+		{
+			// TODO: reportable.
+		}
+		catch( std::ifstream::failure &e )
 		{
 			// TODO: check for file not found, and ignore this.  Anything else is reportable.
 		}
@@ -229,6 +233,16 @@ namespace Jynx
 
 
 
+    void LynxUserInterfaceModel::ReportWithPrefix( const char *messageToPrefix, const std::exception &e )
+    {
+        std::string message;
+        message += messageToPrefix;
+        message += e.what();
+        _hostView->TellUser( message.c_str(), "Error" );
+    }
+
+
+
 	void LynxUserInterfaceModel::OnExit()
 	{
 		// The View calls this to handle the case where the "exit" button/menu/close box has been selected in the UI.
@@ -243,43 +257,20 @@ namespace Jynx
 
 		if( ! CanRiskLosingModifiedTape() ) return;
 
-		try
-		{
+        DoWithFileHandlingErrorReportsToUser( "Failed to save the WAVE file!  The file may be incomplete.  ", [&]()
+        {
 			_lynxEmulator->FinishRecordingSoundToFile();
-		}
-		catch( std::ofstream::failure e )
-		{
-			// TODO: Should we delete this?  Should FinishRecordingSoundToFile() delete the file?
-			std::string message;
-			message += "Failed to save the WAVE file!  The file may be incomplete.  ";
-			message += e.what();
-			_hostView->TellUser( message.c_str(), "Error" );
-		}
+		} );
 
-		try
-		{
+        DoWithFileHandlingErrorReportsToUser( "Failed to save the text file!  The file may be incomplete.  ", [&]()
+        {
 			_lynxEmulator->FinishRecordingLynxTextToFile();
-		}
-		catch( std::ofstream::failure e )
-		{
-			// TODO: Should we delete this?  Should FinishRecordingLynxTextToFile() delete the file?
-			std::string message;
-			message += "Failed to save the text file!  The file may be incomplete.  ";
-			message += e.what();
-			_hostView->TellUser( message.c_str(), "Error" );
-		}
+		} );
 
-		try
-		{
+        DoWithFileHandlingErrorReportsToUser( "Failed to save the user options file!  ", [&]()
+        {
 			SaveUserSettings();
-		}
-		catch( std::ofstream::failure e )
-		{
-			std::string message;
-			message += "Failed to save the user options file!  ";
-			message += e.what();
-			_hostView->TellUser( message.c_str(), "Error" );
-		}
+		} );
 
 		_hostView->CloseDownNow();
 	}
@@ -305,7 +296,10 @@ namespace Jynx
 		if( fileOpener )
 		{
 			EnsureUIUpdated uiUpdater(this);
-			_lynxEmulator->RunExistingTAPFile( fileOpener.get() ); // throws
+			DoWithFileHandlingErrorReportsToUser( "", [&]()
+            {
+                _lynxEmulator->RunExistingTAPFile( fileOpener.get() ); // throws
+            } );
 		}
 	}
 
@@ -321,7 +315,10 @@ namespace Jynx
 			if( fileOpener )
 			{
 				EnsureUIUpdated uiUpdater(this);
-				_lynxEmulator->LoadExistingTAPFile( fileOpener.get() ); // throws
+                DoWithFileHandlingErrorReportsToUser( "", [&]()
+                {
+                    _lynxEmulator->LoadExistingTAPFile( fileOpener.get() ); // throws
+                } );
 			}
 		}
 	}
@@ -932,6 +929,8 @@ namespace Jynx
 
 	void LynxUserInterfaceModel::SaveUserSettings()
 	{
+		// TODO: Failure to save user settings must not disrupt anything else, eg: closedown
+		// TODO: Can we save to a temporary and re-name on success?
 		auto fileOpener = _hostView->GetUserSettingsFilePath();
 		if( fileOpener != nullptr )
 		{
@@ -956,24 +955,23 @@ namespace Jynx
 
 	void LynxUserInterfaceModel::LoadUserSettings()
 	{
-		// Failure to save user settings must not disrupt anything else, eg: closedown
 		auto fileOpener = _hostView->GetUserSettingsFilePath();
 		if( fileOpener != nullptr )
 		{
-			UserSettings userSettings( &*fileOpener );
+            UserSettings userSettings( &*fileOpener );
 
-			// Now that the file has loaded successfully, we know we can use the information in it!
-			// (Or, of course, the defaults that the UserSettings object applies, if it's down-level version).
-			_renderStyle = userSettings.GetRenderStyle();
-			_soundEnable = userSettings.GetSoundEnable();
-			_showFullScreen = userSettings.GetFullScreenEnable();
-			_lynxEmulator->SetCyclesPerTimeslice( userSettings.GetCyclesPerTimeslice() );
-			_lynxEmulator->SetTapeSounds( userSettings.GetTapeSounds() );
-			_lynxEmulator->SetLynxRemCommandExtensionsEnabled( userSettings.GetRemExtensions() );
-			_lynxEmulator->SetEnableSpeedMaxModeWhenUsingCassette( userSettings.GetMaxSpeedCassette() );
-			_lynxEmulator->SetEnableSpeedMaxModeWhenInBetweenConsoleCommands( userSettings.GetMaxSpeedConsole() );
-			_lynxEmulator->SetEnableSpeedMaxModeBecauseUserWantsItPermanently( userSettings.GetMaxSpeedAlways() );
-			_lynxEmulator->SetLynxColourSet( userSettings.GetColourSet() );
+            // Now that the file has loaded successfully, we know we can use the information in it!
+            // (Or, of course, the defaults that the UserSettings object applies, if it's down-level version).
+            _renderStyle = userSettings.GetRenderStyle();
+            _soundEnable = userSettings.GetSoundEnable();
+            _showFullScreen = userSettings.GetFullScreenEnable();
+            _lynxEmulator->SetCyclesPerTimeslice( userSettings.GetCyclesPerTimeslice() );
+            _lynxEmulator->SetTapeSounds( userSettings.GetTapeSounds() );
+            _lynxEmulator->SetLynxRemCommandExtensionsEnabled( userSettings.GetRemExtensions() );
+            _lynxEmulator->SetEnableSpeedMaxModeWhenUsingCassette( userSettings.GetMaxSpeedCassette() );
+            _lynxEmulator->SetEnableSpeedMaxModeWhenInBetweenConsoleCommands( userSettings.GetMaxSpeedConsole() );
+            _lynxEmulator->SetEnableSpeedMaxModeBecauseUserWantsItPermanently( userSettings.GetMaxSpeedAlways() );
+            _lynxEmulator->SetLynxColourSet( userSettings.GetColourSet() );
 
 			_lynxEmulator->ResetGuest( userSettings.GetMachineType() );
 

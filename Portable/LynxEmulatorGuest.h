@@ -68,8 +68,8 @@ namespace Jynx
 		void InsertBlankTape();
 		bool CanRewindTape() const;
 		void RewindTape();
-		void RunExistingTAPFile( IFileOpener *fileOpener );
-		void LoadExistingTAPFile( IFileOpener *fileOpener );
+		void RunExistingTAPFile( IFileOpener *fileOpener );  // throws std::invalid_argument if parse fails, or stream failure.
+		void LoadExistingTAPFile( IFileOpener *fileOpener ); // throws std::invalid_argument if parse fails, or stream failure.
 		bool CanSaveTAPFile() const;
 		bool SaveTape( IFileOpener *fileOpener );
 		bool CanSaveSnapshot() const;
