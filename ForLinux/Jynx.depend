@@ -1,0 +1,237 @@
+# depslib dependency file v1.0
+1433683105 source:/home/jonathan/Documents/Jynx/Portable/FileLoader.cpp
+	<stdexcept>
+	"FileLoader.h"
+
+1433678744 /home/jonathan/Documents/Jynx/Portable/FileLoader.h
+	<stdint.h>
+	<vector>
+	"IFileOpener.h"
+
+1433679525 /home/jonathan/Documents/Jynx/Portable/IFileOpener.h
+	<iostream>
+	<fstream>
+
+1433679672 source:/home/jonathan/Documents/Jynx/Portable/FileSerialiser.cpp
+	<stdexcept>
+	<stdint.h>
+	<string>
+	"FileSerialiser.h"
+
+1433682781 /home/jonathan/Documents/Jynx/Portable/FileSerialiser.h
+	"ISerialiser.h"
+	"Lexer.h"
+	"IFileOpener.h"
+	<iostream>
+	<fstream>
+	<vector>
+
+1433683444 /home/jonathan/Documents/Jynx/Portable/ISerialiser.h
+	<stdint.h>
+	"IBinarySerialiser.h"
+
+1433678744 /home/jonathan/Documents/Jynx/Portable/IBinarySerialiser.h
+	<stdint.h>
+
+1433678744 /home/jonathan/Documents/Jynx/Portable/Lexer.h
+	<stdint.h>
+	<string>
+
+1433683105 source:/home/jonathan/Documents/Jynx/Portable/Lexer.cpp
+	<stdexcept>
+	"Lexer.h"
+
+1433683105 source:/home/jonathan/Documents/Jynx/Portable/LynxEmulatorGuest.cpp
+	<assert.h>
+	<string>
+	"LynxEmulatorGuest.h"
+	"ZeroInitialiseMemory.h"
+	"FileSerialiser.h"
+	"FileLoader.h"
+	"Z80/JynxZ80Disassembler.h"
+
+1433683105 /home/jonathan/Documents/Jynx/Portable/LynxEmulatorGuest.h
+	<memory>
+	"IHostServicesForLynxEmulator.h"
+	"ISerialiser.h"
+	"Z80/JynxZ80.h"
+	"LynxHardware.h"
+	"LynxEmulatorEnums.h"
+	"SoundBufferWriter.h"
+	"SoundRecorder.h"
+	"TextRecorder.h"
+	"TextPlayer.h"
+	"TapFileReader.h"
+	"TapFileWriter.h"
+	"JynxPlatformInterfacing.h"
+
+1433679782 /home/jonathan/Documents/Jynx/Portable/IHostServicesForLynxEmulator.h
+	<ios>
+	<stdint.h>
+	"LynxRoms.h"
+
+1433678744 /home/jonathan/Documents/Jynx/Portable/LynxRoms.h
+
+1433679822 /home/jonathan/Documents/Jynx/Portable/Z80/JynxZ80.h
+	<stdint.h>
+	"JynxZ80Declarations.h"
+	"JynxZ80ExternalImplementation.h"
+
+1433678744 /home/jonathan/Documents/Jynx/Portable/Z80/JynxZ80Declarations.h
+
+1433678744 /home/jonathan/Documents/Jynx/Portable/Z80/JynxZ80ExternalImplementation.h
+	<stdint.h>
+	<string>
+
+1433678744 /home/jonathan/Documents/Jynx/Portable/LynxHardware.h
+
+1433678744 /home/jonathan/Documents/Jynx/Portable/LynxEmulatorEnums.h
+
+1433683444 /home/jonathan/Documents/Jynx/Portable/SoundBufferWriter.h
+	"stdint.h"
+	"ISerialiser.h"
+
+1433678744 /home/jonathan/Documents/Jynx/Portable/SoundRecorder.h
+	"IBinarySerialiser.h"
+	"IFileOpener.h"
+
+1433678744 /home/jonathan/Documents/Jynx/Portable/TextRecorder.h
+	<stdint.h>
+	"IFileOpener.h"
+
+1433678744 /home/jonathan/Documents/Jynx/Portable/TextPlayer.h
+	<string>
+	<stdint.h>
+
+1433683270 /home/jonathan/Documents/Jynx/Portable/TapFileReader.h
+	<vector>
+	<stdint.h>
+	"ISerialiser.h"
+	"IFileOpener.h"
+	"TapFileSplitter.h"
+
+1433683158 /home/jonathan/Documents/Jynx/Portable/TapFileSplitter.h
+	<stdint.h>
+	<string>
+	<vector>
+	"IFileOpener.h"
+
+1433681741 /home/jonathan/Documents/Jynx/Portable/TapFileWriter.h
+	<stdint.h>
+	<vector>
+	"IFileOpener.h"
+
+1433678744 /home/jonathan/Documents/Jynx/Portable/JynxPlatformInterfacing.h
+	<stdint.h>
+
+1433678744 /home/jonathan/Documents/Jynx/Portable/ZeroInitialiseMemory.h
+	<cstring>
+
+1433678744 /home/jonathan/Documents/Jynx/Portable/Z80/JynxZ80Disassembler.h
+	<stdint.h>
+	<string>
+	<sstream>
+	"IZ80DisassemblerStream.h"
+
+1433678744 /home/jonathan/Documents/Jynx/Portable/Z80/IZ80DisassemblerStream.h
+	<stdint.h>
+
+1433678744 source:/home/jonathan/Documents/Jynx/Portable/LynxRectangle.cpp
+	<algorithm>
+	"LynxRectangle.h"
+
+1433678744 /home/jonathan/Documents/Jynx/Portable/LynxRectangle.h
+
+1433683086 source:/home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.cpp
+	<assert.h>
+	"LynxUserInterfaceModel.h"
+	"LynxHardware.h"
+	"LynxEmulatorGuest.h"
+	"FileSerialiser.h"
+
+1433678744 /home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.h
+	"IViewServicesForLynxUserInterfaceModel.h"
+	"IHostServicesForLynxEmulator.h"
+	"LynxEmulatorGuest.h"
+	"UserSettingsSerialiser.h"
+
+1433678744 /home/jonathan/Documents/Jynx/Portable/IViewServicesForLynxUserInterfaceModel.h
+	<memory>
+	"IFileOpener.h"
+	"LynxRectangle.h"
+	"LynxRoms.h"
+
+1433678744 /home/jonathan/Documents/Jynx/Portable/UserSettingsSerialiser.h
+	<stdint.h>
+	"IFileOpener.h"
+	"ISerialiser.h"
+	"LynxEmulatorEnums.h"
+
+1433683429 source:/home/jonathan/Documents/Jynx/Portable/SignalWriter.cpp
+	"SignalWriter.h"
+
+1433683408 /home/jonathan/Documents/Jynx/Portable/SignalWriter.h
+	<stdint.h>
+	<vector>
+
+1433678744 source:/home/jonathan/Documents/Jynx/Portable/SoundBufferWriter.cpp
+	<assert.h>
+	"SoundBufferWriter.h"
+	"ZeroInitialiseMemory.h"
+
+1433683584 source:/home/jonathan/Documents/Jynx/Portable/SoundRecorder.cpp
+	"SoundRecorder.h"
+	"ZeroInitialiseMemory.h"
+
+1433678744 source:/home/jonathan/Documents/Jynx/Portable/TapFileReader.cpp
+	"stdint.h"
+	"TapFileReader.h"
+	<assert.h>
+
+1433683598 source:/home/jonathan/Documents/Jynx/Portable/TapFileSplitter.cpp
+	<stdexcept>
+	<assert.h>
+	"TapFileSplitter.h"
+	"SignalWriter.h"
+	"FileLoader.h"
+
+1433683616 source:/home/jonathan/Documents/Jynx/Portable/TapFileWriter.cpp
+	"TapFileWriter.h"
+
+1433678744 source:/home/jonathan/Documents/Jynx/Portable/TextPlayer.cpp
+	"TextPlayer.h"
+
+1433678744 source:/home/jonathan/Documents/Jynx/Portable/TextRecorder.cpp
+	"TextRecorder.h"
+	"ZeroInitialiseMemory.h"
+
+1433678744 source:/home/jonathan/Documents/Jynx/Portable/UserSettingsSerialiser.cpp
+	"UserSettingsSerialiser.h"
+	"FileSerialiser.h"
+	"ISerialiser.h"
+
+1433678744 source:/home/jonathan/Documents/Jynx/Portable/Z80/JynxZ80.cpp
+	<stdio.h>
+	<assert.h>
+	<algorithm>
+	"stdint.h"
+	"JynxZ80Timings.h"
+	"JynxZ80.h"
+	"JynxZ80Shared.h"
+
+1433678744 /home/jonathan/Documents/Jynx/Portable/Z80/JynxZ80Timings.h
+	<stdint.h>
+
+1433678744 /home/jonathan/Documents/Jynx/Portable/Z80/JynxZ80Shared.h
+	<stdint.h>
+
+1433678744 source:/home/jonathan/Documents/Jynx/Portable/Z80/JynxZ80_CB.cpp
+	"JynxZ80.h"
+	"JynxZ80Timings.h"
+	"JynxZ80Shared.h"
+
+1433678744 source:/home/jonathan/Documents/Jynx/Portable/Z80/JynxZ80_ED.cpp
+	"JynxZ80.h"
+	"JynxZ80Timings.h"
+	"JynxZ80Shared.h"
+

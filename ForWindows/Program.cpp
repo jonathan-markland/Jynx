@@ -1,22 +1,22 @@
 //
 // Jynx - Jonathan's Lynx Emulator (Camputers Lynx 48K/96K models).
 // Copyright (C) 2014  Jonathan Markland
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 
+//
 //		jynx_emulator {at} yahoo {dot} com
-// 
+//
 
 
 
@@ -33,13 +33,13 @@
 
 void SyntaxError()
 {
-	throw std::runtime_error( "Syntax error in command line string" );
-}			
+	throw std::invalid_argument( "Syntax error in command line string" );
+}
 
 
 void MissingOperand()
 {
-	throw std::runtime_error( "Command line parameter is missing an operand." );
+	throw std::invalid_argument( "Command line parameter is missing an operand." );
 }
 
 
@@ -109,7 +109,7 @@ int APIENTRY _tWinMain(
 			else if( ParseParamAndValue( paramList, i, L"--snapshot", &snapshotFilePath ) ) {}
 			else if( ParseParamAndValue( paramList, i, L"--run",      &tapFilePath ) ) {}
 			else if( ParseParam( paramList, i, L"--games", &gamesMode ) ) {}
-			else throw std::runtime_error( "Unrecognised content on command line." );
+			else throw std::invalid_argument( "Unrecognised content on command line." );
 		}
 
 		// Show main form:

@@ -1,22 +1,22 @@
 //
 // Jynx - Jonathan's Lynx Emulator (Camputers Lynx 48K/96K models).
 // Copyright (C) 2014  Jonathan Markland
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 
+//
 //		jynx_emulator {at} yahoo {dot} com
-// 
+//
 
 #include "stdafx.h"
 #include <assert.h>
@@ -35,9 +35,9 @@
 
 
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //        HOST WINDOW
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
 volatile HWND  g_hWndToPostMessage = NULL;
@@ -93,7 +93,7 @@ MainForm::MainForm( HWND hWndOwner, const wchar_t *settingsFilePath, const wchar
 
 	if( ! CreateDIBSectionFrameBuffer( LYNX_FRAMEBUF_WIDTH, LYNX_FRAMEBUF_HEIGHT, &_screenInfo, &_guestScreenBitmap ) )
 	{
-		throw std::exception( "Windows cannot create the screen bitmap for the emulation.\nThe emulation cannot continue." );
+		throw std::runtime_error( "Windows cannot create the screen bitmap for the emulation.\nThe emulation cannot continue." );
 	}
 
 	//
@@ -116,10 +116,10 @@ MainForm::MainForm( HWND hWndOwner, const wchar_t *settingsFilePath, const wchar
 	// Create the model (this has the emulator inside, plus UI logic)
 	//
 
-	_lynxUIModel = std::unique_ptr<Jynx::LynxUserInterfaceModel>( new Jynx::LynxUserInterfaceModel( 
-		this, 
-		&_soundBuffer.front(), 
-		_soundBuffer.size(), 
+	_lynxUIModel = std::unique_ptr<Jynx::LynxUserInterfaceModel>( new Jynx::LynxUserInterfaceModel(
+		this,
+		&_soundBuffer.front(),
+		_soundBuffer.size(),
 		"\r\n", _gamesMode ) );  // The preferred end of line sequence on the WINDOWS platform.  (Think: Notepad.exe!)
 }
 
@@ -136,7 +136,7 @@ MainForm::~MainForm()
 	// Now the EMULATOR thread is gone, we can now clean up
 	// everything that the EMULATOR thread was using:
 	//
-	
+
 	g_hWndToPostMessage = NULL;
 
 	if( _timeSetEventResult != NULL )
@@ -169,9 +169,9 @@ MainForm::~MainForm()
 
 
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //     HOST KEY CODE to LYNX KEY INDEX translation
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
 		// Key codes are in order of the ports Bits A11..A8, then in order bit D7..D0 :
@@ -179,7 +179,7 @@ MainForm::~MainForm()
 
 #define NUMBER_OF_KEYS (8*11)
 
-uint8_t  KeysInLynxKeyOrder[NUMBER_OF_KEYS] = 
+uint8_t  KeysInLynxKeyOrder[NUMBER_OF_KEYS] =
 {
 	VK_LSHIFT, VK_ESCAPE,   VK_DOWN,     VK_UP, VK_CAPITAL,    0,        0,        '1',
 	0,         0,           'C',         'D',   'X',           'E',      '4',      '3',
@@ -216,9 +216,9 @@ int32_t MicrosoftWindowsVkCodeToLynxKeyIndex( uint8_t keyVkCode )
 
 
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //     FRAMEWORK HANDLING
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 bool  MainForm::OnInitDialog()
 {
@@ -226,12 +226,12 @@ bool  MainForm::OnInitDialog()
 
 	g_hWndToPostMessage = GetHWND();
 
-	// Centre window placement BEFORE calling model's OnInitDialog() as 
+	// Centre window placement BEFORE calling model's OnInitDialog() as
 	// that may cause go full screen as settings file is loaded!
-	libWinApi::CenterWindowPercent( *this, 85, GetOwner() ); 
+	libWinApi::CenterWindowPercent( *this, 85, GetOwner() );
 
 	_lynxUIModel->OnInitDialog();
-	
+
 	if( ! _snapshotFilePath.empty() )
 	{
 		// Load the snapshot file that the user specified on the command line:
@@ -263,7 +263,7 @@ void MainForm::WindowProc( libWinApi::WindowProcArgs &e )
 		uint16_t  menuCommand = 0;
 
 		//
-		// WM_HI_RES_TIMER:  
+		// WM_HI_RES_TIMER:
 		// Periodic timer for the model to perform tasks.
 		//
 
@@ -374,7 +374,7 @@ void MainForm::WindowProc( libWinApi::WindowProcArgs &e )
 			if( pWP )
 			{
 				int Mask = SWP_NOSIZE; // irritating negative logic here
-				if( (pWP->flags & Mask) != Mask ) 
+				if( (pWP->flags & Mask) != Mask )
 				{
 					// Called because of size of this window.
 					RECT r;
@@ -389,7 +389,7 @@ void MainForm::WindowProc( libWinApi::WindowProcArgs &e )
 		}
 
 	}
-	catch( const std::runtime_error &nonFatalError )  // reminder: catches stream errors too.  TODO: This might be controversial, and a "UserInterfaceException" better.
+	catch( const UserInterfaceException &nonFatalError )  // reminder: catches stream errors too.  TODO: This might be controversial, and a "UserInterfaceException" better.
 	{
 		MessageBoxA( *this, nonFatalError.what(), "Error", MB_OK | MB_ICONERROR );
 	}
@@ -440,9 +440,9 @@ bool  MainForm::PreProcessMessage( libWinApi::Message *pMsg )
 
 
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //     UI ELEMENT EVENT HANDLERS
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 void MainForm::OnAbout()
 {
@@ -457,9 +457,9 @@ void MainForm::OnAbout()
 
 
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //        VIEW SERVICES TO MODEL  (IHostServicesForLynxUserInterfaceModel)
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 void MainForm::CloseDownNow()
 {
@@ -469,16 +469,16 @@ void MainForm::CloseDownNow()
 
 
 
-const wchar_t *OpenFileDialogTitles[Jynx::LoadableFileTypes::Count] = 
-{ 
-	L"Open Lynx TAP file", 
+const wchar_t *OpenFileDialogTitles[Jynx::LoadableFileTypes::Count] =
+{
+	L"Open Lynx TAP file",
 	L"Open emulator state snapshot",
 	L"Open Text file",
 };
 
-const wchar_t *OpenFileDialogSpecs[Jynx::LoadableFileTypes::Count]  = 
-{ 
-	L"TAP files (*.TAP)|*.TAP", 
+const wchar_t *OpenFileDialogSpecs[Jynx::LoadableFileTypes::Count]  =
+{
+	L"TAP files (*.TAP)|*.TAP",
 	L"Snapshots (*.lynxsnapshot)|*.lynxsnapshot",
 	L"Text files (*.txt)|*.txt",
 };
@@ -496,24 +496,24 @@ std::shared_ptr<Jynx::IFileOpener> MainForm::ShowOpenFileDialog( Jynx::LoadableF
 
 
 
-const wchar_t *SaveFileDialogTitles[Jynx::SaveableFileTypes::Count] = 
+const wchar_t *SaveFileDialogTitles[Jynx::SaveableFileTypes::Count] =
 {
-	L"Save Lynx Audio Tape file",     
+	L"Save Lynx Audio Tape file",
 	L"Save emulator state snapshot",
 	L"Record sound to file",
 	L"Record lynx text to file"
 };
 
-const wchar_t *SaveFileDialogSpecs[Jynx::SaveableFileTypes::Count] = 
-{ 
+const wchar_t *SaveFileDialogSpecs[Jynx::SaveableFileTypes::Count] =
+{
 	L"Lynx TAP files (*.TAP)|*.TAP",
 	L"Snapshots (*.lynxsnapshot)|*.lynxsnapshot",
 	L"Sound files (*.wav)|*.wav",
 	L"Text files (*.txt)|*.txt"
 };
 
-const wchar_t *SaveFileDialogExtns[Jynx::SaveableFileTypes::Count] = 
-{ 
+const wchar_t *SaveFileDialogExtns[Jynx::SaveableFileTypes::Count] =
+{
 	L"TAP",
 	L"lynxsnapshot",
 	L"wav",
@@ -677,10 +677,10 @@ void MainForm::StretchBlitTheGuestScreen( int left, int top, int width, int heig
 		{
 			auto previousBitmapHandle = (HANDLE) ::SelectObject( bitmapDC, _guestScreenBitmap );
 
-			::StretchBlt( 
-				_dc, 
+			::StretchBlt(
+				_dc,
 				left, top, width, height,
-				bitmapDC, 
+				bitmapDC,
 				0, 0, LYNX_FRAMEBUF_WIDTH, LYNX_FRAMEBUF_HEIGHT,
 				SRCCOPY );
 
@@ -696,7 +696,7 @@ void MainForm::FillBlackRectangle( int left, int top, int width, int height )
 {
 	if( _dc != NULL )
 	{
-		::BitBlt( _dc, left, top, width, height, NULL, 0, 0, BLACKNESS ); 
+		::BitBlt( _dc, left, top, width, height, NULL, 0, 0, BLACKNESS );
 	}
 }
 
@@ -836,7 +836,7 @@ void MainForm::WriteSoundBufferToSoundCardOrSleep_OnEmulatorThread()
 	{
 		// Sound is OFF, so we have to sleep for the 20 milliseconds instead.
 		// The emulation burst processing is usually very small on a modern CPU
-		// so this will suffice.  I don't care so much about realtime accuracy with 
+		// so this will suffice.  I don't care so much about realtime accuracy with
 		// sound OFF.
 		::Sleep(20);
 	}

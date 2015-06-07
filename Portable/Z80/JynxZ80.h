@@ -1,22 +1,22 @@
 //
 // JynxZ80 - Jonathan's Z80 Emulator - Initially for Camputers Lynx Emulation Project.
 // Copyright (C) 2014  Jonathan Markland
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 
+//
 //		jynx_emulator {at} yahoo {dot} com
-// 
+//
 
 // - See Z80ExternalImplementation.h for user tasks.
 //
@@ -24,10 +24,10 @@
 //
 // - The Lynx had almost no use for interrupts anyway, and no use at all for them in the
 //   parts of the Lynx that I emulate!  So, the implementation of interrupts is
-//   work-in-progress.  I will need to substitute into another oper-source emulator to 
+//   work-in-progress.  I will need to substitute into another oper-source emulator to
 //   properly develop interrupts.  Sorry!
 //
-// - This is restricted to little-endian machines at present.  TheLoByte() and HiByte() 
+// - This is restricted to little-endian machines at present.  TheLoByte() and HiByte()
 //   functions are responsible for this restriction.  I cannot test big-endian.
 //
 
@@ -59,7 +59,7 @@ namespace JynxZ80
 
 		// Main Z80 emulator.
 
-		static void Z80::InitialiseGlobalTables(); 
+		static void InitialiseGlobalTables();
 			// Must be called ONCE before any instances created.
 			// (Exposing this side-steps any multi-threading issues).
 
@@ -99,10 +99,10 @@ namespace JynxZ80
 		uint16_t  *_addressesOf16BitRegisterPairs_BC_DE_HL_SP[4];  // Access to register file as register pairs.  Indexed based on bits from the opcode.
 		uint16_t  *_addressesOf16BitRegisterPairs_BC_DE_HL_AF[4];  // Access to register file as register pairs.  Indexed based on bits from the opcode.
 
-		static uint8_t Z80::_signParityAndZeroTable[256];  // Calculated on construction.
+		static uint8_t _signParityAndZeroTable[256];  // Calculated on construction.
 
 	private:
-	
+
 		static void CalculateSignParityAndZeroTable();
 
 		//
@@ -119,10 +119,10 @@ namespace JynxZ80
 		void MainSet_Quarter0_Column5();
 		void MainSet_Quarter0_Column6();
 		void MainSet_Quarter0_Column7();
-	
-		void MainSet_Quarter1(); 
-		void MainSet_Quarter2(); 
-	
+
+		void MainSet_Quarter1();
+		void MainSet_Quarter2();
+
 		void MainSet_Quarter3_Column0();
 		void MainSet_Quarter3_Column1();
 		void MainSet_Quarter3_Column2();
@@ -166,7 +166,7 @@ namespace JynxZ80
 		uint8_t  &GetReferenceToReg8_NoRedirection_FromBits2to0OfOpcode();
 		uint8_t  &GetReferenceToReg8_FromBits5to3();
 		uint8_t  &GetReferenceToReg8_NoRedirection_FromBits5to3();
-	
+
 		uint16_t  GetIndirectTargetAddress();
 
 		//

@@ -1,22 +1,22 @@
 //
 // Jynx - Jonathan's Lynx Emulator (Camputers Lynx 48K/96K models).
 // Copyright (C) 2014  Jonathan Markland
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 
+//
 //		jynx_emulator {at} yahoo {dot} com
-// 
+//
 
 #pragma once
 
@@ -42,7 +42,7 @@ namespace Jynx
 		//   "drawing" issues (ie: overrun array), but I handle this.
 
 		SoundBufferWriter();
-		void SetSoundBuffer( uint16_t *soundBuffer, size_t numSamples );
+		void SetSoundBuffer( uint16_t *soundBuffer, uintptr_t numSamples );
 		void WriteSample( uint8_t lynxSpeakerLevel, int32_t periodZ80Cycles, int32_t countdownZ80Cycles );
 		void EndOfZ80PeriodNotification();
 		void SerialiseSoundBufferContent( IBinarySerialiser * );

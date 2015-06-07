@@ -1,29 +1,29 @@
 //
 // Jynx - Jonathan's Lynx Emulator (Camputers Lynx 48K/96K models).
 // Copyright (C) 2014  Jonathan Markland
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 
+//
 //		jynx_emulator {at} yahoo {dot} com
-// 
+//
 
 #pragma once
 
 #include <memory>
 #include "IHostServicesForLynxEmulator.h"
 #include "ISerialiser.h"
-#include "Z80\JynxZ80.h"
+#include "Z80/JynxZ80.h"
 #include "LynxHardware.h"
 #include "LynxEmulatorEnums.h"
 #include "SoundBufferWriter.h"
@@ -41,7 +41,7 @@ namespace Jynx
 	public:
 
 		// The Camputers Lynx hardware emulator.
-		
+
 		// - This creates a thread to run the emulation.
 		// - This is a singleton class at the moment, see use of g_LynxEmulatorGuestSingleton.
 
@@ -59,7 +59,7 @@ namespace Jynx
 		void NotifyKeyDown( int32_t guestKeyCode );
 		void NotifyKeyUp( int32_t guestKeyCode );
 		void NotifyAllKeysUp();
-		void SaveState( IFileOpener *fileOpener );
+		bool SaveState( IFileOpener *fileOpener );
 		void LoadState( IFileOpener *fileOpener );
 		void ResetGuest( LynxMachineType::Enum machineType );
 		LynxMachineType::Enum  GetMachineType() const;
@@ -71,7 +71,7 @@ namespace Jynx
 		void RunExistingTAPFile( IFileOpener *fileOpener );
 		void LoadExistingTAPFile( IFileOpener *fileOpener );
 		bool CanSaveTAPFile() const;
-		void SaveTape( IFileOpener *fileOpener );
+		bool SaveTape( IFileOpener *fileOpener );
 		bool CanSaveSnapshot() const;
 		void SetTapeSounds( bool tapeSounds );
 		bool GetTapeSounds() const;
@@ -176,7 +176,7 @@ namespace Jynx
 		LynxTapeMode::Enum  _tapeMode;
 		std::shared_ptr<TapFileReader>  _currentReadTape;
 		std::shared_ptr<TapFileWriter>  _currentWriteTape;
-	
+
 		// Screen area invalidation recording system (guest-side):
 		enum { INV_ROWS = 32 };          // The vertical height of the screen is divided into this many rows for invalidation recording.  (This is irrespective of 6845 start address alteration).
 		volatile bool  _invalidateRow[INV_ROWS];  // Set true when an individual bit is drawn
@@ -212,7 +212,7 @@ namespace Jynx
 		// Volatile bools, any of which enable speed max mode.
 		// Allows multiple parties to force this mode on (true), or say they don't care (false).
 		volatile bool     _speedMaxModeBecauseOfCassette;                     // Asserted when _canEnableSpeedMaxModeWhenUsingCassette is true AND cassette motor is turned ON.  Always de-asserted when cassette motor turned OFF.
-		volatile bool     _speedMaxModeBecauseWeAreInBetweenConsoleCommands;  // Asserted when _canEnableSpeedMaxModeWhenInBetweenConsoleCommands is true AND 
+		volatile bool     _speedMaxModeBecauseWeAreInBetweenConsoleCommands;  // Asserted when _canEnableSpeedMaxModeWhenInBetweenConsoleCommands is true AND
 		volatile bool     _speedMaxModeBecauseUserWantsItPermanently;         // The user configures this directly.
 
 		// Lynx text recording (snooping) on host:
@@ -288,7 +288,7 @@ namespace Jynx
 		// The *Original* ROM images.
 		//
 		// - The snapshot format permits the user to fiddle the ROM images,
-		//   these are the original ones, loaded by the constructor, then 
+		//   these are the original ones, loaded by the constructor, then
 		//   used as sources when resetting the machine, or changing the type.
 		//
 
@@ -306,8 +306,8 @@ namespace Jynx
 		///
 		/// Lynx's Bank #0
 		///
-		/// Bank 0 contains the ROMs and is a special case. 
-		/// When enabled, this overlays everything else for READS 
+		/// Bank 0 contains the ROMs and is a special case.
+		/// When enabled, this overlays everything else for READS
 		/// between 0000..5FFF and E000..FFFF.
 		///
 
@@ -315,7 +315,7 @@ namespace Jynx
 		CHIP            _lynxROM_2000;         // 2000 .. 3FFF
 		CHIP            _lynxROM_4000;         // 4000 .. 5FFF   (LYNX 96K) Basic extension / Scorpion ROM -- not on 48K machine.
 											   // E000 .. FFFF   (Any extension rom -- not used on this emulator, default address decoding returns 0xFF).
-									   
+
 		///
 		/// Lynx's bank #1   ("User RAM")
 		///

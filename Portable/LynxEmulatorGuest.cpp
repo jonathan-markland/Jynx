@@ -1,22 +1,22 @@
 //
 // Jynx - Jonathan's Lynx Emulator (Camputers Lynx 48K/96K models).
 // Copyright (C) 2014  Jonathan Markland
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 
+//
 //		jynx_emulator {at} yahoo {dot} com
-// 
+//
 
 #include <assert.h>
 #include <string>
@@ -24,7 +24,7 @@
 #include "ZeroInitialiseMemory.h"
 #include "FileSerialiser.h"
 #include "FileLoader.h"
-#include "Z80\JynxZ80Disassembler.h"
+#include "Z80/JynxZ80Disassembler.h"
 
 // TEST const char *g_DemoText = "10 CLS\r15 REPEAT\r16 INK INK+1\r20 PRINT \"Hello \xF3\xF4\xF5\xF6\xF7\xf8\xf9 here! \";\r30 UNTIL FALSE\rRUN\r";
 
@@ -49,7 +49,7 @@ namespace Jynx
 		//
 		// - This object must be allocated on the stack.
 		// - Sometimes volatile variables are used instead of this.
-		
+
 		explicit EmulatorThreadInhibitor( LynxEmulatorGuest * );
 		~EmulatorThreadInhibitor();
 
@@ -61,8 +61,8 @@ namespace Jynx
 
 
 
-	EmulatorThreadInhibitor::EmulatorThreadInhibitor( LynxEmulatorGuest *guestObjectToLockAndUnlock ) 
-		: _guestObjectToLockAndUnlock(guestObjectToLockAndUnlock) 
+	EmulatorThreadInhibitor::EmulatorThreadInhibitor( LynxEmulatorGuest *guestObjectToLockAndUnlock )
+		: _guestObjectToLockAndUnlock(guestObjectToLockAndUnlock)
 	{
 		// (Constructor called on MAIN thread).
 		if( _guestObjectToLockAndUnlock->_callWaiting == false ) // re-entrancy detection.
@@ -80,7 +80,7 @@ namespace Jynx
 
 
 
-	EmulatorThreadInhibitor::~EmulatorThreadInhibitor() 
+	EmulatorThreadInhibitor::~EmulatorThreadInhibitor()
 	{
 		// (Destructor called on MAIN thread).
 		// EMULATOR thread is currently blocked on '_callWaitingAcknowledge' going 'false'.
@@ -98,14 +98,14 @@ namespace Jynx
 
 namespace Jynx
 {
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	//     EMULATOR "GUEST" CLASS -- this is the Lynx hardware
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	LynxEmulatorGuest  *g_LynxEmulatorGuestSingleton = nullptr;
 
-	enum 
-	{ 
+	enum
+	{
 		LYNX_DISPLAY_DIMENSIONS_6845_CHARS = (32 * 64),
 		LYNX_DISPLAY_DIMENSIONS_6845_CHARS_MASK = (32 * 64) - 1,
 	};
@@ -113,9 +113,9 @@ namespace Jynx
 
 
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	//     EMULATOR "GUEST" CLASS -- this is the Lynx hardware
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	LynxEmulatorGuest::LynxEmulatorGuest( IHostServicesForLynxEmulator *hostObject, uint16_t *soundBuffer, size_t numSamples, LynxMachineType::Enum initialMachineType, const char *platformEndOfLineSequenceUTF8 )
 		: _z80CycleCounter(0)
@@ -185,7 +185,7 @@ namespace Jynx
 		{
 			std::ifstream  inStream;
 			_hostObject->OpenChipFileStream_OnMainThread( inStream, std::ios::in | std::ios::binary | std::ios::ate, romRequired );
-	
+
 			if( inStream.is_open() )
 			{
 				uint64_t fileSize = inStream.tellg();
@@ -204,7 +204,7 @@ namespace Jynx
 			// Drop to re-raise below, because otherwise a horrible message is raised to the user.
 		}
 
-		throw std::exception( "One or more of the ROM files are missing.  Please refer to the readme.htm file for information." );  // very base class std::exception should terminate program.
+		throw std::runtime_error( "One or more of the ROM files are missing.  Please refer to the readme.htm file for information." );  // very base class std::exception should terminate program.
 	}
 
 
@@ -235,7 +235,7 @@ namespace Jynx
 		//
 
 		_processor.Reset();
-	
+
 		//
 		// Init Ports
 		//
@@ -246,8 +246,8 @@ namespace Jynx
 		ZeroInitialiseMemory( _mc6845Regs );
 		Recalculate6845VariablesFromPorts();
 		InitialiseAllArrayElementsVolatile( _keyboard, (uint8_t) 0xFF );  // -ve logic
-		InitialiseAllArrayElements( _keyboardSweepDetect, false ); 
-		
+		InitialiseAllArrayElements( _keyboardSweepDetect, false );
+
 		//
 		// Initialise bank switching selectors.
 		//
@@ -337,9 +337,9 @@ namespace Jynx
 
 
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	//     LYNX BANK SWITCH HANDLING
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
 
@@ -411,7 +411,7 @@ namespace Jynx
 			{
 				MapReflections( _addressSpaceWRITE1, &_lynxRAM_8000, &_lynxRAM_6000 );
 			}
-			else 
+			else
 			{
 				assert( _machineType == LynxMachineType::LYNX_96K || _machineType == LynxMachineType::LYNX_96K_Scorpion );
 				_addressSpaceWRITE1[0] = &_lynxRAM_0000;
@@ -480,7 +480,7 @@ namespace Jynx
 
 			++readCount;
 		}
-	
+
 		if( _bankPort & BANKPORT_RDEN2_3 )
 		{
 			if( bCasEnBank2 )
@@ -509,7 +509,7 @@ namespace Jynx
 		if( (_bankPort & BANKPORT_NOT_RDEN0) == 0 )
 		{
 			// ROM is enabled for reading
-		
+
 			_addressSpaceREAD[0] = &_lynxROM_0000;
 			_addressSpaceREAD[1] = &_lynxROM_2000;
 
@@ -529,9 +529,9 @@ namespace Jynx
 
 
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	//     SCREEN
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	void LynxEmulatorGuest::UpdatePalette()
 	{
@@ -662,7 +662,7 @@ namespace Jynx
 		{
 			// Original code for non-fiddled 6845 R12/R13.  (Just playing it super-safe for now until I regression test the above case more!).
 			assert( (addressOffset >> 8) < INV_ROWS );
-			_invalidateRow[addressOffset >> 8] = true; // mark a row invalid		
+			_invalidateRow[addressOffset >> 8] = true; // mark a row invalid
 		}
 	}
 
@@ -712,9 +712,9 @@ namespace Jynx
 
 
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	//      LYNX KEYBOARD
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
 	uint8_t  LynxEmulatorGuest::ReadLynxKeyboard( uint16_t portNumber )
@@ -729,7 +729,7 @@ namespace Jynx
 		// Handle port reading when text player active:
 		//
 
-		if( _textPlayer.HasText() )  
+		if( _textPlayer.HasText() )
 		{
 			// When active, the _textPlayer disables direct keyboard reading, so we lie and say "result 0xFF".
 			// If the user allows, we also assert speed-max mode with the text player:
@@ -737,7 +737,7 @@ namespace Jynx
 			{
 				_speedMaxModeBecauseWeAreInBetweenConsoleCommands = true;
 			}
-			return 0xFF; 
+			return 0xFF;
 		}
 
 		//
@@ -810,9 +810,9 @@ namespace Jynx
 
 
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	//     EMULATING:  ADDRESS SPACE READ / WRITE
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	uint8_t  LynxEmulatorGuest::Z80_AddressRead( uint16_t address )
 	{
@@ -891,9 +891,9 @@ namespace Jynx
 
 
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	//     EMULATING:  I/O SPACE READ / WRITE
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	void   LynxEmulatorGuest::Z80_IOSpaceWrite( uint16_t portNumber, uint8_t dataByte )
 	{
@@ -932,7 +932,7 @@ namespace Jynx
 					// This affects bank switching:
 					UpdateBankSwitchFromPorts();
 				}
-			
+
 				// Use XOR to detect *change* in CASSETTE MOTOR control bit:
 				if( (oldSetting ^ dataByte) & DEVICEPORT_CASSETTE_MOTOR )
 				{
@@ -999,7 +999,7 @@ namespace Jynx
 		{
 			// If the casette motor is enabled, we are saving to tape:
 			// The Lynx has a 6-bit D-A converter.
-		
+
 			// Bits 5..0 contain the level:
 			auto level = dataByte & 0x3F;
 
@@ -1010,13 +1010,13 @@ namespace Jynx
 				if( _hearTapeSounds )
 				{
 					// Listen to tape saving (quieten it a bit!):
-					SpeakerWrite( level >> 2 ); 
+					SpeakerWrite( level >> 2 );
 				}
 			}
 			else // if( _devicePort & DEVICEPORT_SPEAKER ) // <-- Hmm... interesting... this disabled the sound on Invaders!
 			{
 				// Write to speaker.
-				SpeakerWrite( level ); 
+				SpeakerWrite( level );
 			}
 		}
 	}
@@ -1027,7 +1027,7 @@ namespace Jynx
 
 	bool LynxEmulatorGuest::IsTapeInOperation() const
 	{
-		return _devicePort & DEVICEPORT_CASSETTE_MOTOR 
+		return _devicePort & DEVICEPORT_CASSETTE_MOTOR
 			&& (_mc6845Regs[12] & 0x30) ? true : false;
 	}
 
@@ -1055,13 +1055,13 @@ namespace Jynx
 						_speedMaxModeBecauseOfCassette = true;
 					}
 
-					// (It seems cassette loading terminates immediately unless the key information is 
+					// (It seems cassette loading terminates immediately unless the key information is
 					// returned here.  Fixing the top 7 bits at "0"s wasn't a good idea!).
 					auto cassetteBit0 = CassetteRead();
 					if( _hearTapeSounds )
 					{
 						// Listen to tape loading (quieten it a bit):
-						SpeakerWrite( cassetteBit0 << 3 ); 
+						SpeakerWrite( cassetteBit0 << 3 );
 					}
 					return ReadLynxKeyboard(portNumber) & 0xFE | cassetteBit0;
 				}
@@ -1096,9 +1096,9 @@ namespace Jynx
 
 
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	//     CASSETTE
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	void LynxEmulatorGuest::CassetteMotorOn()
 	{
@@ -1154,9 +1154,9 @@ namespace Jynx
 
 
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	//     LYNX "TAPE" speed conversion
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	uint32_t  TranslateCoarseAndFineToBitsPerSecond( uint8_t coarseSpeed, uint8_t fineSpeed )
 	{
@@ -1186,9 +1186,9 @@ namespace Jynx
 
 
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	//    WRITE TO SPEAKER
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	void LynxEmulatorGuest::SpeakerWrite( uint8_t dataByte )
 	{
@@ -1199,14 +1199,14 @@ namespace Jynx
 
 
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	//    WRITE TO 6845
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
 	uint32_t LynxEmulatorGuest::GetRangeMaskedScreenStartAddress6845() const
 	{
-		// We are only interested in the *offset* into the display, 
+		// We are only interested in the *offset* into the display,
 		// not any higher order bits that the Lynx may program!
 		return (_mc6845Regs[12] << 8 | _mc6845Regs[13]) & LYNX_DISPLAY_DIMENSIONS_6845_CHARS_MASK;
 	}
@@ -1223,7 +1223,7 @@ namespace Jynx
 		{
 			_rangeMaskedScreenStartAddress6845 = rangeMaskedScreenStartAddress6845;
 
-			// Notes: 
+			// Notes:
 			// - Lynx screen bytes are 8 * 1 pixels.
 			// - 6845's "Character height" is programmed at 4 pixels (assumed here).
 			// - There are 32 bytes per row, so bits (0..4)*8 give the horizontal offset in pixels.
@@ -1242,9 +1242,9 @@ namespace Jynx
 
 
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	//     SERIALISATION
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	void LynxEmulatorGuest::Serialise( ISerialiser &serialiser )
 	{
@@ -1356,9 +1356,9 @@ namespace Jynx
 
 
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	//     SPYING ON LYNX OPERATION
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	void LynxEmulatorGuest::Z80_OnAboutToBranch()
 	{
@@ -1396,7 +1396,7 @@ namespace Jynx
 						// Seen CR
 						// Assume to re-enable recording on next character.
 						// The 0x9BD case below will re-inhibit if needed.
-						_inhibitTextRecorder = false;  
+						_inhibitTextRecorder = false;
 					}
 				}
 
@@ -1418,7 +1418,7 @@ namespace Jynx
 			// 09BD : Spy on the key read routine's ENTRY POINT.  (Same on 48K and 96K lynxes).
 			//
 
-			else if( programCounter == 0x9BD )  
+			else if( programCounter == 0x9BD )
 			{
 				// The Lynx has branched to the "key read" routine.
 				// ROM routine that returns key pressed in A.
@@ -1432,7 +1432,7 @@ namespace Jynx
 				if( _textPlayer.HasText() )
 				{
 					auto cpuRegisters = _processor.GetSerialisableVariables(); // take copy
-	
+
 					auto nextChar = _textPlayer.ReadChar();
 					if( nextChar != 0 )
 					{
@@ -1548,7 +1548,7 @@ namespace Jynx
 				uint32_t  address = 0;
 				uint32_t  lineCount = 0;
 				ss >> std::hex >> address >> std::dec >> lineCount;
-			
+
 				if( ! ss.fail() )
 				{
 					// Establish disassembler, and run it on the address given, for the
@@ -1586,9 +1586,9 @@ namespace Jynx
 	}
 
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	//     Z80 THREAD:  EMULATION MAIN LOOP
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	void LynxEmulatorGuest::BootstrapRunThreadMainLoop( void *thisPointer )  // static   (Compatible with non-member function).
 	{
@@ -1600,7 +1600,7 @@ namespace Jynx
 		while( ! _emulationThread.ShouldTerminate() )
 		{
 			// Read the volatile bool variables any of which can enable speed max mode:
-			auto speedMaxMode = 
+			auto speedMaxMode =
 				_speedMaxModeBecauseOfCassette
 				|| _speedMaxModeBecauseWeAreInBetweenConsoleCommands
 				|| _speedMaxModeBecauseUserWantsItPermanently;
@@ -1659,9 +1659,9 @@ namespace Jynx
 
 
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	//     HANDLING CALLS FROM HOST
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	void LynxEmulatorGuest::NotifyKeyDown( int32_t guestKeyCode )
 	{
@@ -1711,17 +1711,18 @@ namespace Jynx
 
 
 
-	void LynxEmulatorGuest::SaveState( IFileOpener *fileOpener )
+	bool LynxEmulatorGuest::SaveState( IFileOpener *fileOpener )
 	{
 		EmulatorThreadInhibitor  handshake(this);
 
 		if( IsTapeInOperation() )
 		{
-			throw std::runtime_error( "Cannot save a snapshot while the cassette is in operation." );
+			return false; // "Cannot save a snapshot while the cassette is in operation."
 		}
 
 		OutputFileSerialiser  outputSerialiser( fileOpener, _platformEndOfLineSequenceUTF8 );
 		Serialise( outputSerialiser );
+		return true;
 	}
 
 
@@ -1853,21 +1854,35 @@ namespace Jynx
 
 
 
-	void LynxEmulatorGuest::SaveTape( IFileOpener *fileOpener )
+	bool LynxEmulatorGuest::SaveTape( IFileOpener *fileOpener )
 	{
+        bool saveableFileExistsAtAll = false;
 		std::vector<uint8_t> tapFileImage;
 
+        // We need to block emulator thread for this scope:
+
 		{
-			// (We only need to block emulator thread for this scope only)
 			EmulatorThreadInhibitor  handshake(this);
-			tapFileImage = _currentWriteTape->GetTapFileImage();
+			saveableFileExistsAtAll = _currentWriteTape->DoesTapFileExist();
+			if( saveableFileExistsAtAll )
+            {
+                tapFileImage = _currentWriteTape->GetTapFileImage();
+            }
 		}
 
-		// Main thread can now do all the saving:
-		SaveFileFromVector( fileOpener, tapFileImage );
-		
-		// Revert to a blank tape after saving, and signal MAIN thread to update UI:
-		InsertBlankTape();
+        // Main thread can now do all the saving:
+        // Revert to a blank tape after saving, and signal MAIN thread to update UI.
+
+        if( saveableFileExistsAtAll )
+        {
+            SaveFileFromVector( fileOpener, tapFileImage );
+            InsertBlankTape();
+            return true;
+        }
+
+        // No TAP file has been built in memory yet (The Lynx hasn't saved onto it).
+
+        return false;
 	}
 
 
@@ -1972,7 +1987,7 @@ namespace Jynx
 
 		// Look for (optional) UTF-8 BOM, because we don't want to misinterpret that
 		// as characters!
-		if( fileImage[0] == 0xEF 
+		if( fileImage[0] == 0xEF
 			&& fileImage[1] == 0xBB
 			&& fileImage[2] == 0xBF )   // Short-circuit logic on if() is safe because of NUL appended above.
 		{
@@ -2059,7 +2074,7 @@ namespace Jynx
 		if( newSetting == false )
 		{
 			// Immediate turn off may be necessary as other cases may not trigger!
-			_speedMaxModeBecauseOfCassette = false; 
+			_speedMaxModeBecauseOfCassette = false;
 		}
 	}
 
@@ -2078,7 +2093,7 @@ namespace Jynx
 		if( newSetting == false )
 		{
 			// Immediate turn off may be necessary as other cases may not trigger!
-			_speedMaxModeBecauseWeAreInBetweenConsoleCommands = false; 
+			_speedMaxModeBecauseWeAreInBetweenConsoleCommands = false;
 		}
 	}
 
@@ -2136,9 +2151,9 @@ namespace Jynx
 
 
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //     Z80 LIBRARY : CONNECTION TO SINGLETON EMULATOR GUEST OBJECT
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 uint8_t JynxZ80::Z80ImplementationBaseClass::GuestRead( uint16_t address )
 {

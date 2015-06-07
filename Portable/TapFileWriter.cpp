@@ -1,22 +1,22 @@
 //
 // Jynx - Jonathan's Lynx Emulator (Camputers Lynx 48K/96K models).
 // Copyright (C) 2014  Jonathan Markland
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 
+//
 //		jynx_emulator {at} yahoo {dot} com
-// 
+//
 
 #include "TapFileWriter.h"
 
@@ -48,7 +48,7 @@ namespace Jynx
 	bool TapFileWriter::IsTapeEmpty() const
 	{
 		return _dataVector.empty();
-	}	
+	}
 
 
 
@@ -63,9 +63,9 @@ namespace Jynx
 	{
 		return _failed;
 	}
-	
-	
-	
+
+
+
 	void TapFileWriter::StartSynchronising()
 	{
 		_state = TapWriterState::Synchronising;
@@ -83,17 +83,17 @@ namespace Jynx
 	void TapFileWriter::NotifyCassetteMotorOn()
 	{
 		StartSynchronising();
-	}	
-	
-	
-	
+	}
+
+
+
 	void TapFileWriter::NotifyCassetteMotorOff()
 	{
 		_state = TapWriterState::MotorOff;
-	}	
-	
-	
-	
+	}
+
+
+
 	void TapFileWriter::WriteSignal( uint8_t speakerLevel, uint64_t z80CycleCounter )
 	{
 		if( _state != TapWriterState::MotorOff )
@@ -101,7 +101,7 @@ namespace Jynx
 			// The Lynx only measures the time "below the mid-line".
 			// Time above is insignificant.
 			// 1s are twice the time-length of 0s.
-	
+
 			if( speakerLevel < 32 && ! _startSeen )
 			{
 				_startSeen = true;
@@ -112,7 +112,7 @@ namespace Jynx
 				_startSeen = false;
 				PulseSeen( (int32_t) (z80CycleCounter - _startTime) );
 			}
-		}	
+		}
 	}
 
 
@@ -121,7 +121,7 @@ namespace Jynx
 	{
 		// On each "pulse" (time BELOW the mid-line) we come here to process it.
 
-		// - Note: While 1 is twice the length of 0, the timing in z80 cycles is NOT 
+		// - Note: While 1 is twice the length of 0, the timing in z80 cycles is NOT
 		//   precise, and may waver +/- 20 Z80 cycles (about 10%).
 
 		if( _state == TapWriterState::Synchronising )
@@ -134,7 +134,7 @@ namespace Jynx
 			//
 			// Use most recent pulse as the yardstick, until we read enough adjacent
 			// pulses of same(ish) size to be satisfied.
-	
+
 			if( ApproxEquals( _lastSyncPulseWidth, pulseWidthCycles ) )
 			{
 				--_syncCounter;
@@ -153,10 +153,10 @@ namespace Jynx
 			{
 				_syncCounter = NumSyncCyclesToLookFor;
 			}
-		
+
 			_lastSyncPulseWidth = pulseWidthCycles;  // use most recent pulse as the yardstick
 		}
-		else 
+		else
 		{
 			// Now we have SYNC'd we can view the rest of the stream as
 			// bit values:
@@ -165,19 +165,19 @@ namespace Jynx
 	}
 
 
-	
+
 	void TapFileWriter::BitSeen( uint8_t bitValue )
 	{
 		// Shift this bit into the accumulator:
-	
+
 		_byteAccumulator = (_byteAccumulator << 1) | bitValue;
-	
+
 		// Process according to the state:
 
 		if( _state == TapWriterState::Await1 )
 		{
 			// (We are probably still on the tail of the SYNC, so await the first '1')
-		
+
 			if( bitValue == 1 )
 			{
 				_state = TapWriterState::ReadA5;
@@ -235,20 +235,21 @@ namespace Jynx
 				}
 			}
 		}
-	}	
+	}
 
 
-	
+
+    bool  TapFileWriter::DoesTapFileExist() const
+    {
+        // TODO: Use DoesTapFileExist in UI (needs improvement on greying out) maybe UI needs to know this instead:  CanSaveToTapFile()
+        return  _state == TapWriterState::MotorOff && ! HasFailed() && ! IsTapeEmpty();
+    }
+
+
+
 	std::vector<uint8_t>  TapFileWriter::GetTapFileImage()
 	{
-		if( _state == TapWriterState::MotorOff && ! HasFailed() && ! IsTapeEmpty() )  // TODO: maybe UI needs to know this instead:  CanSaveToTapFile()
-		{
-			return _dataVector;
-		}
-		else
-		{
-			throw std::runtime_error( "Cannot save TAP file.  There is no successfully generated tape to save." );
-		}
+        return DoesTapFileExist() ? _dataVector : std::vector<uint8_t>();
 	}
 
 

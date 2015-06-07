@@ -1,22 +1,22 @@
 //
 // JynxZ80 - Jonathan's Z80 Emulator - Initially for Camputers Lynx Emulation Project.
 // Copyright (C) 2014  Jonathan Markland
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 
+//
 //		jynx_emulator {at} yahoo {dot} com
-// 
+//
 
 
 #include "JynxZ80Disassembler.h"
@@ -76,7 +76,9 @@ namespace JynxZ80
 			return std::string("");
 		}
 
-		_thisRowString = std::stringstream();
+		_thisRowString.str("");
+		_thisRowString.clear();
+
 		_thisRowString << std::setfill('0');
 		_thisRowString << _prefixString << std::hex << std::setw(4) << _programCounter << std::setw(0) << _separatorString;
 
@@ -236,7 +238,7 @@ namespace JynxZ80
 				}
 				FetchAndAppend8bitSignedOffset( offsetOrMinusOne );
 			}
-			else 
+			else
 			{
 				_thisRowString << ch;
 			}
@@ -281,8 +283,8 @@ namespace JynxZ80
 		if( value >= 10 && value <= 255 )
 		{
 			// hex (only if worth it)
-			AppendHex8( value ); 
-			_thisRowString << ' ';  
+			AppendHex8( value );
+			_thisRowString << ' ';
 		}
 
 		if( value >= 32 && value <= 126 )
@@ -291,7 +293,7 @@ namespace JynxZ80
 		}
 
 		_thisRowString << std::dec << ((uint32_t) value) << ' ';   // unsigned decimal
-	
+
 		if( value >= 128 && value <= 255 )
 		{
 			_thisRowString << std::dec << ((int32_t) (int8_t) value) << ' ';   // signed (negative case)
@@ -316,12 +318,12 @@ namespace JynxZ80
 		if( value >= 10 && value <= 65535 )
 		{
 			// hex (only if worth it)
-			AppendHex16( value ); 
-			_thisRowString << ' ';  
+			AppendHex16( value );
+			_thisRowString << ' ';
 		}
 
 		_thisRowString << std::dec << ((uint32_t) value) << ' ';   // unsigned decimal
-	
+
 		if( value >= 32768 && value <= 65535 )
 		{
 			_thisRowString << std::dec << ((int32_t) (int16_t) value) << ' ';   // signed (negative case)

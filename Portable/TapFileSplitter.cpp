@@ -1,26 +1,26 @@
 //
 // Jynx - Jonathan's Lynx Emulator (Camputers Lynx 48K/96K models).
 // Copyright (C) 2014  Jonathan Markland
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 
+//
 //		jynx_emulator {at} yahoo {dot} com
-// 
+//
 
-
-#include "TapFileSplitter.h"
+#include <stdexcept>
 #include <assert.h>
+#include "TapFileSplitter.h"
 #include "SignalWriter.h"
 #include "FileLoader.h"
 
@@ -31,7 +31,7 @@ namespace Jynx
 	class TapFileLexer
 	{
 	public:
-	
+
 		TapFileLexer( const std::vector<uint8_t> &tapFileImage );  // fileImage must have 0 terminator added.
 
 		bool End() const;
@@ -70,9 +70,9 @@ namespace Jynx
 
 
 
-	size_t TapFileLexer::SpaceRemaining() const 
-	{ 
-		return _endPosition - _position; 
+	size_t TapFileLexer::SpaceRemaining() const
+	{
+		return _endPosition - _position;
 	}
 
 
@@ -172,7 +172,7 @@ namespace Jynx
 
 	void TapFileLexer::RaiseError() const
 	{
-		throw std::runtime_error( "Failed to parse TAP file." );
+		throw std::invalid_argument( "Failed to parse TAP file." );
 	}
 
 
@@ -219,7 +219,7 @@ namespace Jynx
 		uint32_t zeroSeed = (0x80C * 600) / bitsPerSecond;
 		uint32_t oneSeed  = (0xFB1 * 600) / bitsPerSecond;
 
-		SignalWriter  signalWriter( resultWave, 
+		SignalWriter  signalWriter( resultWave,
 			SignalLengthInfo( zeroSeed,  zeroSeed + 0x57,  zeroSeed + 0x11F ),    // Signal length information (in Z80 cycles) for a ZERO  (at "TAPE 0" speed).
 			SignalLengthInfo( oneSeed,   oneSeed + 0x121,  oneSeed + 0x1F7) );    // Signal length information (in Z80 cycles) for a ONE   (at "TAPE 0" speed).
 
@@ -231,7 +231,7 @@ namespace Jynx
 
 		// Initial SYNC + A5 applies to all file types:
 		signalWriter.WriteSyncAndA5();
-		
+
 		// Types 'B' and 'M' require the file name portion and a second SYNC + A5:
 		if( ! thisFileContent.empty() )  // avoid library assert on address-take if vector empty.
 		{
@@ -337,7 +337,7 @@ namespace Jynx
 		{
 			directoryString += "MLOAD \"";
 		}
-		else 
+		else
 		{
 			directoryString += "UNKNOWN FILE TYPE \"";  // should never happen.
 		}

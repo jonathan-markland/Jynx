@@ -1,22 +1,22 @@
 //
 // Jynx - Jonathan's Lynx Emulator (Camputers Lynx 48K/96K models).
 // Copyright (C) 2014  Jonathan Markland
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 
+//
 //		jynx_emulator {at} yahoo {dot} com
-// 
+//
 
 #include <assert.h>
 #include "LynxUserInterfaceModel.h"
@@ -44,7 +44,7 @@ namespace Jynx
 
 
 
-	void  LynxUserInterfaceModel::OnInitDialog()   
+	void  LynxUserInterfaceModel::OnInitDialog()
 	{
 		// The term "OnInitDialog" is borrowed from Windows - a second stage initialisation after construction.
 		// The constructor is called BEFORE the window is created with the window manager (thus no window handle).
@@ -70,9 +70,9 @@ namespace Jynx
 
 
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	//     PAINT ASSISTANCE - CALCULATING LAYOUT
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
 
@@ -84,7 +84,7 @@ namespace Jynx
 		//
 
 		auto r = _hostView->GetClientRectangle();
-	
+
 		if( _renderStyle == RenderStyle::FitToWindow )
 		{
 			return GetBestFitProjectionArea( r.right, r.bottom );
@@ -92,7 +92,7 @@ namespace Jynx
 		else if( _renderStyle == RenderStyle::SquarePixels )
 		{
 			// TODO: Really need "fit rectangle in rectangle" function to generalised for rectangles.  Is OK for now, since lynx screen is square.
-			return GetSquarePixelsProjectionArea( r.right, r.bottom, LYNX_FRAMEBUF_HEIGHT ); 
+			return GetSquarePixelsProjectionArea( r.right, r.bottom, LYNX_FRAMEBUF_HEIGHT );
 		}
 		else
 		{
@@ -189,9 +189,9 @@ namespace Jynx
 
 
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	//     EXCEPTION SAFETY FOR UI
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	class EnsureUIUpdated
 	{
@@ -214,9 +214,9 @@ namespace Jynx
 
 
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	//     UI ELEMENT EVENT HANDLERS
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	bool LynxUserInterfaceModel::CanRiskLosingModifiedTape() const
 	{
@@ -229,7 +229,7 @@ namespace Jynx
 
 
 
-	void LynxUserInterfaceModel::OnExit() 
+	void LynxUserInterfaceModel::OnExit()
 	{
 		// The View calls this to handle the case where the "exit" button/menu/close box has been selected in the UI.
 
@@ -335,7 +335,10 @@ namespace Jynx
 		auto fileOpener = _hostView->ShowSaveFileDialog( SaveableFileTypes::TAP );
 		if( fileOpener )
 		{
-			_lynxEmulator->SaveTape( fileOpener.get() ); // throws
+			if( ! _lynxEmulator->SaveTape( fileOpener.get() ) )
+            {
+                _hostView->TellUser( "The Lynx has not saved anything onto the tape yet.", "Note" );
+            }
 		}
 	}
 
@@ -472,7 +475,10 @@ namespace Jynx
 			if( fileOpener )
 			{
 				EnsureUIUpdated uiUpdater(this); // TODO: Is this really needed or was it a copy-paste error?
-				_lynxEmulator->SaveState( fileOpener.get() );  // throws
+				if( ! _lynxEmulator->SaveState( fileOpener.get() ) )
+                {
+                    _hostView->TellUser( "Cannot save a snapshot while the cassette is in operation.", "Note" );
+                }
 			}
 		}
 		else
@@ -691,9 +697,9 @@ namespace Jynx
 
 
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	//        MODEL (HOST) SERVICES TO GUEST (EMULATOR)  (IHostServicesForLynxEmulator)
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	void  LynxUserInterfaceModel::InvalidateAreaOfGuestScreen_OnMainThread( int left, int top, int right, int bottom )
 	{
@@ -726,17 +732,17 @@ namespace Jynx
 
 
 	void  LynxUserInterfaceModel::OpenChipFileStream_OnMainThread( std::ifstream &streamToBeOpened, std::ios_base::openmode openModeRequired, LynxRoms::Enum romRequired )
-	{ 
+	{
 		// (Called on MAIN thread only)
 
 		// Just delegate this call.
-		_hostView->OpenChipFileStream_OnMainThread( streamToBeOpened, openModeRequired, romRequired ); 
+		_hostView->OpenChipFileStream_OnMainThread( streamToBeOpened, openModeRequired, romRequired );
 	}
 
 
 
 	void  LynxUserInterfaceModel::NotifyOutputTapeAvailbilityChanged_OnAnyThread()
-	{ 
+	{
 		// (WARNING - Called on EITHER the emulator or main thread!)
 		// (May be called with the EMULATOR suspended!)
 
@@ -750,11 +756,11 @@ namespace Jynx
 
 
 	void  LynxUserInterfaceModel::PaintPixelsOnHostBitmap_OnEmulatorThread( uint32_t addressOffset, const uint32_t *eightPixelsData )
-	{ 
+	{
 		// (WARNING - Called on the EMULATOR thread, NOT the MAIN thread)
 
 		// Just delegate this call.
-		_hostView->PaintPixelsOnHostBitmap_OnEmulatorThread( addressOffset, eightPixelsData ); 
+		_hostView->PaintPixelsOnHostBitmap_OnEmulatorThread( addressOffset, eightPixelsData );
 	}
 
 
@@ -777,9 +783,9 @@ namespace Jynx
 
 
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	//     EMULATION SPEEDS SUPPORTED BY THE USER INTERFACE
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	template<typename VALUE>
 	struct ValueToMenuItemMap
@@ -813,7 +819,7 @@ namespace Jynx
 
 
 
-	ValueToMenuItemMap<LynxColourSet::Enum>  ColourSetToMenuOptionLookupTable[5] = 
+	ValueToMenuItemMap<LynxColourSet::Enum>  ColourSetToMenuOptionLookupTable[5] =
 	{
 		TickableInterfaceElements::ColourSetNormalRGB,            LynxColourSet::NormalRGB,
 		TickableInterfaceElements::ColourSetGreenOnly,            LynxColourSet::GreenOnly,
@@ -824,9 +830,9 @@ namespace Jynx
 
 
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	//     INTERNAL FUNCTIONS
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	void LynxUserInterfaceModel::UpdateUserInterfaceElementsOnView()
 	{
@@ -920,9 +926,9 @@ namespace Jynx
 
 
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	//     SERIALISE USER SETTINGS
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	void LynxUserInterfaceModel::SaveUserSettings()
 	{

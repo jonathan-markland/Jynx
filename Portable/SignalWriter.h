@@ -1,22 +1,22 @@
 //
 // Jynx - Jonathan's Lynx Emulator (Camputers Lynx 48K/96K models).
 // Copyright (C) 2014  Jonathan Markland
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 
+//
 //		jynx_emulator {at} yahoo {dot} com
-// 
+//
 
 #pragma once
 
@@ -57,14 +57,14 @@ namespace Jynx
 		// The implementation is, essentially, a run-length-encoded square-wave, where bit 15 has the 0/1 value.
 		// Bits 14..0 have the duration in Z80 cycles.
 
-		// - The emulator needs to interpret and synthesize Lynx tape sound waves, in order to 
-		//   support the very simple TAP file format.  This class is part of that, but it has 
+		// - The emulator needs to interpret and synthesize Lynx tape sound waves, in order to
+		//   support the very simple TAP file format.  This class is part of that, but it has
 		//   been a labour to do tapes!
 
 		SignalWriter( std::vector<uint16_t> &dataVector, const SignalLengthInfo &forZeroes, const SignalLengthInfo &forOnes );
 		void WriteSyncAndA5();
 		void WriteByte( uint8_t byteValue );
-		void WriteBytes( const uint8_t *start, size_t numBytes );
+		void WriteBytes( const uint8_t *start, uintptr_t numBytes );
 		void WriteExtraHighCycles( uint16_t repeatCount );
 
 	private:
