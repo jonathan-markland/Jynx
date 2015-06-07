@@ -139,13 +139,8 @@ namespace Jynx
             {
                 ReportWithPrefix( messageToPrefix, e );
             }
-            catch( std::ifstream::failure &e )
+            catch( std::ios_base::failure &e )
             {
-                ReportWithPrefix( messageToPrefix, e );
-            }
-            catch( std::ofstream::failure &e )
-            {
-                // TODO: Should we delete the failed file?
                 ReportWithPrefix( messageToPrefix, e );
             }
         }
