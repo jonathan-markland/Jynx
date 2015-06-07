@@ -1,7 +1,7 @@
 
 #include "stdafx.h"
 #include <stdexcept>
-#include "Thread.h"
+#include "../Portable/Thread.h"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //     THREAD

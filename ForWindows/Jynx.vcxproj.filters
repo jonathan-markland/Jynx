@@ -140,7 +140,10 @@
     <ClInclude Include="..\Portable\IViewServicesForLynxUserInterfaceModel.h">
       <Filter>Source Files\Portable</Filter>
     </ClInclude>
-    <ClInclude Include="..\Portable\JynxPlatformInterfacing.h">
+    <ClInclude Include="..\Portable\Thread.h">
+      <Filter>Source Files\Portable</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Portable\Waitable.h">
       <Filter>Source Files\Portable</Filter>
     </ClInclude>
   </ItemGroup>
@@ -226,7 +229,10 @@
     <ClCompile Include="..\Portable\UserSettingsSerialiser.cpp">
       <Filter>Source Files\Portable</Filter>
     </ClCompile>
-    <ClCompile Include="JynxPlatformInterfacing_ForWindows.cpp">
+    <ClCompile Include="MSWindows_Thread.cpp">
+      <Filter>Source Files\ForWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="MSWindows_Waitable.cpp">
       <Filter>Source Files\ForWindows</Filter>
     </ClCompile>
   </ItemGroup>
