@@ -1590,9 +1590,10 @@ namespace Jynx
 	//     Z80 THREAD:  EMULATION MAIN LOOP
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-	void LynxEmulatorGuest::BootstrapRunThreadMainLoop( void *thisPointer )  // static   (Compatible with non-member function).
+	void *LynxEmulatorGuest::BootstrapRunThreadMainLoop( void *thisPointer )  // static   (Compatible with non-member function).
 	{
 		((LynxEmulatorGuest *) thisPointer)->RunThreadMainLoop();
+		return nullptr; // return value is not used.
 	}
 
 	void LynxEmulatorGuest::RunThreadMainLoop()

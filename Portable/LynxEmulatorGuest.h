@@ -32,7 +32,8 @@
 #include "TextPlayer.h"
 #include "TapFileReader.h"
 #include "TapFileWriter.h"
-#include "JynxPlatformInterfacing.h"
+#include "Waitable.h"
+#include "Thread.h"
 
 namespace Jynx
 {
@@ -132,7 +133,7 @@ namespace Jynx
 		void LoadROMS();
 		void Load8KBChipFile( uint8_t *chipToLoad, LynxRoms::Enum romRequired );
 		void RunThreadMainLoop();
-		static void BootstrapRunThreadMainLoop( void *thisPointer );
+		static void *BootstrapRunThreadMainLoop( void *thisPointer ); // return value not used
 
 		void UpdateAllOtherStateFromPortStateVariables();
 		void UpdateBankSwitchFromPorts();
@@ -167,7 +168,7 @@ namespace Jynx
 		friend class EmulatorThreadInhibitor;
 
 		IHostServicesForLynxEmulator * const _hostObject;     // Safe to read on ANY thread (not changed once constructed).
-		Jynx::Thread _emulationThread;                        // The "EMULATOR thread".
+		Thread  _emulationThread;                             // The "EMULATOR thread".
 
 		// Machine type being emulated
 		volatile LynxMachineType::Enum _machineType;
@@ -226,8 +227,8 @@ namespace Jynx
 
 		// Thread sync.  Allow MAIN thread to ask EMULATOR thread to suspend.
 		volatile bool        _callWaiting;             // false normally, until MAIN thread call comes in.
-		Jynx::Waitable       _callWaitingAcknowledge;  // false normally, until EMULATOR thread realises call is waiting, then sets this true, and awaits MAIN thread returning this to false.
-		Jynx::Waitable       _resumeEmulatorThread;
+		Waitable             _callWaitingAcknowledge;  // false normally, until EMULATOR thread realises call is waiting, then sets this true, and awaits MAIN thread returning this to false.
+		Waitable             _resumeEmulatorThread;
 
 		//
 		// COLOUR PALETTE (indexed by lynx colour 0..7)
