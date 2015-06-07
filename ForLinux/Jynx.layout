@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="Debug" />
+	<File name="../Portable/SignalWriter.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2283" topLine="41" />
+		</Cursor>
+	</File>
+	<File name="../Portable/Z80/JynxZ80Disassembler.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2719" topLine="50" />
+		</Cursor>
+	</File>
+	<File name="../Portable/Z80/JynxZ80Disassembler.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1906" topLine="62" />
+		</Cursor>
+	</File>
+	<File name="../Portable/UserSettingsSerialiser.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="970" topLine="19" />
+		</Cursor>
+	</File>
+	<File name="../Portable/ISerialiser.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2018" topLine="33" />
+		</Cursor>
+	</File>
+	<File name="../Portable/IHostServicesForLynxEmulator.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="930" topLine="41" />
+		</Cursor>
+	</File>
+	<File name="../Portable/Lexer.cpp" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2318" topLine="75" />
+		</Cursor>
+	</File>
+	<File name="../Portable/SignalWriter.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2021" topLine="64" />
+		</Cursor>
+	</File>
+	<File name="../Portable/FileLoader.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1506" topLine="19" />
+		</Cursor>
+	</File>
+	<File name="../Portable/Z80/JynxZ80Shared.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="12" />
+		</Cursor>
+	</File>
+	<File name="../Portable/TapFileSplitter.cpp" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="5363" topLine="186" />
+		</Cursor>
+	</File>
+	<File name="../Portable/FileLoader.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="905" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Portable/LynxEmulatorGuest.h" open="1" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2775" topLine="51" />
+		</Cursor>
+	</File>
+	<File name="../Portable/FileSerialiser.cpp" open="1" top="1" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2746" topLine="82" />
+		</Cursor>
+	</File>
+	<File name="../Portable/SoundBufferWriter.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2142" topLine="22" />
+		</Cursor>
+	</File>
+	<File name="../Portable/Z80/JynxZ80.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3807" topLine="87" />
+		</Cursor>
+	</File>
+	<File name="../Portable/IFileOpener.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="842" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Portable/SoundRecorder.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1902" topLine="61" />
+		</Cursor>
+	</File>
+	<File name="../Portable/LynxUserInterfaceModel.cpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="9439" topLine="249" />
+		</Cursor>
+	</File>
+	<File name="../Portable/TapFileReader.h" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1791" topLine="47" />
+		</Cursor>
+	</File>
+	<File name="../Portable/TapFileWriter.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="6279" topLine="216" />
+		</Cursor>
+	</File>
+	<File name="../Portable/FileSerialiser.h" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2024" topLine="35" />
+		</Cursor>
+	</File>
+	<File name="../Portable/TapFileWriter.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1909" topLine="45" />
+		</Cursor>
+	</File>
+	<File name="../Portable/Z80/JynxZ80.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="12" />
+		</Cursor>
+	</File>
+	<File name="main.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="9" />
+		</Cursor>
+	</File>
+	<File name="../Portable/LynxUserInterfaceModel.h" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="5647" topLine="126" />
+		</Cursor>
+	</File>
+	<File name="../Portable/LynxEmulatorGuest.cpp" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2517" topLine="56" />
+		</Cursor>
+	</File>
+	<File name="../Portable/UserSettingsSerialiser.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1393" topLine="38" />
+		</Cursor>
+	</File>
+	<File name="../Portable/TapFileSplitter.h" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1188" topLine="34" />
+		</Cursor>
+	</File>
+</CodeBlocks_layout_file>

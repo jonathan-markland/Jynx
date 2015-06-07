@@ -93,7 +93,7 @@ namespace Jynx
 			if( count == 32 )
 			{
 				count = 0;
-				_outStream; EndLine();
+				EndLine();
 			}
 			auto byteValue = *source;
 			_outStream << g_HexChars[(byteValue >> 4) & 15] << g_HexChars[byteValue & 15];

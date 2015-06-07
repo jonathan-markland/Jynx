@@ -118,23 +118,24 @@ namespace Jynx
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	LynxEmulatorGuest::LynxEmulatorGuest( IHostServicesForLynxEmulator *hostObject, uint16_t *soundBuffer, size_t numSamples, LynxMachineType::Enum initialMachineType, const char *platformEndOfLineSequenceUTF8 )
-		: _z80CycleCounter(0)
-		, _tapeMode( LynxTapeMode::SavingPermitted )
-		, _hearTapeSounds(false)
-		, _watchingCommands(false)
-		, _inhibitTextRecorder(false)
-		, _hostObject(hostObject)
+		: _hostObject(hostObject)
 		, _machineType(initialMachineType)
+		, _tapeMode( LynxTapeMode::SavingPermitted )
+		, _recompositeWholeScreen(true)
+		, _z80CycleCounter(0)
 		, _platformEndOfLineSequenceUTF8(platformEndOfLineSequenceUTF8)
-		, _callWaiting(false)
+		, _colourSet( LynxColourSet::NormalRGB )
+		, _hearTapeSounds(false)
 		, _pauseMode(false)
 		, _pauseAfterTapLoadEnable(false)
 		, _canEnableSpeedMaxModeWhenUsingCassette(true)  // default true for the HyperSpin guys I think.
 		, _canEnableSpeedMaxModeWhenInBetweenConsoleCommands(false)
-		, _speedMaxModeBecauseUserWantsItPermanently(false)
 		, _speedMaxModeBecauseOfCassette(false)
 		, _speedMaxModeBecauseWeAreInBetweenConsoleCommands(false)
-		, _colourSet( LynxColourSet::NormalRGB )
+		, _speedMaxModeBecauseUserWantsItPermanently(false)
+		, _inhibitTextRecorder(false)
+		, _watchingCommands(false)
+		, _callWaiting(false)
 	{
 		// (Reminder - Called on the client thread).
 
@@ -1063,7 +1064,7 @@ namespace Jynx
 						// Listen to tape loading (quieten it a bit):
 						SpeakerWrite( cassetteBit0 << 3 );
 					}
-					return ReadLynxKeyboard(portNumber) & 0xFE | cassetteBit0;
+					return (ReadLynxKeyboard(portNumber) & 0xFE) | cassetteBit0;
 				}
 			}
 

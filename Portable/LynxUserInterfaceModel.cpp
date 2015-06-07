@@ -28,13 +28,13 @@
 namespace Jynx
 {
 	LynxUserInterfaceModel::LynxUserInterfaceModel( IViewServicesForLynxUserInterfaceModel *hostView, uint16_t *soundBuffer, size_t numSamples, const char *platformEndOfLineSequenceUTF8, bool gamesMode )
-		: _renderStyle( RenderStyle::SquarePixels )
-		, _hostView( hostView )
+		: _hostView( hostView )
+		, _renderStyle( RenderStyle::SquarePixels )
 		, _soundEnable( true )
 		, _showFullScreen( false )
-		, _platformEndOfLineSequenceUTF8(platformEndOfLineSequenceUTF8)
-		, _emulatorWantsUIStatusUpdate(false)
 		, _gamesMode(gamesMode)
+		, _emulatorWantsUIStatusUpdate(false)
+		, _platformEndOfLineSequenceUTF8(platformEndOfLineSequenceUTF8)
 	{
 		JynxZ80::Z80::InitialiseGlobalTables();  // Not absolutely ideal place to put this.
 

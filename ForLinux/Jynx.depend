@@ -12,7 +12,7 @@
 	<iostream>
 	<fstream>
 
-1433679672 source:/home/jonathan/Documents/Jynx/Portable/FileSerialiser.cpp
+1433689964 source:/home/jonathan/Documents/Jynx/Portable/FileSerialiser.cpp
 	<stdexcept>
 	<stdint.h>
 	<string>
@@ -41,7 +41,7 @@
 	<stdexcept>
 	"Lexer.h"
 
-1433685209 source:/home/jonathan/Documents/Jynx/Portable/LynxEmulatorGuest.cpp
+1433690128 source:/home/jonathan/Documents/Jynx/Portable/LynxEmulatorGuest.cpp
 	<assert.h>
 	<string>
 	"LynxEmulatorGuest.h"
@@ -50,7 +50,7 @@
 	"FileLoader.h"
 	"Z80/JynxZ80Disassembler.h"
 
-1433685738 /home/jonathan/Documents/Jynx/Portable/LynxEmulatorGuest.h
+1433689180 /home/jonathan/Documents/Jynx/Portable/LynxEmulatorGuest.h
 	<memory>
 	"IHostServicesForLynxEmulator.h"
 	"ISerialiser.h"
@@ -63,7 +63,8 @@
 	"TextPlayer.h"
 	"TapFileReader.h"
 	"TapFileWriter.h"
-	"JynxPlatformInterfacing.h"
+	"Waitable.h"
+	"Thread.h"
 
 1433679782 /home/jonathan/Documents/Jynx/Portable/IHostServicesForLynxEmulator.h
 	<ios>
@@ -142,14 +143,14 @@
 
 1433678744 /home/jonathan/Documents/Jynx/Portable/LynxRectangle.h
 
-1433683086 source:/home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.cpp
+1433690229 source:/home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.cpp
 	<assert.h>
 	"LynxUserInterfaceModel.h"
 	"LynxHardware.h"
 	"LynxEmulatorGuest.h"
 	"FileSerialiser.h"
 
-1433678744 /home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.h
+1433690188 /home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.h
 	"IViewServicesForLynxUserInterfaceModel.h"
 	"IHostServicesForLynxEmulator.h"
 	"LynxEmulatorGuest.h"
@@ -174,7 +175,7 @@
 	<stdint.h>
 	<vector>
 
-1433678744 source:/home/jonathan/Documents/Jynx/Portable/SoundBufferWriter.cpp
+1433690441 source:/home/jonathan/Documents/Jynx/Portable/SoundBufferWriter.cpp
 	<assert.h>
 	"SoundBufferWriter.h"
 	"ZeroInitialiseMemory.h"
@@ -183,19 +184,19 @@
 	"SoundRecorder.h"
 	"ZeroInitialiseMemory.h"
 
-1433678744 source:/home/jonathan/Documents/Jynx/Portable/TapFileReader.cpp
+1433690368 source:/home/jonathan/Documents/Jynx/Portable/TapFileReader.cpp
 	"stdint.h"
 	"TapFileReader.h"
 	<assert.h>
 
-1433683598 source:/home/jonathan/Documents/Jynx/Portable/TapFileSplitter.cpp
+1433685556 source:/home/jonathan/Documents/Jynx/Portable/TapFileSplitter.cpp
 	<stdexcept>
 	<assert.h>
 	"TapFileSplitter.h"
 	"SignalWriter.h"
 	"FileLoader.h"
 
-1433683616 source:/home/jonathan/Documents/Jynx/Portable/TapFileWriter.cpp
+1433690438 source:/home/jonathan/Documents/Jynx/Portable/TapFileWriter.cpp
 	"TapFileWriter.h"
 
 1433678744 source:/home/jonathan/Documents/Jynx/Portable/TextPlayer.cpp
@@ -2711,4 +2712,15 @@
 
 1426113855 /usr/include/gtk-2.0/gtk/gtktipsquery.h
 	<gtk/gtk.h>
+
+1433689180 /home/jonathan/Documents/Jynx/Portable/Waitable.h
+
+1433689180 /home/jonathan/Documents/Jynx/Portable/Thread.h
+
+1432996698 source:/home/jonathan/Documents/Jynx/ForLinux/Linux_Thread.cpp
+	<stdexcept>
+	<mutex>
+	<pthread.h>
+	"Thread.h"
+	<assert.h>
 

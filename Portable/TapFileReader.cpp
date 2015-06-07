@@ -1,22 +1,22 @@
 //
 // Jynx - Jonathan's Lynx Emulator (Camputers Lynx 48K/96K models).
 // Copyright (C) 2014  Jonathan Markland
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 
+//
 //		jynx_emulator {at} yahoo {dot} com
-// 
+//
 
 #include "stdint.h"
 #include "TapFileReader.h"
@@ -26,10 +26,10 @@
 namespace Jynx
 {
 	TapFileReader::TapFileReader( ITapeSpeedSupplier *tapeSpeedSupplier )
-		: _playbackResyncWithCycleCounterOnNextRead(true)
-		, _playbackCycleCounterOrigin(0)
+		: _tapeSpeedSupplier( tapeSpeedSupplier )
+		, _playbackResyncWithCycleCounterOnNextRead(true)
 		, _bitsPerSecond(600)  // Initialisation not used as it happens!
-		, _tapeSpeedSupplier( tapeSpeedSupplier )
+		, _playbackCycleCounterOrigin(0)
 	{
 		RewindPlaybackPosition();
 	}
@@ -37,11 +37,11 @@ namespace Jynx
 
 
 	TapFileReader::TapFileReader( IFileOpener *tapFileOpener, ITapeSpeedSupplier *tapeSpeedSupplier )
-		: _playbackResyncWithCycleCounterOnNextRead(true)
-		, _playbackCycleCounterOrigin(0)
-		, _tapFileSplitter( tapFileOpener )
-		, _bitsPerSecond(600)  // Initialisation not used as it happens!
+		: _tapFileSplitter( tapFileOpener )
 		, _tapeSpeedSupplier( tapeSpeedSupplier )
+		, _playbackResyncWithCycleCounterOnNextRead(true)
+		, _bitsPerSecond(600)  // Initialisation not used as it happens!
+		, _playbackCycleCounterOrigin(0)
 	{
 		RewindPlaybackPosition();
 	}
@@ -50,9 +50,9 @@ namespace Jynx
 
 
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	//     CASSETTE MOTOR
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	void TapFileReader::CassetteMotorOn()
 	{
@@ -65,7 +65,7 @@ namespace Jynx
 	{
 		// In order to support the "Pause Emulator after TAP load" feature, we do this:
 
-		size_t allowance = 17;  
+		size_t allowance = 17;
 			// The Lynx doesn't seem to consume the whole TAP necessarily, this is how many _waveData entries it doesn't consume.
 			// This is used as a flexible "allowance" when deciding whether the Lynx has consumed the tape or not.
 
@@ -74,16 +74,16 @@ namespace Jynx
 			&& _playbackWaveDataIndex >= (_waveData.size() - allowance) )
 		{
 			// We decided that the Lynx did consume this tape, so pause the emulator:
-			_tapeSpeedSupplier->SetPauseMode( true );  
+			_tapeSpeedSupplier->SetPauseMode( true );
 		}
 	}
 
 
 
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	//     PLAYBACK
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	std::string  TapFileReader::GetTapeDirectory( TapeDirectoryStyle::Enum styleRequired ) const
 	{
@@ -111,7 +111,7 @@ namespace Jynx
 
 
 
-	uint8_t TapFileReader::GetSampleAtTime( uint64_t cycleCounterNow ) 
+	uint8_t TapFileReader::GetSampleAtTime( uint64_t cycleCounterNow )
 	{
 		// Files loop...
 
@@ -152,7 +152,7 @@ namespace Jynx
 				_playbackTimeOffset += thisDuration;
 				_playbackWaveDataIndex += 1;
 			}
-		
+
 			// This waveform has expired.  Move to next file (if exists):
 
 			SetPositionToFile( ++_playbackFileIndex );

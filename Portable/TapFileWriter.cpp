@@ -32,14 +32,16 @@ namespace Jynx
 
 
 	TapFileWriter::TapFileWriter()
-		: _barrierCycles(0)
+		: _state( TapWriterState::MotorOff )
+		, _startSeen(false)
+		, _failed( false )
+		, _startTime(0)
+		, _lastSyncPulseWidth(0)
+		, _syncCounter(0)
+		, _barrierCycles(0)
 		, _bitCounter(0)
 		, _byteAccumulator(0)
-		, _lastSyncPulseWidth(0)
-		, _startSeen(false)
-		, _startTime(0)
-		, _state( TapWriterState::MotorOff )
-		, _failed( false )
+		, _blockTypeIndicator(0)
 	{
 	}
 

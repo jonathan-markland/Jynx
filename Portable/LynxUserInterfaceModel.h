@@ -111,6 +111,8 @@ namespace Jynx
 		// Host platform's preferred UTF8 end of line sequence:
 		const std::string  _platformEndOfLineSequenceUTF8;
 
+    private:
+
 		LynxRectangle  GetProjectionRectangle() const;
 
 		void UpdateUserInterfaceElementsOnView();

@@ -75,8 +75,10 @@
 		<Unit filename="../Portable/TextPlayer.h" />
 		<Unit filename="../Portable/TextRecorder.cpp" />
 		<Unit filename="../Portable/TextRecorder.h" />
+		<Unit filename="../Portable/Thread.h" />
 		<Unit filename="../Portable/UserSettingsSerialiser.cpp" />
 		<Unit filename="../Portable/UserSettingsSerialiser.h" />
+		<Unit filename="../Portable/Waitable.h" />
 		<Unit filename="../Portable/Z80/IZ80DisassemblerStream.h" />
 		<Unit filename="../Portable/Z80/JynxZ80.cpp" />
 		<Unit filename="../Portable/Z80/JynxZ80.h" />
@@ -95,6 +97,10 @@
 			<Option virtualFolder="Portable/" />
 		</Unit>
 		<Unit filename="../Portable/ZeroInitialiseMemory.h" />
+		<Unit filename="Linux_Thread.cpp" />
+		<Unit filename="Linux_Waitable.cpp">
+			<Option compile="0" />
+		</Unit>
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
