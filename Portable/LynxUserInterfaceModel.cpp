@@ -23,6 +23,7 @@
 #include "LynxHardware.h"
 #include "LynxEmulatorGuest.h"
 #include "FileSerialiser.h"
+#include "MenuItemIDs.h"
 
 
 namespace Jynx
@@ -208,6 +209,72 @@ namespace Jynx
 
 	};
 
+
+
+
+
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	//     MENU DISPATCHER
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+	bool LynxUserInterfaceModel::DispatchMenuComment( uint32_t menuCommandID )
+	{
+		switch( menuCommandID )
+		{
+			case ID_FILE_LOADSTATESNAPSHOT:       OnLoadStateSnapshot(); break;
+			case ID_FILE_SAVESTATESNAPSHOT:       OnSaveStateSnapshot(); break;
+			case ID_FILE_RUNTAPFILE:              OnRunTAPFile(); break;
+			case ID_FILE_OPENTAPFILE:             OnOpenTAPFile(); break;
+			case ID_FILE_INSERTBLANKTAPE:         OnNewAudioTape(); break;
+			case ID_FILE_SAVETAPE:                OnSaveTAPFileAs(); break;
+			case ID_FILE_REWINDTAPE:              OnRewindAudioTape(); break;
+			case ID_FILE_DIRECTORY:               OnTypeTapeDirectoryIntoLynx(); break;
+			case ID_FILE_EXIT:                    OnExit(); break;
+
+			case ID_EMULATION_PAUSE:		      OnPause(); break;
+			case ID_EMULATION_RESET:		      OnResetEmulation(); break;
+			case ID_EMULATION_LYNX48K:		      OnEmulation48K(); break;
+			case ID_EMULATION_LYNX96K:		      OnEmulation96K(); break;
+			case ID_EMULATION_LYNX96KSCORPION:    OnEmulation96KScorpion(); break;
+			case ID_EMULATION_PAUSEAFTERTAPLOAD:  OnPauseAfterTapLoad(); break;
+
+			case ID_SPEED_SPEED50:                OnSetCycles( Jynx::LynxZ80Cycles::At50 ); break;
+			case ID_SPEED_SPEED100:               OnSetCycles( Jynx::LynxZ80Cycles::At100 ); break;
+			case ID_SPEED_SPEED200:               OnSetCycles( Jynx::LynxZ80Cycles::At200 ); break;
+			case ID_SPEED_SPEED400:               OnSetCycles( Jynx::LynxZ80Cycles::At400 ); break;
+			case ID_SPEED_SPEED800:               OnSetCycles( Jynx::LynxZ80Cycles::At800 ); break;
+			case ID_SPEED_MAXSPEEDCASSETTE:       OnSpeedMaxCassette(); break;
+			case ID_SPEED_MAXSPEEDCONSOLE:        OnSpeedMaxConsoleCommands(); break;
+			case ID_SPEED_MAXSPEEDALWAYS:         OnSpeedMaxPermanently(); break;
+
+			case ID_SOUND_LISTENTOTAPESOUNDS:     OnListenToTapeSounds(); break;
+			case ID_SOUND_RECORDTOFILE:           OnRecordToFile(); break;
+			case ID_SOUND_FINISHRECORDING:        OnFinishRecording(); break;
+			case ID_SOUND_ENABLE:                 OnEnableDisableSound(); break;
+
+			case ID_TEXT_RECORDLYNXTEXT:                 OnRecordLynxTextToFile(); break;
+			case ID_TEXT_STOPRECORDINGLYNXTEXT:          OnFinishRecordingLynxText(); break;
+			case ID_TEXT_TYPEINFROMFILE:                 OnTypeInTextFromFile(); break;
+			case ID_TEXT_LYNXBASICREMCOMMANDEXTENSIONS:  OnLynxBasicRemCommandExtensions(); break;
+
+			case ID_DISPLAY_FITTOWINDOW:          OnFitToWindow(); break;
+			case ID_DISPLAY_SQUAREPIXELS:         OnSquarePixels(); break;
+			case ID_DISPLAY_FILLWINDOW:           OnFillWindow(); break;
+			case ID_DISPLAY_FULLSCREENENABLE:     OnEnableDisableFullScreen(); break;
+
+			case ID_DISPLAY_COLOURSET_NORMALRGB:            OnChangeColourSet( Jynx::LynxColourSet::NormalRGB ); break;
+			case ID_DISPLAY_COLOURSET_GREENONLY:            OnChangeColourSet( Jynx::LynxColourSet::GreenOnly ); break;
+			case ID_DISPLAY_COLOURSET_LEVEL9:               OnChangeColourSet( Jynx::LynxColourSet::Level9 ); break;
+			case ID_DISPLAY_COLOURSET_BLACKANDWHITETV:      OnChangeColourSet( Jynx::LynxColourSet::BlackAndWhiteTV ); break;
+			case ID_DISPLAY_COLOURSET_GREENSCREENMONITOR:   OnChangeColourSet( Jynx::LynxColourSet::GreenScreenMonitor ); break;
+
+			default:
+				return false; // not processed
+		}
+
+		return true;  // processed
+	}
 
 
 

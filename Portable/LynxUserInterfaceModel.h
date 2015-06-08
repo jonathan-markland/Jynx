@@ -42,7 +42,7 @@ namespace Jynx
 		LynxUserInterfaceModel( 
 			IViewServicesForLynxUserInterfaceModel *hostView, uint16_t *soundBuffer, size_t numSamples, const char *platformEndOfLineSequenceUTF8, bool gamesMode );
 
-		// ILynxUserInterfaceModel:
+		// LynxUserInterfaceModel:
 		void OnInitDialog();
 		void OnTimer();
 		void NotifyAllKeysUp();
@@ -85,6 +85,8 @@ namespace Jynx
 		void OnSpeedMaxConsoleCommands();
 		void OnSpeedMaxPermanently();
 		void OnChangeColourSet( LynxColourSet::Enum colourSet );
+
+		bool DispatchMenuComment( uint32_t menuCommandID );
 
 		// IHostServicesForLynxEmulator:
 		// - THREADING NOTE:  The emulator object calls back into the Model on 
