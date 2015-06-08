@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <string>
 #include "LinuxGtkMenu.h"
-#include "Resource.h"
+#include "../Portable/MenuItemIDs.h"
 
 
 

@@ -143,24 +143,26 @@
 
 1433678744 /home/jonathan/Documents/Jynx/Portable/LynxRectangle.h
 
-1433690229 source:/home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.cpp
+1433750105 source:/home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.cpp
 	<assert.h>
 	"LynxUserInterfaceModel.h"
 	"LynxHardware.h"
 	"LynxEmulatorGuest.h"
 	"FileSerialiser.h"
+	"MenuItemIDs.h"
 
-1433690188 /home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.h
+1433750105 /home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.h
 	"IViewServicesForLynxUserInterfaceModel.h"
 	"IHostServicesForLynxEmulator.h"
 	"LynxEmulatorGuest.h"
 	"UserSettingsSerialiser.h"
 
-1433678744 /home/jonathan/Documents/Jynx/Portable/IViewServicesForLynxUserInterfaceModel.h
+1433750105 /home/jonathan/Documents/Jynx/Portable/IViewServicesForLynxUserInterfaceModel.h
 	<memory>
 	"IFileOpener.h"
 	"LynxRectangle.h"
 	"LynxRoms.h"
+	"Enumerations.h"
 
 1433684767 /home/jonathan/Documents/Jynx/Portable/UserSettingsSerialiser.h
 	<stdint.h>
@@ -2751,4 +2753,8 @@
 	<vector>
 
 1433712722 /home/jonathan/Documents/Jynx/ForLinux/Resource.h
+
+1433750105 /home/jonathan/Documents/Jynx/Portable/Enumerations.h
+
+1433750105 /home/jonathan/Documents/Jynx/Portable/MenuItemIDs.h
 
