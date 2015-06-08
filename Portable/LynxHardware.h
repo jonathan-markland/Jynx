@@ -1,27 +1,29 @@
 //
 // Jynx - Jonathan's Lynx Emulator (Camputers Lynx 48K/96K models).
 // Copyright (C) 2014  Jonathan Markland
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 
+//
 //		jynx_emulator {at} yahoo {dot} com
-// 
+//
 
 #pragma once
 
+#include <stdint.h>
+
 #define LYNX_FRAMEBUF_WIDTH            256   // NOTE: These are not really changeable at all!  If we ever did the 128K machine, these would need to be variables anyway...
-#define LYNX_FRAMEBUF_HEIGHT           256   // NOTE: These are not really changeable at all!  
+#define LYNX_FRAMEBUF_HEIGHT           256   // NOTE: These are not really changeable at all!
 
 //
 // DEVICE PORT
@@ -51,13 +53,13 @@
 
 #define BANKPORT_INITIALISATION_VALUE  0x00
 
-#define BANKPORT_RDEN4       0x80  // D7 =  RDEN4 
-#define BANKPORT_RDEN2_3     0x40  // D6 =  RDEN2_3 
-#define BANKPORT_NOT_RDEN1   0x20  // D5 = !RDEN1 
-#define BANKPORT_NOT_RDEN0   0x10  // D4 = !RDEN0 
-#define BANKPORT_WREN4       0x08  // D3 =  WREN4 
-#define BANKPORT_WREN3       0x04  // D2 =  WREN3 
-#define BANKPORT_WREN2       0x02  // D1 =  WREN2 
+#define BANKPORT_RDEN4       0x80  // D7 =  RDEN4
+#define BANKPORT_RDEN2_3     0x40  // D6 =  RDEN2_3
+#define BANKPORT_NOT_RDEN1   0x20  // D5 = !RDEN1
+#define BANKPORT_NOT_RDEN0   0x10  // D4 = !RDEN0
+#define BANKPORT_WREN4       0x08  // D3 =  WREN4
+#define BANKPORT_WREN3       0x04  // D2 =  WREN3
+#define BANKPORT_WREN2       0x02  // D1 =  WREN2
 #define BANKPORT_NOT_WREN1   0x01  // D0 = !WREN1
 
 #define BANKPORT_DECODING_MASK   0x207F

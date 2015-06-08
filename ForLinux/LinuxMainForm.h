@@ -12,63 +12,23 @@
 //     MAIN FORM
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-class MainForm: public InterfaceForMenuItemClickHandling
+class MainForm: public Jynx::IViewServicesForLynxUserInterfaceModel, public InterfaceForMenuItemClickHandling
 {
 public:
 
-    MainForm();
+    MainForm( /*HWND hWndOwner,*/ const char *settingsFilePath, const char *snapshotFilePath, bool gamesMode, const char *tapFilePath, const char *exePath );
+	~MainForm();
+
     void ShowAll();
 
-    virtual void NotifyMenuItemClicked( uint32_t menuItemID ) override;
-
-private:
-
-    static gint GtkHandlerForCloseBoxDeleteEvent( GtkWidget *widget, GdkEvent *event, gpointer thisMainWindowObject ); // static member
-
-private:
-
-    GtkWidget *_win;
-    GtkWidget *_vbox;
-
-    std::shared_ptr<LinuxGtkMenuBar>   _menuBar;
-
-    std::shared_ptr<LinuxGtkMenu>  _menuFile;
-    std::shared_ptr<LinuxGtkMenu>  _menuSpeed;
-    std::shared_ptr<LinuxGtkMenu>  _menuEmulation;
-    std::shared_ptr<LinuxGtkMenu>  _menuDisplay;
-    std::shared_ptr<LinuxGtkMenu>  _menuSound;
-    std::shared_ptr<LinuxGtkMenu>  _menuText;
-    std::shared_ptr<LinuxGtkMenu>  _menuHelp;
-
-};
-
-
-
-
-
-
-
-
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-//     MAIN FORM
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*
-class MainForm: public libWinApi::BaseForm, public Jynx::IViewServicesForLynxUserInterfaceModel
-{
-public:
-
-	MainForm( HWND hWndOwner, const wchar_t *settingsFilePath, const wchar_t *snapshotFilePath, bool gamesMode, const wchar_t *tapFilePath );
-
-	enum { IDD = IDD_MAINFORM };
-	virtual ~MainForm() override;
 
 	// libWinApi::BaseForm overrides:
 	virtual bool OnInitDialog() override;
 	virtual void WindowProc( libWinApi::WindowProcArgs &e ) override;
 	virtual bool PreProcessMessage( libWinApi::Message *pMsg ) override;
 	virtual void OnCancel() override;
-
+*/
 	// Interface for model:
 	virtual void CloseDownNow() override;
 	virtual std::shared_ptr<Jynx::IFileOpener> ShowOpenFileDialog( Jynx::LoadableFileTypes::Enum ) override;  // return nullptr if cancelled, else return IFileOpener for the file selected.
@@ -89,39 +49,71 @@ public:
 	virtual std::shared_ptr<Jynx::IFileOpener>  GetUserSettingsFilePath() override;
 	virtual void WriteSoundBufferToSoundCardOrSleep_OnEmulatorThread() override;
 
+    // InterfaceForMenuItemClickHandling:
+    virtual void NotifyMenuItemClicked( uint32_t menuItemID ) override;
+
 private:
 
-	bool CanRiskLosingModifiedTape() const;
-	bool UserAllowsReset();
-	void LoadSnapshot( const wchar_t *pathName );
-	void SaveSnapshot( const wchar_t *pathName );
-	void SetCycles( Jynx::LynxZ80Cycles::Enum cyclesEnum );
-	void SelectTimingMechanism();
-	void OnPaint( HDC dc );
-	void OnAbout();
-	void OnSound();
+    void GtkConstruction();
+    static gint GtkHandlerForCloseBoxDeleteEvent( GtkWidget *widget, GdkEvent *event, gpointer thisMainWindowObject ); // static member
+    bool OnInitDialog();
+    void OnAbout();
+    void OnCancel();
 
-	HDC     _dc;         // Is only set when asking the model to paint.
-	HANDLE  _hbicon;
-	HANDLE  _hsicon;
-	int     _saveDC;
+private:
 
+    // GTK stuff
+
+    GtkWidget *_win;
+    GtkWidget *_vbox;
+
+    std::shared_ptr<LinuxGtkMenuBar>   _menuBar;
+
+    std::shared_ptr<LinuxGtkMenu>  _menuFile;
+    std::shared_ptr<LinuxGtkMenu>  _menuSpeed;
+    std::shared_ptr<LinuxGtkMenu>  _menuEmulation;
+    std::shared_ptr<LinuxGtkMenu>  _menuDisplay;
+    std::shared_ptr<LinuxGtkMenu>  _menuSound;
+    std::shared_ptr<LinuxGtkMenu>  _menuText;
+    std::shared_ptr<LinuxGtkMenu>  _menuHelp;
+
+private:
+
+
+//	bool CanRiskLosingModifiedTape() const;
+//	bool UserAllowsReset();
+//	void LoadSnapshot( const wchar_t *pathName );
+//	void SaveSnapshot( const wchar_t *pathName );
+//	void SetCycles( Jynx::LynxZ80Cycles::Enum cyclesEnum );
+//	void SelectTimingMechanism();
+//	void OnPaint( HDC dc );
+//	void OnAbout();
+//	void OnSound();
+//
+//	HDC     _dc;         // Is only set when asking the model to paint.
+//	HANDLE  _hbicon;
+//	HANDLE  _hsicon;
+//	int     _saveDC;
+//
 	std::unique_ptr<Jynx::LynxUserInterfaceModel> _lynxUIModel;  // Reminder - Emulator is within this.
-	libWinApi::FrameBufferInfo        _screenInfo;
-
-	HBITMAP                _guestScreenBitmap;
-	MMRESULT               _timeBeginPeriodResult;
-	MMRESULT               _timeSetEventResult;
-
-	libWinApi::WaveOutputStream  *_waveOutStream;
+//	libWinApi::FrameBufferInfo        _screenInfo;
+//
+//	HBITMAP                _guestScreenBitmap;
+//	MMRESULT               _timeBeginPeriodResult;
+//	MMRESULT               _timeSetEventResult;
+//
+//	libWinApi::WaveOutputStream  *_waveOutStream;
 	std::vector<uint16_t>         _soundBuffer;
+//
+//	libWinApi::WindowStyleAndPositionInformation  _restorationAfterFullScreen;
+//
+	std::string  _settingsFilePath;
+	std::string  _snapshotFilePath;
+	std::string  _tapFilePath;
+	std::string  _exePath;
 
-	libWinApi::WindowStyleAndPositionInformation  _restorationAfterFullScreen;
-
-	std::wstring  _settingsFilePath;
-	std::wstring  _snapshotFilePath;
-	std::wstring  _tapFilePath;
 	bool _gamesMode;
 
 };
-*/
+
+

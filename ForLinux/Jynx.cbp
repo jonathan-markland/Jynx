@@ -40,6 +40,7 @@
 		<Linker>
 			<Add option="`pkg-config gtk+-2.0 --libs`" />
 		</Linker>
+		<Unit filename="../Portable/Enumerations.h" />
 		<Unit filename="../Portable/FileLoader.cpp" />
 		<Unit filename="../Portable/FileLoader.h" />
 		<Unit filename="../Portable/FileSerialiser.cpp" />
@@ -78,6 +79,8 @@
 		<Unit filename="../Portable/TextRecorder.cpp" />
 		<Unit filename="../Portable/TextRecorder.h" />
 		<Unit filename="../Portable/Thread.h" />
+		<Unit filename="../Portable/UIStrings.cpp" />
+		<Unit filename="../Portable/UIStrings.h" />
 		<Unit filename="../Portable/UserSettingsSerialiser.cpp" />
 		<Unit filename="../Portable/UserSettingsSerialiser.h" />
 		<Unit filename="../Portable/Waitable.h" />
@@ -99,11 +102,16 @@
 			<Option virtualFolder="Portable/" />
 		</Unit>
 		<Unit filename="../Portable/ZeroInitialiseMemory.h" />
+		<Unit filename="LinuxAboutBox.cpp" />
+		<Unit filename="LinuxAboutBox.h" />
+		<Unit filename="LinuxFileOpener.cpp" />
+		<Unit filename="LinuxFileOpener.h" />
 		<Unit filename="LinuxGtkMenu.cpp" />
 		<Unit filename="LinuxGtkMenu.h" />
+		<Unit filename="LinuxMainForm.cpp" />
+		<Unit filename="LinuxMainForm.h" />
 		<Unit filename="Linux_Thread.cpp" />
 		<Unit filename="Linux_Waitable.cpp" />
-		<Unit filename="Resource.h" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<envvars />

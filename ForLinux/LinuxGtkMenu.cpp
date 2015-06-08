@@ -6,6 +6,18 @@
 // TODO: Raise exception on allocation failures.
 // TODO: Consider gtk_check_menu_item_get_draw_as_radio()
 
+template<typename ITEM>
+class ExceptionSafeValueRestorer
+{
+public:
+    ExceptionSafeValueRestorer( ITEM &item ) : _valueCopy(item), _reference(item) {}
+    ~ExceptionSafeValueRestorer()            { _reference = _valueCopy; }
+private:
+    ITEM _valueCopy;
+    ITEM &_reference;
+};
+
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //    MENU BAR
@@ -119,7 +131,10 @@ std::string  LinuxGtkMenu::StripAccelerators( const char *optionText )
 void LinuxGtkMenu::GenericMenuItemHandler( GtkWidget *menuItemWidget, gpointer thisMenuObject ) // static member
 {
     auto thisObject = (LinuxGtkMenu *) thisMenuObject;
-    thisObject->MenuItemClicked( menuItemWidget );
+    if( ! thisObject->_inhibitMenuEvents ) // work around a GTK design issue, where tick state raises event.
+    {
+        thisObject->MenuItemClicked( menuItemWidget );
+    }
 }
 
 
@@ -147,8 +162,7 @@ GtkWidget *LinuxGtkMenu::GetWidgetByID( uint32_t menuID ) const
         return foundAt->second;
     }
 
-    assert(false);
-    return nullptr; // ID not known.
+    return nullptr; // ID not known in this menu.
 }
 
 
@@ -158,6 +172,8 @@ void LinuxGtkMenu::EnableMenuItem( uint32_t menuID, bool isEnabled )
     auto newItemWidget = GetWidgetByID( menuID );
     if( newItemWidget != nullptr )
     {
+        ExceptionSafeValueRestorer<bool>  restore1( _inhibitMenuEvents );
+        _inhibitMenuEvents = true;
         gtk_widget_set_sensitive( newItemWidget, isEnabled ? TRUE : FALSE );
     }
 }
@@ -169,6 +185,8 @@ void LinuxGtkMenu::CheckMenuItem( uint32_t menuID, bool isChecked )
     auto newItemWidget = GetWidgetByID( menuID );
     if( newItemWidget != nullptr )
     {
+        ExceptionSafeValueRestorer<bool>  restore1( _inhibitMenuEvents );
+        _inhibitMenuEvents = true;
         gtk_check_menu_item_set_active( GTK_CHECK_MENU_ITEM(newItemWidget), isChecked ? TRUE : FALSE );
     }
 }

@@ -32,6 +32,7 @@ public:
     std::shared_ptr<LinuxGtkMenu> CreateMenu( const char *optionText, InterfaceForMenuItemClickHandling *eventHandler );
 
     // Search all the sub menus and set the state of the item found:
+    // Does NOT raise event.
     void EnableMenuItem( uint32_t menuID, bool isEnabled );
     void CheckMenuItem(  uint32_t menuID, bool isChecked );
 
@@ -63,6 +64,8 @@ public:
     void AddItem( const char *optionText, uint32_t menuID );
     void AddTick( const char *optionText, uint32_t menuID );
     void AddSeparator();
+
+    // Set state without raising event:
     void EnableMenuItem( uint32_t menuID, bool isEnabled );
     void CheckMenuItem( uint32_t menuID, bool isChecked );
 
@@ -79,5 +82,6 @@ private:
     InterfaceForMenuItemClickHandling *_onClickEventHandler = nullptr;
     std::map<GtkWidget *, uint32_t> _widgetToMenuItemIdMap;
     std::map<uint32_t, GtkWidget *> _menuItemIdMapToWidget;
+    bool _inhibitMenuEvents = false;
 
 };

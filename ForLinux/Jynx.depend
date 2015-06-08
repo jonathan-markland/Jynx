@@ -84,7 +84,8 @@
 	<stdint.h>
 	<string>
 
-1433678744 /home/jonathan/Documents/Jynx/Portable/LynxHardware.h
+1433752831 /home/jonathan/Documents/Jynx/Portable/LynxHardware.h
+	<stdint.h>
 
 1433678744 /home/jonathan/Documents/Jynx/Portable/LynxEmulatorEnums.h
 
@@ -2731,19 +2732,19 @@
 	<pthread.h>
 	"Waitable.h"
 
-1433751830 source:/home/jonathan/Documents/Jynx/ForLinux/main.cpp
+1433760092 source:/home/jonathan/Documents/Jynx/ForLinux/main.cpp
 	<stdlib.h>
 	<stdint.h>
 	<string>
 	<gtk/gtk.h>
 	"LinuxMainForm.h"
 
-1433716867 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxGtkMenu.cpp
+1433759420 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxGtkMenu.cpp
 	<algorithm>
 	<assert.h>
 	"LinuxGtkMenu.h"
 
-1433716967 /home/jonathan/Documents/Jynx/ForLinux/LinuxGtkMenu.h
+1433759011 /home/jonathan/Documents/Jynx/ForLinux/LinuxGtkMenu.h
 	<gtk/gtk.h>
 	<stdint.h>
 	<string>
@@ -2762,14 +2763,39 @@
 
 1433751016 /home/jonathan/Documents/Jynx/ForLinux/LinuxAboutBox.h
 
-1433751801 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.cpp
+1433760288 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.cpp
 	"../Portable/MenuItemIDs.h"
+	"../Portable/LynxHardware.h"
+	"../Portable/UIStrings.h"
+	<assert.h>
+	<iostream>
+	<fstream>
 	"LinuxMainForm.h"
 	"LinuxAboutBox.h"
+	"LinuxFileOpener.h"
+	"stdafx.h"
+	"resource.h"
+	"mmsystem.h"
 
-1433751797 /home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.h
+1433755804 /home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.h
 	"../Portable/LynxUserInterfaceModel.h"
 	"../Portable/IViewServicesForLynxUserInterfaceModel.h"
 	<gtk/gtk.h>
 	"LinuxGtkMenu.h"
+
+1433756069 /home/jonathan/Documents/Jynx/Portable/UIStrings.h
+	<stdint.h>
+	"Enumerations.h"
+	"LynxRoms.h"
+
+1433756000 source:/home/jonathan/Documents/Jynx/Portable/UIStrings.cpp
+	"UIStrings.h"
+	"MenuItemIDs.h"
+
+1433758452 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxFileOpener.cpp
+	"LinuxFileOpener.h"
+
+1433754952 /home/jonathan/Documents/Jynx/ForLinux/LinuxFileOpener.h
+	<string>
+	"../Portable/IFileOpener.h"
 
