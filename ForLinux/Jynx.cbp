@@ -106,6 +106,8 @@
 		<Unit filename="LinuxAboutBox.h" />
 		<Unit filename="LinuxFileOpener.cpp" />
 		<Unit filename="LinuxFileOpener.h" />
+		<Unit filename="LinuxGtkFileDialogs.cpp" />
+		<Unit filename="LinuxGtkFileDialogs.h" />
 		<Unit filename="LinuxGtkMenu.cpp" />
 		<Unit filename="LinuxGtkMenu.h" />
 		<Unit filename="LinuxMainForm.cpp" />

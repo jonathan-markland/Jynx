@@ -29,6 +29,7 @@
 #include "LinuxMainForm.h"
 #include "LinuxAboutBox.h"
 #include "LinuxFileOpener.h"
+#include "LinuxGtkFileDialogs.h"
 
 /*
 #include "stdafx.h"
@@ -600,12 +601,10 @@ void MainForm::CloseDownNow()
 std::shared_ptr<Jynx::IFileOpener> MainForm::ShowOpenFileDialog( Jynx::LoadableFileTypes::Enum fileType )
 {
 	std::string  filePathChosen;
-	assert(false);
-/*
-	if( ShowOpenFileDialog( *this, OpenFileDialogTitles[fileType], OpenFileDialogSpecs[fileType], &filePathChosen ) )
+	if( ::ShowOpenFileDialog( GTK_WINDOW(_win), OpenFileDialogTitlesNarrow[fileType], OpenFileDialogSpecsNarrow[fileType], &filePathChosen ) )
 	{
 		return std::make_shared<LinuxFileOpener>( filePathChosen ); // throws
-	}*/
+	}
 	return nullptr;  // User cancelled
 }
 
@@ -614,12 +613,10 @@ std::shared_ptr<Jynx::IFileOpener> MainForm::ShowOpenFileDialog( Jynx::LoadableF
 std::shared_ptr<Jynx::IFileOpener> MainForm::ShowSaveFileDialog( Jynx::SaveableFileTypes::Enum fileType )
 {
 	std::string  filePathChosen;
-	assert(false);
-
-/*	if( ShowSaveFileDialog( *this, SaveFileDialogTitles[fileType], SaveFileDialogSpecs[fileType], SaveFileDialogExtns[fileType], &filePathChosen ) )
+	if( ::ShowSaveFileDialog( GTK_WINDOW(_win), SaveFileDialogTitlesNarrow[fileType], SaveFileDialogSpecsNarrow[fileType], SaveFileDialogExtnsNarrow[fileType], &filePathChosen ) )
 	{
 		return std::make_shared<LinuxFileOpener>( filePathChosen ); // throws
-	}*/
+	}
 	return nullptr;  // User cancelled
 }
 

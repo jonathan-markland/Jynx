@@ -2732,7 +2732,7 @@
 	<pthread.h>
 	"Waitable.h"
 
-1433760092 source:/home/jonathan/Documents/Jynx/ForLinux/main.cpp
+1433760497 source:/home/jonathan/Documents/Jynx/ForLinux/main.cpp
 	<stdlib.h>
 	<stdint.h>
 	<string>
@@ -2763,7 +2763,7 @@
 
 1433751016 /home/jonathan/Documents/Jynx/ForLinux/LinuxAboutBox.h
 
-1433760288 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.cpp
+1433761590 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.cpp
 	"../Portable/MenuItemIDs.h"
 	"../Portable/LynxHardware.h"
 	"../Portable/UIStrings.h"
@@ -2773,6 +2773,7 @@
 	"LinuxMainForm.h"
 	"LinuxAboutBox.h"
 	"LinuxFileOpener.h"
+	"LinuxGtkFileDialogs.h"
 	"stdafx.h"
 	"resource.h"
 	"mmsystem.h"
@@ -2798,4 +2799,11 @@
 1433754952 /home/jonathan/Documents/Jynx/ForLinux/LinuxFileOpener.h
 	<string>
 	"../Portable/IFileOpener.h"
+
+1433761487 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxGtkFileDialogs.cpp
+	"LinuxGtkFileDialogs.h"
+
+1433761495 /home/jonathan/Documents/Jynx/ForLinux/LinuxGtkFileDialogs.h
+	<string>
+	<gtk/gtk.h>
 
