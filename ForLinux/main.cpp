@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <string>
 #include "LinuxGtkMenu.h"
+#include "LinuxAboutBox.h"
 #include "../Portable/MenuItemIDs.h"
 
 
@@ -48,10 +49,16 @@ private:
 
 
 
-
 void MainWindow::NotifyMenuItemClicked( uint32_t menuItemID )
 {
     // This gets the menu item clicks.
+
+    // TODO: call model
+
+    if( menuItemID == ID_HELP_ABOUT )
+    {
+        Jynx::ShowLinuxGtkAboutBox();
+    }
 }
 
 
