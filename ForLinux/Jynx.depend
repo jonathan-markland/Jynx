@@ -2731,14 +2731,12 @@
 	<pthread.h>
 	"Waitable.h"
 
-1433751083 source:/home/jonathan/Documents/Jynx/ForLinux/main.cpp
+1433751830 source:/home/jonathan/Documents/Jynx/ForLinux/main.cpp
 	<stdlib.h>
-	<gtk/gtk.h>
 	<stdint.h>
 	<string>
-	"LinuxGtkMenu.h"
-	"LinuxAboutBox.h"
-	"../Portable/MenuItemIDs.h"
+	<gtk/gtk.h>
+	"LinuxMainForm.h"
 
 1433716867 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxGtkMenu.cpp
 	<algorithm>
@@ -2759,8 +2757,19 @@
 
 1433750105 /home/jonathan/Documents/Jynx/Portable/MenuItemIDs.h
 
-1433751158 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxAboutBox.cpp
+1433751206 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxAboutBox.cpp
 	<gtk/gtk.h>
 
 1433751016 /home/jonathan/Documents/Jynx/ForLinux/LinuxAboutBox.h
+
+1433751801 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.cpp
+	"../Portable/MenuItemIDs.h"
+	"LinuxMainForm.h"
+	"LinuxAboutBox.h"
+
+1433751797 /home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.h
+	"../Portable/LynxUserInterfaceModel.h"
+	"../Portable/IViewServicesForLynxUserInterfaceModel.h"
+	<gtk/gtk.h>
+	"LinuxGtkMenu.h"
 
