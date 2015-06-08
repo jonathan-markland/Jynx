@@ -29,6 +29,7 @@
 #include "WindowsFileOpener.h"
 
 #include "../Portable/LynxHardware.h"
+#include "../Portable/UIStrings.h"
 
 #define TIMESLICE_PERIOD   16   // 16 bizarrely looks like 20 milliseconds (check the cursor flash rate).
 #define WM_HI_RES_TIMER (WM_USER + 0x101)
@@ -298,57 +299,13 @@ void MainForm::WindowProc( libWinApi::WindowProcArgs &e )
 
 		if( e.IsMenuCommand( &menuCommand ) )
 		{
-			switch( menuCommand )
+			if( ! _lynxUIModel->DispatchMenuComment( menuCommand ) )
 			{
-				case ID_FILE_LOADSTATESNAPSHOT:   _lynxUIModel->OnLoadStateSnapshot(); break;
-				case ID_FILE_SAVESTATESNAPSHOT:   _lynxUIModel->OnSaveStateSnapshot(); break;
-				case ID_FILE_RUNTAPFILE:          _lynxUIModel->OnRunTAPFile(); break;
-				case ID_FILE_OPENTAPFILE:         _lynxUIModel->OnOpenTAPFile(); break;
-				case ID_FILE_INSERTBLANKTAPE:     _lynxUIModel->OnNewAudioTape(); break;
-				case ID_FILE_SAVETAPE:            _lynxUIModel->OnSaveTAPFileAs(); break;
-				case ID_FILE_REWINDTAPE:          _lynxUIModel->OnRewindAudioTape(); break;
-				case ID_FILE_DIRECTORY:           _lynxUIModel->OnTypeTapeDirectoryIntoLynx(); break;
-				case ID_FILE_EXIT:                _lynxUIModel->OnExit(); break;
-
-				case ID_EMULATION_PAUSE:		      _lynxUIModel->OnPause(); break;
-				case ID_EMULATION_RESET:		      _lynxUIModel->OnResetEmulation(); break;
-				case ID_EMULATION_LYNX48K:		      _lynxUIModel->OnEmulation48K(); break;
-				case ID_EMULATION_LYNX96K:		      _lynxUIModel->OnEmulation96K(); break;
-				case ID_EMULATION_LYNX96KSCORPION:    _lynxUIModel->OnEmulation96KScorpion(); break;
-				case ID_EMULATION_PAUSEAFTERTAPLOAD:  _lynxUIModel->OnPauseAfterTapLoad(); break;
-
-				case ID_SPEED_SPEED50:            _lynxUIModel->OnSetCycles( Jynx::LynxZ80Cycles::At50 ); break;
-				case ID_SPEED_SPEED100:           _lynxUIModel->OnSetCycles( Jynx::LynxZ80Cycles::At100 ); break;
-				case ID_SPEED_SPEED200:           _lynxUIModel->OnSetCycles( Jynx::LynxZ80Cycles::At200 ); break;
-				case ID_SPEED_SPEED400:           _lynxUIModel->OnSetCycles( Jynx::LynxZ80Cycles::At400 ); break;
-				case ID_SPEED_SPEED800:           _lynxUIModel->OnSetCycles( Jynx::LynxZ80Cycles::At800 ); break;
-				case ID_SPEED_MAXSPEEDCASSETTE:   _lynxUIModel->OnSpeedMaxCassette(); break;
-				case ID_SPEED_MAXSPEEDCONSOLE:    _lynxUIModel->OnSpeedMaxConsoleCommands(); break;
-				case ID_SPEED_MAXSPEEDALWAYS:     _lynxUIModel->OnSpeedMaxPermanently(); break;
-
-				case ID_SOUND_LISTENTOTAPESOUNDS: _lynxUIModel->OnListenToTapeSounds(); break;
-				case ID_SOUND_RECORDTOFILE:       _lynxUIModel->OnRecordToFile(); break;
-				case ID_SOUND_FINISHRECORDING:    _lynxUIModel->OnFinishRecording(); break;
-				case ID_SOUND_ENABLE:             _lynxUIModel->OnEnableDisableSound(); break;
-
-				case ID_TEXT_RECORDLYNXTEXT:                 _lynxUIModel->OnRecordLynxTextToFile(); break;
-				case ID_TEXT_STOPRECORDINGLYNXTEXT:          _lynxUIModel->OnFinishRecordingLynxText(); break;
-				case ID_TEXT_TYPEINFROMFILE:                 _lynxUIModel->OnTypeInTextFromFile(); break;
-				case ID_TEXT_LYNXBASICREMCOMMANDEXTENSIONS:  _lynxUIModel->OnLynxBasicRemCommandExtensions(); break;
-
-				case ID_DISPLAY_FITTOWINDOW:            _lynxUIModel->OnFitToWindow(); break;
-				case ID_DISPLAY_SQUAREPIXELS:           _lynxUIModel->OnSquarePixels(); break;
-				case ID_DISPLAY_FILLWINDOW:             _lynxUIModel->OnFillWindow(); break;
-				case ID_DISPLAY_FULLSCREENENABLE:       _lynxUIModel->OnEnableDisableFullScreen(); break;
-
-				case ID_DISPLAY_COLOURSET_NORMALRGB:            _lynxUIModel->OnChangeColourSet( Jynx::LynxColourSet::NormalRGB ); break;
-				case ID_DISPLAY_COLOURSET_GREENONLY:            _lynxUIModel->OnChangeColourSet( Jynx::LynxColourSet::GreenOnly ); break;
-				case ID_DISPLAY_COLOURSET_LEVEL9:               _lynxUIModel->OnChangeColourSet( Jynx::LynxColourSet::Level9 ); break;
-				case ID_DISPLAY_COLOURSET_BLACKANDWHITETV:      _lynxUIModel->OnChangeColourSet( Jynx::LynxColourSet::BlackAndWhiteTV ); break;
-				case ID_DISPLAY_COLOURSET_GREENSCREENMONITOR:   _lynxUIModel->OnChangeColourSet( Jynx::LynxColourSet::GreenScreenMonitor ); break;
-
-				case ID_HELP_ABOUT:               OnAbout(); break; // not handled by the model
-				default:                          return BaseForm::WindowProc( e );
+				switch( menuCommand )
+				{
+					case ID_HELP_ABOUT:               OnAbout(); break; // not handled by the model
+					default:                          return BaseForm::WindowProc( e );
+				}
 			}
 			e.Result = 1;
 			return;  // Processed.
@@ -469,20 +426,6 @@ void MainForm::CloseDownNow()
 
 
 
-const wchar_t *OpenFileDialogTitles[Jynx::LoadableFileTypes::Count] =
-{
-	L"Open Lynx TAP file",
-	L"Open emulator state snapshot",
-	L"Open Text file",
-};
-
-const wchar_t *OpenFileDialogSpecs[Jynx::LoadableFileTypes::Count]  =
-{
-	L"TAP files (*.TAP)|*.TAP",
-	L"Snapshots (*.lynxsnapshot)|*.lynxsnapshot",
-	L"Text files (*.txt)|*.txt",
-};
-
 std::shared_ptr<Jynx::IFileOpener> MainForm::ShowOpenFileDialog( Jynx::LoadableFileTypes::Enum fileType )
 {
 	std::wstring  filePathChosen;
@@ -495,30 +438,6 @@ std::shared_ptr<Jynx::IFileOpener> MainForm::ShowOpenFileDialog( Jynx::LoadableF
 }
 
 
-
-const wchar_t *SaveFileDialogTitles[Jynx::SaveableFileTypes::Count] =
-{
-	L"Save Lynx Audio Tape file",
-	L"Save emulator state snapshot",
-	L"Record sound to file",
-	L"Record lynx text to file"
-};
-
-const wchar_t *SaveFileDialogSpecs[Jynx::SaveableFileTypes::Count] =
-{
-	L"Lynx TAP files (*.TAP)|*.TAP",
-	L"Snapshots (*.lynxsnapshot)|*.lynxsnapshot",
-	L"Sound files (*.wav)|*.wav",
-	L"Text files (*.txt)|*.txt"
-};
-
-const wchar_t *SaveFileDialogExtns[Jynx::SaveableFileTypes::Count] =
-{
-	L"TAP",
-	L"lynxsnapshot",
-	L"wav",
-	L"txt"
-};
 
 std::shared_ptr<Jynx::IFileOpener> MainForm::ShowSaveFileDialog( Jynx::SaveableFileTypes::Enum fileType )
 {
@@ -546,35 +465,6 @@ bool MainForm::AskYesNoQuestion( const char *questionText, const char *captionTe
 }
 
 
-
-const UINT MainFormTickableItems[Jynx::TickableInterfaceElements::Count] =
-{
-	ID_EMULATION_LYNX48K,
-	ID_EMULATION_LYNX96K,
-	ID_EMULATION_LYNX96KSCORPION,
-	ID_SOUND_LISTENTOTAPESOUNDS,
-	ID_DISPLAY_FITTOWINDOW,
-	ID_DISPLAY_SQUAREPIXELS,
-	ID_DISPLAY_FILLWINDOW,
-	ID_SPEED_SPEED50,
-	ID_SPEED_SPEED100,
-	ID_SPEED_SPEED200,
-	ID_SPEED_SPEED400,
-	ID_SPEED_SPEED800,
-	ID_TEXT_LYNXBASICREMCOMMANDEXTENSIONS,
-	ID_SOUND_ENABLE,
-	ID_DISPLAY_FULLSCREENENABLE,
-	ID_EMULATION_PAUSE,
-	ID_EMULATION_PAUSEAFTERTAPLOAD,
-	ID_SPEED_MAXSPEEDCASSETTE,
-	ID_SPEED_MAXSPEEDCONSOLE,
-	ID_SPEED_MAXSPEEDALWAYS,
-	ID_DISPLAY_COLOURSET_NORMALRGB,
-	ID_DISPLAY_COLOURSET_GREENONLY,
-	ID_DISPLAY_COLOURSET_LEVEL9,
-	ID_DISPLAY_COLOURSET_BLACKANDWHITETV,
-	ID_DISPLAY_COLOURSET_GREENSCREENMONITOR,
-};
 
 void MainForm::SetTickBoxState( Jynx::TickableInterfaceElements::Enum itemToSet, bool tickState )
 {
@@ -605,14 +495,6 @@ void MainForm::SetTickBoxState( Jynx::TickableInterfaceElements::Enum itemToSet,
 }
 
 
-
-const UINT MainFormGreyableItems[Jynx::ButtonInterfaceElements::Count] =
-{
-	ID_FILE_REWINDTAPE,
-	ID_SOUND_FINISHRECORDING,
-	ID_FILE_SAVETAPE,
-	ID_TEXT_STOPRECORDINGLYNXTEXT
-};
 
 void MainForm::SetEnabledState( Jynx::ButtonInterfaceElements::Enum itemToSet, bool enableState )
 {
@@ -715,16 +597,6 @@ void MainForm::InvalidateAreaOfHostScreen( const Jynx::LynxRectangle &area )
 
 
 
-
-const wchar_t *g_RomFileNames[Jynx::LynxRoms::Count] =
-{
-	L"lynx48-1.rom",
-	L"lynx48-2.rom",
-	L"lynx96-1.rom",
-	L"lynx96-2.rom",
-	L"lynx96-3.rom",
-	L"lynx96-3-scorpion.rom",
-};
 
 void  MainForm::OpenChipFileStream_OnMainThread( std::ifstream &streamToBeOpened, std::ios_base::openmode openModeRequired, Jynx::LynxRoms::Enum romRequired )
 {

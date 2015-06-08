@@ -146,6 +146,15 @@
     <ClInclude Include="..\Portable\Waitable.h">
       <Filter>Source Files\Portable</Filter>
     </ClInclude>
+    <ClInclude Include="..\Portable\MenuItemIDs.h">
+      <Filter>Source Files\Portable</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Portable\UIStrings.h">
+      <Filter>Source Files\Portable</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Portable\Enumerations.h">
+      <Filter>Source Files\Portable</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Portable\FileLoader.cpp">
@@ -234,6 +243,9 @@
     </ClCompile>
     <ClCompile Include="MSWindows_Waitable.cpp">
       <Filter>Source Files\ForWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Portable\UIStrings.cpp">
+      <Filter>Source Files\Portable</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
