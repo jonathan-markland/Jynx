@@ -20,7 +20,7 @@ public:
     // TODO: Store constructed values and provide "reminder" interface?
     // TODO: Should/could this expose the address of a buffer to be filled?
 
-    WaveOutputStream( uint32_t channelCount, uint32_t bufferSizeFrames );
+    WaveOutputStream( uint32_t channelCount, uint32_t bufferSizeFrames, uint32_t numBuffersInRing );
         // 44,100Hz
         // 2 bytes per sample, 16-bit signed little-endian
 

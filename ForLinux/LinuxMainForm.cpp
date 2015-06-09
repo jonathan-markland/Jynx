@@ -94,7 +94,7 @@ MainForm::MainForm( /*HWND hWndOwner, */ const char *settingsFilePath, const cha
 
     auto numChannels = 1;
     auto numFramesPerBuffer = numSamplesPerBuffer * numChannels;  // clarifying the issue
-	_waveOutStream = std::make_shared<WaveOutputStream>( numChannels, numFramesPerBuffer );
+	_waveOutStream = std::make_shared<WaveOutputStream>( numChannels, numFramesPerBuffer, 3 );
 
 /*
 	//

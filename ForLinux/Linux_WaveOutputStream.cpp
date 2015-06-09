@@ -15,7 +15,7 @@ class HostOS_WaveOutputStream
 {
 public:
 
-    HostOS_WaveOutputStream( uint32_t channelCount, uint32_t bufferSizeFrames );
+    HostOS_WaveOutputStream( uint32_t channelCount, uint32_t bufferSizeFrames, uint32_t numBuffersInRing );
     ~HostOS_WaveOutputStream();
     void Write( const void *soundDataBlock, uint32_t numFrames );
     void Flush();
@@ -31,7 +31,7 @@ private:
 
 
 
-HostOS_WaveOutputStream::HostOS_WaveOutputStream( uint32_t channelCount, uint32_t bufferSizeFrames )
+HostOS_WaveOutputStream::HostOS_WaveOutputStream( uint32_t channelCount, uint32_t bufferSizeFrames, uint32_t numBuffersInRing )
     : _handleConstructed( false )
     , _handle( nullptr )
 {
@@ -85,8 +85,7 @@ HostOS_WaveOutputStream::HostOS_WaveOutputStream( uint32_t channelCount, uint32_
     }
 
     // Restrict total ring buffer size.
-    auto numBuffers = 3;
-    auto desireRingBufferSize = (snd_pcm_uframes_t) (bufferSizeFrames * numBuffers);
+    auto desireRingBufferSize = (snd_pcm_uframes_t) (bufferSizeFrames * numBuffersInRing);
     auto ringBufferSize = desireRingBufferSize;
     if( snd_pcm_hw_params_set_buffer_size_near( _handle, _params, &ringBufferSize ) != 0  ||  ringBufferSize != desireRingBufferSize )
     {
@@ -162,9 +161,9 @@ HostOS_WaveOutputStream::~HostOS_WaveOutputStream()
 //     WAVE SOUND OUTPUT - INTERFACE DELEGATION
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-WaveOutputStream::WaveOutputStream( uint32_t channelCount, uint32_t bufferSizeFrames )
+WaveOutputStream::WaveOutputStream( uint32_t channelCount, uint32_t bufferSizeFrames, uint32_t numBuffersInRing )
 {
-    _hostImplementation = std::make_shared<HostOS_WaveOutputStream>( channelCount, bufferSizeFrames );
+    _hostImplementation = std::make_shared<HostOS_WaveOutputStream>( channelCount, bufferSizeFrames, numBuffersInRing );
 }
 
 void WaveOutputStream::Write( const void *soundDataBlock, uint32_t numFrames )
