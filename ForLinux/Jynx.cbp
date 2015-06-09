@@ -18,6 +18,9 @@
 					<Add directory="../Portable" />
 					<Add directory="ForLinux" />
 				</Compiler>
+				<Linker>
+					<Add library="asound" />
+				</Linker>
 			</Target>
 			<Target title="Release">
 				<Option output="bin/Release/Jynx" prefix_auto="1" extension_auto="1" />
@@ -84,6 +87,7 @@
 		<Unit filename="../Portable/UserSettingsSerialiser.cpp" />
 		<Unit filename="../Portable/UserSettingsSerialiser.h" />
 		<Unit filename="../Portable/Waitable.h" />
+		<Unit filename="../Portable/WaveOutputStream.h" />
 		<Unit filename="../Portable/Z80/IZ80DisassemblerStream.h" />
 		<Unit filename="../Portable/Z80/JynxZ80.cpp" />
 		<Unit filename="../Portable/Z80/JynxZ80.h" />
@@ -114,6 +118,7 @@
 		<Unit filename="LinuxMainForm.h" />
 		<Unit filename="Linux_Thread.cpp" />
 		<Unit filename="Linux_Waitable.cpp" />
+		<Unit filename="Linux_WaveOutputStream.cpp" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<envvars />
