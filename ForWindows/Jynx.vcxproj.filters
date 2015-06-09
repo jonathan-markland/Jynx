@@ -247,6 +247,9 @@
     <ClCompile Include="..\Portable\UIStrings.cpp">
       <Filter>Source Files\Portable</Filter>
     </ClCompile>
+    <ClCompile Include="Windows_WaveOutputStream.cpp">
+      <Filter>Source Files\Portable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Jynx.rc">

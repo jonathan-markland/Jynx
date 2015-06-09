@@ -85,8 +85,9 @@ MainForm::MainForm( HWND hWndOwner, const wchar_t *settingsFilePath, const wchar
 		_soundBuffer.push_back( 0 );
 	}
 
-	auto bufferSizeBytes = numSamplesPerBuffer * 2;
-	_waveOutStream = new libWinApi::WaveOutputStream( 44100, 2, 1, 3, (int) bufferSizeBytes );
+    auto numChannels = 1;
+    auto numFramesPerBuffer = numSamplesPerBuffer * numChannels;  // clarifying the issue
+	_waveOutStream = std::make_shared<WaveOutputStream>( numChannels, numFramesPerBuffer, 3 );
 
 	//
 	// Create frame buffer bitmap which emulator can directly draw on.
@@ -156,12 +157,6 @@ MainForm::~MainForm()
 	{
 		::DeleteObject(_guestScreenBitmap);
 		_guestScreenBitmap = NULL;
-	}
-
-	if( _waveOutStream != nullptr )
-	{
-		delete _waveOutStream;
-		_waveOutStream = nullptr;
 	}
 }
 
@@ -346,7 +341,7 @@ void MainForm::WindowProc( libWinApi::WindowProcArgs &e )
 		}
 
 	}
-	catch( const UserInterfaceException &nonFatalError )  // reminder: catches stream errors too.  TODO: This might be controversial, and a "UserInterfaceException" better.
+	catch( const std::runtime_error &nonFatalError )  // reminder: catches stream errors too.  TODO: This might be controversial, and a "UserInterfaceException" better.
 	{
 		MessageBoxA( *this, nonFatalError.what(), "Error", MB_OK | MB_ICONERROR );
 	}
@@ -504,7 +499,7 @@ void MainForm::SetEnabledState( Jynx::ButtonInterfaceElements::Enum itemToSet, b
 	auto hMenu = ::GetMenu( *this );
 	if( hMenu )
 	{
-		EnableMenuItem( hMenu, MainFormGreyableItems[itemToSet], enableState ? MF_GRAYED  : MF_ENABLED );
+		EnableMenuItem( hMenu, MainFormGreyableItems[itemToSet], enableState ? MF_ENABLED : MF_GRAYED );
 	}
 }
 
@@ -702,7 +697,7 @@ void MainForm::WriteSoundBufferToSoundCardOrSleep_OnEmulatorThread()
 	{
 		// NOTE: The sound card "forces" us back until it's ready.
 		// This gives us a 20ms timer, on which the emulation is synchronised, when sound is ON.
-		_waveOutStream->Write( &(*_soundBuffer.begin()), (int) _soundBuffer.size() * 2 );
+		_waveOutStream->Write( &(*_soundBuffer.begin()), (uint32_t) (uintptr_t) _soundBuffer.size() );
 	}
 	else
 	{

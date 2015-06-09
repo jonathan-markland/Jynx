@@ -594,43 +594,6 @@ namespace libBasic
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-//     WAVE SOUND OUTPUT
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-namespace libWinApi
-{
-	class WaveOutputStream 
-	{
-	public:
-
-		WaveOutputStream( int sampleRateHz, int bytesPerSample, int channelCount, int bufferCount, int bufferSizeBytes );
-		~WaveOutputStream();
-		void Write( const void *soundBlock, int sizeBytes );
-		void Flush();
-		// void Wait();
-		void Reset();
-
-	private:
-
-		const HANDLE   _semaphoreHandle;
-		const int      _bufferCount;
-		int            _currentBuffer;
-		BOOL           _noBuffer;
-		HWAVEOUT       _waveOutHandle;
-		class WaveBuffer  *_waveBuffers;
-
-		static void CALLBACK WaveCallback( HWAVEOUT hWave, UINT uMsg, DWORD dwUser, DWORD dw1, DWORD dw2 );
-
-		void WaitOnTheSemaphore();
-
-	};
-}
-
-
-
-
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 //     FULL SCREEN WINDOW SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
