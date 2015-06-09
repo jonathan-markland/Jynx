@@ -26,9 +26,9 @@
 #include "resource.h"
 #include "libWinApi.h"
 
-#include "../Portable/LynxUserInterfaceModel.h"
-#include "../Portable/IViewServicesForLynxUserInterfaceModel.h"
-#include "../Portable/WaveOutputStream.h"
+#include "LynxUserInterfaceModel.h"
+#include "IViewServicesForLynxUserInterfaceModel.h"
+#include "WaveOutputStream.h"
 
 
 

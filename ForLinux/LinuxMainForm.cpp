@@ -18,9 +18,9 @@
 //		jynx_emulator {at} yahoo {dot} com
 //
 
-#include "../Portable/MenuItemIDs.h"
-#include "../Portable/LynxHardware.h"
-#include "../Portable/UIStrings.h"
+#include "MenuItemIDs.h"
+#include "LynxHardware.h"
+#include "UIStrings.h"
 
 #include <assert.h>
 #include <iostream>

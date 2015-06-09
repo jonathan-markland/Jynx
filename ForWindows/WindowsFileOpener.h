@@ -21,7 +21,7 @@
 #pragma once
 
 #include <string>
-#include "../Portable/IFileOpener.h"
+#include "IFileOpener.h"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 //     FILE PATH FORMAT ABSTRACTION ON WINDOWS

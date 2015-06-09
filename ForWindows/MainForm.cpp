@@ -28,8 +28,8 @@
 #include "AboutBoxForm.h"
 #include "WindowsFileOpener.h"
 
-#include "../Portable/LynxHardware.h"
-#include "../Portable/UIStrings.h"
+#include "LynxHardware.h"
+#include "UIStrings.h"
 
 #define TIMESLICE_PERIOD   16   // 16 bizarrely looks like 20 milliseconds (check the cursor flash rate).
 #define WM_HI_RES_TIMER (WM_USER + 0x101)

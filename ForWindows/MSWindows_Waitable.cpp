@@ -1,7 +1,7 @@
 
 #include "stdafx.h"
 #include <stdexcept>
-#include "../Portable/Waitable.h"
+#include "Waitable.h"
 
 	Waitable::Waitable()
 	{
