@@ -77,7 +77,6 @@ MainForm::MainForm( /*HWND hWndOwner, */ const char *settingsFilePath, const cha
 	//, _guestScreenBitmap(NULL)
 	//, _timeBeginPeriodResult(0)
 	//, _timeSetEventResult(0)
-	//, _waveOutStream(nullptr)
 	//, _saveDC(0)
 {
 	//
@@ -93,8 +92,9 @@ MainForm::MainForm( /*HWND hWndOwner, */ const char *settingsFilePath, const cha
 		_soundBuffer.push_back( 0 );
 	}
 
-	auto bufferSizeBytes = numSamplesPerBuffer * 2;
-//	_waveOutStream = new libWinApi::WaveOutputStream( 44100, 2, 1, 3, (int) bufferSizeBytes );
+    auto numChannels = 1;
+    auto numFramesPerBuffer = numSamplesPerBuffer * numChannels;  // clarifying the issue
+	_waveOutStream = std::make_shared<WaveOutputStream>( numChannels, numFramesPerBuffer );
 
 /*
 	//
@@ -173,12 +173,7 @@ MainForm::~MainForm()
 		::DeleteObject(_guestScreenBitmap);
 		_guestScreenBitmap = NULL;
 	}
-
-	if( _waveOutStream != nullptr )
-	{
-		delete _waveOutStream;
-		_waveOutStream = nullptr;
-	}*/
+	*/
 }
 
 
@@ -898,22 +893,20 @@ std::shared_ptr<Jynx::IFileOpener>  MainForm::GetUserSettingsFilePath()
 
 void MainForm::WriteSoundBufferToSoundCardOrSleep_OnEmulatorThread()
 {
-    /*
 	// (Called on the EMULATOR thread, NOT the MAIN thread)
 
 	if( _lynxUIModel->IsSoundEnabled() )
 	{
 		// NOTE: The sound card "forces" us back until it's ready.
 		// This gives us a 20ms timer, on which the emulation is synchronised, when sound is ON.
-		_waveOutStream->Write( &(*_soundBuffer.begin()), (int) _soundBuffer.size() * 2 );
+		_waveOutStream->Write( &(*_soundBuffer.begin()), (uint32_t) _soundBuffer.size() );
 	}
 	else
-	{*/
+	{
 		// Sound is OFF, so we have to sleep for the 20 milliseconds instead.
 		// The emulation burst processing is usually very small on a modern CPU
 		// so this will suffice.  I don't care so much about realtime accuracy with
 		// sound OFF.
 		usleep( 20 );
-/*	}
-*/
+	}
 }

@@ -3,6 +3,7 @@
 
 #include "../Portable/LynxUserInterfaceModel.h"
 #include "../Portable/IViewServicesForLynxUserInterfaceModel.h"
+#include "../Portable/WaveOutputStream.h"
 
 #include <gtk/gtk.h>
 
@@ -102,7 +103,7 @@ private:
 //	MMRESULT               _timeBeginPeriodResult;
 //	MMRESULT               _timeSetEventResult;
 //
-//	libWinApi::WaveOutputStream  *_waveOutStream;
+    std::shared_ptr<WaveOutputStream>  _waveOutStream;
 	std::vector<uint16_t>         _soundBuffer;
 //
 //	libWinApi::WindowStyleAndPositionInformation  _restorationAfterFullScreen;
