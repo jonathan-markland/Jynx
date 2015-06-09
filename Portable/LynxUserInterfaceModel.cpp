@@ -218,9 +218,9 @@ namespace Jynx
 
 
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	//     MENU DISPATCHER
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	bool LynxUserInterfaceModel::DispatchMenuComment( uint32_t menuCommandID )
 	{
@@ -925,10 +925,10 @@ namespace Jynx
 		// Decide what menu items need to be greyed out:
 		//
 
-		bool greyRewind              = ! _lynxEmulator->CanRewindTape();
-		bool greyFinishRec           = ! _lynxEmulator->IsRecordingSoundToFile();
-		bool greySaveTapAs           = ! _lynxEmulator->CanSaveTAPFile();
-		bool greyFinishTextRecording = ! _lynxEmulator->IsRecordingLynxTextToFile();
+		bool enableRewind              = _lynxEmulator->CanRewindTape();
+		bool enableFinishRecording     = _lynxEmulator->IsRecordingSoundToFile();
+		bool enableSaveTapAs           = _lynxEmulator->CanSaveTAPFile();
+		bool enableFinishTextRecording = _lynxEmulator->IsRecordingLynxTextToFile();
 
 		//
 		// Set the check mark against the menu items:
@@ -950,10 +950,10 @@ namespace Jynx
 		_hostView->SetTickBoxState( TickableInterfaceElements::MaxSpeedConsole,  tickMaxSpeedConsole );
 		_hostView->SetTickBoxState( TickableInterfaceElements::MaxSpeedAlways,   tickMaxSpeedAlways );
 
-		_hostView->SetEnabledState( ButtonInterfaceElements::RewindTape, greyRewind );
-		_hostView->SetEnabledState( ButtonInterfaceElements::FinishRecording, greyFinishRec );
-		_hostView->SetEnabledState( ButtonInterfaceElements::SaveTape, greySaveTapAs );
-		_hostView->SetEnabledState( ButtonInterfaceElements::FinishLynxTextRecording, greyFinishTextRecording );
+		_hostView->SetEnabledState( ButtonInterfaceElements::RewindTape,              enableRewind );
+		_hostView->SetEnabledState( ButtonInterfaceElements::FinishRecording,         enableFinishRecording );
+		_hostView->SetEnabledState( ButtonInterfaceElements::SaveTape,                enableSaveTapAs );
+		_hostView->SetEnabledState( ButtonInterfaceElements::FinishLynxTextRecording, enableFinishTextRecording );
 
 		//
 		// Set the speed tickbox by looking up the number of cycles in the lookup table:

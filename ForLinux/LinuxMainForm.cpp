@@ -907,6 +907,6 @@ void MainForm::WriteSoundBufferToSoundCardOrSleep_OnEmulatorThread()
 		// The emulation burst processing is usually very small on a modern CPU
 		// so this will suffice.  I don't care so much about realtime accuracy with
 		// sound OFF.
-		usleep( 20 );
+		usleep( 20*1000 );
 	}
 }
