@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1433683105 source:/home/jonathan/Documents/Jynx/Portable/FileLoader.cpp
+1433683104 source:/home/jonathan/Documents/Jynx/Portable/FileLoader.cpp
 	<stdexcept>
 	"FileLoader.h"
 
@@ -8,7 +8,7 @@
 	<vector>
 	"IFileOpener.h"
 
-1433679525 /home/jonathan/Documents/Jynx/Portable/IFileOpener.h
+1433679524 /home/jonathan/Documents/Jynx/Portable/IFileOpener.h
 	<iostream>
 	<fstream>
 
@@ -18,7 +18,7 @@
 	<string>
 	"FileSerialiser.h"
 
-1433685323 /home/jonathan/Documents/Jynx/Portable/FileSerialiser.h
+1433685322 /home/jonathan/Documents/Jynx/Portable/FileSerialiser.h
 	"ISerialiser.h"
 	"Lexer.h"
 	"IFileOpener.h"
@@ -37,7 +37,7 @@
 	<stdint.h>
 	<string>
 
-1433683105 source:/home/jonathan/Documents/Jynx/Portable/Lexer.cpp
+1433683104 source:/home/jonathan/Documents/Jynx/Portable/Lexer.cpp
 	<stdexcept>
 	"Lexer.h"
 
@@ -84,7 +84,7 @@
 	<stdint.h>
 	<string>
 
-1433752831 /home/jonathan/Documents/Jynx/Portable/LynxHardware.h
+1433752830 /home/jonathan/Documents/Jynx/Portable/LynxHardware.h
 	<stdint.h>
 
 1433678744 /home/jonathan/Documents/Jynx/Portable/LynxEmulatorEnums.h
@@ -112,13 +112,13 @@
 	"IFileOpener.h"
 	"TapFileSplitter.h"
 
-1433685589 /home/jonathan/Documents/Jynx/Portable/TapFileSplitter.h
+1433685588 /home/jonathan/Documents/Jynx/Portable/TapFileSplitter.h
 	<stdint.h>
 	<string>
 	<vector>
 	"IFileOpener.h"
 
-1433681741 /home/jonathan/Documents/Jynx/Portable/TapFileWriter.h
+1433681740 /home/jonathan/Documents/Jynx/Portable/TapFileWriter.h
 	<stdint.h>
 	<vector>
 	"IFileOpener.h"
@@ -142,9 +142,9 @@
 	<algorithm>
 	"LynxRectangle.h"
 
-1433678744 /home/jonathan/Documents/Jynx/Portable/LynxRectangle.h
+1433969238 /home/jonathan/Documents/Jynx/Portable/LynxRectangle.h
 
-1433750105 source:/home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.cpp
+1433884370 source:/home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.cpp
 	<assert.h>
 	"LynxUserInterfaceModel.h"
 	"LynxHardware.h"
@@ -152,33 +152,33 @@
 	"FileSerialiser.h"
 	"MenuItemIDs.h"
 
-1433750105 /home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.h
+1433750104 /home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.h
 	"IViewServicesForLynxUserInterfaceModel.h"
 	"IHostServicesForLynxEmulator.h"
 	"LynxEmulatorGuest.h"
 	"UserSettingsSerialiser.h"
 
-1433750105 /home/jonathan/Documents/Jynx/Portable/IViewServicesForLynxUserInterfaceModel.h
+1433750104 /home/jonathan/Documents/Jynx/Portable/IViewServicesForLynxUserInterfaceModel.h
 	<memory>
 	"IFileOpener.h"
 	"LynxRectangle.h"
 	"LynxRoms.h"
 	"Enumerations.h"
 
-1433684767 /home/jonathan/Documents/Jynx/Portable/UserSettingsSerialiser.h
+1433684766 /home/jonathan/Documents/Jynx/Portable/UserSettingsSerialiser.h
 	<stdint.h>
 	"IFileOpener.h"
 	"ISerialiser.h"
 	"LynxEmulatorEnums.h"
 
-1433683429 source:/home/jonathan/Documents/Jynx/Portable/SignalWriter.cpp
+1433683428 source:/home/jonathan/Documents/Jynx/Portable/SignalWriter.cpp
 	"SignalWriter.h"
 
 1433683408 /home/jonathan/Documents/Jynx/Portable/SignalWriter.h
 	<stdint.h>
 	<vector>
 
-1433690441 source:/home/jonathan/Documents/Jynx/Portable/SoundBufferWriter.cpp
+1433690440 source:/home/jonathan/Documents/Jynx/Portable/SoundBufferWriter.cpp
 	<assert.h>
 	"SoundBufferWriter.h"
 	"ZeroInitialiseMemory.h"
@@ -239,7 +239,7 @@
 	"JynxZ80Timings.h"
 	"JynxZ80Shared.h"
 
-1433683981 source:/home/jonathan/Documents/Jynx/Portable/Z80/JynxZ80Disassembler.cpp
+1433683980 source:/home/jonathan/Documents/Jynx/Portable/Z80/JynxZ80Disassembler.cpp
 	"JynxZ80Disassembler.h"
 	"JynxZ80DisassemblyData.h"
 	<iomanip>
@@ -2727,24 +2727,24 @@
 	"Thread.h"
 	<assert.h>
 
-1433695465 source:/home/jonathan/Documents/Jynx/ForLinux/Linux_Waitable.cpp
+1433695464 source:/home/jonathan/Documents/Jynx/ForLinux/Linux_Waitable.cpp
 	<stdexcept>
 	<pthread.h>
 	"Waitable.h"
 
-1433760497 source:/home/jonathan/Documents/Jynx/ForLinux/main.cpp
+1433760496 source:/home/jonathan/Documents/Jynx/ForLinux/main.cpp
 	<stdlib.h>
 	<stdint.h>
 	<string>
 	<gtk/gtk.h>
 	"LinuxMainForm.h"
 
-1433789536 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxGtkMenu.cpp
+1433884390 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxGtkMenu.cpp
 	<algorithm>
 	<assert.h>
 	"LinuxGtkMenu.h"
 
-1433759011 /home/jonathan/Documents/Jynx/ForLinux/LinuxGtkMenu.h
+1433759010 /home/jonathan/Documents/Jynx/ForLinux/LinuxGtkMenu.h
 	<gtk/gtk.h>
 	<stdint.h>
 	<string>
@@ -2754,38 +2754,36 @@
 
 1433712722 /home/jonathan/Documents/Jynx/ForLinux/Resource.h
 
-1433750105 /home/jonathan/Documents/Jynx/Portable/Enumerations.h
+1433750104 /home/jonathan/Documents/Jynx/Portable/Enumerations.h
 
-1433750105 /home/jonathan/Documents/Jynx/Portable/MenuItemIDs.h
+1433750104 /home/jonathan/Documents/Jynx/Portable/MenuItemIDs.h
 
 1433751206 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxAboutBox.cpp
 	<gtk/gtk.h>
 
 1433751016 /home/jonathan/Documents/Jynx/ForLinux/LinuxAboutBox.h
 
-1433884111 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.cpp
-	"../Portable/MenuItemIDs.h"
-	"../Portable/LynxHardware.h"
-	"../Portable/UIStrings.h"
+1433972769 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.cpp
+	"MenuItemIDs.h"
+	"LynxHardware.h"
+	"UIStrings.h"
 	<assert.h>
 	<iostream>
 	<fstream>
+	<algorithm>
 	"LinuxMainForm.h"
 	"LinuxAboutBox.h"
 	"LinuxFileOpener.h"
 	"LinuxGtkFileDialogs.h"
-	"stdafx.h"
-	"resource.h"
-	"mmsystem.h"
 
-1433871218 /home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.h
+1433971972 /home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.h
 	"../Portable/LynxUserInterfaceModel.h"
 	"../Portable/IViewServicesForLynxUserInterfaceModel.h"
 	"../Portable/WaveOutputStream.h"
 	<gtk/gtk.h>
 	"LinuxGtkMenu.h"
 
-1433756069 /home/jonathan/Documents/Jynx/Portable/UIStrings.h
+1433756068 /home/jonathan/Documents/Jynx/Portable/UIStrings.h
 	<stdint.h>
 	"Enumerations.h"
 	"LynxRoms.h"
@@ -2801,10 +2799,10 @@
 	<string>
 	"../Portable/IFileOpener.h"
 
-1433761759 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxGtkFileDialogs.cpp
+1433761758 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxGtkFileDialogs.cpp
 	"LinuxGtkFileDialogs.h"
 
-1433761495 /home/jonathan/Documents/Jynx/ForLinux/LinuxGtkFileDialogs.h
+1433761494 /home/jonathan/Documents/Jynx/ForLinux/LinuxGtkFileDialogs.h
 	<string>
 	<gtk/gtk.h>
 

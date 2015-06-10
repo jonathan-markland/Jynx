@@ -56,7 +56,14 @@ public:
 private:
 
     void GtkConstruction();
-    static gint GtkHandlerForCloseBoxDeleteEvent( GtkWidget *widget, GdkEvent *event, gpointer thisMainWindowObject ); // static member
+
+    static gint GtkHandlerForCloseBoxDeleteEvent(          GtkWidget *widget, GdkEvent *event, gpointer userObject ); // static member
+
+    static gint GtkHandlerForDrawingAreaConfigureEvent(    GtkWidget *widget, GdkEventConfigure *event, gpointer userObject ); // static member   configure_event
+    static gint GtkHandlerForDrawingAreaExposeEvent(       GtkWidget *widget, GdkEventExpose *event, gpointer userObject );    // static member   expose_event
+    static gint GtkHandlerForDrawingAreaMotionNotifyEvent( GtkWidget *widget, GdkEventMotion *event, gpointer userObject );    // static member   motion_notify_event
+    static gint GtkHandlerForDrawingAreaButtonPressEvent(  GtkWidget *widget, GdkEventButton *event, gpointer userObject );    // static member   button_press_event
+
     bool OnInitDialog();
     void OnAbout();
     void OnCancel();
@@ -65,8 +72,10 @@ private:
 
     // GTK stuff
 
-    GtkWidget *_win;
-    GtkWidget *_vbox;
+    GtkWindow *_gtkWindow = nullptr;
+    GtkWidget *_gtkWindowAsWidget = nullptr;
+    GtkWidget *_gtkDrawingArea = nullptr;
+    GtkWidget *_vbox = nullptr;
 
     std::shared_ptr<LinuxGtkMenuBar>   _menuBar;
 
@@ -78,8 +87,11 @@ private:
     std::shared_ptr<LinuxGtkMenu>  _menuText;
     std::shared_ptr<LinuxGtkMenu>  _menuHelp;
 
-private:
+    GdkPixbuf *_pixBuf;  // The Jynx screen
+    void     *_pixBufBaseAddress      = nullptr;
+    uint32_t  _pixBufBytesPerScanLine = 0;
 
+private:
 
 //	bool CanRiskLosingModifiedTape() const;
 //	bool UserAllowsReset();
@@ -91,20 +103,11 @@ private:
 //	void OnAbout();
 //	void OnSound();
 //
-//	HDC     _dc;         // Is only set when asking the model to paint.
-//	HANDLE  _hbicon;
-//	HANDLE  _hsicon;
-//	int     _saveDC;
 //
 	std::unique_ptr<Jynx::LynxUserInterfaceModel> _lynxUIModel;  // Reminder - Emulator is within this.
-//	libWinApi::FrameBufferInfo        _screenInfo;
-//
-//	HBITMAP                _guestScreenBitmap;
-//	MMRESULT               _timeBeginPeriodResult;
-//	MMRESULT               _timeSetEventResult;
-//
+
     std::shared_ptr<WaveOutputStream>  _waveOutStream;
-	std::vector<uint16_t>         _soundBuffer;
+	std::vector<uint16_t>              _soundBuffer;
 //
 //	libWinApi::WindowStyleAndPositionInformation  _restorationAfterFullScreen;
 //

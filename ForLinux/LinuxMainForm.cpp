@@ -25,59 +25,25 @@
 #include <assert.h>
 #include <iostream>
 #include <fstream>
+#include <algorithm>
 
 #include "LinuxMainForm.h"
 #include "LinuxAboutBox.h"
 #include "LinuxFileOpener.h"
 #include "LinuxGtkFileDialogs.h"
 
-/*
-#include "stdafx.h"
-#include "resource.h"
-#include "mmsystem.h"
-
-
-#define TIMESLICE_PERIOD   16   // 16 bizarrely looks like 20 milliseconds (check the cursor flash rate).
-#define WM_HI_RES_TIMER (WM_USER + 0x101)
-
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //        HOST WINDOW
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-
-volatile HWND  g_hWndToPostMessage = NULL;
-
-void CALLBACK MainFormTimerProcedure(
-	uint32_t uTimerID,
-	uint32_t uMsg,
-	DWORD_PTR dwUser,
-	DWORD_PTR dw1,
-	DWORD_PTR dw2)
-{
-	if( g_hWndToPostMessage != NULL )
-	{
-		::PostMessage( g_hWndToPostMessage, WM_HI_RES_TIMER, 0, 0 );
-	}
-}
-*/
-
-
-
-MainForm::MainForm( /*HWND hWndOwner, */ const char *settingsFilePath, const char *snapshotFilePath, bool gamesMode, const char *tapFilePath, const char *exePath )
-    : _win( nullptr )
-    , _vbox( nullptr )
-	, _lynxUIModel( nullptr )
-	, _settingsFilePath(settingsFilePath)
+MainForm::MainForm( const char *settingsFilePath, const char *snapshotFilePath, bool gamesMode, const char *tapFilePath, const char *exePath )
+    : _settingsFilePath(settingsFilePath)
 	, _snapshotFilePath(snapshotFilePath)
 	, _tapFilePath(tapFilePath)
 	, _exePath(exePath)
 	, _gamesMode(gamesMode)
 	//, _guestScreenBitmap(NULL)
-	//, _timeBeginPeriodResult(0)
-	//, _timeSetEventResult(0)
-	//, _saveDC(0)
 {
 	//
 	// Sound
@@ -96,31 +62,32 @@ MainForm::MainForm( /*HWND hWndOwner, */ const char *settingsFilePath, const cha
     auto numFramesPerBuffer = numSamplesPerBuffer * numChannels;  // clarifying the issue
 	_waveOutStream = std::make_shared<WaveOutputStream>( numChannels, numFramesPerBuffer, 3 );
 
-/*
 	//
 	// Create frame buffer bitmap which emulator can directly draw on.
 	//
 
-	if( ! CreateDIBSectionFrameBuffer( LYNX_FRAMEBUF_WIDTH, LYNX_FRAMEBUF_HEIGHT, &_screenInfo, &_guestScreenBitmap ) )
+	_pixBuf = gdk_pixbuf_new( GDK_COLORSPACE_RGB, TRUE, 8, LYNX_FRAMEBUF_WIDTH, LYNX_FRAMEBUF_HEIGHT );  // Reminder: buffer is not cleared.
+	if( ! _pixBuf )
 	{
-		throw std::runtime_error( "Windows cannot create the screen bitmap for the emulation.\nThe emulation cannot continue." );
+		throw std::runtime_error( "Cannot create the screen bitmap for the emulation.\nThe emulation cannot continue." );
 	}
+	auto pixelBuffer  = gdk_pixbuf_get_pixels( _pixBuf );
+	auto numChannels2 = gdk_pixbuf_get_n_channels( _pixBuf );
+	auto bitsPerSample = gdk_pixbuf_get_bits_per_sample( _pixBuf );
+	auto rowStride = gdk_pixbuf_get_rowstride( _pixBuf );
 
-	//
-	// Ask for high resolution timers.
-	//
+    _pixBufBaseAddress      = pixelBuffer;
+    _pixBufBytesPerScanLine = rowStride;
 
-	_timeBeginPeriodResult = timeBeginPeriod(1);
-	if( _timeBeginPeriodResult == TIMERR_NOCANDO )
-	{
-		MessageBox( *this, L"Windows has not permitted the emulator to use the desired timer frequency.\nThe emulation speed may be affected.", L"Note", MB_OK | MB_ICONINFORMATION );
-	}
-
-	_timeSetEventResult	= timeSetEvent( 20, 20, &MainFormTimerProcedure, (DWORD_PTR) GetHWND(), TIME_PERIODIC | TIME_CALLBACK_FUNCTION | TIME_KILL_SYNCHRONOUS );
-	if( _timeSetEventResult == NULL )
-	{
-		throw std::runtime_error( "Windows cannot create a multimedia timer.  Emulation cannot continue." );
-	}
+/*GdkColorspace gdk_pixbuf_get_colorspace      (const GdkPixbuf *pixbuf);
+int           gdk_pixbuf_get_n_channels      (const GdkPixbuf *pixbuf);
+gboolean      gdk_pixbuf_get_has_alpha       (const GdkPixbuf *pixbuf);
+int           gdk_pixbuf_get_bits_per_sample (const GdkPixbuf *pixbuf);
+guchar       *gdk_pixbuf_get_pixels          (const GdkPixbuf *pixbuf);
+int           gdk_pixbuf_get_width           (const GdkPixbuf *pixbuf);
+int           gdk_pixbuf_get_height          (const GdkPixbuf *pixbuf);
+int           gdk_pixbuf_get_rowstride       (const GdkPixbuf *pixbuf);
+gsize         gdk_pixbuf_get_byte_length     (const GdkPixbuf *pixbuf);
 */
 	//
 	// Create the model (this has the emulator inside, plus UI logic)
@@ -156,24 +123,19 @@ MainForm::~MainForm()
 
 	g_hWndToPostMessage = NULL;
 
-	if( _timeSetEventResult != NULL )
-	{
-		timeKillEvent( _timeSetEventResult );
-		_timeSetEventResult = NULL;
-	}
-
-	if( _timeBeginPeriodResult != TIMERR_NOCANDO )
-	{
-		timeEndPeriod(1);
-		_timeBeginPeriodResult = TIMERR_NOCANDO;
-	}
-
 	if( _guestScreenBitmap != NULL )
 	{
-		::DeleteObject(_guestScreenBitmap);
+		::DeleteObject(_guestScreenBitmap);GdkPixbuf *         gdk_pixbuf_new                      (GdkColorspace colorspace,
+                                                         gboolean has_alpha,
+                                                         int bits_per_sample,
+                                                         int width,
+                                                         int height);
 		_guestScreenBitmap = NULL;
 	}
 	*/
+
+    // TODO: unref the pixbuf
+	// TODO:  To be clean, what GTK destruction needs to be done?  Most of the examples just returned from main().
 }
 
 
@@ -187,19 +149,20 @@ void MainForm::GtkConstruction()  // TODO: Do in OnInitDialog instead?
 {
     // Create the main window:
 
-    _win = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+    _gtkWindow = GTK_WINDOW( gtk_window_new( GTK_WINDOW_TOPLEVEL ) );
+    _gtkWindowAsWidget = GTK_WIDGET( _gtkWindow );  // avoid loads of casting
 
-    gtk_container_set_border_width (GTK_CONTAINER (_win), 0);
-    gtk_window_set_default_size(GTK_WINDOW(_win), 800, 600);
-    gtk_window_set_title (GTK_WINDOW (_win), "Jynx");
-    gtk_window_set_position (GTK_WINDOW (_win), GTK_WIN_POS_CENTER);
-    gtk_widget_realize (_win);
-    gtk_signal_connect( GTK_OBJECT( _win ), "delete_event", GTK_SIGNAL_FUNC( &MainForm::GtkHandlerForCloseBoxDeleteEvent ), this );
+    gtk_container_set_border_width( GTK_CONTAINER( _gtkWindow ), 0 );
+    gtk_window_set_default_size(    _gtkWindow, 800, 600 );
+    gtk_window_set_title(           _gtkWindow, "Jynx" );
+    gtk_window_set_position(        _gtkWindow, GTK_WIN_POS_CENTER );
+    gtk_widget_realize(             _gtkWindowAsWidget );
+    gtk_signal_connect(             GTK_OBJECT( _gtkWindow ), "delete_event", GTK_SIGNAL_FUNC( &MainForm::GtkHandlerForCloseBoxDeleteEvent ), this );
 
     // Create vertical box:
 
     _vbox = gtk_vbox_new( FALSE, 0 );
-    gtk_container_add( GTK_CONTAINER(_win), _vbox );
+    gtk_container_add( GTK_CONTAINER(_gtkWindow), _vbox );
 
     // Create the menu bar:
 
@@ -293,12 +256,29 @@ void MainForm::GtkConstruction()  // TODO: Do in OnInitDialog instead?
 
     _menuHelp->AddItem(  "&About ...",                  ID_HELP_ABOUT );
 
+    //
+    // Add a generic drawable widget, to which we'll add event hooks to draw the screen.
+    //
 
+    _gtkDrawingArea = gtk_drawing_area_new();
+    // gtk_drawing_area_size( GTK_DRAWING_AREA(_gtkDrawingArea), 200, 200 );
+    auto gtkDrawingAreaAsObject = GTK_OBJECT(_gtkDrawingArea);
+    gtk_signal_connect( gtkDrawingAreaAsObject, "expose_event",        (GtkSignalFunc) &MainForm::GtkHandlerForDrawingAreaExposeEvent,       this );
+    gtk_signal_connect( gtkDrawingAreaAsObject, "configure_event",     (GtkSignalFunc) &MainForm::GtkHandlerForDrawingAreaConfigureEvent,    this );
+    gtk_signal_connect( gtkDrawingAreaAsObject, "motion_notify_event", (GtkSignalFunc) &MainForm::GtkHandlerForDrawingAreaMotionNotifyEvent, this );
+    gtk_signal_connect( gtkDrawingAreaAsObject, "button_press_event",  (GtkSignalFunc) &MainForm::GtkHandlerForDrawingAreaButtonPressEvent,  this );
+    gtk_widget_set_events( _gtkDrawingArea, GDK_EXPOSURE_MASK | GDK_LEAVE_NOTIFY_MASK | GDK_BUTTON_PRESS_MASK | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK );  // TODO: Do I need all of these?
+    gtk_widget_set_extension_events( _gtkDrawingArea, GDK_EXTENSION_EVENTS_CURSOR ); // TODO: What does this do?
+    gtk_widget_show( _gtkDrawingArea ); // TODO: needed?
 
+    //
     // Establish content of primary vertical box:
-    gtk_box_pack_start( GTK_BOX(_vbox), _menuBar->GetWidget(), FALSE, FALSE, 0 );
+    //
 
-    // TODO: Add main bitmap here.
+    auto vboxAsBox = GTK_BOX(_vbox);
+    gtk_box_pack_start( vboxAsBox, _menuBar->GetWidget(), FALSE, FALSE, 0 );
+    gtk_box_pack_start( vboxAsBox, _gtkDrawingArea, TRUE, TRUE, 0 );
+
 
     OnInitDialog();
 }
@@ -307,7 +287,7 @@ void MainForm::GtkConstruction()  // TODO: Do in OnInitDialog instead?
 
 void MainForm::ShowAll()
 {
-    gtk_widget_show_all( _win );
+    gtk_widget_show_all( _gtkWindowAsWidget );
 }
 
 
@@ -328,15 +308,57 @@ void MainForm::NotifyMenuItemClicked( uint32_t menuItemID )
 
 
 
-gint MainForm::GtkHandlerForCloseBoxDeleteEvent( GtkWidget *widget, GdkEvent *event, gpointer thisMainWindowObject ) // static member
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+//     GTK event handlers
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+
+gint MainForm::GtkHandlerForCloseBoxDeleteEvent( GtkWidget *widget, GdkEvent *event, gpointer userObject ) // static member
 {
     // If you return FALSE GTK will emit the "destroy" signal.
     // Returning TRUE means you don't want the window to be destroyed.
 
-    auto thisObject = (MainForm *) thisMainWindowObject;
+    auto thisObject = (MainForm *) userObject;
     thisObject->OnCancel(); // thisObject->NotifyMenuItemClicked( ID_FILE_EXIT );
     return TRUE; // do not automatically destroy window.  The handler above will have done that if it is required.
 }
+
+
+
+gint MainForm::GtkHandlerForDrawingAreaConfigureEvent( GtkWidget *widget, GdkEventConfigure *event, gpointer userObject ) // static member   configure_event
+{
+    // CONFIGURE
+    auto thisObject = (MainForm *) userObject;
+    return TRUE;
+}
+
+
+
+gint MainForm::GtkHandlerForDrawingAreaExposeEvent( GtkWidget *widget, GdkEventExpose *event, gpointer userObject )    // static member   expose_event
+{
+    auto thisObject = (MainForm *) userObject;
+    thisObject->_lynxUIModel->OnPaint();
+    return FALSE;
+}
+
+
+
+gint MainForm::GtkHandlerForDrawingAreaMotionNotifyEvent( GtkWidget *widget, GdkEventMotion *event, gpointer userObject )    // static member   motion_notify_event
+{
+    auto thisObject = (MainForm *) userObject;
+    return TRUE;
+}
+
+
+
+gint MainForm::GtkHandlerForDrawingAreaButtonPressEvent(  GtkWidget *widget, GdkEventButton *event, gpointer userObject )    // static member   button_press_event
+{
+    auto thisObject = (MainForm *) userObject;
+    return TRUE;
+}
+
 
 
 
@@ -596,7 +618,7 @@ void MainForm::CloseDownNow()
 std::shared_ptr<Jynx::IFileOpener> MainForm::ShowOpenFileDialog( Jynx::LoadableFileTypes::Enum fileType )
 {
 	std::string  filePathChosen;
-	if( ::ShowOpenFileDialog( GTK_WINDOW(_win), OpenFileDialogTitlesNarrow[fileType], OpenFileDialogSpecsNarrow[fileType], &filePathChosen ) )
+	if( ::ShowOpenFileDialog( GTK_WINDOW(_gtkWindow), OpenFileDialogTitlesNarrow[fileType], OpenFileDialogSpecsNarrow[fileType], &filePathChosen ) )
 	{
 		return std::make_shared<LinuxFileOpener>( filePathChosen ); // throws
 	}
@@ -608,7 +630,7 @@ std::shared_ptr<Jynx::IFileOpener> MainForm::ShowOpenFileDialog( Jynx::LoadableF
 std::shared_ptr<Jynx::IFileOpener> MainForm::ShowSaveFileDialog( Jynx::SaveableFileTypes::Enum fileType )
 {
 	std::string  filePathChosen;
-	if( ::ShowSaveFileDialog( GTK_WINDOW(_win), SaveFileDialogTitlesNarrow[fileType], SaveFileDialogSpecsNarrow[fileType], SaveFileDialogExtnsNarrow[fileType], &filePathChosen ) )
+	if( ::ShowSaveFileDialog( GTK_WINDOW(_gtkWindow), SaveFileDialogTitlesNarrow[fileType], SaveFileDialogSpecsNarrow[fileType], SaveFileDialogExtnsNarrow[fileType], &filePathChosen ) )
 	{
 		return std::make_shared<LinuxFileOpener>( filePathChosen ); // throws
 	}
@@ -622,7 +644,7 @@ void MainForm::TellUser( const char *messageText, const char *captionText )
 	// ::MessageBoxA( *this, messageText, captionText, MB_OK | MB_ICONINFORMATION );
 
     auto dialog = gtk_message_dialog_new(
-        GTK_WINDOW(_win),
+        GTK_WINDOW(_gtkWindow),
         GTK_DIALOG_DESTROY_WITH_PARENT,
         GTK_MESSAGE_INFO,
         GTK_BUTTONS_OK,
@@ -639,7 +661,7 @@ void MainForm::TellUser( const char *messageText, const char *captionText )
 bool MainForm::AskYesNoQuestion( const char *questionText, const char *captionText )
 {
     auto dialog = gtk_message_dialog_new(
-        GTK_WINDOW(_win),
+        GTK_WINDOW(_gtkWindow),
         GTK_DIALOG_DESTROY_WITH_PARENT,
         GTK_MESSAGE_QUESTION,
         GTK_BUTTONS_YES_NO,
@@ -662,23 +684,17 @@ void MainForm::SetTickBoxState( Jynx::TickableInterfaceElements::Enum itemToSet,
 
     _menuBar->CheckMenuItem( MainFormTickableItems[itemToSet], tickState );
 
-/*
 	if( itemToSet == Jynx::TickableInterfaceElements::ShowFullScreen )
 	{
-		auto previouslyFullScreen = libWinApi::IsWindowFullScreen( *this );
-		if( tickState != previouslyFullScreen )
-		{
-			if( tickState )
-			{
-				_restorationAfterFullScreen = libWinApi::GoFullScreen( *this );
-			}
-			else
-			{
-				_restorationAfterFullScreen.Restore();
-			}
-		}
+        if( tickState == true )
+        {
+            gtk_window_fullscreen( GTK_WINDOW(_gtkWindow) );
+        }
+        else
+        {
+            gtk_window_unfullscreen( GTK_WINDOW(_gtkWindow) );
+        }
 	}
-	*/
 }
 
 
@@ -696,16 +712,17 @@ void MainForm::SetEnabledState( Jynx::ButtonInterfaceElements::Enum itemToSet, b
 Jynx::LynxRectangle  MainForm::GetClientRectangle()
 {
 	Jynx::LynxRectangle  area;
-	assert(false); // TODO: complete this function
-/*
-	RECT r;
-	::GetClientRect( *this, &r );
 
-	area.left   = r.left;
-	area.top    = r.top;
-	area.right  = r.right;
-	area.bottom = r.bottom;
-*/
+	if( _gtkDrawingArea != nullptr )
+    {
+        int width   = _gtkDrawingArea->allocation.width;
+        int height  = _gtkDrawingArea->allocation.height;
+        area.left   = 0;
+        area.top    = 0;
+        area.right  = width;
+        area.bottom = height;
+    }
+
 	return area;
 }
 
@@ -740,53 +757,33 @@ void MainForm::CancelViewport()
 
 void MainForm::StretchBlitTheGuestScreen( int left, int top, int width, int height )
 {
-	assert(false);
-    /*
-	if( _dc != NULL && _guestScreenBitmap != NULL ) // If this is NULL, program will be terminating because of posted quit message, anyway!
-	{
-		auto bitmapDC = ::CreateCompatibleDC( _dc );
-		if( bitmapDC != NULL )
-		{
-			auto previousBitmapHandle = (HANDLE) ::SelectObject( bitmapDC, _guestScreenBitmap );
-
-			::StretchBlt(
-				_dc,
-				left, top, width, height,
-				bitmapDC,
-				0, 0, LYNX_FRAMEBUF_WIDTH, LYNX_FRAMEBUF_HEIGHT,
-				SRCCOPY );
-
-			::SelectObject( bitmapDC, previousBitmapHandle );
-			::DeleteDC( bitmapDC );
-		}
-	}*/
+	if( _gtkDrawingArea != nullptr )
+    {
+        auto gtkDrawble = gtk_widget_get_window( _gtkDrawingArea );
+        gdk_draw_pixbuf( gtkDrawble,
+                         NULL, // a GdkGC, used for clipping, or NULL.
+                          _pixBuf, 0,0, left,top, LYNX_FRAMEBUF_WIDTH, LYNX_FRAMEBUF_HEIGHT, GDK_RGB_DITHER_NONE, 0, 0 );
+    }
 }
 
 
 
 void MainForm::FillBlackRectangle( int left, int top, int width, int height )
 {
-	assert(false);
-    /*
-	if( _dc != NULL )
-	{
-		::BitBlt( _dc, left, top, width, height, NULL, 0, 0, BLACKNESS );
-	}*/
+    auto gtkDrawble = gtk_widget_get_window( _gtkDrawingArea );
+    gdk_draw_rectangle( gtkDrawble, _gtkDrawingArea->style->black_gc, TRUE, left, top, width, height );
 }
 
 
 
 void MainForm::InvalidateAreaOfHostScreen( const Jynx::LynxRectangle &area )
 {
-	assert(false);
-    /*
-	RECT r;
-	r.left   = area.left;
-	r.top    = area.top;
-	r.right  = area.right;
-	r.bottom = area.bottom;
-	::InvalidateRect( *this, &r, FALSE );
-	*/
+    GdkRectangle  rect;
+    rect.x      = area.left;
+    rect.y      = area.top;
+    rect.width  = area.right - area.left;
+    rect.height = area.bottom - area.top;
+	gdk_window_invalidate_rect( GDK_WINDOW(_gtkDrawingArea), &rect, FALSE ); // FALSE = there are no children to invalidate anyway.
 }
 
 
@@ -822,7 +819,10 @@ inline PIXEL_TYPE *CalcFrameBufferPixelAddress( PIXEL_TYPE *frameBufferTopLeftAd
 
 void MainForm::TranslateRGBXColourPaletteToHostValues( const uint32_t *eightEntryColourPalette, uint32_t *eightEntryTranslatedValues )
 {
-	// Nothing to do here, the format this host requires is the same as the emulator uses.
+	for( int i=0; i<8; i++ )
+    {
+        eightEntryTranslatedValues[i] = eightEntryColourPalette[i] | 0xFF000000;
+    }
 }
 
 
@@ -834,11 +834,11 @@ void  MainForm::PaintPixelsOnHostBitmap_OnEmulatorThread( uint32_t addressOffset
 	// Multithreading note:  In theory, we may get "tearing" with this being unsynchronised.
 	// This is deemed not to matter.  The EMULATOR thread CANNOT BE HELD UP without risking sound suffering!
 
-/*	int32_t  destX = (addressOffset & 0x1F) << 3;
+	int32_t  destX = (addressOffset & 0x1F) << 3;
 	int32_t  destY = (addressOffset >> 5);
-	auto destinationPixelAddress = CalcFrameBufferPixelAddress( (uint32_t *) _screenInfo.BaseAddress, _screenInfo.BytesPerScanLine, destX, destY );
+	auto destinationPixelAddress = CalcFrameBufferPixelAddress( (uint32_t *) _pixBufBaseAddress, _pixBufBytesPerScanLine, destX, destY );
 	auto endPixelAddress = destinationPixelAddress + 8;
-	std::copy_n( eightPixelsData, 8, destinationPixelAddress );*/
+	std::copy_n( eightPixelsData, 8, destinationPixelAddress );
 }
 
 

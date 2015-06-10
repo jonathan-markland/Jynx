@@ -29,10 +29,13 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add option="-std=c++11" />
 					<Add directory="ForLinux" />
+					<Add directory="../Portable" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
+					<Add library="asound" />
 				</Linker>
 			</Target>
 		</Build>
