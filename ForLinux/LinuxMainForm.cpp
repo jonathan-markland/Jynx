@@ -71,10 +71,11 @@ MainForm::MainForm( const char *settingsFilePath, const char *snapshotFilePath, 
 	{
 		throw std::runtime_error( "Cannot create the screen bitmap for the emulation.\nThe emulation cannot continue." );
 	}
-	auto pixelBuffer  = gdk_pixbuf_get_pixels( _pixBuf );
-	auto numChannels2 = gdk_pixbuf_get_n_channels( _pixBuf );
+
+	auto pixelBuffer   = gdk_pixbuf_get_pixels( _pixBuf );
+	auto numChannels2  = gdk_pixbuf_get_n_channels( _pixBuf );
 	auto bitsPerSample = gdk_pixbuf_get_bits_per_sample( _pixBuf );
-	auto rowStride = gdk_pixbuf_get_rowstride( _pixBuf );
+	auto rowStride     = gdk_pixbuf_get_rowstride( _pixBuf );
 
     _pixBufBaseAddress      = pixelBuffer;
     _pixBufBytesPerScanLine = rowStride;
@@ -279,6 +280,13 @@ void MainForm::GtkConstruction()  // TODO: Do in OnInitDialog instead?
     gtk_box_pack_start( vboxAsBox, _menuBar->GetWidget(), FALSE, FALSE, 0 );
     gtk_box_pack_start( vboxAsBox, _gtkDrawingArea, TRUE, TRUE, 0 );
 
+    //
+    // The emulation thread provides timer-like functionality to the main thread.
+    // This saves us setting up an additional timer with the library.
+    //
+
+    // g_idle_add( (GSourceFunc) &MainForm::GtkHandlerForIdleTasks, this );
+    g_timeout_add( 20, (GSourceFunc) &MainForm::GtkHandlerForIdleTasks, this );
 
     OnInitDialog();
 }
@@ -339,7 +347,19 @@ gint MainForm::GtkHandlerForDrawingAreaConfigureEvent( GtkWidget *widget, GdkEve
 gint MainForm::GtkHandlerForDrawingAreaExposeEvent( GtkWidget *widget, GdkEventExpose *event, gpointer userObject )    // static member   expose_event
 {
     auto thisObject = (MainForm *) userObject;
-    thisObject->_lynxUIModel->OnPaint();
+
+    if( thisObject->_gtkDrawingArea != nullptr )
+    {
+        auto gtkDrawble = gtk_widget_get_window( thisObject->_gtkDrawingArea );
+        thisObject->_cairoContext = gdk_cairo_create( gtkDrawble );
+        if( thisObject->_cairoContext != nullptr )
+        {
+            thisObject->_lynxUIModel->OnPaint();
+            cairo_destroy( thisObject->_cairoContext );
+            thisObject->_cairoContext = nullptr;
+        }
+    }
+
     return FALSE;
 }
 
@@ -361,6 +381,16 @@ gint MainForm::GtkHandlerForDrawingAreaButtonPressEvent(  GtkWidget *widget, Gdk
 
 
 
+gboolean MainForm::GtkHandlerForIdleTasks( gpointer userObject )    // static member   button_press_event
+{
+    auto thisObject = (MainForm *) userObject;
+    //if( thisObject->_mainThreadShouldDoPeriodicTasks )
+    {
+        thisObject->_lynxUIModel->OnTimer();
+        //thisObject->_mainThreadShouldDoPeriodicTasks = false;
+    }
+    return TRUE;  // FALSE would remove us from the to do list.
+}
 
 
 
@@ -757,12 +787,16 @@ void MainForm::CancelViewport()
 
 void MainForm::StretchBlitTheGuestScreen( int left, int top, int width, int height )
 {
-	if( _gtkDrawingArea != nullptr )
+    if( _gtkDrawingArea != nullptr && _cairoContext != nullptr )
     {
-        auto gtkDrawble = gtk_widget_get_window( _gtkDrawingArea );
-        gdk_draw_pixbuf( gtkDrawble,
-                         NULL, // a GdkGC, used for clipping, or NULL.
-                          _pixBuf, 0,0, left,top, LYNX_FRAMEBUF_WIDTH, LYNX_FRAMEBUF_HEIGHT, GDK_RGB_DITHER_NONE, 0, 0 );
+        cairo_matrix_t  mat;
+        cairo_matrix_init( &mat, double(width) / LYNX_FRAMEBUF_WIDTH, 0, 0, double(height) / LYNX_FRAMEBUF_HEIGHT, left, top);
+        cairo_transform( _cairoContext, &mat );
+        cairo_rectangle( _cairoContext, 0, 0, LYNX_FRAMEBUF_WIDTH, LYNX_FRAMEBUF_HEIGHT ); // left, top, width, height );
+        gdk_cairo_set_source_pixbuf( _cairoContext, _pixBuf, 0, 0 );
+        cairo_set_antialias( _cairoContext, CAIRO_ANTIALIAS_NONE );
+        cairo_pattern_set_filter( cairo_get_source(_cairoContext), CAIRO_FILTER_NEAREST );
+        cairo_fill( _cairoContext );
     }
 }
 
@@ -783,7 +817,8 @@ void MainForm::InvalidateAreaOfHostScreen( const Jynx::LynxRectangle &area )
     rect.y      = area.top;
     rect.width  = area.right - area.left;
     rect.height = area.bottom - area.top;
-	gdk_window_invalidate_rect( GDK_WINDOW(_gtkDrawingArea), &rect, FALSE ); // FALSE = there are no children to invalidate anyway.
+    auto gtkDrawble = gtk_widget_get_window( _gtkDrawingArea );
+	gdk_window_invalidate_rect( gtkDrawble, &rect, FALSE ); // FALSE = there are no children to invalidate anyway.
 }
 
 
@@ -821,7 +856,7 @@ void MainForm::TranslateRGBXColourPaletteToHostValues( const uint32_t *eightEntr
 {
 	for( int i=0; i<8; i++ )
     {
-        eightEntryTranslatedValues[i] = eightEntryColourPalette[i] | 0xFF000000;
+        eightEntryTranslatedValues[i] = eightEntryColourPalette[i] | 0xFF000000; // Set ALPHA to 255 always.
     }
 }
 
@@ -909,4 +944,6 @@ void MainForm::WriteSoundBufferToSoundCardOrSleep_OnEmulatorThread()
 		// sound OFF.
 		usleep( 20*1000 );
 	}
+
+	_mainThreadShouldDoPeriodicTasks = true;
 }

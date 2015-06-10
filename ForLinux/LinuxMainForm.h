@@ -64,6 +64,8 @@ private:
     static gint GtkHandlerForDrawingAreaMotionNotifyEvent( GtkWidget *widget, GdkEventMotion *event, gpointer userObject );    // static member   motion_notify_event
     static gint GtkHandlerForDrawingAreaButtonPressEvent(  GtkWidget *widget, GdkEventButton *event, gpointer userObject );    // static member   button_press_event
 
+    static gboolean GtkHandlerForIdleTasks( gpointer userObject );    // static member   button_press_event
+
     bool OnInitDialog();
     void OnAbout();
     void OnCancel();
@@ -90,6 +92,10 @@ private:
     GdkPixbuf *_pixBuf;  // The Jynx screen
     void     *_pixBufBaseAddress      = nullptr;
     uint32_t  _pixBufBytesPerScanLine = 0;
+
+    cairo_t  *_cairoContext = nullptr;  // only set within lifetime of expose event
+
+    volatile bool _mainThreadShouldDoPeriodicTasks = false;
 
 private:
 

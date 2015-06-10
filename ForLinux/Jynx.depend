@@ -41,7 +41,7 @@
 	<stdexcept>
 	"Lexer.h"
 
-1433690128 source:/home/jonathan/Documents/Jynx/Portable/LynxEmulatorGuest.cpp
+1433972803 source:/home/jonathan/Documents/Jynx/Portable/LynxEmulatorGuest.cpp
 	<assert.h>
 	<string>
 	"LynxEmulatorGuest.h"
@@ -2763,7 +2763,7 @@
 
 1433751016 /home/jonathan/Documents/Jynx/ForLinux/LinuxAboutBox.h
 
-1433972769 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.cpp
+1433976542 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.cpp
 	"MenuItemIDs.h"
 	"LynxHardware.h"
 	"UIStrings.h"
@@ -2776,7 +2776,7 @@
 	"LinuxFileOpener.h"
 	"LinuxGtkFileDialogs.h"
 
-1433971972 /home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.h
+1433977684 /home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.h
 	"../Portable/LynxUserInterfaceModel.h"
 	"../Portable/IViewServicesForLynxUserInterfaceModel.h"
 	"../Portable/WaveOutputStream.h"
