@@ -27,6 +27,8 @@
 #include <fstream>
 #include <algorithm>
 
+#include "gdk/gdkkeysyms.h"
+
 #include "LinuxMainForm.h"
 #include "LinuxAboutBox.h"
 #include "LinuxFileOpener.h"
@@ -268,8 +270,13 @@ void MainForm::GtkConstruction()  // TODO: Do in OnInitDialog instead?
     gtk_signal_connect( gtkDrawingAreaAsObject, "configure_event",     (GtkSignalFunc) &MainForm::GtkHandlerForDrawingAreaConfigureEvent,    this );
     gtk_signal_connect( gtkDrawingAreaAsObject, "motion_notify_event", (GtkSignalFunc) &MainForm::GtkHandlerForDrawingAreaMotionNotifyEvent, this );
     gtk_signal_connect( gtkDrawingAreaAsObject, "button_press_event",  (GtkSignalFunc) &MainForm::GtkHandlerForDrawingAreaButtonPressEvent,  this );
-    gtk_widget_set_events( _gtkDrawingArea, GDK_EXPOSURE_MASK | GDK_LEAVE_NOTIFY_MASK | GDK_BUTTON_PRESS_MASK | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK );  // TODO: Do I need all of these?
+    gtk_signal_connect( gtkDrawingAreaAsObject, "key_press_event",     (GtkSignalFunc) &MainForm::GtkHandlerForKeyPress,    this );
+    gtk_signal_connect( gtkDrawingAreaAsObject, "key_release_event",   (GtkSignalFunc) &MainForm::GtkHandlerForKeyRelease,  this );
+    gtk_widget_set_events(
+        _gtkDrawingArea, GDK_EXPOSURE_MASK | GDK_LEAVE_NOTIFY_MASK | GDK_BUTTON_PRESS_MASK
+        | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK );  // TODO: Do I need all of these?
     gtk_widget_set_extension_events( _gtkDrawingArea, GDK_EXTENSION_EVENTS_CURSOR ); // TODO: What does this do?
+    gtk_widget_set_can_focus( _gtkDrawingArea, TRUE );
     gtk_widget_show( _gtkDrawingArea ); // TODO: needed?
 
     //
@@ -317,91 +324,9 @@ void MainForm::NotifyMenuItemClicked( uint32_t menuItemID )
 
 
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-//     GTK event handlers
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
 
-gint MainForm::GtkHandlerForCloseBoxDeleteEvent( GtkWidget *widget, GdkEvent *event, gpointer userObject ) // static member
-{
-    // If you return FALSE GTK will emit the "destroy" signal.
-    // Returning TRUE means you don't want the window to be destroyed.
-
-    auto thisObject = (MainForm *) userObject;
-    thisObject->OnCancel(); // thisObject->NotifyMenuItemClicked( ID_FILE_EXIT );
-    return TRUE; // do not automatically destroy window.  The handler above will have done that if it is required.
-}
-
-
-
-gint MainForm::GtkHandlerForDrawingAreaConfigureEvent( GtkWidget *widget, GdkEventConfigure *event, gpointer userObject ) // static member   configure_event
-{
-    // CONFIGURE
-    auto thisObject = (MainForm *) userObject;
-    return TRUE;
-}
-
-
-
-gint MainForm::GtkHandlerForDrawingAreaExposeEvent( GtkWidget *widget, GdkEventExpose *event, gpointer userObject )    // static member   expose_event
-{
-    auto thisObject = (MainForm *) userObject;
-
-    if( thisObject->_gtkDrawingArea != nullptr )
-    {
-        auto gtkDrawble = gtk_widget_get_window( thisObject->_gtkDrawingArea );
-        thisObject->_cairoContext = gdk_cairo_create( gtkDrawble );
-        if( thisObject->_cairoContext != nullptr )
-        {
-            thisObject->_lynxUIModel->OnPaint();
-            cairo_destroy( thisObject->_cairoContext );
-            thisObject->_cairoContext = nullptr;
-        }
-    }
-
-    return FALSE;
-}
-
-
-
-gint MainForm::GtkHandlerForDrawingAreaMotionNotifyEvent( GtkWidget *widget, GdkEventMotion *event, gpointer userObject )    // static member   motion_notify_event
-{
-    auto thisObject = (MainForm *) userObject;
-    return TRUE;
-}
-
-
-
-gint MainForm::GtkHandlerForDrawingAreaButtonPressEvent(  GtkWidget *widget, GdkEventButton *event, gpointer userObject )    // static member   button_press_event
-{
-    auto thisObject = (MainForm *) userObject;
-    return TRUE;
-}
-
-
-
-gboolean MainForm::GtkHandlerForIdleTasks( gpointer userObject )    // static member   button_press_event
-{
-    auto thisObject = (MainForm *) userObject;
-    //if( thisObject->_mainThreadShouldDoPeriodicTasks )
-    {
-        thisObject->_lynxUIModel->OnTimer();
-        //thisObject->_mainThreadShouldDoPeriodicTasks = false;
-    }
-    return TRUE;  // FALSE would remove us from the to do list.
-}
-
-
-
-
-
-
-
-
-
-
-/*
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //     HOST KEY CODE to LYNX KEY INDEX translation
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -412,28 +337,52 @@ gboolean MainForm::GtkHandlerForIdleTasks( gpointer userObject )    // static me
 
 #define NUMBER_OF_KEYS (8*11)
 
+#define VK_ESCAPE     9
+#define VK_LSHIFT    50
+#define VK_RSHIFT    62
+#define VK_LCONTROL  37
+#define VK_RCONTROL 105
+#define VK_DOWN     116
+#define VK_UP       111
+#define VK_CAPITAL   66
+#define VK_SPACE     65
+#define VK_OEM_COMMA 59
+#define VK_OEM_1      47 // PC :;
+#define VK_OEM_PERIOD 60
+#define VK_OEM_PLUS   21 // PC + =
+#define VK_OEM_2      61 // PC / ?
+#define VK_OEM_4      34 // PC { [
+#define VK_OEM_7      48 // PC ' @
+#define VK_OEM_MINUS  20 // PC - _
+#define VK_RIGHT    114
+#define VK_RETURN    36
+#define VK_LEFT     113
+#define VK_OEM_6      35 // PC } ]
+#define VK_BACK      22
+#define VK_HOME     110
+#define VK_END      115
+
+
 uint8_t  KeysInLynxKeyOrder[NUMBER_OF_KEYS] =
 {
-	VK_LSHIFT, VK_ESCAPE,   VK_DOWN,     VK_UP, VK_CAPITAL,    0,        0,        '1',
-	0,         0,           'C',         'D',   'X',           'E',      '4',      '3',
-	0,         VK_LCONTROL, 'A',         'S',   'Z',           'W',      'Q',      '2',
-	0,         0,           'F',         'G',   'V',           'T',      'R',      '5',
-	0,         0,           'B',         'N',   VK_SPACE,      'H',      'Y',      '6',
-	0,         0,           'J',         0,     'M',           'U',      '8',      '7',
-	0,         0,           'K',         0,     VK_OEM_COMMA,  'O',      'I',      '9',
-	0,         0,           VK_OEM_1,    0,     VK_OEM_PERIOD, 'L',      'P',      '0',
+	VK_LSHIFT, VK_ESCAPE,   VK_DOWN,     VK_UP,     VK_CAPITAL,    0,            0,            10/*1*/,
+	0,         0,           54/*C*/,     40/*D*/,   53/*X*/,       26/*E*/,      13/*4*/,      12/*3*/,
+	0,         VK_LCONTROL, 38/*A*/,     39/*S*/,   52/*Z*/,       25/*W*/,      24/*Q*/,      11/*2*/,
+	0,         0,           41/*F*/,     42/*G*/,   55/*V*/,       28/*T*/,      27/*R*/,      14/*5*/,
+	0,         0,           56/*B*/,     57/*N*/,   VK_SPACE,      43/*H*/,      29/*Y*/,      15/*6*/,
+	0,         0,           44/*J*/,     0,         58/*M*/,       30/*U*/,      17/*8*/,      16/*7*/,
+	0,         0,           45/*K*/,     0,     VK_OEM_COMMA,      32/*O*/,      31/*I*/,      18/*9*/,
+	0,         0,           VK_OEM_1,    0,     VK_OEM_PERIOD,     46/*L*/,      33/*P*/,      19/*0*/,
 	0,         0,           VK_OEM_PLUS, 0,     VK_OEM_2,      VK_OEM_4, VK_OEM_7, VK_OEM_MINUS,
 	0,         0,           VK_RIGHT,    0,     VK_RETURN,     VK_LEFT,  VK_OEM_6, VK_BACK,
 };
 
 
-int32_t MicrosoftWindowsVkCodeToLynxKeyIndex( uint8_t keyVkCode )
+int32_t GdkHardwareKeyCodeToLynxKeyIndex( uint8_t keyVkCode )
 {
 	// Wire these keys to the ones that will be found in the table:
 
-	if( keyVkCode == VK_SHIFT )      keyVkCode = VK_LSHIFT;
-	else if( keyVkCode == VK_RSHIFT )     keyVkCode = VK_LSHIFT;
-	else if( keyVkCode == VK_CONTROL )    keyVkCode = VK_LCONTROL;
+	     if( keyVkCode == VK_RSHIFT )     keyVkCode = VK_LSHIFT;
 	else if( keyVkCode == VK_RCONTROL )   keyVkCode = VK_LCONTROL;
 	else if( keyVkCode == VK_HOME )       keyVkCode = VK_UP;   // Works well with Lynx line editor
 	else if( keyVkCode == VK_END)         keyVkCode = VK_DOWN; // Works well with Lynx line editor
@@ -445,7 +394,34 @@ int32_t MicrosoftWindowsVkCodeToLynxKeyIndex( uint8_t keyVkCode )
 
 	return -1;
 }
-*/
+
+
+#undef VK_ESCAPE
+#undef VK_LSHIFT
+#undef VK_RSHIFT
+#undef VK_LCONTROL
+#undef VK_RCONTROL
+#undef VK_DOWN
+#undef VK_UP
+#undef VK_CAPITAL
+#undef VK_SPACE
+#undef VK_OEM_COMMA
+#undef VK_OEM_1
+#undef VK_OEM_PERIOD
+#undef VK_OEM_PLUS
+#undef VK_OEM_2
+#undef VK_OEM_4
+#undef VK_OEM_7
+#undef VK_OEM_MINUS
+#undef VK_RIGHT
+#undef VK_RETURN
+#undef VK_LEFT
+#undef VK_OEM_6
+#undef VK_BACK
+#undef VK_HOME
+#undef VK_END
+
+
 
 
 
@@ -591,7 +567,7 @@ bool  MainForm::PreProcessMessage( libWinApi::Message *pMsg )
 
 		if( pMsg->IsKeyDown( &keyCode ) )
 		{
-			auto lynxKeyIndex = MicrosoftWindowsVkCodeToLynxKeyIndex( keyCode );
+			auto lynxKeyIndex = GdkHardwareKeyCodeToLynxKeyIndex( keyCode );
 			if( lynxKeyIndex != -1 )
 			{
 				_lynxUIModel->NotifyKeyDown( lynxKeyIndex );
@@ -600,7 +576,7 @@ bool  MainForm::PreProcessMessage( libWinApi::Message *pMsg )
 		}
 		else if( pMsg->IsKeyUp( &keyCode ) )
 		{
-			auto lynxKeyIndex = MicrosoftWindowsVkCodeToLynxKeyIndex( keyCode );
+			auto lynxKeyIndex = GdkHardwareKeyCodeToLynxKeyIndex( keyCode );
 			if( lynxKeyIndex != -1 )
 			{
 				_lynxUIModel->NotifyKeyUp( lynxKeyIndex );
@@ -612,6 +588,119 @@ bool  MainForm::PreProcessMessage( libWinApi::Message *pMsg )
 	return false;
 }
 */
+
+
+
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+//     GTK event handlers
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+
+gint MainForm::GtkHandlerForCloseBoxDeleteEvent( GtkWidget *widget, GdkEvent *event, gpointer userObject ) // static member
+{
+    // If you return FALSE GTK will emit the "destroy" signal.
+    // Returning TRUE means you don't want the window to be destroyed.
+
+    auto thisObject = (MainForm *) userObject;
+    thisObject->OnCancel(); // thisObject->NotifyMenuItemClicked( ID_FILE_EXIT );
+    return TRUE; // do not automatically destroy window.  The handler above will have done that if it is required.
+}
+
+
+
+gint MainForm::GtkHandlerForDrawingAreaConfigureEvent( GtkWidget *widget, GdkEventConfigure *event, gpointer userObject ) // static member   configure_event
+{
+    // CONFIGURE
+    auto thisObject = (MainForm *) userObject;
+    return TRUE;
+}
+
+
+
+gint MainForm::GtkHandlerForDrawingAreaExposeEvent( GtkWidget *widget, GdkEventExpose *event, gpointer userObject )    // static member   expose_event
+{
+    auto thisObject = (MainForm *) userObject;
+
+    if( thisObject->_gtkDrawingArea != nullptr )
+    {
+        auto gtkDrawble = gtk_widget_get_window( thisObject->_gtkDrawingArea );
+        thisObject->_cairoContext = gdk_cairo_create( gtkDrawble );
+        if( thisObject->_cairoContext != nullptr )
+        {
+            thisObject->_lynxUIModel->OnPaint();
+            cairo_destroy( thisObject->_cairoContext );
+            thisObject->_cairoContext = nullptr;
+        }
+    }
+
+    return FALSE;
+}
+
+
+
+gint MainForm::GtkHandlerForDrawingAreaMotionNotifyEvent( GtkWidget *widget, GdkEventMotion *event, gpointer userObject )    // static member   motion_notify_event
+{
+    auto thisObject = (MainForm *) userObject;
+    return TRUE;
+}
+
+
+
+gint MainForm::GtkHandlerForDrawingAreaButtonPressEvent(  GtkWidget *widget, GdkEventButton *event, gpointer userObject )    // static member   button_press_event
+{
+    auto thisObject = (MainForm *) userObject;
+    gtk_widget_grab_focus( thisObject->_gtkDrawingArea );
+    return TRUE;
+}
+
+
+
+gboolean  MainForm::GtkHandlerForKeyPress( GtkWidget *widget, GdkEvent *event, gpointer userObject ) // static member     key_press_event
+{
+    auto thisObject = (MainForm *) userObject;
+    auto keyEvent = (GdkEventKey *) event;
+    auto lynxKeyIndex = GdkHardwareKeyCodeToLynxKeyIndex( keyEvent->hardware_keycode );
+    if( lynxKeyIndex != -1 )
+    {
+        thisObject->_lynxUIModel->NotifyKeyDown( lynxKeyIndex );
+        return TRUE;
+    }
+    return FALSE;
+}
+
+
+
+gboolean  MainForm::GtkHandlerForKeyRelease( GtkWidget *widget, GdkEvent *event, gpointer userObject ) // static member     key_release_event
+{
+    auto thisObject = (MainForm *) userObject;
+    auto keyEvent = (GdkEventKey *) event;
+    auto lynxKeyIndex = GdkHardwareKeyCodeToLynxKeyIndex( keyEvent->hardware_keycode );
+    if( lynxKeyIndex != -1 )
+    {
+        thisObject->_lynxUIModel->NotifyKeyUp( lynxKeyIndex );
+        return TRUE;
+    }
+    return FALSE;
+}
+
+
+
+gboolean MainForm::GtkHandlerForIdleTasks( gpointer userObject )    // static member   button_press_event
+{
+    auto thisObject = (MainForm *) userObject;
+    //if( thisObject->_mainThreadShouldDoPeriodicTasks )
+    {
+        thisObject->_lynxUIModel->OnTimer();
+        //thisObject->_mainThreadShouldDoPeriodicTasks = false;
+    }
+    return TRUE;  // FALSE would remove us from the to do list.
+}
+
+
+
 
 
 

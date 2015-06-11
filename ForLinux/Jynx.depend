@@ -2763,7 +2763,7 @@
 
 1433751016 /home/jonathan/Documents/Jynx/ForLinux/LinuxAboutBox.h
 
-1433976542 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.cpp
+1434064830 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.cpp
 	"MenuItemIDs.h"
 	"LynxHardware.h"
 	"UIStrings.h"
@@ -2771,12 +2771,13 @@
 	<iostream>
 	<fstream>
 	<algorithm>
+	"gdk/gdkkeysyms.h"
 	"LinuxMainForm.h"
 	"LinuxAboutBox.h"
 	"LinuxFileOpener.h"
 	"LinuxGtkFileDialogs.h"
 
-1433977684 /home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.h
+1434006599 /home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.h
 	"../Portable/LynxUserInterfaceModel.h"
 	"../Portable/IViewServicesForLynxUserInterfaceModel.h"
 	"../Portable/WaveOutputStream.h"
@@ -2815,4 +2816,9 @@
 	<alsa/asoundlib.h>
 	<assert.h>
 	"WaveOutputStream.h"
+
+1426113851 /usr/include/gtk-2.0/gdk/gdkkeysyms.h
+	<gdk/gdkkeysyms-compat.h>
+
+1426113851 /usr/include/gtk-2.0/gdk/gdkkeysyms-compat.h
 
