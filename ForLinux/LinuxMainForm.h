@@ -64,7 +64,7 @@ private:
     static gint GtkHandlerForDrawingAreaMotionNotifyEvent( GtkWidget *widget, GdkEventMotion *event, gpointer userObject );    // static member   motion_notify_event
     static gint GtkHandlerForDrawingAreaButtonPressEvent(  GtkWidget *widget, GdkEventButton *event, gpointer userObject );    // static member   button_press_event
 
-    static gboolean GtkHandlerForIdleTasks( gpointer userObject );    // static member   button_press_event
+    static gboolean GtkHandlerForTheTimer( gpointer userObject );    // static member
 
     static gboolean GtkHandlerForKeyPress(   GtkWidget *widget, GdkEvent *event, gpointer user_data ); // static member
     static gboolean GtkHandlerForKeyRelease( GtkWidget *widget, GdkEvent *event, gpointer user_data ); // static member

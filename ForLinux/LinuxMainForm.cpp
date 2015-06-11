@@ -292,8 +292,7 @@ void MainForm::GtkConstruction()  // TODO: Do in OnInitDialog instead?
     // This saves us setting up an additional timer with the library.
     //
 
-    // g_idle_add( (GSourceFunc) &MainForm::GtkHandlerForIdleTasks, this );
-    g_timeout_add( 20, (GSourceFunc) &MainForm::GtkHandlerForIdleTasks, this );
+    g_timeout_add( 20, (GSourceFunc) &MainForm::GtkHandlerForTheTimer, this );
 
     OnInitDialog();
 }
@@ -688,15 +687,11 @@ gboolean  MainForm::GtkHandlerForKeyRelease( GtkWidget *widget, GdkEvent *event,
 
 
 
-gboolean MainForm::GtkHandlerForIdleTasks( gpointer userObject )    // static member   button_press_event
+gboolean  MainForm::GtkHandlerForTheTimer( gpointer userObject )    // static member   button_press_event
 {
     auto thisObject = (MainForm *) userObject;
-    //if( thisObject->_mainThreadShouldDoPeriodicTasks )
-    {
-        thisObject->_lynxUIModel->OnTimer();
-        //thisObject->_mainThreadShouldDoPeriodicTasks = false;
-    }
-    return TRUE;  // FALSE would remove us from the to do list.
+    thisObject->_lynxUIModel->OnTimer();
+    return TRUE;
 }
 
 
