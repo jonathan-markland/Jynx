@@ -115,9 +115,6 @@ namespace Jynx
 			// (WARNING - Called on the EMULATOR thread, NOT the main thread)
 			// (See IHostServicesForLynxEmulator)
 
-		virtual  void WriteSoundBufferToSoundCardOrSleep_OnEmulatorThread() = 0;
-			// (See IHostServicesForLynxEmulator)
-
 	};
 
 

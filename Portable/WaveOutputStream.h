@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <stdint.h>
 #include <memory>
+#include <vector>
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //     WAVE SOUND OUTPUT
@@ -24,19 +25,30 @@ public:
         // 44,100Hz
         // 2 bytes per sample, 16-bit signed little-endian
 
-    void Write( const void *soundDataBlock, uint32_t numFrames );
-        // A frame is (bytesPerSample * channelCount)
-        // This *copies* the supplied data.
+    ~WaveOutputStream();
+        // Need to ensure a destruction order.
+
+    void *GetSoundBufferBaseAddress();
+        // Retrieve base address of composition buffer.
+        // This will not be played until the next PlayBufferWithWait() call.
+        // The size of this is given by the constructor parameters.
+
+    void PlayBufferWithWait();
+        // The caller has filled the buffer with data.
+        // This sends the buffer to the sound subsystem.
+        // Once the ring of buffers is populated, this becomes a
+        // blocking function useful for timed synchronisation.
 
     // Not used yet:  void Flush();
     // Not used yet:  void Reset();
 
 private:
 
+    uint32_t               _bufferSizeFrames = 0;
     std::shared_ptr<class HostOS_WaveOutputStream>  _hostImplementation;
+    std::vector<uint16_t>  _soundBuffer;  // TODO: Can we use the ring buffer rather than copy-in (on both linux and windows?)
 
 };
-
 
 
 

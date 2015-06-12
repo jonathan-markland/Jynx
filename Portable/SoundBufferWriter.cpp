@@ -27,20 +27,13 @@ namespace Jynx
 {
 	SoundBufferWriter::SoundBufferWriter()
 		: _soundBuffer( nullptr )
-		, _soundBufferNumSamples( 0 )
-		, _lynxSpeakerLevel(0)
-		, _currentRecordingPos(0)
+		, _soundBufferNumSamples( 882 )
+		, _lynxSpeakerLevel( 0 )
+		, _currentRecordingPos( 0 )
     {
-	}
-
-
-
-
-	void SoundBufferWriter::SetSoundBuffer( uint16_t *soundBuffer, size_t numSamples )
-	{
-		_soundBuffer = soundBuffer;
-		_soundBufferNumSamples = (uint32_t) numSamples;
-	}
+        _waveOutputStream = std::make_shared<WaveOutputStream>( 1, _soundBufferNumSamples, 3 );
+        _soundBuffer      = (uint16_t *) _waveOutputStream->GetSoundBufferBaseAddress();
+    }
 
 
 
@@ -71,7 +64,7 @@ namespace Jynx
 
 
 
-	void SoundBufferWriter::EndOfZ80PeriodNotification()
+	void SoundBufferWriter::PeriodComplete()
 	{
 		// Reminder: '_soundBufferNumSamples' gives the end of the CURRENT BUFFER.
 		if( SoundActive() )
@@ -81,6 +74,14 @@ namespace Jynx
 
 		_currentRecordingPos = 0;
 	}
+
+
+
+    void SoundBufferWriter::PlayBufferWithWait()
+    {
+        _waveOutputStream->PlayBufferWithWait();
+    }
+
 
 
 
@@ -110,7 +111,7 @@ namespace Jynx
 
 	void SoundBufferWriter::SerialiseSoundBufferContent( IBinarySerialiser *serialiser )
 	{
-		serialiser->Binary( _soundBuffer, _soundBufferNumSamples * 2 );
+		serialiser->Binary( _soundBuffer, _soundBufferNumSamples * 2 );  // TODO: bytes per sample constant!!!
 	}
 
 } // end namespace Jynx

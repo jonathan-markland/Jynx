@@ -33,6 +33,8 @@ int main( int argc, char *argv[] )
     gtk_init (&argc, &argv);
     g_log_set_handler ("Gtk", G_LOG_LEVEL_WARNING, g_log_default_handler, NULL);
 
+    std::string exceptionMessage;
+
     try
     {
         auto paramsList = MakeParamsListFromArgcAndArgv( argc, argv, 1 );
@@ -64,15 +66,22 @@ int main( int argc, char *argv[] )
     }
     catch( std::exception &e )
     {
-        auto messageText = e.what();
+        exceptionMessage = e.what();
+    }
 
+    //
+    // MainForm now destructed, so game is no longer running.
+    //
+
+    if( ! exceptionMessage.empty() )
+    {
         auto dialog = gtk_message_dialog_new(
             NULL,
             GTK_DIALOG_DESTROY_WITH_PARENT,
             GTK_MESSAGE_INFO,
             GTK_BUTTONS_OK,
             "The program cannot continue running because of an internal error:\n'%s'",
-            messageText);
+            exceptionMessage.c_str() );
 
         gtk_window_set_title( GTK_WINDOW(dialog), "Program error" );
         gtk_dialog_run( GTK_DIALOG(dialog) );

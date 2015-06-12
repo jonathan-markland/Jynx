@@ -4,6 +4,7 @@
 #include <pthread.h>
 #include "Thread.h"
 #include <assert.h>
+#include "unistd.h"
 
 
 	// The _platformSpecificImplementation variable shall be a pointer to a LinuxThreadImplementation  (may revise)
@@ -143,6 +144,12 @@
 		return _shouldTerminate;
 	}
 
+
+
+    void Thread::SleepMilliseconds( uint32_t countMilliseconds ) // static
+    {
+        usleep( countMilliseconds * 1000 );
+    }
 
 
 

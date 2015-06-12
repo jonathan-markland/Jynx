@@ -117,7 +117,7 @@ namespace Jynx
 	//     EMULATOR "GUEST" CLASS -- this is the Lynx hardware
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-	LynxEmulatorGuest::LynxEmulatorGuest( IHostServicesForLynxEmulator *hostObject, uint16_t *soundBuffer, size_t numSamples, LynxMachineType::Enum initialMachineType, const char *platformEndOfLineSequenceUTF8 )
+	LynxEmulatorGuest::LynxEmulatorGuest( IHostServicesForLynxEmulator *hostObject, LynxMachineType::Enum initialMachineType, const char *platformEndOfLineSequenceUTF8 )
 		: _hostObject(hostObject)
 		, _machineType(initialMachineType)
 		, _tapeMode( LynxTapeMode::SavingPermitted )
@@ -146,7 +146,6 @@ namespace Jynx
 		_currentWriteTape = std::make_shared<TapFileWriter>();
 
 		_processor.SetTimesliceLength( LynxZ80Cycles::At100 ); // 4.00 mhz
-		_soundBufferWriter.SetSoundBuffer( soundBuffer, numSamples );
 
 		LoadROMS();
 		InitialiseLYNX();
@@ -1609,7 +1608,21 @@ namespace Jynx
 
 			if( ! speedMaxMode )
 			{
-				_hostObject->WriteSoundBufferToSoundCardOrSleep_OnEmulatorThread();
+                if( _soundEnable )
+                {
+                    // NOTE: The sound card "forces" us back until it's ready.
+                    // This gives us a 20ms timer (because 882 samples @ 44,100Hz), on
+                    // which the emulation is synchronised, when sound is ON.
+                    _soundBufferWriter.PlayBufferWithWait();
+                }
+                else
+                {
+                    // Sound is OFF, so we have to sleep for the 20 milliseconds instead.
+                    // The emulation burst processing is usually very small on a modern CPU
+                    // so this will suffice.  I don't care so much about realtime accuracy with
+                    // sound OFF.
+                    Thread::SleepMilliseconds( 20 );
+                }
 			}
 
 			if( ! _pauseMode )
@@ -1627,7 +1640,7 @@ namespace Jynx
 
 			// Sound:
 
-			_soundBufferWriter.EndOfZ80PeriodNotification();
+			_soundBufferWriter.PeriodComplete();
 
 			// Are we recording the sound to a file?
 
@@ -2150,6 +2163,21 @@ namespace Jynx
 		// (Volatile access)
 		return _verticalOffsetPixels6845;
 	}
+
+
+
+    bool LynxEmulatorGuest::IsSoundEnabled() const
+    {
+        return _soundEnable;
+    }
+
+
+
+    void LynxEmulatorGuest::SetSoundEnable( bool soundEnable )
+    {
+        _soundEnable = soundEnable;
+    }
+
 
 
 } // end namespace Jynx

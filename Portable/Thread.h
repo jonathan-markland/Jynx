@@ -43,6 +43,8 @@
 		ThreadFunction GetThreadFunction() const       { return _threadFunction; }
 		void *GetUserObjectForThreadFunction() const   { return _userObjectForThreadFunction; }
 
+		static void SleepMilliseconds( uint32_t countMilliseconds );
+
 	public:
 
 		void private_SetThreadExitResult( void *exitResult )     { _threadExitResult = exitResult; }  // TODO: Not ideal to have this public

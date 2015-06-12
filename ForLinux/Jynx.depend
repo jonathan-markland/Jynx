@@ -41,7 +41,7 @@
 	<stdexcept>
 	"Lexer.h"
 
-1433972803 source:/home/jonathan/Documents/Jynx/Portable/LynxEmulatorGuest.cpp
+1434149062 source:/home/jonathan/Documents/Jynx/Portable/LynxEmulatorGuest.cpp
 	<assert.h>
 	<string>
 	"LynxEmulatorGuest.h"
@@ -50,7 +50,7 @@
 	"FileLoader.h"
 	"Z80/JynxZ80Disassembler.h"
 
-1433689180 /home/jonathan/Documents/Jynx/Portable/LynxEmulatorGuest.h
+1434148987 /home/jonathan/Documents/Jynx/Portable/LynxEmulatorGuest.h
 	<memory>
 	"IHostServicesForLynxEmulator.h"
 	"ISerialiser.h"
@@ -66,7 +66,7 @@
 	"Waitable.h"
 	"Thread.h"
 
-1433679782 /home/jonathan/Documents/Jynx/Portable/IHostServicesForLynxEmulator.h
+1434147531 /home/jonathan/Documents/Jynx/Portable/IHostServicesForLynxEmulator.h
 	<ios>
 	<stdint.h>
 	"LynxRoms.h"
@@ -89,9 +89,10 @@
 
 1433678744 /home/jonathan/Documents/Jynx/Portable/LynxEmulatorEnums.h
 
-1433683444 /home/jonathan/Documents/Jynx/Portable/SoundBufferWriter.h
+1434148201 /home/jonathan/Documents/Jynx/Portable/SoundBufferWriter.h
 	"stdint.h"
 	"ISerialiser.h"
+	"WaveOutputStream.h"
 
 1433678744 /home/jonathan/Documents/Jynx/Portable/SoundRecorder.h
 	"IBinarySerialiser.h"
@@ -144,7 +145,7 @@
 
 1433969238 /home/jonathan/Documents/Jynx/Portable/LynxRectangle.h
 
-1434143813 source:/home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.cpp
+1434149245 source:/home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.cpp
 	<assert.h>
 	"LynxUserInterfaceModel.h"
 	"LynxHardware.h"
@@ -152,13 +153,13 @@
 	"FileSerialiser.h"
 	"MenuItemIDs.h"
 
-1433750104 /home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.h
+1434149123 /home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.h
 	"IViewServicesForLynxUserInterfaceModel.h"
 	"IHostServicesForLynxEmulator.h"
 	"LynxEmulatorGuest.h"
 	"UserSettingsSerialiser.h"
 
-1434143822 /home/jonathan/Documents/Jynx/Portable/IViewServicesForLynxUserInterfaceModel.h
+1434147531 /home/jonathan/Documents/Jynx/Portable/IViewServicesForLynxUserInterfaceModel.h
 	<memory>
 	"IFileOpener.h"
 	"LynxRectangle.h"
@@ -178,7 +179,7 @@
 	<stdint.h>
 	<vector>
 
-1433690440 source:/home/jonathan/Documents/Jynx/Portable/SoundBufferWriter.cpp
+1434150272 source:/home/jonathan/Documents/Jynx/Portable/SoundBufferWriter.cpp
 	<assert.h>
 	"SoundBufferWriter.h"
 	"ZeroInitialiseMemory.h"
@@ -2718,21 +2719,22 @@
 
 1433689180 /home/jonathan/Documents/Jynx/Portable/Waitable.h
 
-1433689180 /home/jonathan/Documents/Jynx/Portable/Thread.h
+1434148551 /home/jonathan/Documents/Jynx/Portable/Thread.h
 
-1432996698 source:/home/jonathan/Documents/Jynx/ForLinux/Linux_Thread.cpp
+1434150316 source:/home/jonathan/Documents/Jynx/ForLinux/Linux_Thread.cpp
 	<stdexcept>
 	<mutex>
 	<pthread.h>
 	"Thread.h"
 	<assert.h>
+	"unistd.h"
 
 1433695464 source:/home/jonathan/Documents/Jynx/ForLinux/Linux_Waitable.cpp
 	<stdexcept>
 	<pthread.h>
 	"Waitable.h"
 
-1434143038 source:/home/jonathan/Documents/Jynx/ForLinux/main.cpp
+1434150854 source:/home/jonathan/Documents/Jynx/ForLinux/main.cpp
 	<stdlib.h>
 	<stdint.h>
 	<string>
@@ -2764,7 +2766,7 @@
 
 1433751016 /home/jonathan/Documents/Jynx/ForLinux/LinuxAboutBox.h
 
-1434144362 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.cpp
+1434150478 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.cpp
 	"MenuItemIDs.h"
 	"LynxHardware.h"
 	"UIStrings.h"
@@ -2779,7 +2781,7 @@
 	"LinuxGtkFileDialogs.h"
 	"JynxParsedParameters.h"
 
-1434144388 /home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.h
+1434150364 /home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.h
 	"../Portable/LynxUserInterfaceModel.h"
 	"../Portable/IViewServicesForLynxUserInterfaceModel.h"
 	"../Portable/WaveOutputStream.h"
@@ -2809,12 +2811,13 @@
 	<string>
 	<gtk/gtk.h>
 
-1433883634 /home/jonathan/Documents/Jynx/Portable/WaveOutputStream.h
+1434150229 /home/jonathan/Documents/Jynx/Portable/WaveOutputStream.h
 	<stdexcept>
 	<stdint.h>
 	<memory>
+	<vector>
 
-1433883604 source:/home/jonathan/Documents/Jynx/ForLinux/Linux_WaveOutputStream.cpp
+1434150441 source:/home/jonathan/Documents/Jynx/ForLinux/Linux_WaveOutputStream.cpp
 	<alsa/asoundlib.h>
 	<assert.h>
 	"WaveOutputStream.h"

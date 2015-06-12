@@ -11,11 +11,13 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
+				<Option parameters="--snapshot /home/jonathan/Documents/Jynx/readme.htm" />
 				<Compiler>
 					<Add option="-std=c++11" />
 					<Add option="-g" />
 					<Add directory="../Portable" />
 					<Add directory="ForLinux" />
+					<Add directory="Portable" />
 				</Compiler>
 				<Linker>
 					<Add library="asound" />
@@ -31,6 +33,7 @@
 					<Add option="-std=c++11" />
 					<Add directory="ForLinux" />
 					<Add directory="../Portable" />
+					<Add directory="Portable" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -55,7 +58,7 @@
 		<Unit filename="../Portable/IHostServicesForLynxEmulator.h" />
 		<Unit filename="../Portable/ISerialiser.h" />
 		<Unit filename="../Portable/IViewServicesForLynxUserInterfaceModel.h" />
-		<Unit filename="../Portable/JynxPlatformInterfacing.h" />
+		<Unit filename="../Portable/JynxParsedParameters.h" />
 		<Unit filename="../Portable/Lexer.cpp" />
 		<Unit filename="../Portable/Lexer.h" />
 		<Unit filename="../Portable/LynxEmulatorEnums.h" />
@@ -67,6 +70,8 @@
 		<Unit filename="../Portable/LynxRoms.h" />
 		<Unit filename="../Portable/LynxUserInterfaceModel.cpp" />
 		<Unit filename="../Portable/LynxUserInterfaceModel.h" />
+		<Unit filename="../Portable/ParameterParsing.cpp" />
+		<Unit filename="../Portable/ParameterParsing.h" />
 		<Unit filename="../Portable/SignalWriter.cpp" />
 		<Unit filename="../Portable/SignalWriter.h" />
 		<Unit filename="../Portable/SoundBufferWriter.cpp" />

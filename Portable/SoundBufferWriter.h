@@ -22,6 +22,7 @@
 
 #include "stdint.h"
 #include "ISerialiser.h"   // TODO: only need IBinarySerialiser
+#include "WaveOutputStream.h"
 
 namespace Jynx
 {
@@ -42,14 +43,15 @@ namespace Jynx
 		//   "drawing" issues (ie: overrun array), but I handle this.
 
 		SoundBufferWriter();
-		void SetSoundBuffer( uint16_t *soundBuffer, uintptr_t numSamples );
 		void WriteSample( uint8_t lynxSpeakerLevel, int32_t periodZ80Cycles, int32_t countdownZ80Cycles );
-		void EndOfZ80PeriodNotification();
+		void PeriodComplete();  // reminder: Allows buffer skip in case sound is not enabled at higher level.
+        void PlayBufferWithWait();
 		void SerialiseSoundBufferContent( IBinarySerialiser * );
 
 	private:
 
-		uint16_t  *_soundBuffer;
+        std::shared_ptr<WaveOutputStream>  _waveOutputStream;
+		uint16_t  *_soundBuffer;                // points into _waveOutputStream's store, for convenience.
 		uint32_t   _soundBufferNumSamples;
 		uint8_t    _lynxSpeakerLevel;           // so we know what to back-fill when the level changes!
 		int32_t    _currentRecordingPos;

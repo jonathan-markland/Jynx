@@ -28,7 +28,6 @@
 
 #include "LynxUserInterfaceModel.h"
 #include "IViewServicesForLynxUserInterfaceModel.h"
-#include "WaveOutputStream.h"
 
 
 
@@ -70,7 +69,6 @@ public:
 	virtual void TranslateRGBXColourPaletteToHostValues( const uint32_t *eightEntryColourPalette, uint32_t *eightEntryTranslatedValues ) override;
 	virtual void PaintPixelsOnHostBitmap_OnEmulatorThread( uint32_t addressOffset, const uint32_t *eightPixelsData ) override;
 	virtual std::shared_ptr<Jynx::IFileOpener>  GetUserSettingsFileOpener() override;
-	virtual void WriteSoundBufferToSoundCardOrSleep_OnEmulatorThread() override;
 
 private:
 
@@ -96,9 +94,6 @@ private:
 	HBITMAP                _guestScreenBitmap = NULL;
 	MMRESULT               _timeBeginPeriodResult = NULL;
 	MMRESULT               _timeSetEventResult = NULL;
-
-	std::shared_ptr<WaveOutputStream>  _waveOutStream;
-	std::vector<uint16_t>         _soundBuffer;
 
 	libWinApi::WindowStyleAndPositionInformation  _restorationAfterFullScreen;
 

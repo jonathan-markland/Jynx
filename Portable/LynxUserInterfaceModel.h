@@ -40,7 +40,7 @@ namespace Jynx
 		// - Multithreading note:  Consider the model to be called on the MAIN thread.
 
 		LynxUserInterfaceModel(
-			IViewServicesForLynxUserInterfaceModel *hostView, uint16_t *soundBuffer, size_t numSamples, const char *platformEndOfLineSequenceUTF8, bool gamesMode );
+			IViewServicesForLynxUserInterfaceModel *hostView, const char *platformEndOfLineSequenceUTF8, bool gamesMode );
 
 		// LynxUserInterfaceModel:
 		void OnInitDialog();
@@ -95,7 +95,6 @@ namespace Jynx
 		virtual  void  OpenChipFileStream_OnMainThread( std::ifstream &streamToBeOpened, std::ios_base::openmode openModeRequired, LynxRoms::Enum romRequired ) override;
 		virtual  void  NotifyOutputTapeAvailbilityChanged_OnAnyThread() override;
 		virtual  void  PaintPixelsOnHostBitmap_OnEmulatorThread( uint32_t addressOffset, const uint32_t *eightPixelsData ) override;
-		virtual  void  WriteSoundBufferToSoundCardOrSleep_OnEmulatorThread() override;
 		virtual  void  TranslateRGBXColourPaletteToHostValues( const uint32_t *eightEntryColourPalette, uint32_t *eightEntryTranslatedValues ) override;
 
 	private:
@@ -105,7 +104,6 @@ namespace Jynx
 		IViewServicesForLynxUserInterfaceModel  *_hostView;
 		std::unique_ptr<LynxEmulatorGuest>       _lynxEmulator;
 		RenderStyle::Enum      _renderStyle;
-		bool                   _soundEnable;
 		bool                   _showFullScreen;
 		bool                   _gamesMode;
 		volatile bool          _emulatorWantsUIStatusUpdate;

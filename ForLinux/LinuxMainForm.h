@@ -48,7 +48,6 @@ public:
 	virtual void TranslateRGBXColourPaletteToHostValues( const uint32_t *eightEntryColourPalette, uint32_t *eightEntryTranslatedValues ) override;
 	virtual void PaintPixelsOnHostBitmap_OnEmulatorThread( uint32_t addressOffset, const uint32_t *eightPixelsData ) override;
 	virtual std::shared_ptr<Jynx::IFileOpener>  GetUserSettingsFileOpener() override;
-	virtual void WriteSoundBufferToSoundCardOrSleep_OnEmulatorThread() override;
 
     // InterfaceForMenuItemClickHandling:
     virtual void NotifyMenuItemClicked( uint32_t menuItemID ) override;
@@ -74,9 +73,6 @@ private:
 	std::string  _exePath;
 
 	std::unique_ptr<Jynx::LynxUserInterfaceModel> _lynxUIModel;  // Reminder - Emulator is within this.
-
-    std::shared_ptr<WaveOutputStream>  _waveOutStream;
-	std::vector<uint16_t>              _soundBuffer;
 
 private:
 

@@ -28,10 +28,9 @@
 
 namespace Jynx
 {
-	LynxUserInterfaceModel::LynxUserInterfaceModel( IViewServicesForLynxUserInterfaceModel *hostView, uint16_t *soundBuffer, size_t numSamples, const char *platformEndOfLineSequenceUTF8, bool gamesMode )
+	LynxUserInterfaceModel::LynxUserInterfaceModel( IViewServicesForLynxUserInterfaceModel *hostView, const char *platformEndOfLineSequenceUTF8, bool gamesMode )
 		: _hostView( hostView )
 		, _renderStyle( RenderStyle::SquarePixels )
-		, _soundEnable( true )
 		, _showFullScreen( false )
 		, _gamesMode(gamesMode)
 		, _emulatorWantsUIStatusUpdate(false)
@@ -40,7 +39,7 @@ namespace Jynx
 		JynxZ80::Z80::InitialiseGlobalTables();  // Not absolutely ideal place to put this.
 
 		// Reminder - Creating the LynxEmulatorGuest will create the EMULATOR thread.
-		_lynxEmulator = std::unique_ptr<LynxEmulatorGuest>( new LynxEmulatorGuest( this, soundBuffer, numSamples, LynxMachineType::LYNX_48K, platformEndOfLineSequenceUTF8 ) );
+		_lynxEmulator = std::unique_ptr<LynxEmulatorGuest>( new LynxEmulatorGuest( this, LynxMachineType::LYNX_48K, platformEndOfLineSequenceUTF8 ) );
 	}
 
 
@@ -682,7 +681,7 @@ namespace Jynx
 	{
 		// The View calls this because an option has (somehow!) been selected in the UI (menu/button/icon/whatever).
 
-		_soundEnable = ! _soundEnable;
+		_lynxEmulator->SetSoundEnable( ! _lynxEmulator->IsSoundEnabled() );
 		UpdateUserInterfaceElementsOnView();
 	}
 
@@ -692,7 +691,7 @@ namespace Jynx
 	{
 		// The host calls this when it wants to know if sound is enabled.
 		// (I admit this is a trivial service for the model to be supplying, but it unifies all future hosts).
-		return _soundEnable;
+		return _lynxEmulator->IsSoundEnabled();
 	}
 
 
@@ -829,13 +828,6 @@ namespace Jynx
 
 
 
-	void LynxUserInterfaceModel::WriteSoundBufferToSoundCardOrSleep_OnEmulatorThread()
-	{
-		_hostView->WriteSoundBufferToSoundCardOrSleep_OnEmulatorThread();
-	}
-
-
-
 	void  LynxUserInterfaceModel::TranslateRGBXColourPaletteToHostValues( const uint32_t *eightEntryColourPalette, uint32_t *eightEntryTranslatedValues )
 	{
 		_hostView->TranslateRGBXColourPaletteToHostValues( eightEntryColourPalette, eightEntryTranslatedValues );
@@ -918,7 +910,7 @@ namespace Jynx
 		bool tickMaxSpeedCassette = _lynxEmulator->GetEnableSpeedMaxModeWhenUsingCassette();
 		bool tickMaxSpeedConsole  = _lynxEmulator->GetEnableSpeedMaxModeWhenInBetweenConsoleCommands();
 		bool tickMaxSpeedAlways   = _lynxEmulator->GetEnableSpeedMaxModeBecauseUserWantsItPermanently();
-		bool tickSound      = _soundEnable;
+		bool tickSound      = _lynxEmulator->IsSoundEnabled();
 		bool tickFullScreen = _showFullScreen;
 
 		//
@@ -1004,7 +996,7 @@ namespace Jynx
 			UserSettings userSettings(
 				_lynxEmulator->GetMachineType(),
 				_renderStyle,
-				_soundEnable,
+				_lynxEmulator->IsSoundEnabled(),
 				_showFullScreen,
 				_lynxEmulator->GetCyclesPerTimeslice(),
 				_lynxEmulator->GetTapeSounds(),
@@ -1030,7 +1022,7 @@ namespace Jynx
             // Now that the file has loaded successfully, we know we can use the information in it!
             // (Or, of course, the defaults that the UserSettings object applies, if it's down-level version).
             _renderStyle = userSettings.GetRenderStyle();
-            _soundEnable = userSettings.GetSoundEnable();
+            _lynxEmulator->SetSoundEnable( userSettings.GetSoundEnable() );
             _showFullScreen = userSettings.GetFullScreenEnable();
             _lynxEmulator->SetCyclesPerTimeslice( userSettings.GetCyclesPerTimeslice() );
             _lynxEmulator->SetTapeSounds( userSettings.GetTapeSounds() );

@@ -684,29 +684,3 @@ std::shared_ptr<Jynx::IFileOpener>  MainForm::GetUserSettingsFileOpener()
 	return nullptr;
 }
 
-
-
-
-
-
-
-void MainForm::WriteSoundBufferToSoundCardOrSleep_OnEmulatorThread()
-{
-	// (Called on the EMULATOR thread, NOT the MAIN thread)
-
-	if( _lynxUIModel->IsSoundEnabled() )
-	{
-		// NOTE: The sound card "forces" us back until it's ready.
-		// This gives us a 20ms timer, on which the emulation is synchronised, when sound is ON.
-		_waveOutStream->Write( &(*_soundBuffer.begin()), (uint32_t) (uintptr_t) _soundBuffer.size() );
-	}
-	else
-	{
-		// Sound is OFF, so we have to sleep for the 20 milliseconds instead.
-		// The emulation burst processing is usually very small on a modern CPU
-		// so this will suffice.  I don't care so much about realtime accuracy with
-		// sound OFF.
-		::Sleep(20);
-	}
-}
-

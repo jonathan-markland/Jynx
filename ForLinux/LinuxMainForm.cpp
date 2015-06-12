@@ -52,23 +52,6 @@ MainForm::MainForm( const std::vector<std::string> &paramsList, const char *exeP
     _settingsFilePath = parsedParams.GetSettingsFilePath();
 
 	//
-	// Sound
-	//
-
-	uint32_t numSamplesPerBuffer = 882;
-
-	_soundBuffer.reserve( numSamplesPerBuffer );
-
-	for( uint32_t i=0; i < numSamplesPerBuffer; i++ )
-	{
-		_soundBuffer.push_back( 0 );
-	}
-
-    auto numChannels = 1;
-    auto numFramesPerBuffer = numSamplesPerBuffer * numChannels;  // clarifying the issue
-	_waveOutStream = std::make_shared<WaveOutputStream>( numChannels, numFramesPerBuffer, 3 );
-
-	//
 	// Create frame buffer bitmap which emulator can directly draw on.
 	//
 
@@ -104,8 +87,6 @@ MainForm::MainForm( const std::vector<std::string> &paramsList, const char *exeP
 	_lynxUIModel = std::unique_ptr<Jynx::LynxUserInterfaceModel>(
         new Jynx::LynxUserInterfaceModel(
             this,
-            &_soundBuffer.front(),
-            _soundBuffer.size(),
             "\n",   // The preferred end of line sequence on the LINUX platform.
             parsedParams.GetGamesMode() ) );
 
@@ -987,30 +968,4 @@ std::shared_ptr<Jynx::IFileOpener>  MainForm::GetUserSettingsFileOpener()
 	}
 
 	return nullptr;
-}
-
-
-
-
-
-
-
-void MainForm::WriteSoundBufferToSoundCardOrSleep_OnEmulatorThread()
-{
-	// (Called on the EMULATOR thread, NOT the MAIN thread)
-
-	if( _lynxUIModel->IsSoundEnabled() )
-	{
-		// NOTE: The sound card "forces" us back until it's ready.
-		// This gives us a 20ms timer, on which the emulation is synchronised, when sound is ON.
-		_waveOutStream->Write( &(*_soundBuffer.begin()), (uint32_t) _soundBuffer.size() );
-	}
-	else
-	{
-		// Sound is OFF, so we have to sleep for the 20 milliseconds instead.
-		// The emulation burst processing is usually very small on a modern CPU
-		// so this will suffice.  I don't care so much about realtime accuracy with
-		// sound OFF.
-		usleep( 20*1000 );
-	}
 }

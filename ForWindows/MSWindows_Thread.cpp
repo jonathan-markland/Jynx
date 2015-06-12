@@ -115,6 +115,13 @@
 
 
 
+    void Thread::SleepMilliseconds( uint32_t countMilliseconds ) // static
+    {
+        ::Sleep( countMilliseconds );  // Assumes externally configured increase in resolution.
+    }
+
+
+
 
 
 
