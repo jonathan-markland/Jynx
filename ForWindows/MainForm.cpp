@@ -660,7 +660,7 @@ std::wstring  GetJynxAppDataPath()
 
 
 
-std::shared_ptr<Jynx::IFileOpener>  MainForm::GetUserSettingsFilePath()
+std::shared_ptr<Jynx::IFileOpener>  MainForm::GetUserSettingsFileOpener()
 {
 	if( _settingsFilePath.empty() )
 	{

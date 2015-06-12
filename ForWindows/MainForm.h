@@ -69,7 +69,7 @@ public:
 	virtual void OpenChipFileStream_OnMainThread( std::ifstream &streamToBeOpened, std::ios_base::openmode openModeRequired, Jynx::LynxRoms::Enum romRequired ) override;  // Host must open the INPUT stream for BINARY, position at BEGINNING.
 	virtual void TranslateRGBXColourPaletteToHostValues( const uint32_t *eightEntryColourPalette, uint32_t *eightEntryTranslatedValues ) override;
 	virtual void PaintPixelsOnHostBitmap_OnEmulatorThread( uint32_t addressOffset, const uint32_t *eightPixelsData ) override;
-	virtual std::shared_ptr<Jynx::IFileOpener>  GetUserSettingsFilePath() override;
+	virtual std::shared_ptr<Jynx::IFileOpener>  GetUserSettingsFileOpener() override;
 	virtual void WriteSoundBufferToSoundCardOrSleep_OnEmulatorThread() override;
 
 private:

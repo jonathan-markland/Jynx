@@ -998,7 +998,7 @@ namespace Jynx
 	{
 		// TODO: Failure to save user settings must not disrupt anything else, eg: closedown
 		// TODO: Can we save to a temporary and re-name on success?
-		auto fileOpener = _hostView->GetUserSettingsFilePath();
+		auto fileOpener = _hostView->GetUserSettingsFileOpener();
 		if( fileOpener != nullptr )
 		{
 			UserSettings userSettings(
@@ -1022,7 +1022,7 @@ namespace Jynx
 
 	void LynxUserInterfaceModel::LoadUserSettings()
 	{
-		auto fileOpener = _hostView->GetUserSettingsFilePath();
+		auto fileOpener = _hostView->GetUserSettingsFileOpener();
 		if( fileOpener != nullptr )
 		{
             UserSettings userSettings( &*fileOpener );
