@@ -79,9 +79,9 @@ MainForm::MainForm( const std::vector<std::string> &paramsList, const char *exeP
 	}
 
 	auto pixelBuffer   = gdk_pixbuf_get_pixels( _pixBuf );
-	auto numChannels2  = gdk_pixbuf_get_n_channels( _pixBuf );
-	auto bitsPerSample = gdk_pixbuf_get_bits_per_sample( _pixBuf );
 	auto rowStride     = gdk_pixbuf_get_rowstride( _pixBuf );
+	// auto numChannels2  = gdk_pixbuf_get_n_channels( _pixBuf );
+	// auto bitsPerSample = gdk_pixbuf_get_bits_per_sample( _pixBuf );
 
     _pixBufBaseAddress      = pixelBuffer;
     _pixBufBytesPerScanLine = rowStride;
@@ -230,8 +230,6 @@ MainForm::MainForm( const std::vector<std::string> &paramsList, const char *exeP
     // gtk_drawing_area_size( GTK_DRAWING_AREA(_gtkDrawingArea), 200, 200 );
     auto gtkDrawingAreaAsObject = GTK_OBJECT(_gtkDrawingArea);
     gtk_signal_connect( gtkDrawingAreaAsObject, "expose_event",        (GtkSignalFunc) &MainForm::GtkHandlerForDrawingAreaExposeEvent,       this );
-    gtk_signal_connect( gtkDrawingAreaAsObject, "configure_event",     (GtkSignalFunc) &MainForm::GtkHandlerForDrawingAreaConfigureEvent,    this );
-    gtk_signal_connect( gtkDrawingAreaAsObject, "motion_notify_event", (GtkSignalFunc) &MainForm::GtkHandlerForDrawingAreaMotionNotifyEvent, this );
     gtk_signal_connect( gtkDrawingAreaAsObject, "button_press_event",  (GtkSignalFunc) &MainForm::GtkHandlerForDrawingAreaButtonPressEvent,  this );
     gtk_signal_connect( gtkDrawingAreaAsObject, "key_press_event",     (GtkSignalFunc) &MainForm::GtkHandlerForKeyPress,    this );
     gtk_signal_connect( gtkDrawingAreaAsObject, "key_release_event",   (GtkSignalFunc) &MainForm::GtkHandlerForKeyRelease,  this );
@@ -606,15 +604,6 @@ gint MainForm::GtkHandlerForCloseBoxDeleteEvent( GtkWidget *widget, GdkEvent *ev
 
 
 
-gint MainForm::GtkHandlerForDrawingAreaConfigureEvent( GtkWidget *widget, GdkEventConfigure *event, gpointer userObject ) // static member   configure_event
-{
-    // CONFIGURE
-    auto thisObject = (MainForm *) userObject;
-    return TRUE;
-}
-
-
-
 gint MainForm::GtkHandlerForDrawingAreaExposeEvent( GtkWidget *widget, GdkEventExpose *event, gpointer userObject )    // static member   expose_event
 {
     auto thisObject = (MainForm *) userObject;
@@ -633,14 +622,6 @@ gint MainForm::GtkHandlerForDrawingAreaExposeEvent( GtkWidget *widget, GdkEventE
     }
 
     return FALSE;
-}
-
-
-
-gint MainForm::GtkHandlerForDrawingAreaMotionNotifyEvent( GtkWidget *widget, GdkEventMotion *event, gpointer userObject )    // static member   motion_notify_event
-{
-    auto thisObject = (MainForm *) userObject;
-    return TRUE;
 }
 
 

@@ -57,9 +57,7 @@ private:
 
     static gint GtkHandlerForCloseBoxDeleteEvent(          GtkWidget *widget, GdkEvent *event, gpointer userObject ); // static member
 
-    static gint GtkHandlerForDrawingAreaConfigureEvent(    GtkWidget *widget, GdkEventConfigure *event, gpointer userObject ); // static member   configure_event
     static gint GtkHandlerForDrawingAreaExposeEvent(       GtkWidget *widget, GdkEventExpose *event, gpointer userObject );    // static member   expose_event
-    static gint GtkHandlerForDrawingAreaMotionNotifyEvent( GtkWidget *widget, GdkEventMotion *event, gpointer userObject );    // static member   motion_notify_event
     static gint GtkHandlerForDrawingAreaButtonPressEvent(  GtkWidget *widget, GdkEventButton *event, gpointer userObject );    // static member   button_press_event
 
     static gboolean GtkHandlerForTheTimer( gpointer userObject );    // static member

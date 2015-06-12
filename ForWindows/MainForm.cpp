@@ -61,17 +61,16 @@ void CALLBACK MainFormTimerProcedure(
 
 MainForm::MainForm( HWND hWndOwner, const std::vector<std::wstring> &paramList )
 	: BaseForm( hWndOwner, MainForm::IDD )
-	, _lynxUIModel( nullptr )
-	, _guestScreenBitmap(NULL)
-	, _timeBeginPeriodResult(0)
-	, _timeSetEventResult(0)
-	, _waveOutStream(nullptr)
-	, _settingsFilePath(settingsFilePath)
-	, _snapshotFilePath(snapshotFilePath)
-	, _tapFilePath(tapFilePath)
-	, _gamesMode(gamesMode)
-	, _saveDC(0)
 {
+    //
+    // Parse the parameters list:
+    //
+
+    JynxParsedParameters<std::wstring>  parsedParams( paramsList );
+    _settingsFilePath = parsedParams.GetSettingsFilePath();
+    _snapshotFilePath = parsedParams.GetSnapshotFilePath();
+    _tapFilePath      = parsedParams.GetTapFilePath();
+
 	//
 	// Sound
 	//
@@ -122,7 +121,7 @@ MainForm::MainForm( HWND hWndOwner, const std::vector<std::wstring> &paramList )
 		this,
 		&_soundBuffer.front(),
 		_soundBuffer.size(),
-		"\r\n", _gamesMode ) );  // The preferred end of line sequence on the WINDOWS platform.  (Think: Notepad.exe!)
+		"\r\n", parserParameters.GetGamesMode() ) );  // The preferred end of line sequence on the WINDOWS platform.  (Think: Notepad.exe!)
 }
 
 

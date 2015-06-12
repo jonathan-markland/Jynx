@@ -12,10 +12,10 @@ public:
 
     explicit JynxParsedParameters( const std::vector<STRING_CLASS> &paramList );
 
-    STRING_CLASS  GetSettingsFilePath() const { return _settingsFilePath; }
-    STRING_CLASS  GetSnapshotFilePath() const { return _snapshotFilePath; }
-    STRING_CLASS  GetTapFilePath()      const { return _tapFilePath; }
-    bool          GetGamesMode()        const { return _gamesMode; }
+    STRING_CLASS  GetSettingsFilePath() const   { return _settingsFilePath; }
+    STRING_CLASS  GetSnapshotFilePath() const   { return _snapshotFilePath; }
+    STRING_CLASS  GetTapFilePath()      const   { return _tapFilePath; }
+    bool          GetGamesMode()        const   { return _gamesMode; }
 
 private:
 

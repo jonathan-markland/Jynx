@@ -85,17 +85,17 @@ private:
 	void OnAbout();
 	void OnSound();*/
 
-	HDC     _dc;         // Is only set when asking the model to paint.
-	HANDLE  _hbicon;
-	HANDLE  _hsicon;
-	int     _saveDC;
+	HDC     _dc = NULL;         // Is only set when asking the model to paint.
+	HANDLE  _hbicon = NULL;
+	HANDLE  _hsicon = NULL;
+	int     _saveDC = 0;
 
 	std::unique_ptr<Jynx::LynxUserInterfaceModel> _lynxUIModel;  // Reminder - Emulator is within this.
 	libWinApi::FrameBufferInfo        _screenInfo;
 
-	HBITMAP                _guestScreenBitmap;
-	MMRESULT               _timeBeginPeriodResult;
-	MMRESULT               _timeSetEventResult;
+	HBITMAP                _guestScreenBitmap = NULL;
+	MMRESULT               _timeBeginPeriodResult = NULL;
+	MMRESULT               _timeSetEventResult = NULL;
 
 	std::shared_ptr<WaveOutputStream>  _waveOutStream;
 	std::vector<uint16_t>         _soundBuffer;
@@ -105,7 +105,6 @@ private:
 	std::wstring  _settingsFilePath;
 	std::wstring  _snapshotFilePath;
 	std::wstring  _tapFilePath;
-	bool _gamesMode;
 
 };
 
