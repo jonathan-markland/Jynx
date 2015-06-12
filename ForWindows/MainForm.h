@@ -1,22 +1,22 @@
 //
 // Jynx - Jonathan's Lynx Emulator (Camputers Lynx 48K/96K models).
 // Copyright (C) 2014  Jonathan Markland
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 
+//
 //		jynx_emulator {at} yahoo {dot} com
-// 
+//
 
 
 
@@ -33,15 +33,15 @@
 
 
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //     MAIN FORM
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 class MainForm: public libWinApi::BaseForm, public Jynx::IViewServicesForLynxUserInterfaceModel
 {
 public:
 
-	MainForm( HWND hWndOwner, const wchar_t *settingsFilePath, const wchar_t *snapshotFilePath, bool gamesMode, const wchar_t *tapFilePath );
+	MainForm( HWND hWndOwner, const std::vector<std::wstring> &paramList );
 
 	enum { IDD = IDD_MAINFORM };
 	virtual ~MainForm() override;
@@ -74,6 +74,7 @@ public:
 
 private:
 
+/* TODO: see which can be removed
 	bool CanRiskLosingModifiedTape() const;
 	bool UserAllowsReset();
 	void LoadSnapshot( const wchar_t *pathName );
@@ -82,7 +83,7 @@ private:
 	void SelectTimingMechanism();
 	void OnPaint( HDC dc );
 	void OnAbout();
-	void OnSound();
+	void OnSound();*/
 
 	HDC     _dc;         // Is only set when asking the model to paint.
 	HANDLE  _hbicon;

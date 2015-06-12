@@ -59,7 +59,7 @@ void CALLBACK MainFormTimerProcedure(
 
 
 
-MainForm::MainForm( HWND hWndOwner, const wchar_t *settingsFilePath, const wchar_t *snapshotFilePath, bool gamesMode, const wchar_t *tapFilePath )
+MainForm::MainForm( HWND hWndOwner, const std::vector<std::wstring> &paramList )
 	: BaseForm( hWndOwner, MainForm::IDD )
 	, _lynxUIModel( nullptr )
 	, _guestScreenBitmap(NULL)

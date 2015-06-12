@@ -30,58 +30,6 @@
 #include "MainForm.h"
 
 
-
-void SyntaxError()
-{
-	throw std::invalid_argument( "Syntax error in command line string" );
-}
-
-
-void MissingOperand()
-{
-	throw std::invalid_argument( "Command line parameter is missing an operand." );
-}
-
-
-
-bool ParseParamAndValue( const std::vector<std::wstring> &paramList, size_t &i, const wchar_t *switchString, std::wstring *out_variable )
-{
-	if( i < paramList.size() )
-	{
-		if( paramList[i] == switchString )
-		{
-			++i;
-			if( i >= paramList.size() ) MissingOperand();
-			if( paramList[i][0] == L'-' ) MissingOperand();
-			*out_variable = paramList[i];
-			++i;
-			return true;
-		}
-	}
-	return false;
-}
-
-
-
-bool ParseParam( const std::vector<std::wstring> &paramList, size_t &i, const wchar_t *switchString, bool *out_variable )
-{
-	if( i < paramList.size() )
-	{
-		if( paramList[i] == switchString )
-		{
-			++i;
-			*out_variable = true;
-			return true;
-		}
-	}
-	return false;
-}
-
-
-
-
-
-
 int APIENTRY _tWinMain(
 	_In_ HINSTANCE hInstance,
     _In_opt_ HINSTANCE hPrevInstance,
@@ -97,25 +45,11 @@ int APIENTRY _tWinMain(
 			SyntaxError();
 		}
 
-		// Parsed Parameters
-		std::wstring  settingsFilePath;
-		std::wstring  snapshotFilePath;
-		std::wstring  tapFilePath;
-		bool gamesMode = false;
-		size_t i=0;
-		while( i < paramList.size() )
-		{
-			     if( ParseParamAndValue( paramList, i, L"--settings", &settingsFilePath ) ) {}
-			else if( ParseParamAndValue( paramList, i, L"--snapshot", &snapshotFilePath ) ) {}
-			else if( ParseParamAndValue( paramList, i, L"--run",      &tapFilePath ) ) {}
-			else if( ParseParam( paramList, i, L"--games", &gamesMode ) ) {}
-			else throw std::invalid_argument( "Unrecognised content on command line." );
-		}
-
 		// Show main form:
-		auto mainForm = std::make_shared<MainForm>( (HWND) NULL, settingsFilePath.c_str(), snapshotFilePath.c_str(), gamesMode, tapFilePath.c_str() );
+		auto mainForm = std::make_shared<MainForm>( (HWND) NULL, paramList );
 		mainForm->ShowAndMaximise();
 		mainForm->DoModal();
+
 		return 0;
 	}
 	catch( const std::exception &e )

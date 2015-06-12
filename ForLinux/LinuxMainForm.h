@@ -17,7 +17,7 @@ class MainForm: public Jynx::IViewServicesForLynxUserInterfaceModel, public Inte
 {
 public:
 
-    MainForm( /*HWND hWndOwner,*/ const char *settingsFilePath, const char *snapshotFilePath, bool gamesMode, const char *tapFilePath, const char *exePath );
+    MainForm( const std::vector<std::string> &paramsList, const char *exePath );
 	~MainForm();
 
     void ShowAll();
@@ -55,8 +55,6 @@ public:
 
 private:
 
-    void GtkConstruction();
-
     static gint GtkHandlerForCloseBoxDeleteEvent(          GtkWidget *widget, GdkEvent *event, gpointer userObject ); // static member
 
     static gint GtkHandlerForDrawingAreaConfigureEvent(    GtkWidget *widget, GdkEventConfigure *event, gpointer userObject ); // static member   configure_event
@@ -69,9 +67,18 @@ private:
     static gboolean GtkHandlerForKeyPress(   GtkWidget *widget, GdkEvent *event, gpointer user_data ); // static member
     static gboolean GtkHandlerForKeyRelease( GtkWidget *widget, GdkEvent *event, gpointer user_data ); // static member
 
-    bool OnInitDialog();
     void OnAbout();
     void OnCancel();
+
+private:
+
+	std::string  _settingsFilePath;
+	std::string  _exePath;
+
+	std::unique_ptr<Jynx::LynxUserInterfaceModel> _lynxUIModel;  // Reminder - Emulator is within this.
+
+    std::shared_ptr<WaveOutputStream>  _waveOutStream;
+	std::vector<uint16_t>              _soundBuffer;
 
 private:
 
@@ -97,35 +104,7 @@ private:
     uint32_t  _pixBufBytesPerScanLine = 0;
 
     cairo_t  *_cairoContext = nullptr;  // only set within lifetime of expose event
-
-    volatile bool _mainThreadShouldDoPeriodicTasks = false;
-
-private:
-
-//	bool CanRiskLosingModifiedTape() const;
-//	bool UserAllowsReset();
-//	void LoadSnapshot( const wchar_t *pathName );
-//	void SaveSnapshot( const wchar_t *pathName );
-//	void SetCycles( Jynx::LynxZ80Cycles::Enum cyclesEnum );
-//	void SelectTimingMechanism();
-//	void OnPaint( HDC dc );
-//	void OnAbout();
-//	void OnSound();
-//
-//
-	std::unique_ptr<Jynx::LynxUserInterfaceModel> _lynxUIModel;  // Reminder - Emulator is within this.
-
-    std::shared_ptr<WaveOutputStream>  _waveOutStream;
-	std::vector<uint16_t>              _soundBuffer;
-//
-//	libWinApi::WindowStyleAndPositionInformation  _restorationAfterFullScreen;
-//
-	std::string  _settingsFilePath;
-	std::string  _snapshotFilePath;
-	std::string  _tapFilePath;
-	std::string  _exePath;
-
-	bool _gamesMode;
+    bool      _originalCairoContextSaved = false;
 
 };
 

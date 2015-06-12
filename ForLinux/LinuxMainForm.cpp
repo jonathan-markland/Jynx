@@ -34,19 +34,23 @@
 #include "LinuxFileOpener.h"
 #include "LinuxGtkFileDialogs.h"
 
+#include "JynxParsedParameters.h"
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //        HOST WINDOW
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-MainForm::MainForm( const char *settingsFilePath, const char *snapshotFilePath, bool gamesMode, const char *tapFilePath, const char *exePath )
-    : _settingsFilePath(settingsFilePath)
-	, _snapshotFilePath(snapshotFilePath)
-	, _tapFilePath(tapFilePath)
-	, _exePath(exePath)
-	, _gamesMode(gamesMode)
-	//, _guestScreenBitmap(NULL)
+MainForm::MainForm( const std::vector<std::string> &paramsList, const char *exePath )
+    : _exePath(exePath)
 {
+    //
+    // Parse the parameters list:
+    //
+
+    JynxParsedParameters<std::string>  parsedParams( paramsList );
+    _settingsFilePath = parsedParams.GetSettingsFilePath();
+
 	//
 	// Sound
 	//
@@ -82,74 +86,33 @@ MainForm::MainForm( const char *settingsFilePath, const char *snapshotFilePath, 
     _pixBufBaseAddress      = pixelBuffer;
     _pixBufBytesPerScanLine = rowStride;
 
-/*GdkColorspace gdk_pixbuf_get_colorspace      (const GdkPixbuf *pixbuf);
-int           gdk_pixbuf_get_n_channels      (const GdkPixbuf *pixbuf);
-gboolean      gdk_pixbuf_get_has_alpha       (const GdkPixbuf *pixbuf);
-int           gdk_pixbuf_get_bits_per_sample (const GdkPixbuf *pixbuf);
-guchar       *gdk_pixbuf_get_pixels          (const GdkPixbuf *pixbuf);
-int           gdk_pixbuf_get_width           (const GdkPixbuf *pixbuf);
-int           gdk_pixbuf_get_height          (const GdkPixbuf *pixbuf);
-int           gdk_pixbuf_get_rowstride       (const GdkPixbuf *pixbuf);
-gsize         gdk_pixbuf_get_byte_length     (const GdkPixbuf *pixbuf);
-*/
+        /*GdkColorspace gdk_pixbuf_get_colorspace      (const GdkPixbuf *pixbuf);
+        int           gdk_pixbuf_get_n_channels      (const GdkPixbuf *pixbuf);
+        gboolean      gdk_pixbuf_get_has_alpha       (const GdkPixbuf *pixbuf);
+        int           gdk_pixbuf_get_bits_per_sample (const GdkPixbuf *pixbuf);
+        guchar       *gdk_pixbuf_get_pixels          (const GdkPixbuf *pixbuf);
+        int           gdk_pixbuf_get_width           (const GdkPixbuf *pixbuf);
+        int           gdk_pixbuf_get_height          (const GdkPixbuf *pixbuf);
+        int           gdk_pixbuf_get_rowstride       (const GdkPixbuf *pixbuf);
+        gsize         gdk_pixbuf_get_byte_length     (const GdkPixbuf *pixbuf);
+        */
+
 	//
 	// Create the model (this has the emulator inside, plus UI logic)
 	//
 
-	_lynxUIModel = std::unique_ptr<Jynx::LynxUserInterfaceModel>( new Jynx::LynxUserInterfaceModel(
-		this,
-		&_soundBuffer.front(),
-		_soundBuffer.size(),
-		"\n",   // The preferred end of line sequence on the LINUX platform.
-		_gamesMode ) );
+	_lynxUIModel = std::unique_ptr<Jynx::LynxUserInterfaceModel>(
+        new Jynx::LynxUserInterfaceModel(
+            this,
+            &_soundBuffer.front(),
+            _soundBuffer.size(),
+            "\n",   // The preferred end of line sequence on the LINUX platform.
+            parsedParams.GetGamesMode() ) );
 
     //
     // User interface
     //
 
-    GtkConstruction();
-}
-
-
-
-MainForm::~MainForm()
-{
-	// THREADING NOTE:
-	// - Must destroy _lynxUIModel FIRST - to clean up threads, before
-	//   we destroy what the threads are using!
-	_lynxUIModel = nullptr;
-/*
-	//
-	// Now the EMULATOR thread is gone, we can now clean up
-	// everything that the EMULATOR thread was using:
-	//
-
-	g_hWndToPostMessage = NULL;
-
-	if( _guestScreenBitmap != NULL )
-	{
-		::DeleteObject(_guestScreenBitmap);GdkPixbuf *         gdk_pixbuf_new                      (GdkColorspace colorspace,
-                                                         gboolean has_alpha,
-                                                         int bits_per_sample,
-                                                         int width,
-                                                         int height);
-		_guestScreenBitmap = NULL;
-	}
-	*/
-
-    // TODO: unref the pixbuf
-	// TODO:  To be clean, what GTK destruction needs to be done?  Most of the examples just returned from main().
-}
-
-
-
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-//     THE GTK SECTION
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-void MainForm::GtkConstruction()  // TODO: Do in OnInitDialog instead?
-{
     // Create the main window:
 
     _gtkWindow = GTK_WINDOW( gtk_window_new( GTK_WINDOW_TOPLEVEL ) );
@@ -294,10 +257,73 @@ void MainForm::GtkConstruction()  // TODO: Do in OnInitDialog instead?
 
     g_timeout_add( 20, (GSourceFunc) &MainForm::GtkHandlerForTheTimer, this );
 
-    OnInitDialog();
+    /*
+	SetBigAndSmallIcons( IDR_MAINFRAME );
+
+	g_hWndToPostMessage = GetHWND();
+
+	// Centre window placement BEFORE calling model's OnInitDialog() as
+	// that may cause go full screen as settings file is loaded!
+	libWinApi::CenterWindowPercent( *this, 85, GetOwner() );
+    */
+
+	_lynxUIModel->OnInitDialog();
+
+    //
+    // Process command line "auto start" options:
+    //
+
+	if( ! parsedParams.GetSnapshotFilePath().empty() )
+	{
+		// Load the snapshot file that the user specified on the command line:
+		LinuxFileOpener  fileOpener( parsedParams.GetSnapshotFilePath().c_str() );
+		_lynxUIModel->ForceLoadSpecificSnapshot( &fileOpener );
+	}
+	else if( ! parsedParams.GetTapFilePath().empty() )
+	{
+		// Load the cassette file that the user specified on the command line:
+		LinuxFileOpener  fileOpener( parsedParams.GetTapFilePath().c_str() );
+		_lynxUIModel->ForceLoadSpecificTape( &fileOpener );
+	}
 }
 
 
+
+MainForm::~MainForm()
+{
+	// THREADING NOTE:
+	// - Must destroy _lynxUIModel FIRST - to clean up threads, before
+	//   we destroy what the threads are using!
+	_lynxUIModel = nullptr;
+/*
+	//
+	// Now the EMULATOR thread is gone, we can now clean up
+	// everything that the EMULATOR thread was using:
+	//
+
+	g_hWndToPostMessage = NULL;
+
+	if( _guestScreenBitmap != NULL )
+	{
+		::DeleteObject(_guestScreenBitmap);GdkPixbuf *         gdk_pixbuf_new                      (GdkColorspace colorspace,
+                                                         gboolean has_alpha,
+                                                         int bits_per_sample,
+                                                         int width,
+                                                         int height);
+		_guestScreenBitmap = NULL;
+	}
+	*/
+
+    // TODO: unref the pixbuf
+	// TODO:  To be clean, what GTK destruction needs to be done?  Most of the examples just returned from main().
+}
+
+
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+//     THE GTK SECTION
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 void MainForm::ShowAll()
 {
@@ -427,36 +453,6 @@ int32_t GdkHardwareKeyCodeToLynxKeyIndex( uint8_t keyVkCode )
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //     FRAMEWORK HANDLING
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-bool  MainForm::OnInitDialog()
-{
-    /*
-	SetBigAndSmallIcons( IDR_MAINFRAME );
-
-	g_hWndToPostMessage = GetHWND();
-
-	// Centre window placement BEFORE calling model's OnInitDialog() as
-	// that may cause go full screen as settings file is loaded!
-	libWinApi::CenterWindowPercent( *this, 85, GetOwner() );
-*/
-	_lynxUIModel->OnInitDialog();
-
-	if( ! _snapshotFilePath.empty() )
-	{
-		// Load the snapshot file that the user specified on the command line:
-		LinuxFileOpener  fileOpener( _snapshotFilePath.c_str() );
-		_lynxUIModel->ForceLoadSpecificSnapshot( &fileOpener );
-	}
-	else if( ! _tapFilePath.empty() )
-	{
-		// Load the cassette file that the user specified on the command line:
-		LinuxFileOpener  fileOpener( _tapFilePath.c_str() );
-		_lynxUIModel->ForceLoadSpecificTape( &fileOpener );
-	}
-
-	return true; // TODO: return not required in Linux
-}
-
 
 void  MainForm::OnCancel()
 {
@@ -629,8 +625,9 @@ gint MainForm::GtkHandlerForDrawingAreaExposeEvent( GtkWidget *widget, GdkEventE
         thisObject->_cairoContext = gdk_cairo_create( gtkDrawble );
         if( thisObject->_cairoContext != nullptr )
         {
+            thisObject->_originalCairoContextSaved = false;  // It isn't initially.
             thisObject->_lynxUIModel->OnPaint();
-            cairo_destroy( thisObject->_cairoContext );
+            cairo_destroy( thisObject->_cairoContext );  // Reminder - destroys cairo_save() stack too.
             thisObject->_cairoContext = nullptr;
         }
     }
@@ -844,27 +841,33 @@ Jynx::LynxRectangle  MainForm::GetClientRectangle()
 
 void MainForm::SetViewport( int left, int top, int width, int height )
 {
-	assert(false);
-    /*
-	if( _dc != NULL ) // If this is NULL, program will be terminating because of posted quit message, anyway!
-	{
-		assert( _saveDC == 0 );
-		_saveDC = ::SaveDC( _dc );
-		::IntersectClipRect( _dc, left, top, left+width, top+height );
-	}*/
+    if( _cairoContext != nullptr )
+    {
+        if( ! _originalCairoContextSaved )
+        {
+            cairo_save( _cairoContext );
+            _originalCairoContextSaved = true;
+        }
+
+        cairo_new_path( _cairoContext );  // not trusting previous usages.
+        cairo_rectangle( _cairoContext, left, top, width, height );
+        cairo_clip_preserve( _cairoContext );
+        cairo_new_path( _cairoContext );  // because
+    }
 }
 
 
 
 void MainForm::CancelViewport()
 {
-	assert(false);
-    /*
-	if( _dc != NULL && _saveDC != 0 )
-	{
-		::RestoreDC( _dc, _saveDC );
-		_saveDC = 0;
-	}*/
+    if( _cairoContext != nullptr )
+    {
+        if( _originalCairoContextSaved )
+        {
+            cairo_restore( _cairoContext );
+            _originalCairoContextSaved = false;
+        }
+    }
 }
 
 
@@ -873,6 +876,7 @@ void MainForm::StretchBlitTheGuestScreen( int left, int top, int width, int heig
 {
     if( _gtkDrawingArea != nullptr && _cairoContext != nullptr )
     {
+        cairo_save( _cairoContext );
         cairo_matrix_t  mat;
         cairo_matrix_init( &mat, double(width) / LYNX_FRAMEBUF_WIDTH, 0, 0, double(height) / LYNX_FRAMEBUF_HEIGHT, left, top);
         cairo_transform( _cairoContext, &mat );
@@ -881,6 +885,7 @@ void MainForm::StretchBlitTheGuestScreen( int left, int top, int width, int heig
         cairo_set_antialias( _cairoContext, CAIRO_ANTIALIAS_NONE );
         cairo_pattern_set_filter( cairo_get_source(_cairoContext), CAIRO_FILTER_NEAREST );
         cairo_fill( _cairoContext );
+        cairo_restore( _cairoContext );
     }
 }
 
@@ -956,7 +961,6 @@ void  MainForm::PaintPixelsOnHostBitmap_OnEmulatorThread( uint32_t addressOffset
 	int32_t  destX = (addressOffset & 0x1F) << 3;
 	int32_t  destY = (addressOffset >> 5);
 	auto destinationPixelAddress = CalcFrameBufferPixelAddress( (uint32_t *) _pixBufBaseAddress, _pixBufBytesPerScanLine, destX, destY );
-	auto endPixelAddress = destinationPixelAddress + 8;
 	std::copy_n( eightPixelsData, 8, destinationPixelAddress );
 }
 
@@ -1028,6 +1032,4 @@ void MainForm::WriteSoundBufferToSoundCardOrSleep_OnEmulatorThread()
 		// sound OFF.
 		usleep( 20*1000 );
 	}
-
-	_mainThreadShouldDoPeriodicTasks = true;
 }

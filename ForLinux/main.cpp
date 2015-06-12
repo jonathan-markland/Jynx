@@ -5,17 +5,18 @@
 
 #include <gtk/gtk.h>
 
+#include "ParameterParsing.h"
 #include "LinuxMainForm.h"
 
 
-
-std::string ExtractPath( const char *path )
+template<typename CHAR_TYPE>
+std::basic_string<CHAR_TYPE>  RemoveLeafFromPath( const CHAR_TYPE *path )   // TODO: Move to library
 {
-    std::string  result(path);
+    std::basic_string<CHAR_TYPE>  result(path);
     auto pos = result.rfind('/');
-    if( pos != std::string::npos )
+    if( pos != std::basic_string<CHAR_TYPE>::npos )
     {
-        return std::string( result.begin(), result.begin() + pos );
+        return std::basic_string<CHAR_TYPE>( result.begin(), result.begin() + pos );
     }
     throw std::runtime_error( "Cannot determine path!" );
 }
@@ -34,18 +35,20 @@ int main( int argc, char *argv[] )
 
     try
     {
+        auto paramsList = MakeParamsListFromArgcAndArgv( argc, argv, 1 );
 
         //
         // Create main window
         //
 
-        auto settingsFilePath = "~/.jynx_emulator/settings"; // TODO: fix
+/*        auto settingsFilePath = "~/.jynx_emulator/settings"; // TODO: fix
         auto snapshotFilePath = ""; // not loading a snapshot
         auto gamesMode = false; // TODO: fix
         auto tapFilePath = "";  // not loading a tap
-        auto exePath = ExtractPath( argv[0] );
+        */
+        auto exePath = RemoveLeafFromPath( argv[0] );
 
-        auto mainWindow = std::make_shared<MainForm>( settingsFilePath, snapshotFilePath, gamesMode, tapFilePath, exePath.c_str() );
+        auto mainWindow = std::make_shared<MainForm>( paramsList, exePath.c_str() );
         mainWindow->ShowAll();
 
     //  button = gtk_button_new_from_stock (GTK_STOCK_DIALOG_INFO);

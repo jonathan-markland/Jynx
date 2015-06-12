@@ -5,7 +5,6 @@
 		<Option title="Jynx" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
-		<Option virtualFolders="Portable/;" />
 		<Build>
 			<Target title="Debug">
 				<Option output="bin/Debug/Jynx" prefix_auto="1" extension_auto="1" />
@@ -105,9 +104,7 @@
 		<Unit filename="../Portable/Z80/JynxZ80Timings.cpp" />
 		<Unit filename="../Portable/Z80/JynxZ80Timings.h" />
 		<Unit filename="../Portable/Z80/JynxZ80_CB.cpp" />
-		<Unit filename="../Portable/Z80/JynxZ80_ED.cpp">
-			<Option virtualFolder="Portable/" />
-		</Unit>
+		<Unit filename="../Portable/Z80/JynxZ80_ED.cpp" />
 		<Unit filename="../Portable/ZeroInitialiseMemory.h" />
 		<Unit filename="LinuxAboutBox.cpp" />
 		<Unit filename="LinuxAboutBox.h" />

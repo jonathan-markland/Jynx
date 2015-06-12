@@ -2732,11 +2732,12 @@
 	<pthread.h>
 	"Waitable.h"
 
-1433760496 source:/home/jonathan/Documents/Jynx/ForLinux/main.cpp
+1434143038 source:/home/jonathan/Documents/Jynx/ForLinux/main.cpp
 	<stdlib.h>
 	<stdint.h>
 	<string>
 	<gtk/gtk.h>
+	"ParameterParsing.h"
 	"LinuxMainForm.h"
 
 1433884390 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxGtkMenu.cpp
@@ -2763,7 +2764,7 @@
 
 1433751016 /home/jonathan/Documents/Jynx/ForLinux/LinuxAboutBox.h
 
-1434064830 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.cpp
+1434142443 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.cpp
 	"MenuItemIDs.h"
 	"LynxHardware.h"
 	"UIStrings.h"
@@ -2776,8 +2777,9 @@
 	"LinuxAboutBox.h"
 	"LinuxFileOpener.h"
 	"LinuxGtkFileDialogs.h"
+	"JynxParsedParameters.h"
 
-1434065762 /home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.h
+1434142104 /home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.h
 	"../Portable/LynxUserInterfaceModel.h"
 	"../Portable/IViewServicesForLynxUserInterfaceModel.h"
 	"../Portable/WaveOutputStream.h"
@@ -2821,4 +2823,15 @@
 	<gdk/gdkkeysyms-compat.h>
 
 1426113851 /usr/include/gtk-2.0/gdk/gdkkeysyms-compat.h
+
+1434142280 /home/jonathan/Documents/Jynx/Portable/JynxParsedParameters.h
+	"ParameterParsing.h"
+
+1434143032 /home/jonathan/Documents/Jynx/Portable/ParameterParsing.h
+	<vector>
+	<string>
+	<stdexcept>
+
+1434142384 source:/home/jonathan/Documents/Jynx/Portable/ParameterParsing.cpp
+	"ParameterParsing.h"
 
