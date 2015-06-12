@@ -231,12 +231,14 @@ bool  MainForm::OnInitDialog()
 	if( ! _snapshotFilePath.empty() )
 	{
 		// Load the snapshot file that the user specified on the command line:
-		_lynxUIModel->ForceLoadSpecificSnapshot( &WindowsFileOpener( _snapshotFilePath.c_str() ) );
+		WindowsFileOpener  fileOpener( _snapshotFilePath.c_str() );
+		_lynxUIModel->ForceLoadSpecificSnapshot( &fileOpener );
 	}
 	else if( ! _tapFilePath.empty() )
 	{
 		// Load the cassette file that the user specified on the command line:
-		_lynxUIModel->ForceLoadSpecificTape( &WindowsFileOpener( _tapFilePath.c_str() ) );
+		WindowsFileOpener  fileOpener( _tapFilePath.c_str() );
+		_lynxUIModel->ForceLoadSpecificTape( &fileOpener );
 	}
 
 	auto result = BaseForm::OnInitDialog();
