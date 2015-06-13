@@ -42,259 +42,288 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 MainForm::MainForm( const std::vector<std::string> &paramsList, const char *exePath )
-    : _exePath(exePath)
 {
-    //
-    // Parse the parameters list:
-    //
+    try // <-- because the language won't call the destructor if exception happens.
+    {
+        _exePath = exePath;
 
-    JynxParsedParameters<std::string>  parsedParams( paramsList );
-    _settingsFilePath = parsedParams.GetSettingsFilePath();
+        //
+        // Parse the parameters list:
+        //
 
-	//
-	// Create frame buffer bitmap which emulator can directly draw on.
-	//
+        JynxParsedParameters<std::string>  parsedParams( paramsList );
+        _settingsFilePath = parsedParams.GetSettingsFilePath();
 
-	_pixBuf = gdk_pixbuf_new( GDK_COLORSPACE_RGB, TRUE, 8, LYNX_FRAMEBUF_WIDTH, LYNX_FRAMEBUF_HEIGHT );  // Reminder: buffer is not cleared.
-	if( ! _pixBuf )
-	{
-		throw std::runtime_error( "Cannot create the screen bitmap for the emulation.\nThe emulation cannot continue." );
-	}
+        //
+        // Create frame buffer bitmap which emulator can directly draw on.
+        //
 
-	auto pixelBuffer   = gdk_pixbuf_get_pixels( _pixBuf );
-	auto rowStride     = gdk_pixbuf_get_rowstride( _pixBuf );
-	// auto numChannels2  = gdk_pixbuf_get_n_channels( _pixBuf );
-	// auto bitsPerSample = gdk_pixbuf_get_bits_per_sample( _pixBuf );
+        _pixBuf = gdk_pixbuf_new( GDK_COLORSPACE_RGB, TRUE, 8, LYNX_FRAMEBUF_WIDTH, LYNX_FRAMEBUF_HEIGHT );  // Reminder: buffer is not cleared.
+        if( ! _pixBuf )
+        {
+            throw std::runtime_error( "Cannot create the screen bitmap for the emulation.\nThe emulation cannot continue." );
+        }
 
-    _pixBufBaseAddress      = pixelBuffer;
-    _pixBufBytesPerScanLine = rowStride;
+        auto pixelBuffer   = gdk_pixbuf_get_pixels( _pixBuf );
+        auto rowStride     = gdk_pixbuf_get_rowstride( _pixBuf );
+        // auto numChannels2  = gdk_pixbuf_get_n_channels( _pixBuf );
+        // auto bitsPerSample = gdk_pixbuf_get_bits_per_sample( _pixBuf );
 
-        /*GdkColorspace gdk_pixbuf_get_colorspace      (const GdkPixbuf *pixbuf);
-        int           gdk_pixbuf_get_n_channels      (const GdkPixbuf *pixbuf);
-        gboolean      gdk_pixbuf_get_has_alpha       (const GdkPixbuf *pixbuf);
-        int           gdk_pixbuf_get_bits_per_sample (const GdkPixbuf *pixbuf);
-        guchar       *gdk_pixbuf_get_pixels          (const GdkPixbuf *pixbuf);
-        int           gdk_pixbuf_get_width           (const GdkPixbuf *pixbuf);
-        int           gdk_pixbuf_get_height          (const GdkPixbuf *pixbuf);
-        int           gdk_pixbuf_get_rowstride       (const GdkPixbuf *pixbuf);
-        gsize         gdk_pixbuf_get_byte_length     (const GdkPixbuf *pixbuf);
+        _pixBufBaseAddress      = pixelBuffer;
+        _pixBufBytesPerScanLine = rowStride;
+
+            /*GdkColorspace gdk_pixbuf_get_colorspace      (const GdkPixbuf *pixbuf);
+            int           gdk_pixbuf_get_n_channels      (const GdkPixbuf *pixbuf);
+            gboolean      gdk_pixbuf_get_has_alpha       (const GdkPixbuf *pixbuf);
+            int           gdk_pixbuf_get_bits_per_sample (const GdkPixbuf *pixbuf);
+            guchar       *gdk_pixbuf_get_pixels          (const GdkPixbuf *pixbuf);
+            int           gdk_pixbuf_get_width           (const GdkPixbuf *pixbuf);
+            int           gdk_pixbuf_get_height          (const GdkPixbuf *pixbuf);
+            int           gdk_pixbuf_get_rowstride       (const GdkPixbuf *pixbuf);
+            gsize         gdk_pixbuf_get_byte_length     (const GdkPixbuf *pixbuf);
+            */
+
+        //
+        // Create the model (this has the emulator inside, plus UI logic)
+        //
+
+        _lynxUIModel = std::unique_ptr<Jynx::LynxUserInterfaceModel>(
+            new Jynx::LynxUserInterfaceModel(
+                this,
+                "\n",   // The preferred end of line sequence on the LINUX platform.
+                parsedParams.GetGamesMode() ) );
+
+        //
+        // User interface
+        //
+
+        // Create the main window:
+
+        _gtkWindow = GTK_WINDOW( gtk_window_new( GTK_WINDOW_TOPLEVEL ) );
+        _gtkWindowAsWidget = GTK_WIDGET( _gtkWindow );  // avoid loads of casting
+
+        gtk_container_set_border_width( GTK_CONTAINER( _gtkWindow ), 0 );
+        gtk_window_set_default_size(    _gtkWindow, 800, 600 );
+        gtk_window_set_title(           _gtkWindow, "Jynx" );
+        gtk_window_set_position(        _gtkWindow, GTK_WIN_POS_CENTER );
+        gtk_widget_realize(             _gtkWindowAsWidget );
+        gtk_signal_connect(             GTK_OBJECT( _gtkWindow ), "delete_event", GTK_SIGNAL_FUNC( &MainForm::GtkHandlerForCloseBoxDeleteEvent ), this );
+
+        // Create vertical box:
+
+        _vbox = gtk_vbox_new( FALSE, 0 );
+        gtk_container_add( GTK_CONTAINER(_gtkWindow), _vbox );
+
+        // Create the menu bar:
+
+        _menuBar = std::make_shared<LinuxGtkMenuBar>();
+
+        // Create buttons on the menu bar itself:
+
+        auto clickHandlerForMenuOptions = this;
+
+        _menuFile      = _menuBar->CreateMenu( "&File"      , clickHandlerForMenuOptions );
+        _menuSpeed     = _menuBar->CreateMenu( "S&peed"     , clickHandlerForMenuOptions );
+        _menuEmulation = _menuBar->CreateMenu( "&Emulation" , clickHandlerForMenuOptions );
+        _menuDisplay   = _menuBar->CreateMenu( "&Display"   , clickHandlerForMenuOptions );
+        _menuSound     = _menuBar->CreateMenu( "&Sound"     , clickHandlerForMenuOptions );
+        _menuText      = _menuBar->CreateMenu( "&Text"      , clickHandlerForMenuOptions );
+        _menuHelp      = _menuBar->CreateMenu( "&Help"      , clickHandlerForMenuOptions );
+
+        // POPUP "&File"
+
+        _menuFile->AddItem( "&Run TAP file ...",           ID_FILE_RUNTAPFILE );
+        _menuFile->AddSeparator();
+        _menuFile->AddItem( "&Open TAP file ...",          ID_FILE_OPENTAPFILE );
+        _menuFile->AddItem( "&Rewind tape",                ID_FILE_REWINDTAPE );
+        _menuFile->AddItem( "Tape &directory (at BASIC prompt)", ID_FILE_DIRECTORY );
+        _menuFile->AddSeparator();
+        _menuFile->AddItem( "&New output tape",            ID_FILE_INSERTBLANKTAPE );
+        _menuFile->AddItem( "&Save as TAP file...",        ID_FILE_SAVETAPE );
+        _menuFile->AddSeparator();
+        _menuFile->AddItem( "Load s&tate snapshot ...",    ID_FILE_LOADSTATESNAPSHOT );
+        _menuFile->AddItem( "S&ave state snapshot ...",    ID_FILE_SAVESTATESNAPSHOT );
+        _menuFile->AddSeparator();
+        _menuFile->AddItem( "E&xit",                       ID_FILE_EXIT );
+
+        // POPUP "S&peed"
+
+        _menuSpeed->AddTick(  "Speed &50%",                  ID_SPEED_SPEED50 );
+        _menuSpeed->AddTick(  "Speed &100%",                 ID_SPEED_SPEED100 );
+        _menuSpeed->AddTick(  "Speed &200%",                 ID_SPEED_SPEED200 );
+        _menuSpeed->AddTick(  "Speed &400%",                 ID_SPEED_SPEED400 );
+        _menuSpeed->AddTick(  "Speed &800%",                 ID_SPEED_SPEED800 );
+        _menuSpeed->AddSeparator();
+        _menuSpeed->AddTick(  "Super speed &cassette",        ID_SPEED_MAXSPEEDCASSETTE );
+        _menuSpeed->AddTick(  "Super speed c&onsole",         ID_SPEED_MAXSPEEDCONSOLE );
+        _menuSpeed->AddTick(  "Super speed &always",          ID_SPEED_MAXSPEEDALWAYS );
+        _menuSpeed->AddSeparator();
+        _menuSpeed->AddTick(  "&Pause",                      ID_EMULATION_PAUSE );
+
+        // POPUP "&Emulation"
+
+        _menuEmulation->AddTick(  "Lynx 48&K",                   ID_EMULATION_LYNX48K );
+        _menuEmulation->AddTick(  "Lynx 9&6K",                   ID_EMULATION_LYNX96K );
+        _menuEmulation->AddTick(  "Lynx 96K (+ &Scorpion ROM)",  ID_EMULATION_LYNX96KSCORPION );
+        _menuEmulation->AddSeparator();
+        _menuEmulation->AddTick(  "&Pause after tape load",       ID_EMULATION_PAUSEAFTERTAPLOAD );
+        _menuEmulation->AddSeparator();
+        _menuEmulation->AddItem(  "&Reset guest machine",        ID_EMULATION_RESET );
+
+        // POPUP "&Display"
+
+        _menuDisplay->AddTick(  "Fit to &window",              ID_DISPLAY_FITTOWINDOW );
+        _menuDisplay->AddTick(  "Use &square pixels",          ID_DISPLAY_SQUAREPIXELS );
+        _menuDisplay->AddTick(  "&Fill window",                ID_DISPLAY_FILLWINDOW );
+        _menuDisplay->AddSeparator();
+        _menuDisplay->AddTick(  "Normal &Lynx colours",        ID_DISPLAY_COLOURSET_NORMALRGB );
+        _menuDisplay->AddTick(  "&Green screen monitor",       ID_DISPLAY_COLOURSET_GREENSCREENMONITOR );
+        _menuDisplay->AddTick(  "&Black and white TV",         ID_DISPLAY_COLOURSET_BLACKANDWHITETV );
+        _menuDisplay->AddTick(  "Level &9 game colours",       ID_DISPLAY_COLOURSET_LEVEL9 );
+        _menuDisplay->AddTick(  "Show green &channel only",    ID_DISPLAY_COLOURSET_GREENONLY );
+        _menuDisplay->AddSeparator();
+        _menuDisplay->AddTick(  "F&ull screen",                ID_DISPLAY_FULLSCREENENABLE );
+
+        // POPUP "&Sound"
+
+        _menuSound->AddItem(  "&Record sound to file ...",    ID_SOUND_RECORDTOFILE );
+        _menuSound->AddItem(  "&Finish recording",            ID_SOUND_FINISHRECORDING );
+        _menuSound->AddSeparator();
+        _menuSound->AddTick(  "&Listen to tape sounds",       ID_SOUND_LISTENTOTAPESOUNDS );
+        _menuSound->AddSeparator();
+        _menuSound->AddTick(  "&Enable sound",                ID_SOUND_ENABLE );
+
+        // POPUP "&Text"
+
+        _menuText->AddItem(  "&Record Lynx text to file ...", ID_TEXT_RECORDLYNXTEXT );
+        _menuText->AddItem(  "&Stop recording Lynx text",     ID_TEXT_STOPRECORDINGLYNXTEXT );
+        _menuText->AddSeparator();
+        _menuText->AddItem(  "&Type in text from file ...",   ID_TEXT_TYPEINFROMFILE );
+        _menuText->AddSeparator();
+        _menuText->AddTick(  "&Enable Lynx BASIC REM command extensions", ID_TEXT_LYNXBASICREMCOMMANDEXTENSIONS );
+
+        // POPUP "&Help"
+
+        _menuHelp->AddItem(  "&About ...",                  ID_HELP_ABOUT );
+
+        //
+        // Add a generic drawable widget, to which we'll add event hooks to draw the screen.
+        //
+
+        _gtkDrawingArea = gtk_drawing_area_new();
+        // gtk_drawing_area_size( GTK_DRAWING_AREA(_gtkDrawingArea), 200, 200 );
+        auto gtkDrawingAreaAsObject = GTK_OBJECT(_gtkDrawingArea);
+        gtk_signal_connect( gtkDrawingAreaAsObject, "expose_event",        (GtkSignalFunc) &MainForm::GtkHandlerForDrawingAreaExposeEvent,       this );
+        gtk_signal_connect( gtkDrawingAreaAsObject, "button_press_event",  (GtkSignalFunc) &MainForm::GtkHandlerForDrawingAreaButtonPressEvent,  this );
+        gtk_signal_connect( gtkDrawingAreaAsObject, "key_press_event",     (GtkSignalFunc) &MainForm::GtkHandlerForKeyPress,    this );
+        gtk_signal_connect( gtkDrawingAreaAsObject, "key_release_event",   (GtkSignalFunc) &MainForm::GtkHandlerForKeyRelease,  this );
+        gtk_widget_set_events(
+            _gtkDrawingArea, GDK_EXPOSURE_MASK | GDK_LEAVE_NOTIFY_MASK | GDK_BUTTON_PRESS_MASK
+            | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK );  // TODO: Do I need all of these?
+        gtk_widget_set_extension_events( _gtkDrawingArea, GDK_EXTENSION_EVENTS_CURSOR ); // TODO: What does this do?
+        gtk_widget_set_can_focus( _gtkDrawingArea, TRUE );
+        gtk_widget_show( _gtkDrawingArea ); // TODO: needed?
+
+        //
+        // Establish content of primary vertical box:
+        //
+
+        auto vboxAsBox = GTK_BOX(_vbox);
+        gtk_box_pack_start( vboxAsBox, _menuBar->GetWidget(), FALSE, FALSE, 0 );
+        gtk_box_pack_start( vboxAsBox, _gtkDrawingArea, TRUE, TRUE, 0 );
+
+        //
+        // The emulation thread provides timer-like functionality to the main thread.
+        // This saves us setting up an additional timer with the library.
+        //
+
+        _gtkTimerId = g_timeout_add( 20, (GSourceFunc) &MainForm::GtkHandlerForTheTimer, this );
+        if( _gtkTimerId <= 0 )
+        {
+            throw std::runtime_error( "Cannot create the main timer.\nThe emulation cannot continue." );
+        }
+
+        /*
+        SetBigAndSmallIcons( IDR_MAINFRAME );
+
+        g_hWndToPostMessage = GetHWND();
+
+        // Centre window placement BEFORE calling model's OnInitDialog() as
+        // that may cause go full screen as settings file is loaded!
+        libWinApi::CenterWindowPercent( *this, 85, GetOwner() );
         */
 
-	//
-	// Create the model (this has the emulator inside, plus UI logic)
-	//
+        _lynxUIModel->OnInitDialog();
 
-	_lynxUIModel = std::unique_ptr<Jynx::LynxUserInterfaceModel>(
-        new Jynx::LynxUserInterfaceModel(
-            this,
-            "\n",   // The preferred end of line sequence on the LINUX platform.
-            parsedParams.GetGamesMode() ) );
+        //
+        // Process command line "auto start" options:
+        //
 
-    //
-    // User interface
-    //
+        if( ! parsedParams.GetSnapshotFilePath().empty() )
+        {
+            // Load the snapshot file that the user specified on the command line:
+            LinuxFileOpener  fileOpener( parsedParams.GetSnapshotFilePath().c_str() );
+            _lynxUIModel->ForceLoadSpecificSnapshot( &fileOpener );
+        }
+        else if( ! parsedParams.GetTapFilePath().empty() )
+        {
+            // Load the cassette file that the user specified on the command line:
+            LinuxFileOpener  fileOpener( parsedParams.GetTapFilePath().c_str() );
+            _lynxUIModel->ForceLoadSpecificTape( &fileOpener );
+        }
+    }
+    catch(...)
+    {
+        Cleanup();
+        throw;
+    }
+}
 
-    // Create the main window:
 
-    _gtkWindow = GTK_WINDOW( gtk_window_new( GTK_WINDOW_TOPLEVEL ) );
-    _gtkWindowAsWidget = GTK_WIDGET( _gtkWindow );  // avoid loads of casting
 
-    gtk_container_set_border_width( GTK_CONTAINER( _gtkWindow ), 0 );
-    gtk_window_set_default_size(    _gtkWindow, 800, 600 );
-    gtk_window_set_title(           _gtkWindow, "Jynx" );
-    gtk_window_set_position(        _gtkWindow, GTK_WIN_POS_CENTER );
-    gtk_widget_realize(             _gtkWindowAsWidget );
-    gtk_signal_connect(             GTK_OBJECT( _gtkWindow ), "delete_event", GTK_SIGNAL_FUNC( &MainForm::GtkHandlerForCloseBoxDeleteEvent ), this );
+void MainForm::Cleanup()
+{
+    // Called from destructor.
+    // Called from all-enclosing try-catch in the constructor.
+    // Doing this because:
+    // - We have a sub-object that encapsulates another thread.
+    //   We have exposed stuff to that thread, and need it to shut down before we pull the rug.
 
-    // Create vertical box:
+    // Cancel the timer:
 
-    _vbox = gtk_vbox_new( FALSE, 0 );
-    gtk_container_add( GTK_CONTAINER(_gtkWindow), _vbox );
+    if( _gtkTimerId > 0 )
+    {
+        g_source_remove( _gtkTimerId );
+        _gtkTimerId = 0;
+    }
 
-    // Create the menu bar:
+	// MULTI-THREADING NOTE:
+	// - Must destroy _lynxUIModel before destroying resources that
+	//   the model uses!
 
-    _menuBar = std::make_shared<LinuxGtkMenuBar>();
+	_lynxUIModel = nullptr;
 
-    // Create buttons on the menu bar itself:
+    // Destroy "manual" resources:
 
-    auto clickHandlerForMenuOptions = this;
+    if( _pixBuf != nullptr )
+    {
+        g_object_unref( _pixBuf );
+        _pixBuf = nullptr;
+    }
 
-    _menuFile      = _menuBar->CreateMenu( "&File"      , clickHandlerForMenuOptions );
-    _menuSpeed     = _menuBar->CreateMenu( "S&peed"     , clickHandlerForMenuOptions );
-    _menuEmulation = _menuBar->CreateMenu( "&Emulation" , clickHandlerForMenuOptions );
-    _menuDisplay   = _menuBar->CreateMenu( "&Display"   , clickHandlerForMenuOptions );
-    _menuSound     = _menuBar->CreateMenu( "&Sound"     , clickHandlerForMenuOptions );
-    _menuText      = _menuBar->CreateMenu( "&Text"      , clickHandlerForMenuOptions );
-    _menuHelp      = _menuBar->CreateMenu( "&Help"      , clickHandlerForMenuOptions );
-
-    // POPUP "&File"
-
-    _menuFile->AddItem( "&Run TAP file ...",           ID_FILE_RUNTAPFILE );
-    _menuFile->AddSeparator();
-    _menuFile->AddItem( "&Open TAP file ...",          ID_FILE_OPENTAPFILE );
-    _menuFile->AddItem( "&Rewind tape",                ID_FILE_REWINDTAPE );
-    _menuFile->AddItem( "Tape &directory (at BASIC prompt)", ID_FILE_DIRECTORY );
-    _menuFile->AddSeparator();
-    _menuFile->AddItem( "&New output tape",            ID_FILE_INSERTBLANKTAPE );
-    _menuFile->AddItem( "&Save as TAP file...",        ID_FILE_SAVETAPE );
-    _menuFile->AddSeparator();
-    _menuFile->AddItem( "Load s&tate snapshot ...",    ID_FILE_LOADSTATESNAPSHOT );
-    _menuFile->AddItem( "S&ave state snapshot ...",    ID_FILE_SAVESTATESNAPSHOT );
-    _menuFile->AddSeparator();
-    _menuFile->AddItem( "E&xit",                       ID_FILE_EXIT );
-
-    // POPUP "S&peed"
-
-    _menuSpeed->AddTick(  "Speed &50%",                  ID_SPEED_SPEED50 );
-    _menuSpeed->AddTick(  "Speed &100%",                 ID_SPEED_SPEED100 );
-    _menuSpeed->AddTick(  "Speed &200%",                 ID_SPEED_SPEED200 );
-    _menuSpeed->AddTick(  "Speed &400%",                 ID_SPEED_SPEED400 );
-    _menuSpeed->AddTick(  "Speed &800%",                 ID_SPEED_SPEED800 );
-    _menuSpeed->AddSeparator();
-    _menuSpeed->AddTick(  "Super speed &cassette",        ID_SPEED_MAXSPEEDCASSETTE );
-    _menuSpeed->AddTick(  "Super speed c&onsole",         ID_SPEED_MAXSPEEDCONSOLE );
-    _menuSpeed->AddTick(  "Super speed &always",          ID_SPEED_MAXSPEEDALWAYS );
-    _menuSpeed->AddSeparator();
-    _menuSpeed->AddTick(  "&Pause",                      ID_EMULATION_PAUSE );
-
-    // POPUP "&Emulation"
-
-    _menuEmulation->AddTick(  "Lynx 48&K",                   ID_EMULATION_LYNX48K );
-    _menuEmulation->AddTick(  "Lynx 9&6K",                   ID_EMULATION_LYNX96K );
-    _menuEmulation->AddTick(  "Lynx 96K (+ &Scorpion ROM)",  ID_EMULATION_LYNX96KSCORPION );
-    _menuEmulation->AddSeparator();
-    _menuEmulation->AddTick(  "&Pause after tape load",       ID_EMULATION_PAUSEAFTERTAPLOAD );
-    _menuEmulation->AddSeparator();
-    _menuEmulation->AddItem(  "&Reset guest machine",        ID_EMULATION_RESET );
-
-    // POPUP "&Display"
-
-    _menuDisplay->AddTick(  "Fit to &window",              ID_DISPLAY_FITTOWINDOW );
-    _menuDisplay->AddTick(  "Use &square pixels",          ID_DISPLAY_SQUAREPIXELS );
-    _menuDisplay->AddTick(  "&Fill window",                ID_DISPLAY_FILLWINDOW );
-    _menuDisplay->AddSeparator();
-    _menuDisplay->AddTick(  "Normal &Lynx colours",        ID_DISPLAY_COLOURSET_NORMALRGB );
-    _menuDisplay->AddTick(  "&Green screen monitor",       ID_DISPLAY_COLOURSET_GREENSCREENMONITOR );
-    _menuDisplay->AddTick(  "&Black and white TV",         ID_DISPLAY_COLOURSET_BLACKANDWHITETV );
-    _menuDisplay->AddTick(  "Level &9 game colours",       ID_DISPLAY_COLOURSET_LEVEL9 );
-    _menuDisplay->AddTick(  "Show green &channel only",    ID_DISPLAY_COLOURSET_GREENONLY );
-    _menuDisplay->AddSeparator();
-    _menuDisplay->AddTick(  "F&ull screen",                ID_DISPLAY_FULLSCREENENABLE );
-
-    // POPUP "&Sound"
-
-    _menuSound->AddItem(  "&Record sound to file ...",    ID_SOUND_RECORDTOFILE );
-    _menuSound->AddItem(  "&Finish recording",            ID_SOUND_FINISHRECORDING );
-    _menuSound->AddSeparator();
-    _menuSound->AddTick(  "&Listen to tape sounds",       ID_SOUND_LISTENTOTAPESOUNDS );
-    _menuSound->AddSeparator();
-    _menuSound->AddTick(  "&Enable sound",                ID_SOUND_ENABLE );
-
-    // POPUP "&Text"
-
-    _menuText->AddItem(  "&Record Lynx text to file ...", ID_TEXT_RECORDLYNXTEXT );
-    _menuText->AddItem(  "&Stop recording Lynx text",     ID_TEXT_STOPRECORDINGLYNXTEXT );
-    _menuText->AddSeparator();
-    _menuText->AddItem(  "&Type in text from file ...",   ID_TEXT_TYPEINFROMFILE );
-    _menuText->AddSeparator();
-    _menuText->AddTick(  "&Enable Lynx BASIC REM command extensions", ID_TEXT_LYNXBASICREMCOMMANDEXTENSIONS );
-
-    // POPUP "&Help"
-
-    _menuHelp->AddItem(  "&About ...",                  ID_HELP_ABOUT );
-
-    //
-    // Add a generic drawable widget, to which we'll add event hooks to draw the screen.
-    //
-
-    _gtkDrawingArea = gtk_drawing_area_new();
-    // gtk_drawing_area_size( GTK_DRAWING_AREA(_gtkDrawingArea), 200, 200 );
-    auto gtkDrawingAreaAsObject = GTK_OBJECT(_gtkDrawingArea);
-    gtk_signal_connect( gtkDrawingAreaAsObject, "expose_event",        (GtkSignalFunc) &MainForm::GtkHandlerForDrawingAreaExposeEvent,       this );
-    gtk_signal_connect( gtkDrawingAreaAsObject, "button_press_event",  (GtkSignalFunc) &MainForm::GtkHandlerForDrawingAreaButtonPressEvent,  this );
-    gtk_signal_connect( gtkDrawingAreaAsObject, "key_press_event",     (GtkSignalFunc) &MainForm::GtkHandlerForKeyPress,    this );
-    gtk_signal_connect( gtkDrawingAreaAsObject, "key_release_event",   (GtkSignalFunc) &MainForm::GtkHandlerForKeyRelease,  this );
-    gtk_widget_set_events(
-        _gtkDrawingArea, GDK_EXPOSURE_MASK | GDK_LEAVE_NOTIFY_MASK | GDK_BUTTON_PRESS_MASK
-        | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK );  // TODO: Do I need all of these?
-    gtk_widget_set_extension_events( _gtkDrawingArea, GDK_EXTENSION_EVENTS_CURSOR ); // TODO: What does this do?
-    gtk_widget_set_can_focus( _gtkDrawingArea, TRUE );
-    gtk_widget_show( _gtkDrawingArea ); // TODO: needed?
-
-    //
-    // Establish content of primary vertical box:
-    //
-
-    auto vboxAsBox = GTK_BOX(_vbox);
-    gtk_box_pack_start( vboxAsBox, _menuBar->GetWidget(), FALSE, FALSE, 0 );
-    gtk_box_pack_start( vboxAsBox, _gtkDrawingArea, TRUE, TRUE, 0 );
-
-    //
-    // The emulation thread provides timer-like functionality to the main thread.
-    // This saves us setting up an additional timer with the library.
-    //
-
-    g_timeout_add( 20, (GSourceFunc) &MainForm::GtkHandlerForTheTimer, this );
-
-    /*
-	SetBigAndSmallIcons( IDR_MAINFRAME );
-
-	g_hWndToPostMessage = GetHWND();
-
-	// Centre window placement BEFORE calling model's OnInitDialog() as
-	// that may cause go full screen as settings file is loaded!
-	libWinApi::CenterWindowPercent( *this, 85, GetOwner() );
-    */
-
-	_lynxUIModel->OnInitDialog();
-
-    //
-    // Process command line "auto start" options:
-    //
-
-	if( ! parsedParams.GetSnapshotFilePath().empty() )
-	{
-		// Load the snapshot file that the user specified on the command line:
-		LinuxFileOpener  fileOpener( parsedParams.GetSnapshotFilePath().c_str() );
-		_lynxUIModel->ForceLoadSpecificSnapshot( &fileOpener );
-	}
-	else if( ! parsedParams.GetTapFilePath().empty() )
-	{
-		// Load the cassette file that the user specified on the command line:
-		LinuxFileOpener  fileOpener( parsedParams.GetTapFilePath().c_str() );
-		_lynxUIModel->ForceLoadSpecificTape( &fileOpener );
-	}
+    if( _gtkWindow != nullptr )
+    {
+        g_object_unref( _gtkWindow );
+        _gtkWindow = nullptr;
+    }
 }
 
 
 
 MainForm::~MainForm()
 {
-	// THREADING NOTE:
-	// - Must destroy _lynxUIModel FIRST - to clean up threads, before
-	//   we destroy what the threads are using!
-	_lynxUIModel = nullptr;
-/*
-	//
-	// Now the EMULATOR thread is gone, we can now clean up
-	// everything that the EMULATOR thread was using:
-	//
-
-	g_hWndToPostMessage = NULL;
-
-	if( _guestScreenBitmap != NULL )
-	{
-		::DeleteObject(_guestScreenBitmap);GdkPixbuf *         gdk_pixbuf_new                      (GdkColorspace colorspace,
-                                                         gboolean has_alpha,
-                                                         int bits_per_sample,
-                                                         int width,
-                                                         int height);
-		_guestScreenBitmap = NULL;
-	}
-	*/
-
-    // TODO: unref the pixbuf
-	// TODO:  To be clean, what GTK destruction needs to be done?  Most of the examples just returned from main().
+    // Put nothing else in here.
+    Cleanup();
 }
 
 

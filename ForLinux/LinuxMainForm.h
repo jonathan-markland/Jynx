@@ -54,6 +54,8 @@ public:
 
 private:
 
+    void Cleanup();
+
     static gint GtkHandlerForCloseBoxDeleteEvent(          GtkWidget *widget, GdkEvent *event, gpointer userObject ); // static member
 
     static gint GtkHandlerForDrawingAreaExposeEvent(       GtkWidget *widget, GdkEventExpose *event, gpointer userObject );    // static member   expose_event
@@ -78,10 +80,10 @@ private:
 
     // GTK stuff
 
-    GtkWindow *_gtkWindow = nullptr;
+    GtkWindow *_gtkWindow         = nullptr;
     GtkWidget *_gtkWindowAsWidget = nullptr;
-    GtkWidget *_gtkDrawingArea = nullptr;
-    GtkWidget *_vbox = nullptr;
+    GtkWidget *_gtkDrawingArea    = nullptr;
+    GtkWidget *_vbox              = nullptr;
 
     std::shared_ptr<LinuxGtkMenuBar>   _menuBar;
 
@@ -97,8 +99,10 @@ private:
     void     *_pixBufBaseAddress      = nullptr;
     uint32_t  _pixBufBytesPerScanLine = 0;
 
-    cairo_t  *_cairoContext = nullptr;  // only set within lifetime of expose event
+    cairo_t  *_cairoContext              = nullptr;  // only set within lifetime of expose event
     bool      _originalCairoContextSaved = false;
+
+    guint     _gtkTimerId                = 0;
 
 };
 
