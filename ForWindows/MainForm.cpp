@@ -30,6 +30,7 @@
 
 #include "LynxHardware.h"
 #include "UIStrings.h"
+#include "JynxParsedParameters.h"
 
 #define TIMESLICE_PERIOD   16   // 16 bizarrely looks like 20 milliseconds (check the cursor flash rate).
 #define WM_HI_RES_TIMER (WM_USER + 0x101)
@@ -61,102 +62,106 @@ void CALLBACK MainFormTimerProcedure(
 
 MainForm::MainForm( HWND hWndOwner, const std::vector<std::wstring> &paramList )
 	: BaseForm( hWndOwner, MainForm::IDD )
+	, _dc( NULL )         // Is only set when asking the model to paint.
+	, _hbicon( NULL )
+	, _hsicon( NULL )
+	, _saveDC( 0 )
+	, _guestScreenBitmap( NULL )
+	, _timeBeginPeriodResult( NULL )
+	, _timeSetEventResult( NULL )
 {
-    //
-    // Parse the parameters list:
-    //
-
-    JynxParsedParameters<std::wstring>  parsedParams( paramsList );
-    _settingsFilePath = parsedParams.GetSettingsFilePath();
-    _snapshotFilePath = parsedParams.GetSnapshotFilePath();
-    _tapFilePath      = parsedParams.GetTapFilePath();
-
-	//
-	// Sound
-	//
-
-	uint32_t numSamplesPerBuffer = 882;
-
-	_soundBuffer.reserve( numSamplesPerBuffer );
-
-	for( uint32_t i=0; i < numSamplesPerBuffer; i++ )
+	try
 	{
-		_soundBuffer.push_back( 0 );
-	}
+		//
+		// Parse the parameters list:
+		//
 
-    auto numChannels = 1;
-    auto numFramesPerBuffer = numSamplesPerBuffer * numChannels;  // clarifying the issue
-	_waveOutStream = std::make_shared<WaveOutputStream>( numChannels, numFramesPerBuffer, 3 );
+		JynxParsedParameters<std::wstring>  parsedParams( paramList );
+		_settingsFilePath = parsedParams.GetSettingsFilePath();
+		_snapshotFilePath = parsedParams.GetSnapshotFilePath();
+		_tapFilePath      = parsedParams.GetTapFilePath();
 
-	//
-	// Create frame buffer bitmap which emulator can directly draw on.
-	//
+		//
+		// Create frame buffer bitmap which emulator can directly draw on.
+		//
 
-	if( ! CreateDIBSectionFrameBuffer( LYNX_FRAMEBUF_WIDTH, LYNX_FRAMEBUF_HEIGHT, &_screenInfo, &_guestScreenBitmap ) )
-	{
-		throw std::runtime_error( "Windows cannot create the screen bitmap for the emulation.\nThe emulation cannot continue." );
-	}
+		if( ! CreateDIBSectionFrameBuffer( LYNX_FRAMEBUF_WIDTH, LYNX_FRAMEBUF_HEIGHT, &_screenInfo, &_guestScreenBitmap ) )
+		{
+			throw std::runtime_error( "Windows cannot create the screen bitmap for the emulation.\nThe emulation cannot continue." );
+		}
 
-	//
-	// Ask for high resolution timers.
-	//
+		//
+		// Ask for high resolution timers.
+		//
 
-	_timeBeginPeriodResult = timeBeginPeriod(1);
-	if( _timeBeginPeriodResult == TIMERR_NOCANDO )
-	{
-		MessageBox( *this, L"Windows has not permitted the emulator to use the desired timer frequency.\nThe emulation speed may be affected.", L"Note", MB_OK | MB_ICONINFORMATION );
-	}
+		_timeBeginPeriodResult = timeBeginPeriod(1);
+		if( _timeBeginPeriodResult == TIMERR_NOCANDO )
+		{
+			MessageBox( *this, L"Windows has not permitted the emulator to use the desired timer frequency.\nThe emulation speed may be affected.", L"Note", MB_OK | MB_ICONINFORMATION );
+		}
 
-	_timeSetEventResult	= timeSetEvent( 20, 20, &MainFormTimerProcedure, (DWORD_PTR) GetHWND(), TIME_PERIODIC | TIME_CALLBACK_FUNCTION | TIME_KILL_SYNCHRONOUS );
-	if( _timeSetEventResult == NULL )
-	{
-		throw std::runtime_error( "Windows cannot create a multimedia timer.  Emulation cannot continue." );
-	}
+		_timeSetEventResult	= timeSetEvent( 20, 20, &MainFormTimerProcedure, (DWORD_PTR) GetHWND(), TIME_PERIODIC | TIME_CALLBACK_FUNCTION | TIME_KILL_SYNCHRONOUS );
+		if( _timeSetEventResult == NULL )
+		{
+			throw std::runtime_error( "Windows cannot create a multimedia timer.  Emulation cannot continue." );
+		}
 
-	//
-	// Create the model (this has the emulator inside, plus UI logic)
-	//
+		//
+		// Create the model (this has the emulator inside, plus UI logic)
+		//
 
-	_lynxUIModel = std::unique_ptr<Jynx::LynxUserInterfaceModel>( new Jynx::LynxUserInterfaceModel(
-		this,
-		&_soundBuffer.front(),
-		_soundBuffer.size(),
-		"\r\n", parserParameters.GetGamesMode() ) );  // The preferred end of line sequence on the WINDOWS platform.  (Think: Notepad.exe!)
+		_lynxUIModel = std::unique_ptr<Jynx::LynxUserInterfaceModel>( new Jynx::LynxUserInterfaceModel(
+			this,
+			"\r\n", 
+			parsedParams.GetGamesMode() ) );  // The preferred end of line sequence on the WINDOWS platform.  (Think: Notepad.exe!)
+    }
+    catch(...)
+    {
+        Cleanup();
+        throw;
+    }
+}
+
+
+
+void MainForm::Cleanup()
+{
+		// THREADING NOTE:
+		// - Must destroy _lynxUIModel FIRST - to clean up threads, before
+		//   we destroy what the threads are using!
+		_lynxUIModel = nullptr;
+
+		//
+		// Now the EMULATOR thread is gone, we can now clean up
+		// everything that the EMULATOR thread was using:
+		//
+
+		g_hWndToPostMessage = NULL;
+
+		if( _timeSetEventResult != NULL )
+		{
+			timeKillEvent( _timeSetEventResult );
+			_timeSetEventResult = NULL;
+		}
+
+		if( _timeBeginPeriodResult != TIMERR_NOCANDO )
+		{
+			timeEndPeriod(1);
+			_timeBeginPeriodResult = TIMERR_NOCANDO;
+		}
+
+		if( _guestScreenBitmap != NULL )
+		{
+			::DeleteObject(_guestScreenBitmap);
+			_guestScreenBitmap = NULL;
+		}
 }
 
 
 
 MainForm::~MainForm()
 {
-	// THREADING NOTE:
-	// - Must destroy _lynxUIModel FIRST - to clean up threads, before
-	//   we destroy what the threads are using!
-	_lynxUIModel = nullptr;
-
-	//
-	// Now the EMULATOR thread is gone, we can now clean up
-	// everything that the EMULATOR thread was using:
-	//
-
-	g_hWndToPostMessage = NULL;
-
-	if( _timeSetEventResult != NULL )
-	{
-		timeKillEvent( _timeSetEventResult );
-		_timeSetEventResult = NULL;
-	}
-
-	if( _timeBeginPeriodResult != TIMERR_NOCANDO )
-	{
-		timeEndPeriod(1);
-		_timeBeginPeriodResult = TIMERR_NOCANDO;
-	}
-
-	if( _guestScreenBitmap != NULL )
-	{
-		::DeleteObject(_guestScreenBitmap);
-		_guestScreenBitmap = NULL;
-	}
+	Cleanup();
 }
 
 

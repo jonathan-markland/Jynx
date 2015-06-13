@@ -27,6 +27,19 @@ std::vector<std::basic_string<CHAR_TYPE>>  MakeParamsListFromArgcAndArgv( int ar
 
 
 
+template<typename STRING_CLASS>
+bool CompareWithAscii( const STRING_CLASS &candidateString, const char *asciiString )
+{
+	std::wstring  str;
+	while( *asciiString )
+	{
+		str += *asciiString;
+		++asciiString;
+	}
+	return str == candidateString;
+}
+
+
 
 
 template<typename STRING_CLASS>
@@ -34,7 +47,7 @@ bool ParseParamAndValue( const std::vector<STRING_CLASS> &paramList, size_t &i, 
 {
 	if( i < paramList.size() )
 	{
-		if( paramList[i] == switchString )
+		if( CompareWithAscii( paramList[i], switchString ) )
 		{
 			++i;
 			if( i >= paramList.size() )  RaiseCommandLineMissingOperandException();
@@ -54,7 +67,7 @@ bool ParseParam( const std::vector<STRING_CLASS> &paramList, size_t &i, const ch
 {
 	if( i < paramList.size() )
 	{
-		if( paramList[i] == switchString )
+		if( CompareWithAscii( paramList[i], switchString ) )
 		{
 			++i;
 			*out_variable = true;

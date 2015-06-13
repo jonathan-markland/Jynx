@@ -44,7 +44,7 @@ public:
 
 private:
 
-    uint32_t               _bufferSizeFrames = 0;
+    uint32_t               _bufferSizeFrames;
     std::shared_ptr<class HostOS_WaveOutputStream>  _hostImplementation;
     std::vector<uint16_t>  _soundBuffer;  // TODO: Can we use the ring buffer rather than copy-in (on both linux and windows?)
 

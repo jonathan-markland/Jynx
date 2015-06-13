@@ -28,6 +28,7 @@
 #include <vector>
 #include <string>
 #include "MainForm.h"
+#include "JynxParsedParameters.h"
 
 
 int APIENTRY _tWinMain(
@@ -36,25 +37,32 @@ int APIENTRY _tWinMain(
     _In_ LPTSTR    lpCmdLine,
     _In_ int       nCmdShow)
 {
+	std::string  exceptionMessage;
+
 	try
 	{
 		// Command line parse:
 		std::vector<std::wstring>  paramList;
 		if( ! libWinApi::SplitCommandLine( lpCmdLine, &paramList ) )
 		{
-			SyntaxError();
+			RaiseCommandLineSyntaxErrorException();
 		}
 
 		// Show main form:
 		auto mainForm = std::make_shared<MainForm>( (HWND) NULL, paramList );
 		mainForm->ShowAndMaximise();
 		mainForm->DoModal();
-
-		return 0;
 	}
 	catch( const std::exception &e )
 	{
-		MessageBoxA( NULL, e.what(), "Program cannot continue running", MB_OK | MB_ICONERROR );
+		exceptionMessage = e.what();
+	}
+
+	if( ! exceptionMessage.empty() )
+	{
+		MessageBoxA( NULL, exceptionMessage.c_str(), "Program cannot continue running", MB_OK | MB_ICONERROR );
 		return 1;
 	}
+
+	return 0;
 }

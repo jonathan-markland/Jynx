@@ -242,7 +242,7 @@ namespace Jynx
 		// SOUND BUFFER (represents ONE Z80 period precisely)
 		//
 
-		bool               _soundEnable = true;
+		bool               _soundEnable;
 		SoundBufferWriter  _soundBufferWriter;
 		SoundRecorder      _soundRecorder;
 

@@ -164,6 +164,7 @@
     <ClInclude Include="..\Portable\IHostServicesForLynxEmulator.h" />
     <ClInclude Include="..\Portable\IViewServicesForLynxUserInterfaceModel.h" />
     <ClInclude Include="..\Portable\ISerialiser.h" />
+    <ClInclude Include="..\Portable\JynxParsedParameters.h" />
     <ClInclude Include="..\Portable\Lexer.h" />
     <ClInclude Include="..\Portable\LynxEmulatorEnums.h" />
     <ClInclude Include="..\Portable\LynxEmulatorGuest.h" />
@@ -172,6 +173,7 @@
     <ClInclude Include="..\Portable\LynxRoms.h" />
     <ClInclude Include="..\Portable\LynxUserInterfaceModel.h" />
     <ClInclude Include="..\Portable\MenuItemIDs.h" />
+    <ClInclude Include="..\Portable\ParameterParsing.h" />
     <ClInclude Include="..\Portable\SignalWriter.h" />
     <ClInclude Include="..\Portable\SoundBufferWriter.h" />
     <ClInclude Include="..\Portable\SoundRecorder.h" />
@@ -184,6 +186,7 @@
     <ClInclude Include="..\Portable\UIStrings.h" />
     <ClInclude Include="..\Portable\UserSettingsSerialiser.h" />
     <ClInclude Include="..\Portable\Waitable.h" />
+    <ClInclude Include="..\Portable\WaveOutputStream.h" />
     <ClInclude Include="..\Portable\Z80\JynxZ80.h" />
     <ClInclude Include="..\Portable\Z80\JynxZ80Shared.h" />
     <ClInclude Include="..\Portable\Z80\IZ80DisassemblerStream.h" />
@@ -209,6 +212,7 @@
     <ClCompile Include="..\Portable\LynxEmulatorGuest.cpp" />
     <ClCompile Include="..\Portable\LynxRectangle.cpp" />
     <ClCompile Include="..\Portable\LynxUserInterfaceModel.cpp" />
+    <ClCompile Include="..\Portable\ParameterParsing.cpp" />
     <ClCompile Include="..\Portable\SignalWriter.cpp" />
     <ClCompile Include="..\Portable\SoundBufferWriter.cpp" />
     <ClCompile Include="..\Portable\SoundRecorder.cpp" />

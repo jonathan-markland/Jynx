@@ -136,6 +136,7 @@ namespace Jynx
 		, _inhibitTextRecorder(false)
 		, _watchingCommands(false)
 		, _callWaiting(false)
+		, _soundEnable(true)
 	{
 		// (Reminder - Called on the client thread).
 

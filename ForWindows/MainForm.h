@@ -72,28 +72,20 @@ public:
 
 private:
 
-/* TODO: see which can be removed
-	bool CanRiskLosingModifiedTape() const;
-	bool UserAllowsReset();
-	void LoadSnapshot( const wchar_t *pathName );
-	void SaveSnapshot( const wchar_t *pathName );
-	void SetCycles( Jynx::LynxZ80Cycles::Enum cyclesEnum );
-	void SelectTimingMechanism();
-	void OnPaint( HDC dc );
+	void Cleanup();
 	void OnAbout();
-	void OnSound();*/
 
-	HDC     _dc = NULL;         // Is only set when asking the model to paint.
-	HANDLE  _hbicon = NULL;
-	HANDLE  _hsicon = NULL;
-	int     _saveDC = 0;
+	HDC     _dc;         // Is only set when asking the model to paint.
+	HANDLE  _hbicon;
+	HANDLE  _hsicon;
+	int     _saveDC;
 
 	std::unique_ptr<Jynx::LynxUserInterfaceModel> _lynxUIModel;  // Reminder - Emulator is within this.
 	libWinApi::FrameBufferInfo        _screenInfo;
 
-	HBITMAP                _guestScreenBitmap = NULL;
-	MMRESULT               _timeBeginPeriodResult = NULL;
-	MMRESULT               _timeSetEventResult = NULL;
+	HBITMAP                _guestScreenBitmap;
+	MMRESULT               _timeBeginPeriodResult;
+	MMRESULT               _timeSetEventResult;
 
 	libWinApi::WindowStyleAndPositionInformation  _restorationAfterFullScreen;
 

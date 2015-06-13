@@ -22,7 +22,7 @@ private:
     STRING_CLASS  _settingsFilePath;
     STRING_CLASS  _snapshotFilePath;
     STRING_CLASS  _tapFilePath;
-    bool          _gamesMode = false;
+    bool          _gamesMode;
 
 };
 
@@ -30,6 +30,7 @@ private:
 
 template<typename STRING_CLASS>
 JynxParsedParameters<STRING_CLASS>::JynxParsedParameters( const std::vector<STRING_CLASS> &paramList )
+	: _gamesMode( false )
 {
     size_t indexWithinList = 0;  // Advanced by the parsing functions when returning true.
 

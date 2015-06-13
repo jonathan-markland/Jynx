@@ -306,13 +306,34 @@ HostOS_WaveOutputStream::~HostOS_WaveOutputStream()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 WaveOutputStream::WaveOutputStream( uint32_t channelCount, uint32_t bufferSizeFrames, uint32_t numBuffersInRing )
+    : _bufferSizeFrames( bufferSizeFrames )
 {
+    auto numSamplesPerBuffer = channelCount * bufferSizeFrames;
+
+	_soundBuffer.reserve( numSamplesPerBuffer );
+
+	for( uint32_t i=0; i < numSamplesPerBuffer; i++ )
+	{
+		_soundBuffer.push_back( 0 );
+	}
+
     _hostImplementation = std::make_shared<HostOS_WaveOutputStream>( channelCount, bufferSizeFrames, numBuffersInRing );
 }
 
-void WaveOutputStream::Write( const void *soundDataBlock, uint32_t numFrames )
+WaveOutputStream::~WaveOutputStream()
 {
-    _hostImplementation->Write( soundDataBlock, numFrames );
+    _hostImplementation = nullptr;  // Destroy this first because it has had the _soundBuffer's address revealed to it.
+    // Language will now safely apply destructors to everything.
+}
+
+void *WaveOutputStream::GetSoundBufferBaseAddress()
+{
+    return &_soundBuffer[0];
+}
+
+void WaveOutputStream::PlayBufferWithWait()
+{
+    _hostImplementation->Write( &_soundBuffer[0], _bufferSizeFrames );
 }
 
 /* Not used yet

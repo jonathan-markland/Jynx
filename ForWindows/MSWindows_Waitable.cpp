@@ -9,7 +9,7 @@
 		_platformSpecificImplementation = ::CreateEvent( NULL, FALSE, FALSE, NULL );
 		if( _platformSpecificImplementation == NULL )
 		{
-			throw std::exception( "Cannot create Event object -- program cannot run." );
+			throw std::runtime_error( "Cannot create Event object -- program cannot run." );
 		}
 	}
 
@@ -20,7 +20,7 @@
 		// Set this synchronisation object to the "non-signalled" state.
 		// Then, anyone calling Wait() will block.
 		if( ::ResetEvent( (HANDLE) _platformSpecificImplementation ) != 0 ) return;
-		throw std::exception( "ResetEvent() call failed unexpectedly." );
+		throw std::runtime_error( "ResetEvent() call failed unexpectedly." );
 	}
 
 
@@ -31,7 +31,7 @@
 		// - Then, anyone calling Wait() will not block.
 		// - Then, anyone who has already called Wait() will be released.
 		if( ::SetEvent( (HANDLE) _platformSpecificImplementation ) != 0 ) return;
-		throw std::exception( "SetEvent() call failed unexpectedly." );
+		throw std::runtime_error( "SetEvent() call failed unexpectedly." );
 	}
 
 
@@ -41,7 +41,7 @@
 		// Block calling thread until the object is "signalled".
 		// No-operation if this object is already signalled.
 		if( ::WaitForSingleObject( (HANDLE) _platformSpecificImplementation, INFINITE ) == WAIT_OBJECT_0 ) return;
-		throw std::exception( "Unexpected result from WaitForSingleObject() during Wait()." );
+		throw std::runtime_error( "Unexpected result from WaitForSingleObject() during Wait()." );
 	}
 
 
@@ -52,7 +52,7 @@
 		auto result = ::WaitForSingleObject( (HANDLE) _platformSpecificImplementation, 0 );  // tests state without wait
 		if( result == WAIT_OBJECT_0 ) return true;
 		if( result == WAIT_TIMEOUT ) return false;
-		throw std::exception( "Unexpected result from WaitForSingleObject() while testing IsSignalled()." );
+		throw std::runtime_error( "Unexpected result from WaitForSingleObject() while testing IsSignalled()." );
 	}
 
 
