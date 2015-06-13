@@ -2722,7 +2722,7 @@
 1434229159 /home/jonathan/Documents/Jynx/Portable/Thread.h
 	<stdint.h>
 
-1434150316 source:/home/jonathan/Documents/Jynx/ForLinux/Linux_Thread.cpp
+1434228883 source:/home/jonathan/Documents/Jynx/ForLinux/Linux_Thread.cpp
 	<stdexcept>
 	<mutex>
 	<pthread.h>
@@ -2730,12 +2730,12 @@
 	<assert.h>
 	"unistd.h"
 
-1433695464 source:/home/jonathan/Documents/Jynx/ForLinux/Linux_Waitable.cpp
+1434229159 source:/home/jonathan/Documents/Jynx/ForLinux/Linux_Waitable.cpp
 	<stdexcept>
 	<pthread.h>
 	"Waitable.h"
 
-1434150854 source:/home/jonathan/Documents/Jynx/ForLinux/main.cpp
+1434229159 source:/home/jonathan/Documents/Jynx/ForLinux/main.cpp
 	<stdlib.h>
 	<stdint.h>
 	<string>
@@ -2743,12 +2743,12 @@
 	"ParameterParsing.h"
 	"LinuxMainForm.h"
 
-1433884390 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxGtkMenu.cpp
+1434229159 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxGtkMenu.cpp
 	<algorithm>
 	<assert.h>
 	"LinuxGtkMenu.h"
 
-1433759010 /home/jonathan/Documents/Jynx/ForLinux/LinuxGtkMenu.h
+1434229159 /home/jonathan/Documents/Jynx/ForLinux/LinuxGtkMenu.h
 	<gtk/gtk.h>
 	<stdint.h>
 	<string>
@@ -2765,9 +2765,9 @@
 1433751206 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxAboutBox.cpp
 	<gtk/gtk.h>
 
-1433751016 /home/jonathan/Documents/Jynx/ForLinux/LinuxAboutBox.h
+1434229159 /home/jonathan/Documents/Jynx/ForLinux/LinuxAboutBox.h
 
-1434212342 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.cpp
+1434229159 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.cpp
 	"MenuItemIDs.h"
 	"LynxHardware.h"
 	"UIStrings.h"
@@ -2782,7 +2782,7 @@
 	"LinuxGtkFileDialogs.h"
 	"JynxParsedParameters.h"
 
-1434212068 /home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.h
+1434229159 /home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.h
 	"../Portable/LynxUserInterfaceModel.h"
 	"../Portable/IViewServicesForLynxUserInterfaceModel.h"
 	"../Portable/WaveOutputStream.h"
@@ -2805,10 +2805,10 @@
 	<string>
 	"../Portable/IFileOpener.h"
 
-1434228124 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxGtkFileDialogs.cpp
+1434229159 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxGtkFileDialogs.cpp
 	"LinuxGtkFileDialogs.h"
 
-1433761494 /home/jonathan/Documents/Jynx/ForLinux/LinuxGtkFileDialogs.h
+1434229159 /home/jonathan/Documents/Jynx/ForLinux/LinuxGtkFileDialogs.h
 	<string>
 	<gtk/gtk.h>
 
@@ -2818,7 +2818,7 @@
 	<memory>
 	<vector>
 
-1434215426 source:/home/jonathan/Documents/Jynx/ForLinux/Linux_WaveOutputStream.cpp
+1434229159 source:/home/jonathan/Documents/Jynx/ForLinux/Linux_WaveOutputStream.cpp
 	<alsa/asoundlib.h>
 	<assert.h>
 	"WaveOutputStream.h"
@@ -2836,6 +2836,6 @@
 	<string>
 	<stdexcept>
 
-1434142384 source:/home/jonathan/Documents/Jynx/Portable/ParameterParsing.cpp
+1434229159 source:/home/jonathan/Documents/Jynx/Portable/ParameterParsing.cpp
 	"ParameterParsing.h"
 

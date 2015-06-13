@@ -24,7 +24,7 @@ namespace Jynx
 {
     void ShowLinuxGtkAboutBox()
     {
-        // auto pixbuf = gdk_pixbuf_new_from_file( "battery.png", NULL );  // TODO: Statically link
+        // auto pixbuf = gdk_pixbuf_new_from_file( "lynxlogo.png", NULL );  // TODO: Statically link
         auto dialog = gtk_about_dialog_new();
 
         gtk_about_dialog_set_name(      GTK_ABOUT_DIALOG(dialog), "Jynx Emulator" );
