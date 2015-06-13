@@ -30,7 +30,7 @@ std::vector<std::basic_string<CHAR_TYPE>>  MakeParamsListFromArgcAndArgv( int ar
 template<typename STRING_CLASS>
 bool CompareWithAscii( const STRING_CLASS &candidateString, const char *asciiString )
 {
-	std::wstring  str;
+	STRING_CLASS  str;
 	while( *asciiString )
 	{
 		str += *asciiString;

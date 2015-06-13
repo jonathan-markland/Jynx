@@ -41,7 +41,7 @@
 	<stdexcept>
 	"Lexer.h"
 
-1434149062 source:/home/jonathan/Documents/Jynx/Portable/LynxEmulatorGuest.cpp
+1434215122 source:/home/jonathan/Documents/Jynx/Portable/LynxEmulatorGuest.cpp
 	<assert.h>
 	<string>
 	"LynxEmulatorGuest.h"
@@ -50,7 +50,7 @@
 	"FileLoader.h"
 	"Z80/JynxZ80Disassembler.h"
 
-1434148987 /home/jonathan/Documents/Jynx/Portable/LynxEmulatorGuest.h
+1434215108 /home/jonathan/Documents/Jynx/Portable/LynxEmulatorGuest.h
 	<memory>
 	"IHostServicesForLynxEmulator.h"
 	"ISerialiser.h"
@@ -66,7 +66,7 @@
 	"Waitable.h"
 	"Thread.h"
 
-1434147531 /home/jonathan/Documents/Jynx/Portable/IHostServicesForLynxEmulator.h
+1434147530 /home/jonathan/Documents/Jynx/Portable/IHostServicesForLynxEmulator.h
 	<ios>
 	<stdint.h>
 	"LynxRoms.h"
@@ -89,7 +89,7 @@
 
 1433678744 /home/jonathan/Documents/Jynx/Portable/LynxEmulatorEnums.h
 
-1434148201 /home/jonathan/Documents/Jynx/Portable/SoundBufferWriter.h
+1434148200 /home/jonathan/Documents/Jynx/Portable/SoundBufferWriter.h
 	"stdint.h"
 	"ISerialiser.h"
 	"WaveOutputStream.h"
@@ -145,7 +145,7 @@
 
 1433969238 /home/jonathan/Documents/Jynx/Portable/LynxRectangle.h
 
-1434149245 source:/home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.cpp
+1434149244 source:/home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.cpp
 	<assert.h>
 	"LynxUserInterfaceModel.h"
 	"LynxHardware.h"
@@ -153,13 +153,13 @@
 	"FileSerialiser.h"
 	"MenuItemIDs.h"
 
-1434149123 /home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.h
+1434149122 /home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.h
 	"IViewServicesForLynxUserInterfaceModel.h"
 	"IHostServicesForLynxEmulator.h"
 	"LynxEmulatorGuest.h"
 	"UserSettingsSerialiser.h"
 
-1434147531 /home/jonathan/Documents/Jynx/Portable/IViewServicesForLynxUserInterfaceModel.h
+1434147530 /home/jonathan/Documents/Jynx/Portable/IViewServicesForLynxUserInterfaceModel.h
 	<memory>
 	"IFileOpener.h"
 	"LynxRectangle.h"
@@ -2719,7 +2719,8 @@
 
 1433689180 /home/jonathan/Documents/Jynx/Portable/Waitable.h
 
-1434148551 /home/jonathan/Documents/Jynx/Portable/Thread.h
+1434214730 /home/jonathan/Documents/Jynx/Portable/Thread.h
+	<stdint.h>
 
 1434150316 source:/home/jonathan/Documents/Jynx/ForLinux/Linux_Thread.cpp
 	<stdexcept>
@@ -2766,7 +2767,7 @@
 
 1433751016 /home/jonathan/Documents/Jynx/ForLinux/LinuxAboutBox.h
 
-1434212343 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.cpp
+1434212342 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.cpp
 	"MenuItemIDs.h"
 	"LynxHardware.h"
 	"UIStrings.h"
@@ -2781,7 +2782,7 @@
 	"LinuxGtkFileDialogs.h"
 	"JynxParsedParameters.h"
 
-1434212069 /home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.h
+1434212068 /home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.h
 	"../Portable/LynxUserInterfaceModel.h"
 	"../Portable/IViewServicesForLynxUserInterfaceModel.h"
 	"../Portable/WaveOutputStream.h"
@@ -2793,7 +2794,7 @@
 	"Enumerations.h"
 	"LynxRoms.h"
 
-1433756000 source:/home/jonathan/Documents/Jynx/Portable/UIStrings.cpp
+1434227196 source:/home/jonathan/Documents/Jynx/Portable/UIStrings.cpp
 	"UIStrings.h"
 	"MenuItemIDs.h"
 
@@ -2804,20 +2805,20 @@
 	<string>
 	"../Portable/IFileOpener.h"
 
-1433761758 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxGtkFileDialogs.cpp
+1434228124 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxGtkFileDialogs.cpp
 	"LinuxGtkFileDialogs.h"
 
 1433761494 /home/jonathan/Documents/Jynx/ForLinux/LinuxGtkFileDialogs.h
 	<string>
 	<gtk/gtk.h>
 
-1434150229 /home/jonathan/Documents/Jynx/Portable/WaveOutputStream.h
+1434215124 /home/jonathan/Documents/Jynx/Portable/WaveOutputStream.h
 	<stdexcept>
 	<stdint.h>
 	<memory>
 	<vector>
 
-1434150441 source:/home/jonathan/Documents/Jynx/ForLinux/Linux_WaveOutputStream.cpp
+1434215426 source:/home/jonathan/Documents/Jynx/ForLinux/Linux_WaveOutputStream.cpp
 	<alsa/asoundlib.h>
 	<assert.h>
 	"WaveOutputStream.h"
@@ -2827,10 +2828,10 @@
 
 1426113851 /usr/include/gtk-2.0/gdk/gdkkeysyms-compat.h
 
-1434144258 /home/jonathan/Documents/Jynx/Portable/JynxParsedParameters.h
+1434215678 /home/jonathan/Documents/Jynx/Portable/JynxParsedParameters.h
 	"ParameterParsing.h"
 
-1434143032 /home/jonathan/Documents/Jynx/Portable/ParameterParsing.h
+1434220791 /home/jonathan/Documents/Jynx/Portable/ParameterParsing.h
 	<vector>
 	<string>
 	<stdexcept>

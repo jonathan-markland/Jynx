@@ -47,14 +47,14 @@ const char *OpenFileDialogTitlesNarrow[Jynx::LoadableFileTypes::Count] =
 
 const wchar_t *OpenFileDialogSpecs[Jynx::LoadableFileTypes::Count]  =
 {
-	L"TAP files (*.TAP)|*.TAP",
+	L"TAP files (*.tap)|*.tap",
 	L"Snapshots (*.lynxsnapshot)|*.lynxsnapshot",
 	L"Text files (*.txt)|*.txt",
 };
 
 const char *OpenFileDialogSpecsNarrow[Jynx::LoadableFileTypes::Count]  =
 {
-	"TAP files (*.TAP)|*.TAP",
+	"TAP files (*.tap)|*.tap",
 	"Snapshots (*.lynxsnapshot)|*.lynxsnapshot",
 	"Text files (*.txt)|*.txt",
 };
@@ -82,7 +82,7 @@ const char *SaveFileDialogTitlesNarrow[Jynx::SaveableFileTypes::Count] =
 
 const wchar_t *SaveFileDialogSpecs[Jynx::SaveableFileTypes::Count] =
 {
-	L"Lynx TAP files (*.TAP)|*.TAP",
+	L"Lynx TAP files (*.tap)|*.tap",
 	L"Snapshots (*.lynxsnapshot)|*.lynxsnapshot",
 	L"Sound files (*.wav)|*.wav",
 	L"Text files (*.txt)|*.txt"
@@ -90,7 +90,7 @@ const wchar_t *SaveFileDialogSpecs[Jynx::SaveableFileTypes::Count] =
 
 const char *SaveFileDialogSpecsNarrow[Jynx::SaveableFileTypes::Count] =
 {
-	"Lynx TAP files (*.TAP)|*.TAP",
+	"Lynx TAP files (*.tap)|*.tap",
 	"Snapshots (*.lynxsnapshot)|*.lynxsnapshot",
 	"Sound files (*.wav)|*.wav",
 	"Text files (*.txt)|*.txt"
@@ -101,7 +101,7 @@ const char *SaveFileDialogSpecsNarrow[Jynx::SaveableFileTypes::Count] =
 
 const wchar_t *SaveFileDialogExtns[Jynx::SaveableFileTypes::Count] =
 {
-	L"TAP",
+	L"tap",
 	L"lynxsnapshot",
 	L"wav",
 	L"txt"
@@ -109,7 +109,7 @@ const wchar_t *SaveFileDialogExtns[Jynx::SaveableFileTypes::Count] =
 
 const char *SaveFileDialogExtnsNarrow[Jynx::SaveableFileTypes::Count] =
 {
-	"TAP",
+	"tap",
 	"lynxsnapshot",
 	"wav",
 	"txt"
