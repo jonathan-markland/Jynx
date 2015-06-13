@@ -1,6 +1,6 @@
 //
 // Jynx - Jonathan's Lynx Emulator (Camputers Lynx 48K/96K models).
-// Copyright (C) 2014  Jonathan Markland
+// Copyright (C) 2015  Jonathan Markland
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,6 +17,7 @@
 //
 //		jynx_emulator {at} yahoo {dot} com
 //
+
 
 #include "MenuItemIDs.h"
 #include "LynxHardware.h"

@@ -1,3 +1,22 @@
+//
+// Jynx - Jonathan's Lynx Emulator (Camputers Lynx 48K/96K models).
+// Copyright (C) 2015  Jonathan Markland
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+//		jynx_emulator {at} yahoo {dot} com
+//
 
 #include <stdlib.h>
 #include <stdint.h>
@@ -39,29 +58,11 @@ int main( int argc, char *argv[] )
     {
         auto paramsList = MakeParamsListFromArgcAndArgv( argc, argv, 1 );
 
-        //
-        // Create main window
-        //
-
-/*        auto settingsFilePath = "~/.jynx_emulator/settings"; // TODO: fix
-        auto snapshotFilePath = ""; // not loading a snapshot
-        auto gamesMode = false; // TODO: fix
-        auto tapFilePath = "";  // not loading a tap
-        */
         auto exePath = RemoveLeafFromPath( argv[0] );
 
         auto mainWindow = std::make_shared<MainForm>( paramsList, exePath.c_str() );
         mainWindow->ShowAll();
 
-    //  button = gtk_button_new_from_stock (GTK_STOCK_DIALOG_INFO);
-    //  g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (helloWorld), (gpointer) win);
-    //  gtk_box_pack_start (GTK_BOX (vbox), button, TRUE, TRUE, 0);
-
-    //  button = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
-    //  g_signal_connect (button, "clicked", gtk_main_quit, NULL);
-    //  gtk_box_pack_start (GTK_BOX (vbox), button, TRUE, TRUE, 0);
-
-        /* Enter the main loop */
         gtk_main();
     }
     catch( std::exception &e )
@@ -70,7 +71,7 @@ int main( int argc, char *argv[] )
     }
 
     //
-    // MainForm now destructed, so game is no longer running.
+    // MainForm now destructed, so emulator is no longer running.
     //
 
     if( ! exceptionMessage.empty() )
