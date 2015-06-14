@@ -217,9 +217,12 @@ MainForm::MainForm( const std::vector<std::string> &paramsList, const char *exeP
         gtk_signal_connect( gtkDrawingAreaAsObject, "button_press_event",  (GtkSignalFunc) &MainForm::GtkHandlerForDrawingAreaButtonPressEvent,  this );
         gtk_signal_connect( gtkDrawingAreaAsObject, "key_press_event",     (GtkSignalFunc) &MainForm::GtkHandlerForKeyPress,    this );
         gtk_signal_connect( gtkDrawingAreaAsObject, "key_release_event",   (GtkSignalFunc) &MainForm::GtkHandlerForKeyRelease,  this );
+        gtk_signal_connect( gtkDrawingAreaAsObject, "focus_out_event",     (GtkSignalFunc) &MainForm::GtkHandlerForFocusLoss,  this );
+
         gtk_widget_set_events(
-            _gtkDrawingArea, GDK_EXPOSURE_MASK | GDK_LEAVE_NOTIFY_MASK | GDK_BUTTON_PRESS_MASK
+            _gtkDrawingArea, GDK_FOCUS_CHANGE_MASK | GDK_EXPOSURE_MASK | GDK_LEAVE_NOTIFY_MASK | GDK_BUTTON_PRESS_MASK
             | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK );  // TODO: Do I need all of these?
+
         gtk_widget_set_extension_events( _gtkDrawingArea, GDK_EXTENSION_EVENTS_CURSOR ); // TODO: What does this do?
         gtk_widget_set_can_focus( _gtkDrawingArea, TRUE );
         gtk_widget_show( _gtkDrawingArea ); // TODO: needed?
@@ -638,6 +641,19 @@ gboolean  MainForm::GtkHandlerForKeyRelease( GtkWidget *widget, GdkEvent *event,
         }
 
         return FALSE;
+    } );
+}
+
+
+
+gboolean  MainForm::GtkHandlerForFocusLoss(  GtkWidget *widget, GdkEventFocus *event, gpointer userObject ) // static member    focus_out_event
+{
+    auto thisObject = (MainForm *) userObject;
+
+    return thisObject->DoWithTerminationOnStdException<gboolean>( [&]() -> gboolean
+    {
+        thisObject->_lynxUIModel->NotifyAllKeysUp();
+        return FALSE; // Propagate event further.
     } );
 }
 

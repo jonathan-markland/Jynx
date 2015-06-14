@@ -52,7 +52,7 @@
 	"FileLoader.h"
 	"Z80/JynxZ80Disassembler.h"
 
-1434215108 /home/jonathan/Documents/Jynx/Portable/LynxEmulatorGuest.h
+1434299718 /home/jonathan/Documents/Jynx/Portable/LynxEmulatorGuest.h
 	<memory>
 	"IHostServicesForLynxEmulator.h"
 	"ISerialiser.h"
@@ -108,14 +108,14 @@
 	<string>
 	<stdint.h>
 
-1433683270 /home/jonathan/Documents/Jynx/Portable/TapFileReader.h
+1434299717 /home/jonathan/Documents/Jynx/Portable/TapFileReader.h
 	<vector>
 	<stdint.h>
 	"ISerialiser.h"
 	"IFileOpener.h"
 	"TapFileSplitter.h"
 
-1434295466 /home/jonathan/Documents/Jynx/Portable/TapFileSplitter.h
+1434299717 /home/jonathan/Documents/Jynx/Portable/TapFileSplitter.h
 	<stdint.h>
 	<string>
 	<vector>
@@ -148,7 +148,7 @@
 
 1433969238 /home/jonathan/Documents/Jynx/Portable/LynxRectangle.h
 
-1434297444 source:/home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.cpp
+1434299717 source:/home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.cpp
 	<assert.h>
 	"LynxUserInterfaceModel.h"
 	"LynxHardware.h"
@@ -156,7 +156,7 @@
 	"FileSerialiser.h"
 	"MenuItemIDs.h"
 
-1434297453 /home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.h
+1434299717 /home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.h
 	"IViewServicesForLynxUserInterfaceModel.h"
 	"IHostServicesForLynxEmulator.h"
 	"LynxEmulatorGuest.h"
@@ -171,7 +171,7 @@
 	"LynxRoms.h"
 	"Enumerations.h"
 
-1433684766 /home/jonathan/Documents/Jynx/Portable/UserSettingsSerialiser.h
+1434299718 /home/jonathan/Documents/Jynx/Portable/UserSettingsSerialiser.h
 	<stdint.h>
 	"IFileOpener.h"
 	"ISerialiser.h"
@@ -2740,7 +2740,7 @@
 	<pthread.h>
 	"Waitable.h"
 
-1434229159 source:/home/jonathan/Documents/Jynx/ForLinux/main.cpp
+1434298479 source:/home/jonathan/Documents/Jynx/ForLinux/main.cpp
 	<stdlib.h>
 	<stdint.h>
 	<string>
@@ -2787,7 +2787,7 @@
 	"LinuxGtkFileDialogs.h"
 	"JynxParsedParameters.h"
 
-1434297316 /home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.h
+1434307101 /home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.h
 	"../Portable/LynxUserInterfaceModel.h"
 	"../Portable/IViewServicesForLynxUserInterfaceModel.h"
 	"../Portable/WaveOutputStream.h"

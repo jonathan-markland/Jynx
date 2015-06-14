@@ -77,6 +77,7 @@ private:
 
     static gboolean GtkHandlerForKeyPress(   GtkWidget *widget, GdkEvent *event, gpointer user_data ); // static member
     static gboolean GtkHandlerForKeyRelease( GtkWidget *widget, GdkEvent *event, gpointer user_data ); // static member
+    static gboolean GtkHandlerForFocusLoss(  GtkWidget *widget, GdkEventFocus *event, gpointer user_data ); // static member
 
 private:
 
