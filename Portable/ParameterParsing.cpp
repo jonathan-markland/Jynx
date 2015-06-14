@@ -21,10 +21,9 @@
 #include "ParameterParsing.h"
 
 
-
 void RaiseCommandLineSyntaxErrorException()
 {
-	throw std::invalid_argument( "Syntax error in command line." );
+	throw CommandLineParsingException( "Syntax error in command line." );
 }
 
 
@@ -32,7 +31,7 @@ void RaiseCommandLineSyntaxErrorException()
 
 void RaiseCommandLineMissingOperandException()
 {
-	throw std::invalid_argument( "Command line parameter is missing an operand." );
+	throw CommandLineParsingException( "Command line parameter is missing an operand." );
 }
 
 

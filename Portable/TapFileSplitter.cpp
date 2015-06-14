@@ -28,13 +28,21 @@
 
 namespace Jynx
 {
+    class TapFileLexerException: public std::runtime_error
+    {
+    public:
+        TapFileLexerException( const char *message ) : std::runtime_error(message) {}
+    };
+
+
+
 	class TapFileLexer
 	{
 	public:
 
 		TapFileLexer( const std::vector<uint8_t> &tapFileImage );
             // NOTE: fileImage must have 0 terminator added.
-            // Throws std::invalid_argument if parse fails.
+            // Throws TapFileLexerException if parse fails.
 
 		bool End() const;
 		std::string ExpectFileName();
@@ -174,7 +182,7 @@ namespace Jynx
 
 	void TapFileLexer::RaiseError() const
 	{
-		throw std::invalid_argument( "Failed to parse TAP file." );
+		throw TapFileLexerException( "Failed to parse TAP file." );
 	}
 
 

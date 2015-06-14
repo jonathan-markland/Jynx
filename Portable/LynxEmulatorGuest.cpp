@@ -1769,12 +1769,7 @@ namespace Jynx
 			MarkWholeScreenInvalid();
 			_recompositeWholeScreen = true;
 		}
-		catch( const std::invalid_argument & ) // parse error
-		{
-			InitialiseLYNX();
-			throw;
-		}
-		catch( const std::ifstream::failure & )
+		catch( const std::exception & )
 		{
 			InitialiseLYNX();
 			throw;

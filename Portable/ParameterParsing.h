@@ -6,8 +6,17 @@
 #include <stdexcept>
 
 
-void RaiseCommandLineSyntaxErrorException();
-void RaiseCommandLineMissingOperandException();
+
+class CommandLineParsingException: public std::runtime_error
+{
+public:
+    CommandLineParsingException( const char *message ) : std::runtime_error(message) {}
+};
+
+
+
+void RaiseCommandLineSyntaxErrorException();     // raises CommandLineParsingException
+void RaiseCommandLineMissingOperandException();  // raises CommandLineParsingException
 
 
 

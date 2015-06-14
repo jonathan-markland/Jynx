@@ -25,41 +25,56 @@ namespace Jynx
 {
 	void LoadFileIntoVector( IFileOpener *fileOpener, std::vector<uint8_t> &result )
 	{
-		std::ifstream  inStream;
-		fileOpener->OpenInputStream( inStream, std::ios::in | std::ios::binary | std::ios::ate );
+	    try
+	    {
+            std::ifstream  inStream;
+            fileOpener->OpenInputStream( inStream, std::ios::in | std::ios::binary | std::ios::ate );
 
-		uint64_t fileSize = inStream.tellg();
-		if( fileSize < 0x80000000 )
-		{
-			result = std::vector<uint8_t>( (uint32_t) fileSize, uint8_t(0) );
-			if( ! result.empty() )
-			{
-				inStream.seekg (0, std::ios::beg);
-				inStream.read( (char *) &(*result.begin()), fileSize );
-			}
-			inStream.close();
-			return;
-		}
+            uint64_t fileSize = inStream.tellg();
+            if( fileSize < 0x80000000 )
+            {
+                result = std::vector<uint8_t>( (uint32_t) fileSize, uint8_t(0) );
+                if( ! result.empty() )
+                {
+                    inStream.seekg (0, std::ios::beg);
+                    inStream.read( (char *) &(*result.begin()), fileSize );
+                }
+                inStream.close();
+                return;
+            }
 
-		inStream.close();
-		throw std::range_error( "File is too large to load." );
+            inStream.close();
+	    }
+	    catch( std::ios::failure &e )
+	    {
+	        throw VectorLoadSaveException( e.what() );
+	    }
+
+		throw VectorLoadSaveException( "File is too large to load." );
 	}
 
 
 
 	void SaveFileFromVector( IFileOpener *fileOpener, const std::vector<uint8_t> &fileImage )
 	{
-		std::ofstream  outStream;
+	    try
+	    {
+            std::ofstream  outStream;
 
-		fileOpener->OpenOutputStream( outStream, std::ios::binary | std::ios::out );
+            fileOpener->OpenOutputStream( outStream, std::ios::binary | std::ios::out );
 
-		if( ! fileImage.empty() ) // begin() on an empty vector raise debug assert on Windows
-		{
-			auto startAddress = &(*fileImage.begin());
-			outStream.write( (const char *) startAddress, fileImage.size() );
-		}
+            if( ! fileImage.empty() ) // begin() on an empty vector raise debug assert on Windows
+            {
+                auto startAddress = &(*fileImage.begin());
+                outStream.write( (const char *) startAddress, fileImage.size() );
+            }
 
-		outStream.close();
+            outStream.close();
+	    }
+	    catch( std::ios::failure &e )
+	    {
+	        throw VectorLoadSaveException( e.what() );
+	    }
 	}
 
 
