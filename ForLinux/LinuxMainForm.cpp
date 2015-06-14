@@ -37,7 +37,6 @@
 
 #include "JynxParsedParameters.h"
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //        HOST WINDOW
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -342,21 +341,6 @@ void MainForm::ShowAll()
 
 
 
-void MainForm::NotifyMenuItemClicked( uint32_t menuItemID )
-{
-    // This gets the menu item clicks.
-
-    if( ! _lynxUIModel->DispatchMenuComment( menuItemID ) )
-    {
-        if( menuItemID == ID_HELP_ABOUT ) // not handled by the model
-        {
-            OnAbout();
-        }
-    }
-}
-
-
-
 
 
 
@@ -463,11 +447,6 @@ int32_t GdkHardwareKeyCodeToLynxKeyIndex( uint8_t keyVkCode )
 //     FRAMEWORK HANDLING
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void  MainForm::OnCancel()
-{
-	_lynxUIModel->OnExit();
-}
-
 
 /*
 void MainForm::WindowProc( libWinApi::WindowProcArgs &e )
@@ -553,44 +532,6 @@ void MainForm::WindowProc( libWinApi::WindowProcArgs &e )
 
 	return BaseForm::WindowProc( e );
 }
-
-
-
-
-
-
-
-
-
-
-bool  MainForm::PreProcessMessage( libWinApi::Message *pMsg )
-{
-	if( _lynxUIModel != nullptr )
-	{
-		uint32_t  keyCode = 0;
-
-		if( pMsg->IsKeyDown( &keyCode ) )
-		{
-			auto lynxKeyIndex = GdkHardwareKeyCodeToLynxKeyIndex( keyCode );
-			if( lynxKeyIndex != -1 )
-			{
-				_lynxUIModel->NotifyKeyDown( lynxKeyIndex );
-				return true;
-			}
-		}
-		else if( pMsg->IsKeyUp( &keyCode ) )
-		{
-			auto lynxKeyIndex = GdkHardwareKeyCodeToLynxKeyIndex( keyCode );
-			if( lynxKeyIndex != -1 )
-			{
-				_lynxUIModel->NotifyKeyUp( lynxKeyIndex );
-				return true;
-			}
-		}
-	}
-
-	return false;
-}
 */
 
 
@@ -602,6 +543,11 @@ bool  MainForm::PreProcessMessage( libWinApi::Message *pMsg )
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
+        // These all have DoWithTerminationOnStdException() protection, to avoid propagating
+        // C++ exceptions through C language frames.  If the execption wasn't handled by this
+        // stage, the program knows it cannot continue.
+
+
 
 gint MainForm::GtkHandlerForCloseBoxDeleteEvent( GtkWidget *widget, GdkEvent *event, gpointer userObject ) // static member
 {
@@ -609,8 +555,12 @@ gint MainForm::GtkHandlerForCloseBoxDeleteEvent( GtkWidget *widget, GdkEvent *ev
     // Returning TRUE means you don't want the window to be destroyed.
 
     auto thisObject = (MainForm *) userObject;
-    thisObject->OnCancel(); // thisObject->NotifyMenuItemClicked( ID_FILE_EXIT );
-    return TRUE; // do not automatically destroy window.  The handler above will have done that if it is required.
+
+    return thisObject->DoWithTerminationOnStdException<gint>( [&]()
+    {
+        thisObject->_lynxUIModel->DispatchMenuCommand( ID_FILE_EXIT );
+        return TRUE; // do not automatically destroy window.  The handler above will have done that if it is required.
+    } );
 }
 
 
@@ -619,20 +569,23 @@ gint MainForm::GtkHandlerForDrawingAreaExposeEvent( GtkWidget *widget, GdkEventE
 {
     auto thisObject = (MainForm *) userObject;
 
-    if( thisObject->_gtkDrawingArea != nullptr )
+    return thisObject->DoWithTerminationOnStdException<gint>( [&]()
     {
-        auto gtkDrawble = gtk_widget_get_window( thisObject->_gtkDrawingArea );
-        thisObject->_cairoContext = gdk_cairo_create( gtkDrawble );
-        if( thisObject->_cairoContext != nullptr )
+        if( thisObject->_gtkDrawingArea != nullptr )
         {
-            thisObject->_originalCairoContextSaved = false;  // It isn't initially.
-            thisObject->_lynxUIModel->OnPaint();
-            cairo_destroy( thisObject->_cairoContext );  // Reminder - destroys cairo_save() stack too.
-            thisObject->_cairoContext = nullptr;
+            auto gtkDrawble = gtk_widget_get_window( thisObject->_gtkDrawingArea );
+            thisObject->_cairoContext = gdk_cairo_create( gtkDrawble );
+            if( thisObject->_cairoContext != nullptr )
+            {
+                thisObject->_originalCairoContextSaved = false;  // It isn't initially.
+                thisObject->_lynxUIModel->OnPaint();
+                cairo_destroy( thisObject->_cairoContext );  // Reminder - destroys cairo_save() stack too.
+                thisObject->_cairoContext = nullptr;
+            }
         }
-    }
 
-    return FALSE;
+        return FALSE;
+    } );
 }
 
 
@@ -640,8 +593,12 @@ gint MainForm::GtkHandlerForDrawingAreaExposeEvent( GtkWidget *widget, GdkEventE
 gint MainForm::GtkHandlerForDrawingAreaButtonPressEvent(  GtkWidget *widget, GdkEventButton *event, gpointer userObject )    // static member   button_press_event
 {
     auto thisObject = (MainForm *) userObject;
-    gtk_widget_grab_focus( thisObject->_gtkDrawingArea );
-    return TRUE;
+
+    return thisObject->DoWithTerminationOnStdException<gint>( [&]()
+    {
+        gtk_widget_grab_focus( thisObject->_gtkDrawingArea );
+        return TRUE;
+    } );
 }
 
 
@@ -649,14 +606,19 @@ gint MainForm::GtkHandlerForDrawingAreaButtonPressEvent(  GtkWidget *widget, Gdk
 gboolean  MainForm::GtkHandlerForKeyPress( GtkWidget *widget, GdkEvent *event, gpointer userObject ) // static member     key_press_event
 {
     auto thisObject = (MainForm *) userObject;
-    auto keyEvent = (GdkEventKey *) event;
-    auto lynxKeyIndex = GdkHardwareKeyCodeToLynxKeyIndex( keyEvent->hardware_keycode );
-    if( lynxKeyIndex != -1 )
+
+    return thisObject->DoWithTerminationOnStdException<gboolean>( [&]() -> gboolean
     {
-        thisObject->_lynxUIModel->NotifyKeyDown( lynxKeyIndex );
-        return TRUE;
-    }
-    return FALSE;
+        auto keyEvent = (GdkEventKey *) event;
+        auto lynxKeyIndex = GdkHardwareKeyCodeToLynxKeyIndex( keyEvent->hardware_keycode );
+        if( lynxKeyIndex != -1 )
+        {
+            thisObject->_lynxUIModel->NotifyKeyDown( lynxKeyIndex );
+            return TRUE;
+        }
+
+        return FALSE;
+    } );
 }
 
 
@@ -664,14 +626,19 @@ gboolean  MainForm::GtkHandlerForKeyPress( GtkWidget *widget, GdkEvent *event, g
 gboolean  MainForm::GtkHandlerForKeyRelease( GtkWidget *widget, GdkEvent *event, gpointer userObject ) // static member     key_release_event
 {
     auto thisObject = (MainForm *) userObject;
-    auto keyEvent = (GdkEventKey *) event;
-    auto lynxKeyIndex = GdkHardwareKeyCodeToLynxKeyIndex( keyEvent->hardware_keycode );
-    if( lynxKeyIndex != -1 )
+
+    return thisObject->DoWithTerminationOnStdException<gboolean>( [&]() -> gboolean
     {
-        thisObject->_lynxUIModel->NotifyKeyUp( lynxKeyIndex );
-        return TRUE;
-    }
-    return FALSE;
+        auto keyEvent = (GdkEventKey *) event;
+        auto lynxKeyIndex = GdkHardwareKeyCodeToLynxKeyIndex( keyEvent->hardware_keycode );
+        if( lynxKeyIndex != -1 )
+        {
+            thisObject->_lynxUIModel->NotifyKeyUp( lynxKeyIndex );
+            return TRUE;
+        }
+
+        return FALSE;
+    } );
 }
 
 
@@ -679,8 +646,31 @@ gboolean  MainForm::GtkHandlerForKeyRelease( GtkWidget *widget, GdkEvent *event,
 gboolean  MainForm::GtkHandlerForTheTimer( gpointer userObject )    // static member   button_press_event
 {
     auto thisObject = (MainForm *) userObject;
-    thisObject->_lynxUIModel->OnTimer();
-    return TRUE;
+
+    return thisObject->DoWithTerminationOnStdException<gboolean>( [&]()
+    {
+        thisObject->_lynxUIModel->OnTimer();
+        return TRUE;
+    } );
+}
+
+
+
+void MainForm::NotifyMenuItemClicked( uint32_t menuItemID )
+{
+    // This gets the menu item clicks.
+    // NB: This is indirectly a GTK event handler, hence exception barrier.
+
+    DoWithTerminationOnStdException<void>( [&]()
+    {
+        if( ! _lynxUIModel->DispatchMenuCommand( menuItemID ) )
+        {
+            if( menuItemID == ID_HELP_ABOUT ) // not handled by the model
+            {
+                OnAbout();
+            }
+        }
+    } );
 }
 
 

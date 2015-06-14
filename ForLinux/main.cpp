@@ -37,7 +37,7 @@ std::basic_string<CHAR_TYPE>  RemoveLeafFromPath( const CHAR_TYPE *path )   // T
     {
         return std::basic_string<CHAR_TYPE>( result.begin(), result.begin() + pos );
     }
-    throw std::runtime_error( "Cannot determine path!" );
+    throw std::runtime_error( "Failed to remove leaf from path!" );
 }
 
 

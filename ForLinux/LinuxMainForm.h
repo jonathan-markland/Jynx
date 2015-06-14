@@ -78,7 +78,22 @@ private:
     static gboolean GtkHandlerForKeyRelease( GtkWidget *widget, GdkEvent *event, gpointer user_data ); // static member
 
     void OnAbout();
-    void OnCancel();
+
+private:
+
+    template<typename RETURN_TYPE, typename OPERATION>
+    RETURN_TYPE  DoWithTerminationOnStdException( OPERATION operation )
+    {
+        try
+        {
+            return operation();
+        }
+        catch( std::exception &e )
+        {
+            exit(1);
+            throw; // never executed
+        }
+    }
 
 private:
 

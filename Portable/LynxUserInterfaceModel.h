@@ -25,6 +25,8 @@
 #include "LynxEmulatorGuest.h"
 #include "UserSettingsSerialiser.h"
 
+#include "Lexer.h" // for exception type
+#include "FileLoader.h" // for exception type
 
 namespace Jynx
 {
@@ -43,12 +45,31 @@ namespace Jynx
 			IViewServicesForLynxUserInterfaceModel *hostView, const char *platformEndOfLineSequenceUTF8, bool gamesMode );
 
 		// LynxUserInterfaceModel:
+		bool DispatchMenuCommand( uint32_t menuCommandID );
+
+		// IHostServicesForLynxEmulator:
+		// - THREADING NOTE:  The emulator object calls back into the Model on
+		//   the EMULATOR thread, using this restricted interface.
+		virtual  void  InvalidateAreaOfGuestScreen_OnMainThread( int32_t left, int32_t top, int32_t right, int32_t bottom ) override;
+		virtual  void  OpenChipFileStream_OnMainThread( std::ifstream &streamToBeOpened, std::ios_base::openmode openModeRequired, LynxRoms::Enum romRequired ) override;
+		virtual  void  NotifyOutputTapeAvailbilityChanged_OnAnyThread() override;
+		virtual  void  PaintPixelsOnHostBitmap_OnEmulatorThread( uint32_t addressOffset, const uint32_t *eightPixelsData ) override;
+		virtual  void  TranslateRGBXColourPaletteToHostValues( const uint32_t *eightEntryColourPalette, uint32_t *eightEntryTranslatedValues ) override;
+
 		void OnInitDialog();
 		void OnTimer();
 		void NotifyAllKeysUp();
 		void NotifyKeyDown( int32_t keyCode );
 		void NotifyKeyUp( int32_t keyCode );
+		void ForceLoadSpecificSnapshot( IFileOpener *fileOpener ); // enable view to load the command-line default snapshot file.
+		void ForceLoadSpecificTape( IFileOpener *fileOpener ); // enable view to load the command-line default TAP file.
 		void OnPaint();
+
+    private:
+
+        // (Used to be public before we had the menu dispatcher).
+
+		void OnExit();
 		void OnLoadStateSnapshot();
 		void OnSaveStateSnapshot();
 		void OnRunTAPFile();
@@ -56,7 +77,6 @@ namespace Jynx
 		void OnNewAudioTape();
 		void OnSaveTAPFileAs();
 		void OnRewindAudioTape();
-		void OnExit();
 		void OnEmulation48K();
 		void OnEmulation96K();
 		void OnEmulation96KScorpion();
@@ -78,24 +98,11 @@ namespace Jynx
 		void OnTypeInTextFromFile();
 		void OnPause();
 		void OnPauseAfterTapLoad();
-		void ForceLoadSpecificSnapshot( IFileOpener *fileOpener ); // enable view to load the command-line default snapshot file.
-		void ForceLoadSpecificTape( IFileOpener *fileOpener ); // enable view to load the command-line default TAP file.
 		void OnTypeTapeDirectoryIntoLynx();
 		void OnSpeedMaxCassette();
 		void OnSpeedMaxConsoleCommands();
 		void OnSpeedMaxPermanently();
 		void OnChangeColourSet( LynxColourSet::Enum colourSet );
-
-		bool DispatchMenuComment( uint32_t menuCommandID );
-
-		// IHostServicesForLynxEmulator:
-		// - THREADING NOTE:  The emulator object calls back into the Model on
-		//   the EMULATOR thread, using this restricted interface.
-		virtual  void  InvalidateAreaOfGuestScreen_OnMainThread( int32_t left, int32_t top, int32_t right, int32_t bottom ) override;
-		virtual  void  OpenChipFileStream_OnMainThread( std::ifstream &streamToBeOpened, std::ios_base::openmode openModeRequired, LynxRoms::Enum romRequired ) override;
-		virtual  void  NotifyOutputTapeAvailbilityChanged_OnAnyThread() override;
-		virtual  void  PaintPixelsOnHostBitmap_OnEmulatorThread( uint32_t addressOffset, const uint32_t *eightPixelsData ) override;
-		virtual  void  TranslateRGBXColourPaletteToHostValues( const uint32_t *eightEntryColourPalette, uint32_t *eightEntryTranslatedValues ) override;
 
 	private:
 
@@ -137,9 +144,17 @@ namespace Jynx
             {
                 fileOperation();
             }
-            catch( std::invalid_argument &e )
+            catch( Jynx::TapFileLexerException &e )
             {
-                ReportWithPrefix( messageToPrefix, e );
+                ReportWithPrefix( "Failed while reading a TAP file.", e );
+            }
+            catch( Jynx::LexerException &e )
+            {
+                ReportWithPrefix( "Failed with a lexical error while reading a text file.", e );
+            }
+            catch( VectorLoadSaveException &e )
+            {
+                ReportWithPrefix( "Failed while attempting to load or save a file image.", e );
             }
             catch( std::ios_base::failure &e )
             {

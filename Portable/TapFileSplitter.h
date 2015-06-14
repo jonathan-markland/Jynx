@@ -24,6 +24,7 @@
 #include <stdint.h>
 #include <string>
 #include <vector>
+#include <stdexcept>
 #include "IFileOpener.h"
 
 namespace Jynx
@@ -35,6 +36,14 @@ namespace Jynx
 			LoadCommands, REMCommandListing
 		};
 	}
+
+
+
+    class TapFileLexerException: public std::runtime_error
+    {
+    public:
+        TapFileLexerException( const char *message ) : std::runtime_error(message) {}
+    };
 
 
 

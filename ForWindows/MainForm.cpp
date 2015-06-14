@@ -112,7 +112,7 @@ MainForm::MainForm( HWND hWndOwner, const std::vector<std::wstring> &paramList )
 
 		_lynxUIModel = std::unique_ptr<Jynx::LynxUserInterfaceModel>( new Jynx::LynxUserInterfaceModel(
 			this,
-			"\r\n", 
+			"\r\n",
 			parsedParams.GetGamesMode() ) );  // The preferred end of line sequence on the WINDOWS platform.  (Think: Notepad.exe!)
     }
     catch(...)
@@ -253,7 +253,7 @@ bool  MainForm::OnInitDialog()
 
 void  MainForm::OnCancel()
 {
-	_lynxUIModel->OnExit();
+	_lynxUIModel->DispatchMenuCommand( ID_FILE_EXIT );
 }
 
 

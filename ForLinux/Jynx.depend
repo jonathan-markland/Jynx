@@ -1,9 +1,10 @@
 # depslib dependency file v1.0
-1433683104 source:/home/jonathan/Documents/Jynx/Portable/FileLoader.cpp
+1434291359 source:/home/jonathan/Documents/Jynx/Portable/FileLoader.cpp
 	<stdexcept>
 	"FileLoader.h"
 
-1433678744 /home/jonathan/Documents/Jynx/Portable/FileLoader.h
+1434291380 /home/jonathan/Documents/Jynx/Portable/FileLoader.h
+	<stdexcept>
 	<stdint.h>
 	<vector>
 	"IFileOpener.h"
@@ -33,15 +34,16 @@
 1433678744 /home/jonathan/Documents/Jynx/Portable/IBinarySerialiser.h
 	<stdint.h>
 
-1433678744 /home/jonathan/Documents/Jynx/Portable/Lexer.h
+1434295997 /home/jonathan/Documents/Jynx/Portable/Lexer.h
 	<stdint.h>
 	<string>
+	<stdexcept>
 
-1433683104 source:/home/jonathan/Documents/Jynx/Portable/Lexer.cpp
+1434291174 source:/home/jonathan/Documents/Jynx/Portable/Lexer.cpp
 	<stdexcept>
 	"Lexer.h"
 
-1434215122 source:/home/jonathan/Documents/Jynx/Portable/LynxEmulatorGuest.cpp
+1434291174 source:/home/jonathan/Documents/Jynx/Portable/LynxEmulatorGuest.cpp
 	<assert.h>
 	<string>
 	"LynxEmulatorGuest.h"
@@ -113,10 +115,11 @@
 	"IFileOpener.h"
 	"TapFileSplitter.h"
 
-1433685588 /home/jonathan/Documents/Jynx/Portable/TapFileSplitter.h
+1434295466 /home/jonathan/Documents/Jynx/Portable/TapFileSplitter.h
 	<stdint.h>
 	<string>
 	<vector>
+	<stdexcept>
 	"IFileOpener.h"
 
 1433681740 /home/jonathan/Documents/Jynx/Portable/TapFileWriter.h
@@ -145,7 +148,7 @@
 
 1433969238 /home/jonathan/Documents/Jynx/Portable/LynxRectangle.h
 
-1434149244 source:/home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.cpp
+1434295147 source:/home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.cpp
 	<assert.h>
 	"LynxUserInterfaceModel.h"
 	"LynxHardware.h"
@@ -153,11 +156,13 @@
 	"FileSerialiser.h"
 	"MenuItemIDs.h"
 
-1434149122 /home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.h
+1434295984 /home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.h
 	"IViewServicesForLynxUserInterfaceModel.h"
 	"IHostServicesForLynxEmulator.h"
 	"LynxEmulatorGuest.h"
 	"UserSettingsSerialiser.h"
+	"Lexer.h"
+	"FileLoader.h"
 
 1434147530 /home/jonathan/Documents/Jynx/Portable/IViewServicesForLynxUserInterfaceModel.h
 	<memory>
@@ -193,7 +198,7 @@
 	"TapFileReader.h"
 	<assert.h>
 
-1433685556 source:/home/jonathan/Documents/Jynx/Portable/TapFileSplitter.cpp
+1434295454 source:/home/jonathan/Documents/Jynx/Portable/TapFileSplitter.cpp
 	<stdexcept>
 	<assert.h>
 	"TapFileSplitter.h"
@@ -2762,12 +2767,12 @@
 
 1433750104 /home/jonathan/Documents/Jynx/Portable/MenuItemIDs.h
 
-1433751206 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxAboutBox.cpp
+1434229307 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxAboutBox.cpp
 	<gtk/gtk.h>
 
 1434229159 /home/jonathan/Documents/Jynx/ForLinux/LinuxAboutBox.h
 
-1434229159 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.cpp
+1434294966 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.cpp
 	"MenuItemIDs.h"
 	"LynxHardware.h"
 	"UIStrings.h"
@@ -2782,7 +2787,7 @@
 	"LinuxGtkFileDialogs.h"
 	"JynxParsedParameters.h"
 
-1434229159 /home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.h
+1434294890 /home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.h
 	"../Portable/LynxUserInterfaceModel.h"
 	"../Portable/IViewServicesForLynxUserInterfaceModel.h"
 	"../Portable/WaveOutputStream.h"
@@ -2831,11 +2836,11 @@
 1434215678 /home/jonathan/Documents/Jynx/Portable/JynxParsedParameters.h
 	"ParameterParsing.h"
 
-1434220791 /home/jonathan/Documents/Jynx/Portable/ParameterParsing.h
+1434291107 /home/jonathan/Documents/Jynx/Portable/ParameterParsing.h
 	<vector>
 	<string>
 	<stdexcept>
 
-1434229159 source:/home/jonathan/Documents/Jynx/Portable/ParameterParsing.cpp
+1434291173 source:/home/jonathan/Documents/Jynx/Portable/ParameterParsing.cpp
 	"ParameterParsing.h"
 

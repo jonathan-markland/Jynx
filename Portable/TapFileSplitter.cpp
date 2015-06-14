@@ -28,14 +28,6 @@
 
 namespace Jynx
 {
-    class TapFileLexerException: public std::runtime_error
-    {
-    public:
-        TapFileLexerException( const char *message ) : std::runtime_error(message) {}
-    };
-
-
-
 	class TapFileLexer
 	{
 	public:
