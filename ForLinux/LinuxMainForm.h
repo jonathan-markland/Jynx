@@ -42,6 +42,7 @@ public:
     void ShowAll();
 
 	// Interface for model:
+	virtual void ShowTheAboutBox() override;
 	virtual void CloseDownNow() override;
 	virtual std::shared_ptr<Jynx::IFileOpener> ShowOpenFileDialog( Jynx::LoadableFileTypes::Enum ) override;  // return nullptr if cancelled, else return IFileOpener for the file selected.
 	virtual std::shared_ptr<Jynx::IFileOpener> ShowSaveFileDialog( Jynx::SaveableFileTypes::Enum ) override;  // return nullptr if cancelled, else return IFileOpener for the file selected.
@@ -76,8 +77,6 @@ private:
 
     static gboolean GtkHandlerForKeyPress(   GtkWidget *widget, GdkEvent *event, gpointer user_data ); // static member
     static gboolean GtkHandlerForKeyRelease( GtkWidget *widget, GdkEvent *event, gpointer user_data ); // static member
-
-    void OnAbout();
 
 private:
 

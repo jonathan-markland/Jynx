@@ -48,7 +48,6 @@ namespace Jynx
 		// - Save may as well be in the same place for symmetry.
 
 		explicit UserSettings( IFileOpener * );
-            // throws stream failures and invalid_argument if parse error.
 
 		UserSettings(
 			LynxMachineType::Enum  machineType,

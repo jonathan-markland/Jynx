@@ -148,7 +148,7 @@
 
 1433969238 /home/jonathan/Documents/Jynx/Portable/LynxRectangle.h
 
-1434295147 source:/home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.cpp
+1434297444 source:/home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.cpp
 	<assert.h>
 	"LynxUserInterfaceModel.h"
 	"LynxHardware.h"
@@ -156,7 +156,7 @@
 	"FileSerialiser.h"
 	"MenuItemIDs.h"
 
-1434295984 /home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.h
+1434297453 /home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.h
 	"IViewServicesForLynxUserInterfaceModel.h"
 	"IHostServicesForLynxEmulator.h"
 	"LynxEmulatorGuest.h"
@@ -164,7 +164,7 @@
 	"Lexer.h"
 	"FileLoader.h"
 
-1434147530 /home/jonathan/Documents/Jynx/Portable/IViewServicesForLynxUserInterfaceModel.h
+1434297342 /home/jonathan/Documents/Jynx/Portable/IViewServicesForLynxUserInterfaceModel.h
 	<memory>
 	"IFileOpener.h"
 	"LynxRectangle.h"
@@ -2772,7 +2772,7 @@
 
 1434229159 /home/jonathan/Documents/Jynx/ForLinux/LinuxAboutBox.h
 
-1434294966 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.cpp
+1434297472 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.cpp
 	"MenuItemIDs.h"
 	"LynxHardware.h"
 	"UIStrings.h"
@@ -2787,7 +2787,7 @@
 	"LinuxGtkFileDialogs.h"
 	"JynxParsedParameters.h"
 
-1434294890 /home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.h
+1434297316 /home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.h
 	"../Portable/LynxUserInterfaceModel.h"
 	"../Portable/IViewServicesForLynxUserInterfaceModel.h"
 	"../Portable/WaveOutputStream.h"

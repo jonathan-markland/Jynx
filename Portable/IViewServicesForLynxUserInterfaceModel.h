@@ -39,6 +39,10 @@ namespace Jynx
 
 		// - Threading note:  These are all called on the MAIN thread, unless the function name noted otherwise.
 
+        virtual void ShowTheAboutBox() = 0;
+            // The Model tells the view to show the about box modal dialog.
+			// It is always appropriate for the View to perform this without question.
+
 		virtual void CloseDownNow() = 0;
 			// The Model tells the View to close down now.
 			// It is always appropriate for the View to perform this without question.

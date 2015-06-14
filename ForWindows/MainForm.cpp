@@ -300,13 +300,9 @@ void MainForm::WindowProc( libWinApi::WindowProcArgs &e )
 
 		if( e.IsMenuCommand( &menuCommand ) )
 		{
-			if( ! _lynxUIModel->DispatchMenuComment( menuCommand ) )
+			if( ! _lynxUIModel->DispatchMenuCommand( menuCommand ) )
 			{
-				switch( menuCommand )
-				{
-					case ID_HELP_ABOUT:               OnAbout(); break; // not handled by the model
-					default:                          return BaseForm::WindowProc( e );
-				}
+                return BaseForm::WindowProc( e );
 			}
 			e.Result = 1;
 			return;  // Processed.
@@ -399,25 +395,16 @@ bool  MainForm::PreProcessMessage( libWinApi::Message *pMsg )
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-//     UI ELEMENT EVENT HANDLERS
+//        VIEW SERVICES TO MODEL  (IHostServicesForLynxUserInterfaceModel)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void MainForm::OnAbout()
+void MainForm::ShowTheAboutBox()
 {
 	AboutBoxForm  aboutForm( *this );
 	aboutForm.DoModal();
 }
 
 
-
-
-
-
-
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-//        VIEW SERVICES TO MODEL  (IHostServicesForLynxUserInterfaceModel)
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 void MainForm::CloseDownNow()
 {

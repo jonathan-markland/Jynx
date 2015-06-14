@@ -663,31 +663,10 @@ void MainForm::NotifyMenuItemClicked( uint32_t menuItemID )
 
     DoWithTerminationOnStdException<void>( [&]()
     {
-        if( ! _lynxUIModel->DispatchMenuCommand( menuItemID ) )
-        {
-            if( menuItemID == ID_HELP_ABOUT ) // not handled by the model
-            {
-                OnAbout();
-            }
-        }
+        _lynxUIModel->DispatchMenuCommand( menuItemID );
     } );
 }
 
-
-
-
-
-
-
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-//     UI ELEMENT EVENT HANDLERS
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-void MainForm::OnAbout()
-{
-    Jynx::ShowLinuxGtkAboutBox();
-}
 
 
 
@@ -699,6 +678,13 @@ void MainForm::OnAbout()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //        VIEW SERVICES TO MODEL  (IHostServicesForLynxUserInterfaceModel)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+void MainForm::ShowTheAboutBox()
+{
+    Jynx::ShowLinuxGtkAboutBox();
+}
+
+
 
 void MainForm::CloseDownNow()
 {

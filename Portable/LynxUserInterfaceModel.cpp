@@ -53,10 +53,6 @@ namespace Jynx
 		{
 			LoadUserSettings();
 		}
-		catch( const std::invalid_argument & ) // parse error
-		{
-			// TODO: reportable.
-		}
 		catch( std::ifstream::failure &e )
 		{
 			// TODO: check for file not found, and ignore this.  Anything else is reportable.
@@ -276,6 +272,8 @@ namespace Jynx
                 case ID_DISPLAY_COLOURSET_BLACKANDWHITETV:      OnChangeColourSet( Jynx::LynxColourSet::BlackAndWhiteTV ); break;
                 case ID_DISPLAY_COLOURSET_GREENSCREENMONITOR:   OnChangeColourSet( Jynx::LynxColourSet::GreenScreenMonitor ); break;
 
+                case ID_HELP_ABOUT:                             OnShowTheAboutBox(); break;
+
                 default:
                     result = false; // not processed
             }
@@ -310,6 +308,13 @@ namespace Jynx
         message += messageToPrefix;
         message += e.what();
         _hostView->TellUser( message.c_str(), "Error" );
+    }
+
+
+
+    void LynxUserInterfaceModel::OnShowTheAboutBox()
+    {
+        _hostView->ShowTheAboutBox();
     }
 
 

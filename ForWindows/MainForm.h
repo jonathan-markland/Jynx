@@ -52,6 +52,7 @@ public:
 	virtual void OnCancel() override;
 
 	// Interface for model:
+	virtual void ShowTheAboutBox() override;
 	virtual void CloseDownNow() override;
 	virtual std::shared_ptr<Jynx::IFileOpener> ShowOpenFileDialog( Jynx::LoadableFileTypes::Enum ) override;  // return nullptr if cancelled, else return IFileOpener for the file selected.
 	virtual std::shared_ptr<Jynx::IFileOpener> ShowSaveFileDialog( Jynx::SaveableFileTypes::Enum ) override;  // return nullptr if cancelled, else return IFileOpener for the file selected.
@@ -73,7 +74,6 @@ public:
 private:
 
 	void Cleanup();
-	void OnAbout();
 
 	HDC     _dc;         // Is only set when asking the model to paint.
 	HANDLE  _hbicon;

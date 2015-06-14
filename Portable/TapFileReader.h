@@ -57,8 +57,6 @@ namespace Jynx
 			// The constructor for an empty tape.
 
 		TapFileReader( IFileOpener *tapFileOpener, ITapeSpeedSupplier * );
-			// Throws std:: file exceptions.
-			// Throws a std::invalid_argument if parse fails.
 
 		// Motor
 		void CassetteMotorOn();

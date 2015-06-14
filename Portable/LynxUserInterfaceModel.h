@@ -69,6 +69,7 @@ namespace Jynx
 
         // (Used to be public before we had the menu dispatcher).
 
+        void OnShowTheAboutBox();
 		void OnExit();
 		void OnLoadStateSnapshot();
 		void OnSaveStateSnapshot();
@@ -129,11 +130,8 @@ namespace Jynx
 		bool UserAllowsReset();
 
 		void SaveUserSettings();
-            // throws std::ofstream::failure
 
 		void LoadUserSettings();
-            // throws const std::invalid_argument on parse error
-            // throws const std::ifstream::failure
 
         void ReportWithPrefix( const char *messageToPrefix, const std::exception &e );
 
