@@ -444,103 +444,6 @@ int32_t GdkHardwareKeyCodeToLynxKeyIndex( uint8_t keyVkCode )
 
 
 
-
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-//     FRAMEWORK HANDLING
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-
-/*
-void MainForm::WindowProc( libWinApi::WindowProcArgs &e )
-{
-	try
-	{
-		uint16_t  menuCommand = 0;
-
-		//
-		// WM_HI_RES_TIMER:
-		// Periodic timer for the model to perform tasks.
-		//
-
-		if( e.message == WM_HI_RES_TIMER )
-		{
-			_lynxUIModel->OnTimer();
-			e.Result = 0;
-			return;
-		}
-
-		if( e.IsPaint() )
-		{
-			libWinApi::WmPaintHandler ph( *this );
-			if( ! ph.AreaIsEmpty() )
-			{
-				if( ph.ClipToUpdateRect() )
-				{
-					_dc = ph.dc;
-					_lynxUIModel->OnPaint();
-					_dc = NULL;
-				}
-			}
-			e.Result = 1;
-			return;
-		}
-
-		if( e.IsErase() )
-		{
-			e.Result = 1;
-			return;
-		}
-
-
-		if( e.IsDeactivated() )
-		{
-			_lynxUIModel->NotifyAllKeysUp();   // Let's make sure we don't have stuck keys, switching away from the app!
-		}
-
-		if( e.message == WM_LBUTTONDBLCLK )
-		{
-			_lynxUIModel->OnEnableDisableFullScreen();
-		}
-
-		//
-		// WM_WINDOWPOSCHANGED
-		//
-
-		if( e.message == WM_WINDOWPOSCHANGED )
-		{
-			auto pWP = reinterpret_cast<WINDOWPOS *>(e.lParam);
-			if( pWP )
-			{
-				int Mask = SWP_NOSIZE; // irritating negative logic here
-				if( (pWP->flags & Mask) != Mask )
-				{
-					// Called because of size of this window.
-					RECT r;
-					if( GetClientRect( *this, &r ) )
-					{
-						InvalidateRect( *this, &r, FALSE );
-					}
-				}
-			}
-
-			// Let caller see this message too.
-		}
-
-	}
-	catch( const UserInterfaceException &nonFatalError )  // reminder: catches stream errors too.  TODO: This might be controversial, and a "UserInterfaceException" better.
-	{
-		MessageBoxA( *this, nonFatalError.what(), "Error", MB_OK | MB_ICONERROR );
-	}
-
-	return BaseForm::WindowProc( e );
-}
-*/
-
-
-
-
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //     GTK event handlers
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -558,12 +461,8 @@ gint MainForm::GtkHandlerForCloseBoxDeleteEvent( GtkWidget *widget, GdkEvent *ev
     // Returning TRUE means you don't want the window to be destroyed.
 
     auto thisObject = (MainForm *) userObject;
-
-    return thisObject->DoWithTerminationOnStdException<gint>( [&]()
-    {
-        thisObject->_lynxUIModel->DispatchMenuCommand( ID_FILE_EXIT );
-        return TRUE; // do not automatically destroy window.  The handler above will have done that if it is required.
-    } );
+    thisObject->_lynxUIModel->DispatchMenuCommand( ID_FILE_EXIT );
+    return TRUE; // do not automatically destroy window.  The handler above will have done that if it is required.
 }
 
 
@@ -572,36 +471,29 @@ gint MainForm::GtkHandlerForDrawingAreaExposeEvent( GtkWidget *widget, GdkEventE
 {
     auto thisObject = (MainForm *) userObject;
 
-    return thisObject->DoWithTerminationOnStdException<gint>( [&]()
+    if( thisObject->_gtkDrawingArea != nullptr )
     {
-        if( thisObject->_gtkDrawingArea != nullptr )
+        auto gtkDrawble = gtk_widget_get_window( thisObject->_gtkDrawingArea );
+        thisObject->_cairoContext = gdk_cairo_create( gtkDrawble );
+        if( thisObject->_cairoContext != nullptr )
         {
-            auto gtkDrawble = gtk_widget_get_window( thisObject->_gtkDrawingArea );
-            thisObject->_cairoContext = gdk_cairo_create( gtkDrawble );
-            if( thisObject->_cairoContext != nullptr )
-            {
-                thisObject->_originalCairoContextSaved = false;  // It isn't initially.
-                thisObject->_lynxUIModel->OnPaint();
-                cairo_destroy( thisObject->_cairoContext );  // Reminder - destroys cairo_save() stack too.
-                thisObject->_cairoContext = nullptr;
-            }
+            thisObject->_originalCairoContextSaved = false;  // It isn't initially.
+            thisObject->_lynxUIModel->OnPaint();
+            cairo_destroy( thisObject->_cairoContext );  // Reminder - destroys cairo_save() stack too.
+            thisObject->_cairoContext = nullptr;
         }
+    }
 
-        return FALSE;
-    } );
+    return FALSE;
 }
 
 
 
-gint MainForm::GtkHandlerForDrawingAreaButtonPressEvent(  GtkWidget *widget, GdkEventButton *event, gpointer userObject )    // static member   button_press_event
+gint MainForm::GtkHandlerForDrawingAreaButtonPressEvent( GtkWidget *widget, GdkEventButton *event, gpointer userObject )    // static member   button_press_event
 {
     auto thisObject = (MainForm *) userObject;
-
-    return thisObject->DoWithTerminationOnStdException<gint>( [&]()
-    {
-        gtk_widget_grab_focus( thisObject->_gtkDrawingArea );
-        return TRUE;
-    } );
+    gtk_widget_grab_focus( thisObject->_gtkDrawingArea );
+    return TRUE;
 }
 
 
@@ -610,18 +502,15 @@ gboolean  MainForm::GtkHandlerForKeyPress( GtkWidget *widget, GdkEvent *event, g
 {
     auto thisObject = (MainForm *) userObject;
 
-    return thisObject->DoWithTerminationOnStdException<gboolean>( [&]() -> gboolean
+    auto keyEvent = (GdkEventKey *) event;
+    auto lynxKeyIndex = GdkHardwareKeyCodeToLynxKeyIndex( keyEvent->hardware_keycode );
+    if( lynxKeyIndex != -1 )
     {
-        auto keyEvent = (GdkEventKey *) event;
-        auto lynxKeyIndex = GdkHardwareKeyCodeToLynxKeyIndex( keyEvent->hardware_keycode );
-        if( lynxKeyIndex != -1 )
-        {
-            thisObject->_lynxUIModel->NotifyKeyDown( lynxKeyIndex );
-            return TRUE;
-        }
+        thisObject->_lynxUIModel->NotifyKeyDown( lynxKeyIndex );
+        return TRUE;
+    }
 
-        return FALSE;
-    } );
+    return FALSE;
 }
 
 
@@ -630,18 +519,15 @@ gboolean  MainForm::GtkHandlerForKeyRelease( GtkWidget *widget, GdkEvent *event,
 {
     auto thisObject = (MainForm *) userObject;
 
-    return thisObject->DoWithTerminationOnStdException<gboolean>( [&]() -> gboolean
+    auto keyEvent = (GdkEventKey *) event;
+    auto lynxKeyIndex = GdkHardwareKeyCodeToLynxKeyIndex( keyEvent->hardware_keycode );
+    if( lynxKeyIndex != -1 )
     {
-        auto keyEvent = (GdkEventKey *) event;
-        auto lynxKeyIndex = GdkHardwareKeyCodeToLynxKeyIndex( keyEvent->hardware_keycode );
-        if( lynxKeyIndex != -1 )
-        {
-            thisObject->_lynxUIModel->NotifyKeyUp( lynxKeyIndex );
-            return TRUE;
-        }
+        thisObject->_lynxUIModel->NotifyKeyUp( lynxKeyIndex );
+        return TRUE;
+    }
 
-        return FALSE;
-    } );
+    return FALSE;
 }
 
 
@@ -649,12 +535,8 @@ gboolean  MainForm::GtkHandlerForKeyRelease( GtkWidget *widget, GdkEvent *event,
 gboolean  MainForm::GtkHandlerForFocusLoss(  GtkWidget *widget, GdkEventFocus *event, gpointer userObject ) // static member    focus_out_event
 {
     auto thisObject = (MainForm *) userObject;
-
-    return thisObject->DoWithTerminationOnStdException<gboolean>( [&]() -> gboolean
-    {
-        thisObject->_lynxUIModel->NotifyAllKeysUp();
-        return FALSE; // Propagate event further.
-    } );
+    thisObject->_lynxUIModel->NotifyAllKeysUp();
+    return FALSE; // Propagate event further.
 }
 
 
@@ -662,12 +544,8 @@ gboolean  MainForm::GtkHandlerForFocusLoss(  GtkWidget *widget, GdkEventFocus *e
 gboolean  MainForm::GtkHandlerForTheTimer( gpointer userObject )    // static member   button_press_event
 {
     auto thisObject = (MainForm *) userObject;
-
-    return thisObject->DoWithTerminationOnStdException<gboolean>( [&]()
-    {
-        thisObject->_lynxUIModel->OnTimer();
-        return TRUE;
-    } );
+    thisObject->_lynxUIModel->OnTimer();
+    return TRUE;
 }
 
 
@@ -677,10 +555,7 @@ void MainForm::NotifyMenuItemClicked( uint32_t menuItemID )
     // This gets the menu item clicks.
     // NB: This is indirectly a GTK event handler, hence exception barrier.
 
-    DoWithTerminationOnStdException<void>( [&]()
-    {
-        _lynxUIModel->DispatchMenuCommand( menuItemID );
-    } );
+    _lynxUIModel->DispatchMenuCommand( menuItemID );
 }
 
 

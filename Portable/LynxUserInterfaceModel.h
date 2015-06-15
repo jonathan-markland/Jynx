@@ -44,9 +44,6 @@ namespace Jynx
 		LynxUserInterfaceModel(
 			IViewServicesForLynxUserInterfaceModel *hostView, const char *platformEndOfLineSequenceUTF8, bool gamesMode );
 
-		// LynxUserInterfaceModel:
-		bool DispatchMenuCommand( uint32_t menuCommandID );
-
 		// IHostServicesForLynxEmulator:
 		// - THREADING NOTE:  The emulator object calls back into the Model on
 		//   the EMULATOR thread, using this restricted interface.
@@ -56,14 +53,20 @@ namespace Jynx
 		virtual  void  PaintPixelsOnHostBitmap_OnEmulatorThread( uint32_t addressOffset, const uint32_t *eightPixelsData ) override;
 		virtual  void  TranslateRGBXColourPaletteToHostValues( const uint32_t *eightEntryColourPalette, uint32_t *eightEntryTranslatedValues ) override;
 
+		// Event handler implementations.
+		// All of these have exception guards for stray exceptions (program termination)
+		// This protects C language event raisers from being wound-back.
+		bool OnMenuCommand( uint32_t menuCommandID );
 		void OnInitDialog();
 		void OnTimer();
-		void NotifyAllKeysUp();
-		void NotifyKeyDown( int32_t keyCode );
-		void NotifyKeyUp( int32_t keyCode );
+		void OnAllKeysUp();
+		void OnKeyDown( int32_t keyCode );
+		void OnKeyUp( int32_t keyCode );
+		void OnPaint();
+
+		// These throw:
 		void ForceLoadSpecificSnapshot( IFileOpener *fileOpener ); // enable view to load the command-line default snapshot file.
 		void ForceLoadSpecificTape( IFileOpener *fileOpener ); // enable view to load the command-line default TAP file.
-		void OnPaint();
 
     private:
 

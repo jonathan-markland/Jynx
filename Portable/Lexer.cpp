@@ -111,7 +111,7 @@ namespace Jynx
 	void Lexer::Error()
 	{
 		// TODO: include _position in the message
-		throw std::runtime_error( "File parsing failed because of a syntax error." );
+		throw LexerException( "File parsing failed because of a syntax error." );
 	}
 
 } // end namespace Jynx

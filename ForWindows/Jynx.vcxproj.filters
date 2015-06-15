@@ -164,6 +164,9 @@
     <ClInclude Include="..\Portable\WaveOutputStream.h">
       <Filter>Source Files\Portable</Filter>
     </ClInclude>
+    <ClInclude Include="..\Portable\UnexpectedExceptionGuard.h">
+      <Filter>Source Files\Portable</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Portable\FileLoader.cpp">

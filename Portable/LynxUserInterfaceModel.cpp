@@ -24,6 +24,8 @@
 #include "LynxEmulatorGuest.h"
 #include "FileSerialiser.h"
 #include "MenuItemIDs.h"
+#include "UnexpectedExceptionGuard.h"
+
 
 
 namespace Jynx
@@ -63,9 +65,9 @@ namespace Jynx
 
 
 
-	void LynxUserInterfaceModel::NotifyAllKeysUp()                 { _lynxEmulator->NotifyAllKeysUp(); }
-	void LynxUserInterfaceModel::NotifyKeyDown( int32_t keyCode )  { _lynxEmulator->NotifyKeyDown( keyCode); }
-	void LynxUserInterfaceModel::NotifyKeyUp( int32_t keyCode )    { _lynxEmulator->NotifyKeyUp( keyCode ); }
+	void LynxUserInterfaceModel::OnAllKeysUp()                 { DoWithTerminationOnException( [&]() { _lynxEmulator->NotifyAllKeysUp(); } ); }
+	void LynxUserInterfaceModel::OnKeyDown( int32_t keyCode )  { DoWithTerminationOnException( [&]() { _lynxEmulator->NotifyKeyDown( keyCode ); } ); }
+	void LynxUserInterfaceModel::OnKeyUp( int32_t keyCode )    { DoWithTerminationOnException( [&]() { _lynxEmulator->NotifyKeyUp( keyCode ); } ); }
 
 
 
@@ -109,65 +111,68 @@ namespace Jynx
 		// The model provides a paint algorithm, which really amounts to positioning assistance.
 		// (Models don't usually paint, but heck all views will be using pixels!)
 
-		auto clientRect = _hostView->GetClientRectangle();   // TODO: As it stands, this MUST have a top-left of (0,0)!  Which on an MS-Windows client area it does.  Other hosts may have to do translation.  Or we make this routine more general.
-		assert( clientRect.left == 0 );  // TODO: See TODO comment above
-		assert( clientRect.top == 0 );   // TODO: See TODO comment above
-
-		auto projectionRectangle = GetProjectionRectangle();
-
-		auto w = LYNX_FRAMEBUF_WIDTH;
-		auto h = LYNX_FRAMEBUF_HEIGHT;
-
-		auto projWidth  = projectionRectangle.right - projectionRectangle.left;
-		auto projHeight = projectionRectangle.bottom - projectionRectangle.top;
-		auto projOffsetX6845 = (projWidth * _lynxEmulator->Get6845OffsetPixelsX()) / w;
-		auto projOffsetY6845 = (projHeight * _lynxEmulator->Get6845OffsetPixelsY()) / h;
-		bool isShifted = projOffsetX6845 != 0 || projOffsetY6845 != 0;
-
-		// CONTENT
-		if( ! isShifted )
+		DoWithTerminationOnException( [&]()
 		{
-			// FOR SPEED - This is the "straight on" display, 6845 R12 and R13 are both zero.
-			_hostView->StretchBlitTheGuestScreen( projectionRectangle.left, projectionRectangle.top, projWidth, projHeight );
-		}
-		else
-		{
-			// THe 6845 address registers R12,R13 have shifted the display.
+			auto clientRect = _hostView->GetClientRectangle();   // TODO: As it stands, this MUST have a top-left of (0,0)!  Which on an MS-Windows client area it does.  Other hosts may have to do translation.  Or we make this routine more general.
+			assert( clientRect.left == 0 );  // TODO: See TODO comment above
+			assert( clientRect.top == 0 );   // TODO: See TODO comment above
 
-			_hostView->SetViewport( projectionRectangle.left, projectionRectangle.top, projWidth, projHeight );
+			auto projectionRectangle = GetProjectionRectangle();
 
-			auto tileSlideUpAmount = (4 * projHeight) / h;  // 4 = 6845 num scanlines per char  TODO: sort out
+			auto w = LYNX_FRAMEBUF_WIDTH;
+			auto h = LYNX_FRAMEBUF_HEIGHT;
 
-			// Origin offsetting:
-			auto ox = projectionRectangle.left - projOffsetX6845;
-			auto oy = projectionRectangle.top - projOffsetY6845;
+			auto projWidth  = projectionRectangle.right - projectionRectangle.left;
+			auto projHeight = projectionRectangle.bottom - projectionRectangle.top;
+			auto projOffsetX6845 = (projWidth * _lynxEmulator->Get6845OffsetPixelsX()) / w;
+			auto projOffsetY6845 = (projHeight * _lynxEmulator->Get6845OffsetPixelsY()) / h;
+			bool isShifted = projOffsetX6845 != 0 || projOffsetY6845 != 0;
 
-			// TOP LEFT TILE
-			_hostView->StretchBlitTheGuestScreen( ox, oy, projWidth, projHeight );
+			// CONTENT
+			if( ! isShifted )
+			{
+				// FOR SPEED - This is the "straight on" display, 6845 R12 and R13 are both zero.
+				_hostView->StretchBlitTheGuestScreen( projectionRectangle.left, projectionRectangle.top, projWidth, projHeight );
+			}
+			else
+			{
+				// THe 6845 address registers R12,R13 have shifted the display.
 
-			// TOP RIGHT TILE
-			_hostView->StretchBlitTheGuestScreen( ox + projWidth, oy - tileSlideUpAmount, projWidth, projHeight );
+				_hostView->SetViewport( projectionRectangle.left, projectionRectangle.top, projWidth, projHeight );
 
-			// BOTTOM LEFT TILE
-			_hostView->StretchBlitTheGuestScreen( ox, oy + projHeight, projWidth, projHeight );
+				auto tileSlideUpAmount = (4 * projHeight) / h;  // 4 = 6845 num scanlines per char  TODO: sort out
 
-			// BOTTOM RIGHT TILE
-			_hostView->StretchBlitTheGuestScreen( ox + projWidth, (oy - tileSlideUpAmount) + projHeight, projWidth, projHeight );
+				// Origin offsetting:
+				auto ox = projectionRectangle.left - projOffsetX6845;
+				auto oy = projectionRectangle.top - projOffsetY6845;
 
-			_hostView->CancelViewport();
-		}
+				// TOP LEFT TILE
+				_hostView->StretchBlitTheGuestScreen( ox, oy, projWidth, projHeight );
 
-		// ABOVE
-		_hostView->FillBlackRectangle( 0, 0, clientRect.right, projectionRectangle.top );
+				// TOP RIGHT TILE
+				_hostView->StretchBlitTheGuestScreen( ox + projWidth, oy - tileSlideUpAmount, projWidth, projHeight );
 
-		// LEFT
-		_hostView->FillBlackRectangle( 0, projectionRectangle.top, projectionRectangle.left, projHeight );
+				// BOTTOM LEFT TILE
+				_hostView->StretchBlitTheGuestScreen( ox, oy + projHeight, projWidth, projHeight );
 
-		// RIGHT
-		_hostView->FillBlackRectangle( projectionRectangle.right, projectionRectangle.top, clientRect.right - projectionRectangle.right, projHeight );
+				// BOTTOM RIGHT TILE
+				_hostView->StretchBlitTheGuestScreen( ox + projWidth, (oy - tileSlideUpAmount) + projHeight, projWidth, projHeight );
 
-		// UNDER
-		_hostView->FillBlackRectangle( 0, projectionRectangle.bottom, clientRect.right, clientRect.bottom - projectionRectangle.bottom );
+				_hostView->CancelViewport();
+			}
+
+			// ABOVE
+			_hostView->FillBlackRectangle( 0, 0, clientRect.right, projectionRectangle.top );
+
+			// LEFT
+			_hostView->FillBlackRectangle( 0, projectionRectangle.top, projectionRectangle.left, projHeight );
+
+			// RIGHT
+			_hostView->FillBlackRectangle( projectionRectangle.right, projectionRectangle.top, clientRect.right - projectionRectangle.right, projHeight );
+
+			// UNDER
+			_hostView->FillBlackRectangle( 0, projectionRectangle.bottom, clientRect.right, clientRect.bottom - projectionRectangle.bottom );
+		} );
 	}
 
 
@@ -176,15 +181,17 @@ namespace Jynx
 	{
 		// (Called on the MAIN thread)
 
-		_lynxEmulator->CallMeBackToInvalidateRegions();
-
-		if( _emulatorWantsUIStatusUpdate )
+		DoWithTerminationOnException( [&]() 
 		{
-			_emulatorWantsUIStatusUpdate = false;
-			UpdateUserInterfaceElementsOnView();
-		}
-	}
+			_lynxEmulator->CallMeBackToInvalidateRegions();
 
+			if( _emulatorWantsUIStatusUpdate )
+			{
+				_emulatorWantsUIStatusUpdate = false;
+				UpdateUserInterfaceElementsOnView();
+			}
+		} );
+	}
 
 
 
@@ -217,67 +224,70 @@ namespace Jynx
 	//     MENU DISPATCHER
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-	bool LynxUserInterfaceModel::DispatchMenuCommand( uint32_t menuCommandID )
+	bool LynxUserInterfaceModel::OnMenuCommand( uint32_t menuCommandID )
 	{
 	    bool result = true;
 
-        DoWithFileHandlingErrorReportsToUser( "", [&] ()
-        {
-            switch( menuCommandID )
-            {
-                case ID_FILE_LOADSTATESNAPSHOT:       OnLoadStateSnapshot(); break;
-                case ID_FILE_SAVESTATESNAPSHOT:       OnSaveStateSnapshot(); break;
-                case ID_FILE_RUNTAPFILE:              OnRunTAPFile(); break;
-                case ID_FILE_OPENTAPFILE:             OnOpenTAPFile(); break;
-                case ID_FILE_INSERTBLANKTAPE:         OnNewAudioTape(); break;
-                case ID_FILE_SAVETAPE:                OnSaveTAPFileAs(); break;
-                case ID_FILE_REWINDTAPE:              OnRewindAudioTape(); break;
-                case ID_FILE_DIRECTORY:               OnTypeTapeDirectoryIntoLynx(); break;
-                case ID_FILE_EXIT:                    OnExit(); break;
+		DoWithTerminationOnException( [&]()
+		{
+			DoWithFileHandlingErrorReportsToUser( "", [&] ()
+			{
+				switch( menuCommandID )
+				{
+					case ID_FILE_LOADSTATESNAPSHOT:       OnLoadStateSnapshot(); break;
+					case ID_FILE_SAVESTATESNAPSHOT:       OnSaveStateSnapshot(); break;
+					case ID_FILE_RUNTAPFILE:              OnRunTAPFile(); break;
+					case ID_FILE_OPENTAPFILE:             OnOpenTAPFile(); break;
+					case ID_FILE_INSERTBLANKTAPE:         OnNewAudioTape(); break;
+					case ID_FILE_SAVETAPE:                OnSaveTAPFileAs(); break;
+					case ID_FILE_REWINDTAPE:              OnRewindAudioTape(); break;
+					case ID_FILE_DIRECTORY:               OnTypeTapeDirectoryIntoLynx(); break;
+					case ID_FILE_EXIT:                    OnExit(); break;
 
-                case ID_EMULATION_PAUSE:		      OnPause(); break;
-                case ID_EMULATION_RESET:		      OnResetEmulation(); break;
-                case ID_EMULATION_LYNX48K:		      OnEmulation48K(); break;
-                case ID_EMULATION_LYNX96K:		      OnEmulation96K(); break;
-                case ID_EMULATION_LYNX96KSCORPION:    OnEmulation96KScorpion(); break;
-                case ID_EMULATION_PAUSEAFTERTAPLOAD:  OnPauseAfterTapLoad(); break;
+					case ID_EMULATION_PAUSE:		      OnPause(); break;
+					case ID_EMULATION_RESET:		      OnResetEmulation(); break;
+					case ID_EMULATION_LYNX48K:		      OnEmulation48K(); break;
+					case ID_EMULATION_LYNX96K:		      OnEmulation96K(); break;
+					case ID_EMULATION_LYNX96KSCORPION:    OnEmulation96KScorpion(); break;
+					case ID_EMULATION_PAUSEAFTERTAPLOAD:  OnPauseAfterTapLoad(); break;
 
-                case ID_SPEED_SPEED50:                OnSetCycles( Jynx::LynxZ80Cycles::At50 ); break;
-                case ID_SPEED_SPEED100:               OnSetCycles( Jynx::LynxZ80Cycles::At100 ); break;
-                case ID_SPEED_SPEED200:               OnSetCycles( Jynx::LynxZ80Cycles::At200 ); break;
-                case ID_SPEED_SPEED400:               OnSetCycles( Jynx::LynxZ80Cycles::At400 ); break;
-                case ID_SPEED_SPEED800:               OnSetCycles( Jynx::LynxZ80Cycles::At800 ); break;
-                case ID_SPEED_MAXSPEEDCASSETTE:       OnSpeedMaxCassette(); break;
-                case ID_SPEED_MAXSPEEDCONSOLE:        OnSpeedMaxConsoleCommands(); break;
-                case ID_SPEED_MAXSPEEDALWAYS:         OnSpeedMaxPermanently(); break;
+					case ID_SPEED_SPEED50:                OnSetCycles( Jynx::LynxZ80Cycles::At50 ); break;
+					case ID_SPEED_SPEED100:               OnSetCycles( Jynx::LynxZ80Cycles::At100 ); break;
+					case ID_SPEED_SPEED200:               OnSetCycles( Jynx::LynxZ80Cycles::At200 ); break;
+					case ID_SPEED_SPEED400:               OnSetCycles( Jynx::LynxZ80Cycles::At400 ); break;
+					case ID_SPEED_SPEED800:               OnSetCycles( Jynx::LynxZ80Cycles::At800 ); break;
+					case ID_SPEED_MAXSPEEDCASSETTE:       OnSpeedMaxCassette(); break;
+					case ID_SPEED_MAXSPEEDCONSOLE:        OnSpeedMaxConsoleCommands(); break;
+					case ID_SPEED_MAXSPEEDALWAYS:         OnSpeedMaxPermanently(); break;
 
-                case ID_SOUND_LISTENTOTAPESOUNDS:     OnListenToTapeSounds(); break;
-                case ID_SOUND_RECORDTOFILE:           OnRecordToFile(); break;
-                case ID_SOUND_FINISHRECORDING:        OnFinishRecording(); break;
-                case ID_SOUND_ENABLE:                 OnEnableDisableSound(); break;
+					case ID_SOUND_LISTENTOTAPESOUNDS:     OnListenToTapeSounds(); break;
+					case ID_SOUND_RECORDTOFILE:           OnRecordToFile(); break;
+					case ID_SOUND_FINISHRECORDING:        OnFinishRecording(); break;
+					case ID_SOUND_ENABLE:                 OnEnableDisableSound(); break;
 
-                case ID_TEXT_RECORDLYNXTEXT:                 OnRecordLynxTextToFile(); break;
-                case ID_TEXT_STOPRECORDINGLYNXTEXT:          OnFinishRecordingLynxText(); break;
-                case ID_TEXT_TYPEINFROMFILE:                 OnTypeInTextFromFile(); break;
-                case ID_TEXT_LYNXBASICREMCOMMANDEXTENSIONS:  OnLynxBasicRemCommandExtensions(); break;
+					case ID_TEXT_RECORDLYNXTEXT:                 OnRecordLynxTextToFile(); break;
+					case ID_TEXT_STOPRECORDINGLYNXTEXT:          OnFinishRecordingLynxText(); break;
+					case ID_TEXT_TYPEINFROMFILE:                 OnTypeInTextFromFile(); break;
+					case ID_TEXT_LYNXBASICREMCOMMANDEXTENSIONS:  OnLynxBasicRemCommandExtensions(); break;
 
-                case ID_DISPLAY_FITTOWINDOW:          OnFitToWindow(); break;
-                case ID_DISPLAY_SQUAREPIXELS:         OnSquarePixels(); break;
-                case ID_DISPLAY_FILLWINDOW:           OnFillWindow(); break;
-                case ID_DISPLAY_FULLSCREENENABLE:     OnEnableDisableFullScreen(); break;
+					case ID_DISPLAY_FITTOWINDOW:          OnFitToWindow(); break;
+					case ID_DISPLAY_SQUAREPIXELS:         OnSquarePixels(); break;
+					case ID_DISPLAY_FILLWINDOW:           OnFillWindow(); break;
+					case ID_DISPLAY_FULLSCREENENABLE:     OnEnableDisableFullScreen(); break;
 
-                case ID_DISPLAY_COLOURSET_NORMALRGB:            OnChangeColourSet( Jynx::LynxColourSet::NormalRGB ); break;
-                case ID_DISPLAY_COLOURSET_GREENONLY:            OnChangeColourSet( Jynx::LynxColourSet::GreenOnly ); break;
-                case ID_DISPLAY_COLOURSET_LEVEL9:               OnChangeColourSet( Jynx::LynxColourSet::Level9 ); break;
-                case ID_DISPLAY_COLOURSET_BLACKANDWHITETV:      OnChangeColourSet( Jynx::LynxColourSet::BlackAndWhiteTV ); break;
-                case ID_DISPLAY_COLOURSET_GREENSCREENMONITOR:   OnChangeColourSet( Jynx::LynxColourSet::GreenScreenMonitor ); break;
+					case ID_DISPLAY_COLOURSET_NORMALRGB:            OnChangeColourSet( Jynx::LynxColourSet::NormalRGB ); break;
+					case ID_DISPLAY_COLOURSET_GREENONLY:            OnChangeColourSet( Jynx::LynxColourSet::GreenOnly ); break;
+					case ID_DISPLAY_COLOURSET_LEVEL9:               OnChangeColourSet( Jynx::LynxColourSet::Level9 ); break;
+					case ID_DISPLAY_COLOURSET_BLACKANDWHITETV:      OnChangeColourSet( Jynx::LynxColourSet::BlackAndWhiteTV ); break;
+					case ID_DISPLAY_COLOURSET_GREENSCREENMONITOR:   OnChangeColourSet( Jynx::LynxColourSet::GreenScreenMonitor ); break;
 
-                case ID_HELP_ABOUT:                             OnShowTheAboutBox(); break;
+					case ID_HELP_ABOUT:                             OnShowTheAboutBox(); break;
 
-                default:
-                    result = false; // not processed
-            }
-        } );
+					default:
+						result = false; // not processed
+				}
+			} );
+		} );
 
 		return result;
 	}

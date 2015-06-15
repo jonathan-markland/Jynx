@@ -184,6 +184,7 @@
     <ClInclude Include="..\Portable\TextRecorder.h" />
     <ClInclude Include="..\Portable\Thread.h" />
     <ClInclude Include="..\Portable\UIStrings.h" />
+    <ClInclude Include="..\Portable\UnexpectedExceptionGuard.h" />
     <ClInclude Include="..\Portable\UserSettingsSerialiser.h" />
     <ClInclude Include="..\Portable\Waitable.h" />
     <ClInclude Include="..\Portable\WaveOutputStream.h" />

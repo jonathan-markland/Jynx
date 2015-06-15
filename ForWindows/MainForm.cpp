@@ -253,99 +253,91 @@ bool  MainForm::OnInitDialog()
 
 void  MainForm::OnCancel()
 {
-	_lynxUIModel->DispatchMenuCommand( ID_FILE_EXIT );
+	_lynxUIModel->OnMenuCommand( ID_FILE_EXIT );
 }
 
 
 
 void MainForm::WindowProc( libWinApi::WindowProcArgs &e )
 {
-	try
+	uint16_t  menuCommand = 0;
+
+	//
+	// WM_HI_RES_TIMER:
+	// Periodic timer for the model to perform tasks.
+	//
+
+	if( e.message == WM_HI_RES_TIMER )
 	{
-		uint16_t  menuCommand = 0;
-
-		//
-		// WM_HI_RES_TIMER:
-		// Periodic timer for the model to perform tasks.
-		//
-
-		if( e.message == WM_HI_RES_TIMER )
-		{
-			_lynxUIModel->OnTimer();
-			e.Result = 0;
-			return;
-		}
-
-		if( e.IsPaint() )
-		{
-			libWinApi::WmPaintHandler ph( *this );
-			if( ! ph.AreaIsEmpty() )
-			{
-				if( ph.ClipToUpdateRect() )
-				{
-					_dc = ph.dc;
-					_lynxUIModel->OnPaint();
-					_dc = NULL;
-				}
-			}
-			e.Result = 1;
-			return;
-		}
-
-		if( e.IsErase() )
-		{
-			e.Result = 1;
-			return;
-		}
-
-		if( e.IsMenuCommand( &menuCommand ) )
-		{
-			if( ! _lynxUIModel->DispatchMenuCommand( menuCommand ) )
-			{
-                return BaseForm::WindowProc( e );
-			}
-			e.Result = 1;
-			return;  // Processed.
-		}
-
-		if( e.IsDeactivated() )
-		{
-			_lynxUIModel->NotifyAllKeysUp();   // Let's make sure we don't have stuck keys, switching away from the app!
-		}
-
-		if( e.message == WM_LBUTTONDBLCLK )
-		{
-			_lynxUIModel->DispatchMenuCommand( ID_DISPLAY_FULLSCREENENABLE );
-		}
-
-		//
-		// WM_WINDOWPOSCHANGED
-		//
-
-		if( e.message == WM_WINDOWPOSCHANGED )
-		{
-			auto pWP = reinterpret_cast<WINDOWPOS *>(e.lParam);
-			if( pWP )
-			{
-				int Mask = SWP_NOSIZE; // irritating negative logic here
-				if( (pWP->flags & Mask) != Mask )
-				{
-					// Called because of size of this window.
-					RECT r;
-					if( GetClientRect( *this, &r ) )
-					{
-						InvalidateRect( *this, &r, FALSE );
-					}
-				}
-			}
-
-			// Let caller see this message too.
-		}
-
+		_lynxUIModel->OnTimer();
+		e.Result = 0;
+		return;
 	}
-	catch( const std::runtime_error &nonFatalError )  // reminder: catches stream errors too.  TODO: This might be controversial, and a "UserInterfaceException" better.
+
+	if( e.IsPaint() )
 	{
-		MessageBoxA( *this, nonFatalError.what(), "Error", MB_OK | MB_ICONERROR );
+		libWinApi::WmPaintHandler ph( *this );
+		if( ! ph.AreaIsEmpty() )
+		{
+			if( ph.ClipToUpdateRect() )
+			{
+				_dc = ph.dc;
+				_lynxUIModel->OnPaint();
+				_dc = NULL;
+			}
+		}
+		e.Result = 1;
+		return;
+	}
+
+	if( e.IsErase() )
+	{
+		e.Result = 1;
+		return;
+	}
+
+	if( e.IsMenuCommand( &menuCommand ) )
+	{
+		if( ! _lynxUIModel->OnMenuCommand( menuCommand ) )
+		{
+            return BaseForm::WindowProc( e );
+		}
+		e.Result = 1;
+		return;  // Processed.
+	}
+
+	if( e.IsDeactivated() )
+	{
+		_lynxUIModel->OnAllKeysUp();   // Let's make sure we don't have stuck keys, switching away from the app!
+	}
+
+	if( e.message == WM_LBUTTONDBLCLK )
+	{
+		_lynxUIModel->OnMenuCommand( ID_DISPLAY_FULLSCREENENABLE );
+	}
+
+	//
+	// WM_WINDOWPOSCHANGED
+	//
+
+	if( e.message == WM_WINDOWPOSCHANGED )
+	{
+		auto pWP = reinterpret_cast<WINDOWPOS *>(e.lParam);
+		if( pWP )
+		{
+			int Mask = SWP_NOSIZE; // irritating negative logic here
+			if( (pWP->flags & Mask) != Mask )
+			{
+				// Called because of size of this window.
+				RECT r;
+				if( GetClientRect( *this, &r ) )
+				{
+					InvalidateRect( *this, &r, FALSE );
+				}
+			}
+		}
+
+		// Let caller see this message too.
 	}
 
 	return BaseForm::WindowProc( e );
@@ -371,7 +363,7 @@ bool  MainForm::PreProcessMessage( libWinApi::Message *pMsg )
 			auto lynxKeyIndex = MicrosoftWindowsVkCodeToLynxKeyIndex( keyCode );
 			if( lynxKeyIndex != -1 )
 			{
-				_lynxUIModel->NotifyKeyDown( lynxKeyIndex );
+				_lynxUIModel->OnKeyDown( lynxKeyIndex );
 				return true;
 			}
 		}
@@ -380,7 +372,7 @@ bool  MainForm::PreProcessMessage( libWinApi::Message *pMsg )
 			auto lynxKeyIndex = MicrosoftWindowsVkCodeToLynxKeyIndex( keyCode );
 			if( lynxKeyIndex != -1 )
 			{
-				_lynxUIModel->NotifyKeyUp( lynxKeyIndex );
+				_lynxUIModel->OnKeyUp( lynxKeyIndex );
 				return true;
 			}
 		}
