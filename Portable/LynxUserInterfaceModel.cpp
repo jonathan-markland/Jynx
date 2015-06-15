@@ -53,7 +53,7 @@ namespace Jynx
 		{
 			LoadUserSettings();
 		}
-		catch( std::ifstream::failure &e )
+		catch( std::ifstream::failure & )
 		{
 			// TODO: check for file not found, and ignore this.  Anything else is reportable.
 		}

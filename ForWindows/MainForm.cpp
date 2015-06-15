@@ -315,7 +315,7 @@ void MainForm::WindowProc( libWinApi::WindowProcArgs &e )
 
 		if( e.message == WM_LBUTTONDBLCLK )
 		{
-			_lynxUIModel->OnEnableDisableFullScreen();
+			_lynxUIModel->DispatchMenuCommand( ID_DISPLAY_FULLSCREENENABLE );
 		}
 
 		//
