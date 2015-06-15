@@ -1,22 +1,22 @@
 //
 // JynxZ80 - Jonathan's Z80 Emulator - Initially for Camputers Lynx Emulation Project.
 // Copyright (C) 2014  Jonathan Markland
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 
+//
 //		jynx_emulator {at} yahoo {dot} com
-// 
+//
 
 #include <algorithm>
 #include "JynxZ80.h"
@@ -28,9 +28,83 @@ namespace JynxZ80
 
 
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	//     16-bit operation assistance
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+	uint16_t Z80::ReadSixteenBitsFromInstructionStream()
+	{
+		auto loByte = CodeStreamFetch();
+		auto hiByte = CodeStreamFetch();
+		return Make16( hiByte, loByte );
+	}
+
+
+	void Z80::DoSixteenBitLoadConstant( uint16_t &addressRegister, uint16_t &targetRegister )  // static
+	{
+		auto loByte = GuestRead( addressRegister++ );
+		auto hiByte = GuestRead( addressRegister++ );
+		targetRegister = Make16( hiByte, loByte );
+	}
+
+
+	uint16_t Z80::DoFetchSixteenBits( uint16_t address ) // static
+	{
+		auto loByte = GuestRead( address );
+		auto hiByte = GuestRead( address + 1 );
+		return Make16( hiByte, loByte );
+	}
+
+
+	void Z80::DoStoreSixteenBits( uint16_t address, uint16_t dataRegister )  // static
+	{
+		GuestWrite( address,     (uint8_t) dataRegister );
+		GuestWrite( address + 1, (uint8_t) (dataRegister >> 8) );
+	}
+
+
+	void Z80::DoPushSixteenBits( uint16_t valueToPush )
+	{
+		GuestWrite( --_stackPointer, (uint8_t) (valueToPush >> 8) );
+		GuestWrite( --_stackPointer, (uint8_t) valueToPush );
+	}
+
+
+	void Z80::DoPopSixteenBitsIntoRegister( uint16_t &targetRegister )
+	{
+		auto loByte = GuestRead( _stackPointer++ );
+		auto hiByte = GuestRead( _stackPointer++ );
+		targetRegister = Make16( hiByte, loByte );
+	}
+
+
+
+
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	//     Subroutine call and return assistance
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+	void Z80::DoSubroutineCall( uint16_t address )
+	{
+		DoPushSixteenBits( _programCounter );
+		JumpTo( address );
+	}
+
+
+
+	void Z80::DoSubroutineReturn()
+	{
+		Spend(6);
+		OnAboutToReturn();
+		DoPopSixteenBitsIntoRegister( _programCounter );
+	}
+
+
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	//    MAIN SET -- DISPATCHER
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	void Z80::ExecuteOpcodeMainSet()
 	{
@@ -56,11 +130,11 @@ namespace JynxZ80
 			break;
 
 		case 1:  // Opcodes: 40..7F
-			MainSet_Quarter1(); 
+			MainSet_Quarter1();
 			break;
 
 		case 2:  // Opcodes: 80..BF
-			MainSet_Quarter2(); 
+			MainSet_Quarter2();
 			break;
 
 		case 3:  // Opcodes: C0..FF
@@ -83,9 +157,9 @@ namespace JynxZ80
 
 
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	//    DD
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	void Z80::ExecuteOpcodeDD()
 	{
@@ -101,7 +175,7 @@ namespace JynxZ80
 			JumpRelative(-1);
 			return;
 		}
-	
+
 		if( _currentOpcode == 0xCB )  // this is needed because I implemented CB and DDCB/FDCB first, and it all handles itself in a different manner to prefixing the Main set.
 		{
 			ExecuteOpcodeDDCB();
@@ -121,7 +195,7 @@ namespace JynxZ80
 		_addressesOf8BitRegisters[4] = &HiByte(_IX); // What was H -> IXH
 		_addressesOf8BitRegisters[5] = &LoByte(_IX); // What was L -> IXL
 
-		// (The main set's (HL) forms become (IX+dd), and the above almost totally works, apart 
+		// (The main set's (HL) forms become (IX+dd), and the above almost totally works, apart
 		// for the need to fetch and add the offset using a temporary store -- but the (HL) handlers
 		// in the Main set code know about this).  Other instructions in the Main Set also know
 		// to use the re-direction instead of just assuming direct access to HL.
@@ -139,9 +213,9 @@ namespace JynxZ80
 
 
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	//    FD
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	void Z80::ExecuteOpcodeFD()
 	{
@@ -157,7 +231,7 @@ namespace JynxZ80
 			JumpRelative(-1);
 			return;
 		}
-	
+
 		if( _currentOpcode == 0xCB )  // this is needed because I implemented CB and DDCB/FDCB first, and it all handles itself in a different manner to prefixing the Main set.
 		{
 			ExecuteOpcodeFDCB();
@@ -177,7 +251,7 @@ namespace JynxZ80
 		_addressesOf8BitRegisters[4] = &HiByte(_IY); // What was H -> IYH
 		_addressesOf8BitRegisters[5] = &LoByte(_IY); // What was L -> IYL
 
-		// (The main set's (HL) forms become (IX+dd), and the above almost totally works, apart 
+		// (The main set's (HL) forms become (IX+dd), and the above almost totally works, apart
 		// for the need to fetch and add the offset using a temporary store -- but the (HL) handlers
 		// in the Main set code know about this).  Other instructions in the Main Set also know
 		// to use the re-direction instead of just assuming direct access to HL.
@@ -197,9 +271,9 @@ namespace JynxZ80
 
 
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	//      MAIN SET IMPLEMENTATION
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	INLINE_FUNCTION void Z80::MainSet_Quarter0_Column0()
 	{
@@ -250,7 +324,7 @@ namespace JynxZ80
 		}
 	}
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	INLINE_FUNCTION void Z80::MainSet_Quarter0_Column1()
 	{
@@ -267,7 +341,7 @@ namespace JynxZ80
 		}
 	}
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	INLINE_FUNCTION void Z80::MainSet_Quarter0_Column2()
 	{
@@ -317,7 +391,7 @@ namespace JynxZ80
 		}
 	}
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	INLINE_FUNCTION void Z80::MainSet_Quarter0_Column3()
 	{
@@ -332,29 +406,31 @@ namespace JynxZ80
 		}
 	}
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	INLINE_FUNCTION uint8_t Calculate_HF_PV_PostIncrementAndPreDecrement( uint8_t value )
 	{
 		return (value == 0x80 ? Z80Flags::PV : 0) | ((value & 0x0F) ? 0 : Z80Flags::HF);
 	}
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	INLINE_FUNCTION void Z80::MainSet_Quarter0_Column4()
 	{
 		// 04 14 24 34 0C 1C 2C 3C
-		// INC 8-bit registers 
+		// INC 8-bit registers
 		// INC (HL) / (IX+dd) / (IY+dd)
 
 		uint16_t targetAddress;
 
-		if( GetRowMask( _currentOpcode ) == RowMasks::Row6 )
+        auto isRow6 = GetRowMask( _currentOpcode ) == RowMasks::Row6;
+
+		if( isRow6 )
 		{
 			targetAddress = GetIndirectTargetAddress();
 			_hiddenRegisterSix = GuestRead( targetAddress );
 		}
-				
+
 		auto &reg = GetReferenceToReg8_FromBits5to3();
 		++reg;
 		SetFlags(
@@ -362,13 +438,13 @@ namespace JynxZ80
 			| CalcZeroAndSignFlags(reg)
 			| Calculate_HF_PV_PostIncrementAndPreDecrement(reg) );
 
-		if( GetRowMask( _currentOpcode ) == RowMasks::Row6 )
+		if( isRow6 )
 		{
 			GuestWrite( targetAddress, _hiddenRegisterSix );
 		}
 	}
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	INLINE_FUNCTION void Z80::MainSet_Quarter0_Column5()
 	{
@@ -378,7 +454,9 @@ namespace JynxZ80
 
 		uint16_t targetAddress;
 
-		if( GetRowMask( _currentOpcode ) == RowMasks::Row6 )
+        auto isRow6 = GetRowMask( _currentOpcode ) == RowMasks::Row6;
+
+		if( isRow6 )
 		{
 			targetAddress = GetIndirectTargetAddress();
 			_hiddenRegisterSix = GuestRead( targetAddress );
@@ -389,34 +467,37 @@ namespace JynxZ80
 		--reg;
 		SetFlags( CurrentCarry() | CalcZeroAndSignFlags(reg) | PVHF | Z80Flags::NF );
 
-		if( GetRowMask( _currentOpcode ) == RowMasks::Row6 )
+		if( isRow6 )
 		{
 			GuestWrite( targetAddress, _hiddenRegisterSix );
 		}
 	}
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	INLINE_FUNCTION void Z80::MainSet_Quarter0_Column6()
 	{
-		// Load constant into 8-bit register, or 
+		// Load constant into 8-bit register, or
 		// Store constant to (HL) / (IX+dd) / (IY+dd).
-	
+
 		uint16_t targetAddress;
-		if( GetRowMask( _currentOpcode ) == RowMasks::Row6 )
+
+        auto isRow6 = GetRowMask( _currentOpcode ) == RowMasks::Row6;
+
+		if( isRow6 )
 		{
 			targetAddress =  GetIndirectTargetAddress();
 		}
-	
+
 		GetReferenceToReg8_FromBits5to3() = CodeStreamFetch();
-	
-		if( GetRowMask( _currentOpcode ) == RowMasks::Row6 )
+
+		if( isRow6 )
 		{
 			GuestWrite( targetAddress, _hiddenRegisterSix ); // Store the temporary register back to memory.
 		}
 	}
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	INLINE_FUNCTION void Z80::MainSet_Quarter0_Column7()
 	{
@@ -469,10 +550,10 @@ namespace JynxZ80
 				break;
 
 			case 7: // CCF
-				// Condition Bits Affected: S is not affected Z is not affected H, 
-				// previous carry is copied 
-				// P/V is not affected 
-				// N is reset 
+				// Condition Bits Affected: S is not affected Z is not affected H,
+				// previous carry is copied
+				// P/V is not affected
+				// N is reset
 				// C is set if CY was 0 before operation; reset otherwise
 				{
 					auto oldFlags  = Flags();
@@ -485,7 +566,7 @@ namespace JynxZ80
 		};
 	}
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	INLINE_FUNCTION void Z80::MainSet_Quarter1()
 	{
@@ -528,7 +609,7 @@ namespace JynxZ80
 		}
 	}
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	INLINE_FUNCTION void Z80::MainSet_Quarter2()
 	{
@@ -545,7 +626,7 @@ namespace JynxZ80
 		DoArithLogicCompareWithAccumulatorAndValue( GetReferenceToReg8_FromBits2to0OfOpcode() );
 	}
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	INLINE_FUNCTION void Z80::MainSet_Quarter3_Column0()
 	{
@@ -555,7 +636,7 @@ namespace JynxZ80
 		}
 	}
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	INLINE_FUNCTION void Z80::MainSet_Quarter3_Column1()
 	{
@@ -587,7 +668,7 @@ namespace JynxZ80
 		}
 	}
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	INLINE_FUNCTION void Z80::MainSet_Quarter3_Column2()
 	{
@@ -601,7 +682,7 @@ namespace JynxZ80
 		}
 	}
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	INLINE_FUNCTION void Z80::MainSet_Quarter3_Column3()
 	{
@@ -614,7 +695,7 @@ namespace JynxZ80
 		case 1:  // CB  (reminder -- the DD and FD prefixed CB never gets here, as it's handled elsewhere).
 			ExecuteOpcodeCB();
 			break;
-			
+
 		case 2:  // D3: OUTA
 			{
 				auto tempValue = CodeStreamFetch();
@@ -628,7 +709,7 @@ namespace JynxZ80
 				SetAccumulator( GuestReadIOSpace( (_AF & 0xFF00) | tempValue ) );
 			}
 			break;
-			
+
 		case 4:  // E3: EX HL / IX / IY,(SP)
 			{
 				auto tempValue = DoFetchSixteenBits( _stackPointer );
@@ -644,7 +725,7 @@ namespace JynxZ80
 		case 6:  // F3: DI
 			_interruptsEnabled = false;
 			break;
-			
+
 		case 7:  // FB: EI
 			_interruptsEnabled = true;
 			_deferInterruptCheck = true;
@@ -652,7 +733,7 @@ namespace JynxZ80
 		}
 	}
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	INLINE_FUNCTION void Z80::MainSet_Quarter3_Column4()
 	{
@@ -667,7 +748,7 @@ namespace JynxZ80
 		}
 	}
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	INLINE_FUNCTION void Z80::MainSet_Quarter3_Column5()
 	{
@@ -698,7 +779,7 @@ namespace JynxZ80
 		}
 	}
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	INLINE_FUNCTION void Z80::MainSet_Quarter3_Column6()
 	{
@@ -707,7 +788,7 @@ namespace JynxZ80
 		DoArithLogicCompareWithAccumulatorAndValue( immediateConstant );
 	}
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	INLINE_FUNCTION void Z80::MainSet_Quarter3_Column7()
 	{
@@ -720,17 +801,17 @@ namespace JynxZ80
 
 
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	//     8-bit arithmetic and logical
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	void Z80::DestructiveAdd8( uint8_t &theRegister, uint8_t rhsValue, uint8_t carry )
 	{
 		auto lhsValue = theRegister;
 		uint32_t  resultValue = lhsValue + rhsValue + carry;
 
-		SetFlags( 
-			CalcZeroAndSignFlags(resultValue) 
+		SetFlags(
+			CalcZeroAndSignFlags(resultValue)
 			| OverflowFlagAfterAddition8( lhsValue, rhsValue, resultValue )
 			| HalfCarryAfterAddOrSubtract8( lhsValue, rhsValue, resultValue )
 			| CarryAfterAddOrSubtract8( lhsValue, rhsValue, resultValue ) );
@@ -745,8 +826,8 @@ namespace JynxZ80
 		auto lhsValue = theRegister;
 		uint32_t  resultValue = lhsValue - rhsValue - carry;
 
-		SetFlags( 
-			CalcZeroAndSignFlags(resultValue) 
+		SetFlags(
+			CalcZeroAndSignFlags(resultValue)
 			| OverflowFlagAfterSubtraction8( lhsValue, rhsValue, resultValue )
 			| HalfCarryAfterAddOrSubtract8( lhsValue, rhsValue, resultValue )
 			| CarryAfterAddOrSubtract8( lhsValue, rhsValue, resultValue )
@@ -841,19 +922,19 @@ namespace JynxZ80
 
 
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	//     16-bit arithmetic
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	void Z80::DoSixteenBitADD( uint16_t &leftOperand, const uint32_t rightOperand )
 	{
 		uint32_t  leftCopy = leftOperand;  // optimisation: ensure fetch once only. Take opportunity to zero-extend.
 		uint32_t  result32 = leftCopy + rightOperand;  // The desired result, also allowing us to sample carry flag from bit 16.
-	
+
 		ClearFlagsThenMerge(
 			Z80Flags::HF | Z80Flags::NF | Z80Flags::CF, // flags to clear!
 			HalfCarryAfterAddOrSubtract16( leftCopy, rightOperand, result32 ) | CarryFlagFromBit16( result32 ) );
-	
+
 		leftOperand = (uint16_t) result32;
 	}
 
@@ -862,9 +943,9 @@ namespace JynxZ80
 
 
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	//     DAA
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 			// DAA subtroutine - with thanks:
 			// http://www.worldofspectrum.org/faq/reference/z80reference.htm
@@ -891,12 +972,12 @@ namespace JynxZ80
 			? A - correctionFactor
 			: A + correctionFactor;
 
-		SetFlags( 
-			carryOut 
+		SetFlags(
+			carryOut
 			| ((A ^ newAccumulator) & Z80Flags::HF)
 			| ZeroSignAndParity8(newAccumulator)
 			| (F & Z80Flags::NF) );
-		
+
 		SetAccumulator( newAccumulator );
 	}
 
@@ -906,15 +987,15 @@ namespace JynxZ80
 
 
 
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	//     Z80 REGISTER SELECTION
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	uint16_t  Z80::GetIndirectTargetAddress()
 	{
 		// TODO: It would be nice if the (HL) case in the main set didn't have to execute this IF statement!
 		//       That would require leaving AddressesOf16BitRegisterPairs_BDEHLAF alone.  We would then
-		//       etablish a separate re-direction register to point to the HL slot for the (HL) case, or 
+		//       etablish a separate re-direction register to point to the HL slot for the (HL) case, or
 		//       the address of a temporary 16-bit address register that has
 		//       been primed with the IX+dd value or IY+dd value, by code elsewhere.
 
@@ -932,80 +1013,6 @@ namespace JynxZ80
 		}
 	}
 
-
-
-
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-	//     16-bit operation assistance
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-	uint16_t Z80::ReadSixteenBitsFromInstructionStream()
-	{
-		auto loByte = CodeStreamFetch();
-		auto hiByte = CodeStreamFetch();
-		return Make16( hiByte, loByte );
-	}
-
-
-	void Z80::DoSixteenBitLoadConstant( uint16_t &addressRegister, uint16_t &targetRegister )  // static 
-	{
-		auto loByte = GuestRead( addressRegister++ );
-		auto hiByte = GuestRead( addressRegister++ );
-		targetRegister = Make16( hiByte, loByte );
-	}
-
-
-	uint16_t Z80::DoFetchSixteenBits( uint16_t address ) // static 
-	{
-		auto loByte = GuestRead( address );
-		auto hiByte = GuestRead( address + 1 );
-		return Make16( hiByte, loByte );
-	}
-
-
-	void Z80::DoStoreSixteenBits( uint16_t address, uint16_t dataRegister )  // static 
-	{
-		GuestWrite( address,     (uint8_t) dataRegister );
-		GuestWrite( address + 1, (uint8_t) (dataRegister >> 8) );
-	}
-
-
-	void Z80::DoPushSixteenBits( uint16_t valueToPush )
-	{
-		GuestWrite( --_stackPointer, (uint8_t) (valueToPush >> 8) );
-		GuestWrite( --_stackPointer, (uint8_t) valueToPush );
-	}
-
-
-	void Z80::DoPopSixteenBitsIntoRegister( uint16_t &targetRegister )
-	{
-		auto loByte = GuestRead( _stackPointer++ );
-		auto hiByte = GuestRead( _stackPointer++ );
-		targetRegister = Make16( hiByte, loByte );
-	}
-
-
-
-
-
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-	//     Subroutine call and return assistance
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-	INLINE_FUNCTION void Z80::DoSubroutineCall( uint16_t address )
-	{
-		DoPushSixteenBits( _programCounter );
-		JumpTo( address );
-	}
-
-
-
-	INLINE_FUNCTION void Z80::DoSubroutineReturn()
-	{
-		Spend(6);
-		OnAboutToReturn();
-		DoPopSixteenBitsIntoRegister( _programCounter );
-	}
 
 
 

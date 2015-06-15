@@ -97,7 +97,7 @@ namespace Jynx
 			wavFileHeader[ 2] = 'F';
 			wavFileHeader[ 3] = 'F';
 
-			((uint32_t &) wavFileHeader[4]) = bytesOfSoundData + 36;
+			* (uint32_t *) (wavFileHeader + 4) = bytesOfSoundData + 36;
 
 			wavFileHeader[ 8] = 'W';
 			wavFileHeader[ 9] = 'A';
@@ -113,8 +113,8 @@ namespace Jynx
 			wavFileHeader[0x14] = 0x01;
 			wavFileHeader[0x16] = 0x01;
 
-			((uint32_t &) wavFileHeader[0x18]) = 44100;
-			((uint32_t &) wavFileHeader[0x1C]) = 44100 * 2;
+			* (uint32_t *) (wavFileHeader + 0x18) = 44100;
+			* (uint32_t *) (wavFileHeader + 0x1C) = 44100 * 2;
 
 			wavFileHeader[0x20] = 0x02;
 			wavFileHeader[0x22] = 0x10;
@@ -124,7 +124,7 @@ namespace Jynx
 			wavFileHeader[0x26] = 't';
 			wavFileHeader[0x27] = 'a';
 
-			((uint32_t &) wavFileHeader[0x28]) = bytesOfSoundData;
+			* (uint32_t *) (wavFileHeader + 0x28) = bytesOfSoundData;
 
 			_outStream.write( (const char *) wavFileHeader, 0x2C );
 
