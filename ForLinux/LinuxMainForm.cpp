@@ -461,7 +461,7 @@ gint MainForm::GtkHandlerForCloseBoxDeleteEvent( GtkWidget *widget, GdkEvent *ev
     // Returning TRUE means you don't want the window to be destroyed.
 
     auto thisObject = (MainForm *) userObject;
-    thisObject->_lynxUIModel->DispatchMenuCommand( ID_FILE_EXIT );
+    thisObject->_lynxUIModel->OnMenuCommand( ID_FILE_EXIT );
     return TRUE; // do not automatically destroy window.  The handler above will have done that if it is required.
 }
 
@@ -506,7 +506,7 @@ gboolean  MainForm::GtkHandlerForKeyPress( GtkWidget *widget, GdkEvent *event, g
     auto lynxKeyIndex = GdkHardwareKeyCodeToLynxKeyIndex( keyEvent->hardware_keycode );
     if( lynxKeyIndex != -1 )
     {
-        thisObject->_lynxUIModel->NotifyKeyDown( lynxKeyIndex );
+        thisObject->_lynxUIModel->OnKeyDown( lynxKeyIndex );
         return TRUE;
     }
 
@@ -523,7 +523,7 @@ gboolean  MainForm::GtkHandlerForKeyRelease( GtkWidget *widget, GdkEvent *event,
     auto lynxKeyIndex = GdkHardwareKeyCodeToLynxKeyIndex( keyEvent->hardware_keycode );
     if( lynxKeyIndex != -1 )
     {
-        thisObject->_lynxUIModel->NotifyKeyUp( lynxKeyIndex );
+        thisObject->_lynxUIModel->OnKeyUp( lynxKeyIndex );
         return TRUE;
     }
 
@@ -535,7 +535,7 @@ gboolean  MainForm::GtkHandlerForKeyRelease( GtkWidget *widget, GdkEvent *event,
 gboolean  MainForm::GtkHandlerForFocusLoss(  GtkWidget *widget, GdkEventFocus *event, gpointer userObject ) // static member    focus_out_event
 {
     auto thisObject = (MainForm *) userObject;
-    thisObject->_lynxUIModel->NotifyAllKeysUp();
+    thisObject->_lynxUIModel->OnAllKeysUp();
     return FALSE; // Propagate event further.
 }
 
@@ -555,7 +555,7 @@ void MainForm::NotifyMenuItemClicked( uint32_t menuItemID )
     // This gets the menu item clicks.
     // NB: This is indirectly a GTK event handler, hence exception barrier.
 
-    _lynxUIModel->DispatchMenuCommand( menuItemID );
+    _lynxUIModel->OnMenuCommand( menuItemID );
 }
 
 
