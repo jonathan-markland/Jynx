@@ -2741,7 +2741,7 @@
 	<pthread.h>
 	"Waitable.h"
 
-1434298478 source:/home/jonathan/Documents/Jynx/ForLinux/main.cpp
+1434569269 source:/home/jonathan/Documents/Jynx/ForLinux/main.cpp
 	<stdlib.h>
 	<stdint.h>
 	<string>
@@ -2774,7 +2774,7 @@
 
 1434229158 /home/jonathan/Documents/Jynx/ForLinux/LinuxAboutBox.h
 
-1434565777 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.cpp
+1434569759 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.cpp
 	"MenuItemIDs.h"
 	"LynxHardware.h"
 	"UIStrings.h"
@@ -2854,7 +2854,7 @@
 1434564489 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxGtk.cpp
 	"LinuxGtk.h"
 
-1434565818 /home/jonathan/Documents/Jynx/ForLinux/LinuxGtk.h
+1434566040 /home/jonathan/Documents/Jynx/ForLinux/LinuxGtk.h
 	<stdexcept>
 	"gtk/gtk.h"
 

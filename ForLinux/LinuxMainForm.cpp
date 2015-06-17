@@ -47,255 +47,255 @@
 
 MainForm::MainForm( const std::vector<std::string> &paramsList, const char *exePath )
 {
-    try // <-- because the language won't call the destructor if exception happens.
-    {
-        _exePath = exePath;
+	try // <-- because the language won't call the destructor if exception happens.
+	{
+		_exePath = exePath;
 
-        //
-        // Parse the parameters list:
-        //
+		//
+		// Parse the parameters list:
+		//
 
-        JynxParsedParameters<std::string>  parsedParams( paramsList );
-        _settingsFilePath = parsedParams.GetSettingsFilePath();
+		JynxParsedParameters<std::string>  parsedParams( paramsList );
+		_settingsFilePath = parsedParams.GetSettingsFilePath();
 
-        //
-        // Create frame buffer bitmap which emulator can directly draw on.
-        // Reminder: buffer is not cleared.
-        //
+		//
+		// Create frame buffer bitmap which emulator can directly draw on.
+		// Reminder: buffer is not cleared.
+		//
 
-        _pixBuf = ThrowIfNull( gdk_pixbuf_new( GDK_COLORSPACE_RGB, TRUE, 8, LYNX_FRAMEBUF_WIDTH, LYNX_FRAMEBUF_HEIGHT ), "Cannot create the screen bitmap for the emulation.\nThe emulation cannot continue." );
+		_pixBuf = ThrowIfNull( gdk_pixbuf_new( GDK_COLORSPACE_RGB, TRUE, 8, LYNX_FRAMEBUF_WIDTH, LYNX_FRAMEBUF_HEIGHT ), "Cannot create the screen bitmap for the emulation.\nThe emulation cannot continue." );
 
-        auto pixelBuffer   = gdk_pixbuf_get_pixels( _pixBuf );
-        auto rowStride     = gdk_pixbuf_get_rowstride( _pixBuf );
-        // auto numChannels2  = gdk_pixbuf_get_n_channels( _pixBuf );
-        // auto bitsPerSample = gdk_pixbuf_get_bits_per_sample( _pixBuf );
+		auto pixelBuffer   = gdk_pixbuf_get_pixels( _pixBuf );
+		auto rowStride     = gdk_pixbuf_get_rowstride( _pixBuf );
+		// auto numChannels2  = gdk_pixbuf_get_n_channels( _pixBuf );
+		// auto bitsPerSample = gdk_pixbuf_get_bits_per_sample( _pixBuf );
 
-        _pixBufBaseAddress      = pixelBuffer;
-        _pixBufBytesPerScanLine = rowStride;
+		_pixBufBaseAddress      = pixelBuffer;
+		_pixBufBytesPerScanLine = rowStride;
 
-            /*GdkColorspace gdk_pixbuf_get_colorspace      (const GdkPixbuf *pixbuf);
-            int           gdk_pixbuf_get_n_channels      (const GdkPixbuf *pixbuf);
-            gboolean      gdk_pixbuf_get_has_alpha       (const GdkPixbuf *pixbuf);
-            int           gdk_pixbuf_get_bits_per_sample (const GdkPixbuf *pixbuf);
-            guchar       *gdk_pixbuf_get_pixels          (const GdkPixbuf *pixbuf);
-            int           gdk_pixbuf_get_width           (const GdkPixbuf *pixbuf);
-            int           gdk_pixbuf_get_height          (const GdkPixbuf *pixbuf);
-            int           gdk_pixbuf_get_rowstride       (const GdkPixbuf *pixbuf);
-            gsize         gdk_pixbuf_get_byte_length     (const GdkPixbuf *pixbuf);
-            */
+		/*GdkColorspace gdk_pixbuf_get_colorspace      (const GdkPixbuf *pixbuf);
+		int           gdk_pixbuf_get_n_channels      (const GdkPixbuf *pixbuf);
+		gboolean      gdk_pixbuf_get_has_alpha       (const GdkPixbuf *pixbuf);
+		int           gdk_pixbuf_get_bits_per_sample (const GdkPixbuf *pixbuf);
+		guchar       *gdk_pixbuf_get_pixels          (const GdkPixbuf *pixbuf);
+		int           gdk_pixbuf_get_width           (const GdkPixbuf *pixbuf);
+		int           gdk_pixbuf_get_height          (const GdkPixbuf *pixbuf);
+		int           gdk_pixbuf_get_rowstride       (const GdkPixbuf *pixbuf);
+		gsize         gdk_pixbuf_get_byte_length     (const GdkPixbuf *pixbuf);
+		*/
 
-        //
-        // Create the model (this has the emulator inside, plus UI logic)
-        //
+		//
+		// Create the model (this has the emulator inside, plus UI logic)
+		//
 
-        _lynxUIModel = std::unique_ptr<Jynx::LynxUserInterfaceModel>(
-            new Jynx::LynxUserInterfaceModel(
-                this,
-                "\n",   // The preferred end of line sequence on the LINUX platform.
-                parsedParams.GetGamesMode() ) );
+		_lynxUIModel = std::unique_ptr<Jynx::LynxUserInterfaceModel>(
+		                   new Jynx::LynxUserInterfaceModel(
+		                       this,
+		                       "\n",   // The preferred end of line sequence on the LINUX platform.
+		                       parsedParams.GetGamesMode() ) );
 
-        //
-        // User interface
-        //
+		//
+		// User interface
+		//
 
-        // Create the main window:
+		// Create the main window:
 
-        _gtkWindow         = ThrowIfNull( GTK_WINDOW( gtk_window_new( GTK_WINDOW_TOPLEVEL ) ) );
-        _gtkWindowAsWidget = GTK_WIDGET( _gtkWindow );  // avoid loads of casting
+		_gtkWindow         = ThrowIfNull( GTK_WINDOW( gtk_window_new( GTK_WINDOW_TOPLEVEL ) ) );
+		_gtkWindowAsWidget = GTK_WIDGET( _gtkWindow );  // avoid loads of casting
 
-        gtk_container_set_border_width( GTK_CONTAINER( _gtkWindow ), 0 );
-        gtk_window_set_default_size(    _gtkWindow, 800, 600 );
-        gtk_window_set_title(           _gtkWindow, "Jynx" );
-        gtk_window_set_position(        _gtkWindow, GTK_WIN_POS_CENTER );
-        gtk_widget_realize(             _gtkWindowAsWidget );
-        ThrowLEZ( g_signal_connect(       GTK_OBJECT( _gtkWindow ), "delete_event", GTK_SIGNAL_FUNC( &MainForm::GtkHandlerForCloseBoxDeleteEvent ), this ) );
+		gtk_container_set_border_width( GTK_CONTAINER( _gtkWindow ), 0 );
+		gtk_window_set_default_size(    _gtkWindow, 800, 600 );
+		gtk_window_set_title(           _gtkWindow, "Jynx" );
+		gtk_window_set_position(        _gtkWindow, GTK_WIN_POS_CENTER );
+		gtk_widget_realize(             _gtkWindowAsWidget );
+		ThrowLEZ( g_signal_connect(       GTK_OBJECT( _gtkWindow ), "delete_event", GTK_SIGNAL_FUNC( &MainForm::GtkHandlerForCloseBoxDeleteEvent ), this ) );
 
-        // Create vertical box:
+		// Create vertical box:
 
-        _vbox = ThrowIfNull( gtk_vbox_new( FALSE, 0 ) );
-        gtk_container_add( GTK_CONTAINER(_gtkWindow), _vbox );
+		_vbox = ThrowIfNull( gtk_vbox_new( FALSE, 0 ) );
+		gtk_container_add( GTK_CONTAINER(_gtkWindow), _vbox );
 
-        // Create the menu bar:
+		// Create the menu bar:
 
-        _menuBar = std::make_shared<LinuxGtkMenuBar>();
+		_menuBar = std::make_shared<LinuxGtkMenuBar>();
 
-        // Create buttons on the menu bar itself:
+		// Create buttons on the menu bar itself:
 
-        auto clickHandlerForMenuOptions = this;
+		auto clickHandlerForMenuOptions = this;
 
-        _menuFile      = _menuBar->CreateMenu( "&File"      , clickHandlerForMenuOptions );
-        _menuSpeed     = _menuBar->CreateMenu( "S&peed"     , clickHandlerForMenuOptions );
-        _menuEmulation = _menuBar->CreateMenu( "&Emulation" , clickHandlerForMenuOptions );
-        _menuDisplay   = _menuBar->CreateMenu( "&Display"   , clickHandlerForMenuOptions );
-        _menuSound     = _menuBar->CreateMenu( "&Sound"     , clickHandlerForMenuOptions );
-        _menuText      = _menuBar->CreateMenu( "&Text"      , clickHandlerForMenuOptions );
-        _menuHelp      = _menuBar->CreateMenu( "&Help"      , clickHandlerForMenuOptions );
+		_menuFile      = _menuBar->CreateMenu( "&File"      , clickHandlerForMenuOptions );
+		_menuSpeed     = _menuBar->CreateMenu( "S&peed"     , clickHandlerForMenuOptions );
+		_menuEmulation = _menuBar->CreateMenu( "&Emulation" , clickHandlerForMenuOptions );
+		_menuDisplay   = _menuBar->CreateMenu( "&Display"   , clickHandlerForMenuOptions );
+		_menuSound     = _menuBar->CreateMenu( "&Sound"     , clickHandlerForMenuOptions );
+		_menuText      = _menuBar->CreateMenu( "&Text"      , clickHandlerForMenuOptions );
+		_menuHelp      = _menuBar->CreateMenu( "&Help"      , clickHandlerForMenuOptions );
 
-        // POPUP "&File"
+		// POPUP "&File"
 
-        _menuFile->AddItem( "&Run TAP file ...",           ID_FILE_RUNTAPFILE );
-        _menuFile->AddSeparator();
-        _menuFile->AddItem( "&Open TAP file ...",          ID_FILE_OPENTAPFILE );
-        _menuFile->AddItem( "&Rewind tape",                ID_FILE_REWINDTAPE );
-        _menuFile->AddItem( "Tape &directory (at BASIC prompt)", ID_FILE_DIRECTORY );
-        _menuFile->AddSeparator();
-        _menuFile->AddItem( "&New output tape",            ID_FILE_INSERTBLANKTAPE );
-        _menuFile->AddItem( "&Save as TAP file...",        ID_FILE_SAVETAPE );
-        _menuFile->AddSeparator();
-        _menuFile->AddItem( "Load s&tate snapshot ...",    ID_FILE_LOADSTATESNAPSHOT );
-        _menuFile->AddItem( "S&ave state snapshot ...",    ID_FILE_SAVESTATESNAPSHOT );
-        _menuFile->AddSeparator();
-        _menuFile->AddItem( "E&xit",                       ID_FILE_EXIT );
+		_menuFile->AddItem( "&Run TAP file ...",           ID_FILE_RUNTAPFILE );
+		_menuFile->AddSeparator();
+		_menuFile->AddItem( "&Open TAP file ...",          ID_FILE_OPENTAPFILE );
+		_menuFile->AddItem( "&Rewind tape",                ID_FILE_REWINDTAPE );
+		_menuFile->AddItem( "Tape &directory (at BASIC prompt)", ID_FILE_DIRECTORY );
+		_menuFile->AddSeparator();
+		_menuFile->AddItem( "&New output tape",            ID_FILE_INSERTBLANKTAPE );
+		_menuFile->AddItem( "&Save as TAP file...",        ID_FILE_SAVETAPE );
+		_menuFile->AddSeparator();
+		_menuFile->AddItem( "Load s&tate snapshot ...",    ID_FILE_LOADSTATESNAPSHOT );
+		_menuFile->AddItem( "S&ave state snapshot ...",    ID_FILE_SAVESTATESNAPSHOT );
+		_menuFile->AddSeparator();
+		_menuFile->AddItem( "E&xit",                       ID_FILE_EXIT );
 
-        // POPUP "S&peed"
+		// POPUP "S&peed"
 
-        _menuSpeed->AddTick(  "Speed &50%",                  ID_SPEED_SPEED50 );
-        _menuSpeed->AddTick(  "Speed &100%",                 ID_SPEED_SPEED100 );
-        _menuSpeed->AddTick(  "Speed &200%",                 ID_SPEED_SPEED200 );
-        _menuSpeed->AddTick(  "Speed &400%",                 ID_SPEED_SPEED400 );
-        _menuSpeed->AddTick(  "Speed &800%",                 ID_SPEED_SPEED800 );
-        _menuSpeed->AddSeparator();
-        _menuSpeed->AddTick(  "Super speed &cassette",        ID_SPEED_MAXSPEEDCASSETTE );
-        _menuSpeed->AddTick(  "Super speed c&onsole",         ID_SPEED_MAXSPEEDCONSOLE );
-        _menuSpeed->AddTick(  "Super speed &always",          ID_SPEED_MAXSPEEDALWAYS );
-        _menuSpeed->AddSeparator();
-        _menuSpeed->AddTick(  "&Pause",                      ID_EMULATION_PAUSE );
+		_menuSpeed->AddTick(  "Speed &50%",                  ID_SPEED_SPEED50 );
+		_menuSpeed->AddTick(  "Speed &100%",                 ID_SPEED_SPEED100 );
+		_menuSpeed->AddTick(  "Speed &200%",                 ID_SPEED_SPEED200 );
+		_menuSpeed->AddTick(  "Speed &400%",                 ID_SPEED_SPEED400 );
+		_menuSpeed->AddTick(  "Speed &800%",                 ID_SPEED_SPEED800 );
+		_menuSpeed->AddSeparator();
+		_menuSpeed->AddTick(  "Super speed &cassette",        ID_SPEED_MAXSPEEDCASSETTE );
+		_menuSpeed->AddTick(  "Super speed c&onsole",         ID_SPEED_MAXSPEEDCONSOLE );
+		_menuSpeed->AddTick(  "Super speed &always",          ID_SPEED_MAXSPEEDALWAYS );
+		_menuSpeed->AddSeparator();
+		_menuSpeed->AddTick(  "&Pause",                      ID_EMULATION_PAUSE );
 
-        // POPUP "&Emulation"
+		// POPUP "&Emulation"
 
-        _menuEmulation->AddTick(  "Lynx 48&K",                   ID_EMULATION_LYNX48K );
-        _menuEmulation->AddTick(  "Lynx 9&6K",                   ID_EMULATION_LYNX96K );
-        _menuEmulation->AddTick(  "Lynx 96K (+ &Scorpion ROM)",  ID_EMULATION_LYNX96KSCORPION );
-        _menuEmulation->AddSeparator();
-        _menuEmulation->AddTick(  "&Pause after tape load",       ID_EMULATION_PAUSEAFTERTAPLOAD );
-        _menuEmulation->AddSeparator();
-        _menuEmulation->AddItem(  "&Reset guest machine",        ID_EMULATION_RESET );
+		_menuEmulation->AddTick(  "Lynx 48&K",                   ID_EMULATION_LYNX48K );
+		_menuEmulation->AddTick(  "Lynx 9&6K",                   ID_EMULATION_LYNX96K );
+		_menuEmulation->AddTick(  "Lynx 96K (+ &Scorpion ROM)",  ID_EMULATION_LYNX96KSCORPION );
+		_menuEmulation->AddSeparator();
+		_menuEmulation->AddTick(  "&Pause after tape load",       ID_EMULATION_PAUSEAFTERTAPLOAD );
+		_menuEmulation->AddSeparator();
+		_menuEmulation->AddItem(  "&Reset guest machine",        ID_EMULATION_RESET );
 
-        // POPUP "&Display"
+		// POPUP "&Display"
 
-        _menuDisplay->AddTick(  "Fit to &window",              ID_DISPLAY_FITTOWINDOW );
-        _menuDisplay->AddTick(  "Use &square pixels",          ID_DISPLAY_SQUAREPIXELS );
-        _menuDisplay->AddTick(  "&Fill window",                ID_DISPLAY_FILLWINDOW );
-        _menuDisplay->AddSeparator();
-        _menuDisplay->AddTick(  "Normal &Lynx colours",        ID_DISPLAY_COLOURSET_NORMALRGB );
-        _menuDisplay->AddTick(  "&Green screen monitor",       ID_DISPLAY_COLOURSET_GREENSCREENMONITOR );
-        _menuDisplay->AddTick(  "&Black and white TV",         ID_DISPLAY_COLOURSET_BLACKANDWHITETV );
-        _menuDisplay->AddTick(  "Level &9 game colours",       ID_DISPLAY_COLOURSET_LEVEL9 );
-        _menuDisplay->AddTick(  "Show green &channel only",    ID_DISPLAY_COLOURSET_GREENONLY );
-        _menuDisplay->AddSeparator();
-        _menuDisplay->AddTick(  "F&ull screen",                ID_DISPLAY_FULLSCREENENABLE );
+		_menuDisplay->AddTick(  "Fit to &window",              ID_DISPLAY_FITTOWINDOW );
+		_menuDisplay->AddTick(  "Use &square pixels",          ID_DISPLAY_SQUAREPIXELS );
+		_menuDisplay->AddTick(  "&Fill window",                ID_DISPLAY_FILLWINDOW );
+		_menuDisplay->AddSeparator();
+		_menuDisplay->AddTick(  "Normal &Lynx colours",        ID_DISPLAY_COLOURSET_NORMALRGB );
+		_menuDisplay->AddTick(  "&Green screen monitor",       ID_DISPLAY_COLOURSET_GREENSCREENMONITOR );
+		_menuDisplay->AddTick(  "&Black and white TV",         ID_DISPLAY_COLOURSET_BLACKANDWHITETV );
+		_menuDisplay->AddTick(  "Level &9 game colours",       ID_DISPLAY_COLOURSET_LEVEL9 );
+		_menuDisplay->AddTick(  "Show green &channel only",    ID_DISPLAY_COLOURSET_GREENONLY );
+		_menuDisplay->AddSeparator();
+		_menuDisplay->AddTick(  "F&ull screen",                ID_DISPLAY_FULLSCREENENABLE );
 
-        // POPUP "&Sound"
+		// POPUP "&Sound"
 
-        _menuSound->AddItem(  "&Record sound to file ...",    ID_SOUND_RECORDTOFILE );
-        _menuSound->AddItem(  "&Finish recording",            ID_SOUND_FINISHRECORDING );
-        _menuSound->AddSeparator();
-        _menuSound->AddTick(  "&Listen to tape sounds",       ID_SOUND_LISTENTOTAPESOUNDS );
-        _menuSound->AddSeparator();
-        _menuSound->AddTick(  "&Enable sound",                ID_SOUND_ENABLE );
+		_menuSound->AddItem(  "&Record sound to file ...",    ID_SOUND_RECORDTOFILE );
+		_menuSound->AddItem(  "&Finish recording",            ID_SOUND_FINISHRECORDING );
+		_menuSound->AddSeparator();
+		_menuSound->AddTick(  "&Listen to tape sounds",       ID_SOUND_LISTENTOTAPESOUNDS );
+		_menuSound->AddSeparator();
+		_menuSound->AddTick(  "&Enable sound",                ID_SOUND_ENABLE );
 
-        // POPUP "&Text"
+		// POPUP "&Text"
 
-        _menuText->AddItem(  "&Record Lynx text to file ...", ID_TEXT_RECORDLYNXTEXT );
-        _menuText->AddItem(  "&Stop recording Lynx text",     ID_TEXT_STOPRECORDINGLYNXTEXT );
-        _menuText->AddSeparator();
-        _menuText->AddItem(  "&Type in text from file ...",   ID_TEXT_TYPEINFROMFILE );
-        _menuText->AddSeparator();
-        _menuText->AddTick(  "&Enable Lynx BASIC REM command extensions", ID_TEXT_LYNXBASICREMCOMMANDEXTENSIONS );
+		_menuText->AddItem(  "&Record Lynx text to file ...", ID_TEXT_RECORDLYNXTEXT );
+		_menuText->AddItem(  "&Stop recording Lynx text",     ID_TEXT_STOPRECORDINGLYNXTEXT );
+		_menuText->AddSeparator();
+		_menuText->AddItem(  "&Type in text from file ...",   ID_TEXT_TYPEINFROMFILE );
+		_menuText->AddSeparator();
+		_menuText->AddTick(  "&Enable Lynx BASIC REM command extensions", ID_TEXT_LYNXBASICREMCOMMANDEXTENSIONS );
 
-        // POPUP "&Help"
+		// POPUP "&Help"
 
-        _menuHelp->AddItem(  "&About ...",                  ID_HELP_ABOUT );
+		_menuHelp->AddItem(  "&About ...",                  ID_HELP_ABOUT );
 
-        //
-        // Add a generic drawable widget, to which we'll add event hooks to draw the screen.
-        //
+		//
+		// Add a generic drawable widget, to which we'll add event hooks to draw the screen.
+		//
 
-        _gtkDrawingArea = gtk_drawing_area_new();
-        // gtk_drawing_area_size( GTK_DRAWING_AREA(_gtkDrawingArea), 200, 200 );
-        auto gtkDrawingAreaAsObject = GTK_OBJECT(_gtkDrawingArea);
-        ThrowLEZ( g_signal_connect( gtkDrawingAreaAsObject, "expose_event",        (GtkSignalFunc) &MainForm::GtkHandlerForDrawingAreaExposeEvent,       this ) );
-        ThrowLEZ( g_signal_connect( gtkDrawingAreaAsObject, "button_press_event",  (GtkSignalFunc) &MainForm::GtkHandlerForDrawingAreaButtonPressEvent,  this ) );
-        ThrowLEZ( g_signal_connect( gtkDrawingAreaAsObject, "key_press_event",     (GtkSignalFunc) &MainForm::GtkHandlerForKeyPress,    this ) );
-        ThrowLEZ( g_signal_connect( gtkDrawingAreaAsObject, "key_release_event",   (GtkSignalFunc) &MainForm::GtkHandlerForKeyRelease,  this ) );
-        ThrowLEZ( g_signal_connect( gtkDrawingAreaAsObject, "focus_out_event",     (GtkSignalFunc) &MainForm::GtkHandlerForFocusLoss,  this ) );
+		_gtkDrawingArea = gtk_drawing_area_new();
+		// gtk_drawing_area_size( GTK_DRAWING_AREA(_gtkDrawingArea), 200, 200 );
+		auto gtkDrawingAreaAsObject = GTK_OBJECT(_gtkDrawingArea);
+		ThrowLEZ( g_signal_connect( gtkDrawingAreaAsObject, "expose_event",        (GtkSignalFunc) &MainForm::GtkHandlerForDrawingAreaExposeEvent,       this ) );
+		ThrowLEZ( g_signal_connect( gtkDrawingAreaAsObject, "button_press_event",  (GtkSignalFunc) &MainForm::GtkHandlerForDrawingAreaButtonPressEvent,  this ) );
+		ThrowLEZ( g_signal_connect( gtkDrawingAreaAsObject, "key_press_event",     (GtkSignalFunc) &MainForm::GtkHandlerForKeyPress,    this ) );
+		ThrowLEZ( g_signal_connect( gtkDrawingAreaAsObject, "key_release_event",   (GtkSignalFunc) &MainForm::GtkHandlerForKeyRelease,  this ) );
+		ThrowLEZ( g_signal_connect( gtkDrawingAreaAsObject, "focus_out_event",     (GtkSignalFunc) &MainForm::GtkHandlerForFocusLoss,  this ) );
 
-        gtk_widget_set_events(
-            _gtkDrawingArea, GDK_FOCUS_CHANGE_MASK | GDK_EXPOSURE_MASK | GDK_LEAVE_NOTIFY_MASK | GDK_BUTTON_PRESS_MASK
-            | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK );  // TODO: Do I need all of these?
+		gtk_widget_set_events(
+		    _gtkDrawingArea, GDK_FOCUS_CHANGE_MASK | GDK_EXPOSURE_MASK | GDK_LEAVE_NOTIFY_MASK | GDK_BUTTON_PRESS_MASK
+		    | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK );  // TODO: Do I need all of these?
 
-        gtk_widget_set_extension_events( _gtkDrawingArea, GDK_EXTENSION_EVENTS_CURSOR ); // TODO: What does this do?
-        gtk_widget_set_can_focus( _gtkDrawingArea, TRUE );
-        gtk_widget_show( _gtkDrawingArea ); // TODO: needed?
+		gtk_widget_set_extension_events( _gtkDrawingArea, GDK_EXTENSION_EVENTS_CURSOR ); // TODO: What does this do?
+		gtk_widget_set_can_focus( _gtkDrawingArea, TRUE );
+		gtk_widget_show( _gtkDrawingArea ); // TODO: needed?
 
-        //
-        // Establish content of primary vertical box:
-        //
+		//
+		// Establish content of primary vertical box:
+		//
 
-        auto vboxAsBox = GTK_BOX(_vbox);
-        gtk_box_pack_start( vboxAsBox, _menuBar->GetWidget(), FALSE, FALSE, 0 );
-        gtk_box_pack_start( vboxAsBox, _gtkDrawingArea, TRUE, TRUE, 0 );
+		auto vboxAsBox = GTK_BOX(_vbox);
+		gtk_box_pack_start( vboxAsBox, _menuBar->GetWidget(), FALSE, FALSE, 0 );
+		gtk_box_pack_start( vboxAsBox, _gtkDrawingArea, TRUE, TRUE, 0 );
 
-        //
-        // The emulation thread provides timer-like functionality to the main thread.
-        // This saves us setting up an additional timer with the library.
-        //
+		//
+		// The emulation thread provides timer-like functionality to the main thread.
+		// This saves us setting up an additional timer with the library.
+		//
 
-        _gtkTimerId = ThrowLEZ( g_timeout_add( 20, (GSourceFunc) &MainForm::GtkHandlerForTheTimer, this ), "Cannot create the main timer.\nThe emulation cannot continue." );
+		_gtkTimerId = ThrowLEZ( g_timeout_add( 20, (GSourceFunc) &MainForm::GtkHandlerForTheTimer, this ), "Cannot create the main timer.\nThe emulation cannot continue." );
 
-        /*
-        SetBigAndSmallIcons( IDR_MAINFRAME );
+		/*
+		SetBigAndSmallIcons( IDR_MAINFRAME );
 
-        g_hWndToPostMessage = GetHWND();
+		g_hWndToPostMessage = GetHWND();
 
-        // Centre window placement BEFORE calling model's OnInitDialog() as
-        // that may cause go full screen as settings file is loaded!
-        libWinApi::CenterWindowPercent( *this, 85, GetOwner() );
-        */
+		// Centre window placement BEFORE calling model's OnInitDialog() as
+		// that may cause go full screen as settings file is loaded!
+		libWinApi::CenterWindowPercent( *this, 85, GetOwner() );
+		*/
 
-        _lynxUIModel->OnInitDialog();
+		_lynxUIModel->OnInitDialog();
 
-        //
-        // Process command line "auto start" options:
-        //
+		//
+		// Process command line "auto start" options:
+		//
 
-        if( ! parsedParams.GetSnapshotFilePath().empty() )
-        {
-            // Load the snapshot file that the user specified on the command line:
-            LinuxFileOpener  fileOpener( parsedParams.GetSnapshotFilePath().c_str() );
-            _lynxUIModel->ForceLoadSpecificSnapshot( &fileOpener );
-        }
-        else if( ! parsedParams.GetTapFilePath().empty() )
-        {
-            // Load the cassette file that the user specified on the command line:
-            LinuxFileOpener  fileOpener( parsedParams.GetTapFilePath().c_str() );
-            _lynxUIModel->ForceLoadSpecificTape( &fileOpener );
-        }
-    }
-    catch(...)
-    {
-        Cleanup();
-        throw;
-    }
+		if( ! parsedParams.GetSnapshotFilePath().empty() )
+		{
+			// Load the snapshot file that the user specified on the command line:
+			LinuxFileOpener  fileOpener( parsedParams.GetSnapshotFilePath().c_str() );
+			_lynxUIModel->ForceLoadSpecificSnapshot( &fileOpener );
+		}
+		else if( ! parsedParams.GetTapFilePath().empty() )
+		{
+			// Load the cassette file that the user specified on the command line:
+			LinuxFileOpener  fileOpener( parsedParams.GetTapFilePath().c_str() );
+			_lynxUIModel->ForceLoadSpecificTape( &fileOpener );
+		}
+	}
+	catch(...)
+	{
+		Cleanup();
+		throw;
+	}
 }
 
 
 
 void MainForm::Cleanup()
 {
-    // Called from destructor.
-    // Called from all-enclosing try-catch in the constructor.
-    // Doing this because:
-    // - We have a sub-object that encapsulates another thread.
-    //   We have exposed stuff to that thread, and need it to shut down before we pull the rug.
+	// Called from destructor.
+	// Called from all-enclosing try-catch in the constructor.
+	// Doing this because:
+	// - We have a sub-object that encapsulates another thread.
+	//   We have exposed stuff to that thread, and need it to shut down before we pull the rug.
 
-    // Cancel the timer:
+	// Cancel the timer:
 
-    if( _gtkTimerId > 0 )
-    {
-        g_source_remove( _gtkTimerId );
-        _gtkTimerId = 0;
-    }
+	if( _gtkTimerId > 0 )
+	{
+		g_source_remove( _gtkTimerId );
+		_gtkTimerId = 0;
+	}
 
 	// MULTI-THREADING NOTE:
 	// - Must destroy _lynxUIModel before destroying resources that
@@ -303,27 +303,28 @@ void MainForm::Cleanup()
 
 	_lynxUIModel = nullptr;
 
-    // Destroy "manual" resources:
+	// Destroy "manual" resources:
 
-    if( _pixBuf != nullptr )
-    {
-        g_object_unref( _pixBuf );
-        _pixBuf = nullptr;
-    }
+	if( _pixBuf != nullptr )
+	{
+		g_object_unref( _pixBuf );
+		_pixBuf = nullptr;
+	}
 
-    if( _gtkWindow != nullptr )
-    {
-        g_object_unref( _gtkWindow );
-        _gtkWindow = nullptr;
-    }
+	if( _gtkWindow != nullptr )
+	{
+	    gtk_widget_destroy( _gtkWindowAsWidget );
+		_gtkWindow = nullptr;
+		_gtkWindowAsWidget = nullptr;
+	}
 }
 
 
 
 MainForm::~MainForm()
 {
-    // Put nothing else in here.
-    Cleanup();
+	// Put nothing else in here.
+	Cleanup();
 }
 
 
@@ -335,7 +336,7 @@ MainForm::~MainForm()
 
 void MainForm::ShowAll()
 {
-    gtk_widget_show_all( _gtkWindowAsWidget );
+	gtk_widget_show_all( _gtkWindowAsWidget );
 }
 
 
@@ -350,7 +351,7 @@ void MainForm::ShowAll()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
-		// Key codes are in order of the ports Bits A11..A8, then in order bit D7..D0 :
+// Key codes are in order of the ports Bits A11..A8, then in order bit D7..D0 :
 
 
 #define NUMBER_OF_KEYS (8*11)
@@ -400,7 +401,7 @@ int32_t GdkHardwareKeyCodeToLynxKeyIndex( uint8_t keyVkCode )
 {
 	// Wire these keys to the ones that will be found in the table:
 
-	     if( keyVkCode == VK_RSHIFT )     keyVkCode = VK_LSHIFT;
+	if( keyVkCode == VK_RSHIFT )     keyVkCode = VK_LSHIFT;
 	else if( keyVkCode == VK_RCONTROL )   keyVkCode = VK_LCONTROL;
 	else if( keyVkCode == VK_HOME )       keyVkCode = VK_UP;   // Works well with Lynx line editor
 	else if( keyVkCode == VK_END)         keyVkCode = VK_DOWN; // Works well with Lynx line editor
@@ -446,113 +447,113 @@ int32_t GdkHardwareKeyCodeToLynxKeyIndex( uint8_t keyVkCode )
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
-        // These all have DoWithTerminationOnStdException() protection, to avoid propagating
-        // C++ exceptions through C language frames.  If the execption wasn't handled by this
-        // stage, the program knows it cannot continue.
+// These all have DoWithTerminationOnStdException() protection, to avoid propagating
+// C++ exceptions through C language frames.  If the execption wasn't handled by this
+// stage, the program knows it cannot continue.
 
 
 
 gint MainForm::GtkHandlerForCloseBoxDeleteEvent( GtkWidget *widget, GdkEvent *event, gpointer userObject ) // static member
 {
-    // If you return FALSE GTK will emit the "destroy" signal.
-    // Returning TRUE means you don't want the window to be destroyed.
+	// If you return FALSE GTK will emit the "destroy" signal.
+	// Returning TRUE means you don't want the window to be destroyed.
 
-    auto thisObject = (MainForm *) userObject;
-    thisObject->_lynxUIModel->OnMenuCommand( ID_FILE_EXIT );
-    return TRUE; // do not automatically destroy window.  The handler above will have done that if it is required.
+	auto thisObject = (MainForm *) userObject;
+	thisObject->_lynxUIModel->OnMenuCommand( ID_FILE_EXIT );
+	return TRUE; // do not automatically destroy window.  The handler above will have done that if it is required.
 }
 
 
 
 gint MainForm::GtkHandlerForDrawingAreaExposeEvent( GtkWidget *widget, GdkEventExpose *event, gpointer userObject )    // static member   expose_event
 {
-    auto thisObject = (MainForm *) userObject;
+	auto thisObject = (MainForm *) userObject;
 
-    if( thisObject->_gtkDrawingArea != nullptr )
-    {
-        auto gtkDrawble = gtk_widget_get_window( thisObject->_gtkDrawingArea );
-        thisObject->_cairoContext = gdk_cairo_create( gtkDrawble );
-        if( thisObject->_cairoContext != nullptr )
-        {
-            thisObject->_originalCairoContextSaved = false;  // It isn't initially.
-            thisObject->_lynxUIModel->OnPaint();
-            cairo_destroy( thisObject->_cairoContext );  // Reminder - destroys cairo_save() stack too.
-            thisObject->_cairoContext = nullptr;
-        }
-    }
+	if( thisObject->_gtkDrawingArea != nullptr )
+	{
+		auto gtkDrawble = gtk_widget_get_window( thisObject->_gtkDrawingArea );
+		thisObject->_cairoContext = gdk_cairo_create( gtkDrawble );
+		if( thisObject->_cairoContext != nullptr )
+		{
+			thisObject->_originalCairoContextSaved = false;  // It isn't initially.
+			thisObject->_lynxUIModel->OnPaint();
+			cairo_destroy( thisObject->_cairoContext );  // Reminder - destroys cairo_save() stack too.
+			thisObject->_cairoContext = nullptr;
+		}
+	}
 
-    return FALSE;
+	return FALSE;
 }
 
 
 
 gint MainForm::GtkHandlerForDrawingAreaButtonPressEvent( GtkWidget *widget, GdkEventButton *event, gpointer userObject )    // static member   button_press_event
 {
-    auto thisObject = (MainForm *) userObject;
-    gtk_widget_grab_focus( thisObject->_gtkDrawingArea );
-    return TRUE;
+	auto thisObject = (MainForm *) userObject;
+	gtk_widget_grab_focus( thisObject->_gtkDrawingArea );
+	return TRUE;
 }
 
 
 
 gboolean  MainForm::GtkHandlerForKeyPress( GtkWidget *widget, GdkEvent *event, gpointer userObject ) // static member     key_press_event
 {
-    auto thisObject = (MainForm *) userObject;
+	auto thisObject = (MainForm *) userObject;
 
-    auto keyEvent = (GdkEventKey *) event;
-    auto lynxKeyIndex = GdkHardwareKeyCodeToLynxKeyIndex( keyEvent->hardware_keycode );
-    if( lynxKeyIndex != -1 )
-    {
-        thisObject->_lynxUIModel->OnKeyDown( lynxKeyIndex );
-        return TRUE;
-    }
+	auto keyEvent = (GdkEventKey *) event;
+	auto lynxKeyIndex = GdkHardwareKeyCodeToLynxKeyIndex( keyEvent->hardware_keycode );
+	if( lynxKeyIndex != -1 )
+	{
+		thisObject->_lynxUIModel->OnKeyDown( lynxKeyIndex );
+		return TRUE;
+	}
 
-    return FALSE;
+	return FALSE;
 }
 
 
 
 gboolean  MainForm::GtkHandlerForKeyRelease( GtkWidget *widget, GdkEvent *event, gpointer userObject ) // static member     key_release_event
 {
-    auto thisObject = (MainForm *) userObject;
+	auto thisObject = (MainForm *) userObject;
 
-    auto keyEvent = (GdkEventKey *) event;
-    auto lynxKeyIndex = GdkHardwareKeyCodeToLynxKeyIndex( keyEvent->hardware_keycode );
-    if( lynxKeyIndex != -1 )
-    {
-        thisObject->_lynxUIModel->OnKeyUp( lynxKeyIndex );
-        return TRUE;
-    }
+	auto keyEvent = (GdkEventKey *) event;
+	auto lynxKeyIndex = GdkHardwareKeyCodeToLynxKeyIndex( keyEvent->hardware_keycode );
+	if( lynxKeyIndex != -1 )
+	{
+		thisObject->_lynxUIModel->OnKeyUp( lynxKeyIndex );
+		return TRUE;
+	}
 
-    return FALSE;
+	return FALSE;
 }
 
 
 
 gboolean  MainForm::GtkHandlerForFocusLoss(  GtkWidget *widget, GdkEventFocus *event, gpointer userObject ) // static member    focus_out_event
 {
-    auto thisObject = (MainForm *) userObject;
-    thisObject->_lynxUIModel->OnAllKeysUp();
-    return FALSE; // Propagate event further.
+	auto thisObject = (MainForm *) userObject;
+	thisObject->_lynxUIModel->OnAllKeysUp();
+	return FALSE; // Propagate event further.
 }
 
 
 
 gboolean  MainForm::GtkHandlerForTheTimer( gpointer userObject )    // static member   button_press_event
 {
-    auto thisObject = (MainForm *) userObject;
-    thisObject->_lynxUIModel->OnTimer();
-    return TRUE;
+	auto thisObject = (MainForm *) userObject;
+	thisObject->_lynxUIModel->OnTimer();
+	return TRUE;
 }
 
 
 
 void MainForm::NotifyMenuItemClicked( uint32_t menuItemID )
 {
-    // This gets the menu item clicks.
-    // NB: This is indirectly a GTK event handler, hence exception barrier.
+	// This gets the menu item clicks.
+	// NB: This is indirectly a GTK event handler, hence exception barrier.
 
-    _lynxUIModel->OnMenuCommand( menuItemID );
+	_lynxUIModel->OnMenuCommand( menuItemID );
 }
 
 
@@ -569,7 +570,7 @@ void MainForm::NotifyMenuItemClicked( uint32_t menuItemID )
 
 void MainForm::ShowTheAboutBox()
 {
-    Jynx::ShowLinuxGtkAboutBox();
+	Jynx::ShowLinuxGtkAboutBox();
 }
 
 
@@ -610,36 +611,36 @@ void MainForm::TellUser( const char *messageText, const char *captionText )
 {
 	// ::MessageBoxA( *this, messageText, captionText, MB_OK | MB_ICONINFORMATION );
 
-    auto dialog = gtk_message_dialog_new(
-        GTK_WINDOW(_gtkWindow),
-        GTK_DIALOG_DESTROY_WITH_PARENT,
-        GTK_MESSAGE_INFO,
-        GTK_BUTTONS_OK,
-        "%s",
-        messageText);
+	auto dialog = gtk_message_dialog_new(
+	                  GTK_WINDOW(_gtkWindow),
+	                  GTK_DIALOG_DESTROY_WITH_PARENT,
+	                  GTK_MESSAGE_INFO,
+	                  GTK_BUTTONS_OK,
+	                  "%s",
+	                  messageText);
 
-    gtk_window_set_title( GTK_WINDOW(dialog), captionText );
-    gtk_dialog_run( GTK_DIALOG(dialog) );
-    gtk_widget_destroy( dialog );
+	gtk_window_set_title( GTK_WINDOW(dialog), captionText );
+	gtk_dialog_run( GTK_DIALOG(dialog) );
+	gtk_widget_destroy( dialog );
 }
 
 
 
 bool MainForm::AskYesNoQuestion( const char *questionText, const char *captionText )
 {
-    auto dialog = gtk_message_dialog_new(
-        GTK_WINDOW(_gtkWindow),
-        GTK_DIALOG_DESTROY_WITH_PARENT,
-        GTK_MESSAGE_QUESTION,
-        GTK_BUTTONS_YES_NO,
-        "%s",
-        questionText);
+	auto dialog = gtk_message_dialog_new(
+	                  GTK_WINDOW(_gtkWindow),
+	                  GTK_DIALOG_DESTROY_WITH_PARENT,
+	                  GTK_MESSAGE_QUESTION,
+	                  GTK_BUTTONS_YES_NO,
+	                  "%s",
+	                  questionText);
 
-    gtk_window_set_title( GTK_WINDOW(dialog), captionText );
-    auto result = gtk_dialog_run( GTK_DIALOG(dialog) );
-    gtk_widget_destroy( dialog );
+	gtk_window_set_title( GTK_WINDOW(dialog), captionText );
+	auto result = gtk_dialog_run( GTK_DIALOG(dialog) );
+	gtk_widget_destroy( dialog );
 
-    return result == GTK_RESPONSE_YES;
+	return result == GTK_RESPONSE_YES;
 }
 
 
@@ -649,18 +650,18 @@ void MainForm::SetTickBoxState( Jynx::TickableInterfaceElements::Enum itemToSet,
 	assert( itemToSet >= 0 && itemToSet <= Jynx::TickableInterfaceElements::Count );
 	assert( sizeof(MainFormTickableItems) == (sizeof(uint32_t) * Jynx::TickableInterfaceElements::Count) );
 
-    _menuBar->CheckMenuItem( MainFormTickableItems[itemToSet], tickState );
+	_menuBar->CheckMenuItem( MainFormTickableItems[itemToSet], tickState );
 
 	if( itemToSet == Jynx::TickableInterfaceElements::ShowFullScreen )
 	{
-        if( tickState == true )
-        {
-            gtk_window_fullscreen( GTK_WINDOW(_gtkWindow) );
-        }
-        else
-        {
-            gtk_window_unfullscreen( GTK_WINDOW(_gtkWindow) );
-        }
+		if( tickState == true )
+		{
+			gtk_window_fullscreen( GTK_WINDOW(_gtkWindow) );
+		}
+		else
+		{
+			gtk_window_unfullscreen( GTK_WINDOW(_gtkWindow) );
+		}
 	}
 }
 
@@ -671,7 +672,7 @@ void MainForm::SetEnabledState( Jynx::ButtonInterfaceElements::Enum itemToSet, b
 	assert( itemToSet >= 0 && itemToSet <= Jynx::ButtonInterfaceElements::Count );
 	assert( sizeof(MainFormGreyableItems) == (sizeof(uint32_t) * Jynx::ButtonInterfaceElements::Count) );
 
-    _menuBar->EnableMenuItem( MainFormGreyableItems[itemToSet], enableState );
+	_menuBar->EnableMenuItem( MainFormGreyableItems[itemToSet], enableState );
 }
 
 
@@ -681,14 +682,14 @@ Jynx::LynxRectangle  MainForm::GetClientRectangle()
 	Jynx::LynxRectangle  area;
 
 	if( _gtkDrawingArea != nullptr )
-    {
-        int width   = _gtkDrawingArea->allocation.width;
-        int height  = _gtkDrawingArea->allocation.height;
-        area.left   = 0;
-        area.top    = 0;
-        area.right  = width;
-        area.bottom = height;
-    }
+	{
+		int width   = _gtkDrawingArea->allocation.width;
+		int height  = _gtkDrawingArea->allocation.height;
+		area.left   = 0;
+		area.top    = 0;
+		area.right  = width;
+		area.bottom = height;
+	}
 
 	return area;
 }
@@ -697,72 +698,72 @@ Jynx::LynxRectangle  MainForm::GetClientRectangle()
 
 void MainForm::SetViewport( int left, int top, int width, int height )
 {
-    if( _cairoContext != nullptr )
-    {
-        if( ! _originalCairoContextSaved )
-        {
-            cairo_save( _cairoContext );
-            _originalCairoContextSaved = true;
-        }
+	if( _cairoContext != nullptr )
+	{
+		if( ! _originalCairoContextSaved )
+		{
+			cairo_save( _cairoContext );
+			_originalCairoContextSaved = true;
+		}
 
-        cairo_new_path( _cairoContext );  // not trusting previous usages.
-        cairo_rectangle( _cairoContext, left, top, width, height );
-        cairo_clip_preserve( _cairoContext );
-        cairo_new_path( _cairoContext );  // because
-    }
+		cairo_new_path( _cairoContext );  // not trusting previous usages.
+		cairo_rectangle( _cairoContext, left, top, width, height );
+		cairo_clip_preserve( _cairoContext );
+		cairo_new_path( _cairoContext );  // because
+	}
 }
 
 
 
 void MainForm::CancelViewport()
 {
-    if( _cairoContext != nullptr )
-    {
-        if( _originalCairoContextSaved )
-        {
-            cairo_restore( _cairoContext );
-            _originalCairoContextSaved = false;
-        }
-    }
+	if( _cairoContext != nullptr )
+	{
+		if( _originalCairoContextSaved )
+		{
+			cairo_restore( _cairoContext );
+			_originalCairoContextSaved = false;
+		}
+	}
 }
 
 
 
 void MainForm::StretchBlitTheGuestScreen( int left, int top, int width, int height )
 {
-    if( _gtkDrawingArea != nullptr && _cairoContext != nullptr )
-    {
-        cairo_save( _cairoContext );
-        cairo_matrix_t  mat;
-        cairo_matrix_init( &mat, double(width) / LYNX_FRAMEBUF_WIDTH, 0, 0, double(height) / LYNX_FRAMEBUF_HEIGHT, left, top);
-        cairo_transform( _cairoContext, &mat );
-        cairo_rectangle( _cairoContext, 0, 0, LYNX_FRAMEBUF_WIDTH, LYNX_FRAMEBUF_HEIGHT ); // left, top, width, height );
-        gdk_cairo_set_source_pixbuf( _cairoContext, _pixBuf, 0, 0 );
-        cairo_set_antialias( _cairoContext, CAIRO_ANTIALIAS_NONE );
-        cairo_pattern_set_filter( cairo_get_source(_cairoContext), CAIRO_FILTER_NEAREST );
-        cairo_fill( _cairoContext );
-        cairo_restore( _cairoContext );
-    }
+	if( _gtkDrawingArea != nullptr && _cairoContext != nullptr )
+	{
+		cairo_save( _cairoContext );
+		cairo_matrix_t  mat;
+		cairo_matrix_init( &mat, double(width) / LYNX_FRAMEBUF_WIDTH, 0, 0, double(height) / LYNX_FRAMEBUF_HEIGHT, left, top);
+		cairo_transform( _cairoContext, &mat );
+		cairo_rectangle( _cairoContext, 0, 0, LYNX_FRAMEBUF_WIDTH, LYNX_FRAMEBUF_HEIGHT ); // left, top, width, height );
+		gdk_cairo_set_source_pixbuf( _cairoContext, _pixBuf, 0, 0 );
+		cairo_set_antialias( _cairoContext, CAIRO_ANTIALIAS_NONE );
+		cairo_pattern_set_filter( cairo_get_source(_cairoContext), CAIRO_FILTER_NEAREST );
+		cairo_fill( _cairoContext );
+		cairo_restore( _cairoContext );
+	}
 }
 
 
 
 void MainForm::FillBlackRectangle( int left, int top, int width, int height )
 {
-    auto gtkDrawble = gtk_widget_get_window( _gtkDrawingArea );
-    gdk_draw_rectangle( gtkDrawble, _gtkDrawingArea->style->black_gc, TRUE, left, top, width, height );
+	auto gtkDrawble = gtk_widget_get_window( _gtkDrawingArea );
+	gdk_draw_rectangle( gtkDrawble, _gtkDrawingArea->style->black_gc, TRUE, left, top, width, height );
 }
 
 
 
 void MainForm::InvalidateAreaOfHostScreen( const Jynx::LynxRectangle &area )
 {
-    GdkRectangle  rect;
-    rect.x      = area.left;
-    rect.y      = area.top;
-    rect.width  = area.right - area.left;
-    rect.height = area.bottom - area.top;
-    auto gtkDrawble = gtk_widget_get_window( _gtkDrawingArea );
+	GdkRectangle  rect;
+	rect.x      = area.left;
+	rect.y      = area.top;
+	rect.width  = area.right - area.left;
+	rect.height = area.bottom - area.top;
+	auto gtkDrawble = gtk_widget_get_window( _gtkDrawingArea );
 	gdk_window_invalidate_rect( gtkDrawble, &rect, FALSE ); // FALSE = there are no children to invalidate anyway.
 }
 
@@ -800,9 +801,9 @@ inline PIXEL_TYPE *CalcFrameBufferPixelAddress( PIXEL_TYPE *frameBufferTopLeftAd
 void MainForm::TranslateRGBXColourPaletteToHostValues( const uint32_t *eightEntryColourPalette, uint32_t *eightEntryTranslatedValues )
 {
 	for( int i=0; i<8; i++ )
-    {
-        eightEntryTranslatedValues[i] = eightEntryColourPalette[i] | 0xFF000000; // Set ALPHA to 255 always.
-    }
+	{
+		eightEntryTranslatedValues[i] = eightEntryColourPalette[i] | 0xFF000000; // Set ALPHA to 255 always.
+	}
 }
 
 
@@ -824,39 +825,39 @@ void  MainForm::PaintPixelsOnHostBitmap_OnEmulatorThread( uint32_t addressOffset
 
 bool EnsureFolderExists( const char *folderPath )
 {
-    // You can make use of the stat system call by passing it the name of the directory as
-    // the first argument. If the directory exists a 0 is returned else -1 is returned and
-    // errno will be set to ENOENT.
+	// You can make use of the stat system call by passing it the name of the directory as
+	// the first argument. If the directory exists a 0 is returned else -1 is returned and
+	// errno will be set to ENOENT.
 
-    struct stat st;
-    if( stat( folderPath, &st ) == -1 && errno == ENOENT )
-    {
-        if( mkdir( folderPath, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH ) != 0 )
-        {
-            return false;
-        }
-        return true;
-    }
+	struct stat st;
+	if( stat( folderPath, &st ) == -1 && errno == ENOENT )
+	{
+		if( mkdir( folderPath, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH ) != 0 )
+		{
+			return false;
+		}
+		return true;
+	}
 
-    return true;
+	return true;
 }
 
 
 
 std::string  GetJynxAppDataPath()
 {
-    // TODO:  Ensure it is a folder, make it if it does not exist.
-    auto envString = getenv( "HOME" );
-    if( envString != nullptr )
-    {
-        std::string resultStr;
-        resultStr += envString;
-        resultStr += "/.jynx_emulator";
-        if( EnsureFolderExists( resultStr.c_str() ) )
-        {
-            return resultStr;
-        }
-    }
+	// TODO:  Ensure it is a folder, make it if it does not exist.
+	auto envString = getenv( "HOME" );
+	if( envString != nullptr )
+	{
+		std::string resultStr;
+		resultStr += envString;
+		resultStr += "/.jynx_emulator";
+		if( EnsureFolderExists( resultStr.c_str() ) )
+		{
+			return resultStr;
+		}
+	}
 	return std::string();
 }
 
