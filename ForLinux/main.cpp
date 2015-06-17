@@ -61,7 +61,6 @@ int main( int argc, char *argv[] )
         auto exePath = RemoveLeafFromPath( argv[0] );
 
         auto mainWindow = std::make_shared<MainForm>( paramsList, exePath.c_str() );
-        mainWindow->ShowAll();
 
         gtk_main();
     }

@@ -84,6 +84,20 @@ void LinuxGtkMenuBar::CheckMenuItem(  uint32_t menuID, bool isChecked )
 
 
 
+void LinuxGtkMenuBar::Show()
+{
+    gtk_widget_show( _menuBar );
+}
+
+
+
+void LinuxGtkMenuBar::Hide()
+{
+    gtk_widget_hide( _menuBar );
+}
+
+
+
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

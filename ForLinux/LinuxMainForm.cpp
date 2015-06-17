@@ -243,6 +243,13 @@ MainForm::MainForm( const std::vector<std::string> &paramsList, const char *exeP
 
 		_gtkTimerId = ThrowLEZ( g_timeout_add( 20, (GSourceFunc) &MainForm::GtkHandlerForTheTimer, this ), "Cannot create the main timer.\nThe emulation cannot continue." );
 
+        //
+        // Show all now.
+        // Reminder - This recurses the tree setting the SHOW status to true, for all children.
+        //
+
+        gtk_widget_show_all( _gtkWindowAsWidget );
+
 		/*
 		SetBigAndSmallIcons( IDR_MAINFRAME );
 
@@ -326,20 +333,6 @@ MainForm::~MainForm()
 	// Put nothing else in here.
 	Cleanup();
 }
-
-
-
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-//     THE GTK SECTION
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-void MainForm::ShowAll()
-{
-	gtk_widget_show_all( _gtkWindowAsWidget );
-}
-
-
 
 
 
@@ -491,6 +484,10 @@ gint MainForm::GtkHandlerForDrawingAreaButtonPressEvent( GtkWidget *widget, GdkE
 {
 	auto thisObject = (MainForm *) userObject;
 	gtk_widget_grab_focus( thisObject->_gtkDrawingArea );
+	if( event->type == GDK_2BUTTON_PRESS )
+    {
+        thisObject->_lynxUIModel->OnMenuCommand( ID_DISPLAY_FULLSCREENENABLE );
+    }
 	return TRUE;
 }
 
@@ -657,9 +654,11 @@ void MainForm::SetTickBoxState( Jynx::TickableInterfaceElements::Enum itemToSet,
 		if( tickState == true )
 		{
 			gtk_window_fullscreen( GTK_WINDOW(_gtkWindow) );
+		    _menuBar->Hide();
 		}
 		else
 		{
+		    _menuBar->Show();
 			gtk_window_unfullscreen( GTK_WINDOW(_gtkWindow) );
 		}
 	}

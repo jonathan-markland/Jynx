@@ -55,6 +55,9 @@ public:
     void EnableMenuItem( uint32_t menuID, bool isEnabled );
     void CheckMenuItem(  uint32_t menuID, bool isChecked );
 
+    void Show();
+    void Hide();
+
     GtkWidget *GetWidget() { return _menuBar; }
 
 private:
