@@ -1,18 +1,55 @@
 
-[ ] Start Over:  Starts OK
-[ ] Start Over:  Resize screen / minimize / maximize
-[ ] Start Over:  Close OK
-[ ] Start Over:  "File | Exit" should prompt the user for confirmation.
-[ ]   Cancel stops the exit, with no state changes.
-[ ]   OK will exit.  (However with prompts for modified but unsaved TAP files).
-[ ]   The current sound recording is saved and closed automatically.
-[ ]   The current text recording is saved and closed automatically.
+- - START - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+- - DEFAULT DEFAULTS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+Start over.
+Ensure the ".jynx_emulator" folder and settings file are deleted to start with.
+Ensure ROM files present.
+Run program, check the default-defaults:
+When the default settings file is missing, the boot state will be:
+
+[y] Ticked:  Speed | Speed 100%
+[y] Ticked:  Speed | Super speed cassette
+[y] Ticked:  Emulation | 48K
+[y] Ticked:  Display | Use square pixels
+[y] Ticked:  Display | Normal Lynx Colours
+[y] Ticked:  Sound | Enable Sound
+[y] All other tickable items are NOT ticked.
+
+- - USER SETTINGS FILE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+[y] Change colour settings and check these are saved to settings file, and restored on re-start.
+[y] Likewise check full-screen.
+[y] Check file system for presence of auto-created folder, and settings file.
+If these are working, everything is likely to be worked, since no code changes.
+
+- - ROM FILES - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+[y] Test present and correct.
+[y] Test if they are missing.
+[ ] Test if they are bad.
+
+- - GENERAL - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+[y] Start Over:  Starts OK
+[y] Start Over:  Resize screen / minimize / maximize / restoring
+[y] Start Over:  Close OK (should prompt the user for confirmation).
+[y] Start Over:  "File | Exit" should prompt the user for confirmation.
+[y]   NO stops the exit, with no state changes.
+[y]   YES will exit.
+[y]   YES will also prompt for an unsaved TAP file before exiting.
+[y]       When confirming TAP:  NO will cancel the exiting.
+[y]       When confirming TAP:  YES will abandon and exit.
+[y]   The current sound recording is saved and closed automatically.
+[!]   The Linux console "play" program plays the WAV without error or warning.  [result: Plays to end, but warns]
+[y]   The current text recording is saved and closed automatically.
+
+- - KEYBOARD - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 Typing on the Lynx works.  Test all keys as follows:
 Start over:
 
-[ ] Without having pressed the host CAPS key since Lynx reset:
+[y] Without having pressed the host CAPS key since Lynx reset:
     And without holding SHIFT:
 
 	PC	  1 2 3 4 5 6 7 8 9 0 - = BACKSPACE
@@ -21,17 +58,17 @@ Start over:
 	PC	q w e r t y u i o p [ ] ENTER
 	LYNX	Q W E R T Y U I O P [ ] (RETURN)
 
-	PC	        a s d f g h j k l ; '  
+	PC	        a s d f g h j k l ; '
 	LYNX	        A S D F G H J K L ; @
 
-	PC	           z x c v b n m , . /       
-	LYNX	           Z X C V B N M , . / 
+	PC	           z x c v b n m , . /
+	LYNX	           Z X C V B N M , . /
 
-	PC	   SPACE  
+	PC	   SPACE
 	LYNX       (space)
 
-[ ] Without having pressed the host CAPS key since Lynx reset:
-    And *holding* SHIFT:
+[!] Without having pressed the host CAPS key since Lynx reset:
+    And *holding* SHIFT:   [RESULT: underscore not right IF caps lock on? shows half copyright?]
 
 	PC	  1 2 3 4 5 6 7 8 9 0 - = BACKSPACE
 	LYNX	  ! " # $ % & ' ( ) _ = * (delete)
@@ -39,142 +76,155 @@ Start over:
 	PC	q w e r t y u i o p  [  ]   ENTER
 	LYNX	q w e r t y u i o p  (C C) (RETURN)
 
-	PC	        a s d f g h j k l ; '  
-	LYNX	        a s d f g h j k l ; @
+	PC	        a s d f g h j k l ; '
+	LYNX	        a s d f g h j k l + £
 
-	PC	           z x c v b n m , . /       
-	LYNX	           z x c v b n m < > ? 
+	PC	           z x c v b n m , . /
+	LYNX	           z x c v b n m < > ?
 
-	PC	   SPACE  
+	PC	   SPACE
 	LYNX       (space)
 
 	PC	UP  DOWN  LEFT  RIGHT  HOME  END
-	LYNX    
+	LYNX
 
 	PC	UP  DOWN  LEFT  RIGHT  HOME  END
-	LYNX    
+	LYNX
 
-[ ] Check host CAPS key toggles state.
-[ ] Check both host SHIFT keys connect to the Lynx.
-[ ] Check both host keys, using the Lynx "CTRL-1" feature to confirm.
-[ ] Check cursor keys with Lynx editing.  Up and Down go to start and end of line.
-[ ] Check host HOME and END keys do same as cursor UP and DOWN (resp.) on the lynx.
-[ ] Check ESC key wires to lynx by stopping a BASIC program.
-[ ] No other keys affect the lynx.
+[y] Check host CAPS key toggles state.
+[y] Check both host SHIFT keys connect to the Lynx.
+[y] Check both host CTRL keys, using the Lynx "CTRL-1" feature to confirm.
+[y] Check cursor keys with Lynx editing.  Up and Down go to start and end of line.
+[y] Check host HOME and END keys do same as cursor UP and DOWN (resp.) on the lynx.
+[y] Check ESC key wires to lynx by stopping a BASIC program.
+[y] No other keys affect the lynx adversely, but may activate host features.
 
-- - FILE MENU - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - FILE MENU - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-[ ] Start Over:  File | Run Tap File ...
-[ ] " Cancel
-[ ] " Select good file
-[ ] " Select bad file
+Start Over:
+[y] "File | Run Tap File ..."  show file browser for TAP files.
+[y] " Cancel  (does not alter lynx state)
+[y] " Select good file  (loads and runs it)
+[y] " Select bad file  (resets lynx and host shows error popup)
 
-[ ] Start Over:  File | Open Tap File ...
-[ ] " Cancel
-[ ] " Select good file (single-file-BASIC-TAP)
-[ ]     File | Rewind is enabled
-[ ]     File | Tape directory at BASIC prompt
-[ ]     Lynx LOAD "xxxxx" test
-[ ]     Lynx LOAD "xxxxx" test -- doesn't find anything.
-[ ]     File | Rewind tape -- Lynx finds file and loads it.
-[ ] " Select bad file
-[ ]     File | Rewind is greyed
-[ ]     Lynx doesn't find anything to load.
-
-Start Over.
-[ ] File | New Output tape is enabled.
-[ ] Choose "File | New Output tape".  (No feedback given).
-[ ] Save something from the lynx
-[ ] Open File Menu - "Save as TAP file..." is greyed until save completes, then enables.
-[ ] Use "Save as TAP file..." to save file.
-[ ] View in HxD to confirm.
-[ ] Reload test of the file.
+Start Over:
+[y] "File | Open Tap File ..." shows file browser for TAP files.
+[y] " Cancel  (leaves lynx state alone, does not select any highlighted TAP)
+[y] " Select good file (single-file-TAP)  Lynx state remains same.
+[y]     "File | Rewind" is enabled
+[y]        Tape rewound notification shown when rewind is selected.
+[y]     "File | Tape directory at BASIC prompt" is enabled
+[y]        Directory of tape can be obtained at BASIC prompt.
+[y]     Insert a TAP, and delibrately load the wrong name.  Not found.
+[y]     Press ESC, rewind tape.  Load again.  Lynx finds it.
+[y] Start over, Select bad file
+[y]     File | Rewind is greyed
+[y]     Lynx doesn't find anything to load.
+[y] In fact, previous good cassette is untouched until another good file is selected.
 
 Start Over.
-[ ] Create two BASIC programs one after the other, use Lynx SAVE command to save both to the SAME tape.
-[ ] Save the TAP file.
-[ ] View in HxD to confirm.
-[ ] Start over, and confirm Lynx can load the two.
+[y] File | New Output tape is enabled.
+[y] Choose "File | New Output tape".  (No feedback given).
+[y] Save something from the lynx
+[y] Open File Menu - "Save as TAP file..." is greyed until save completes, then enables.
+[y] Use "Save as TAP file..." to save file.
+[y] View in HxD to confirm.
+[y] Reset lynx then reload test of the file.
+[y] Once a TAP is saved, a new tap is started automatically (Save as TAP file is blank).
 
 Start Over.
-[ ] Choose "Save state snapshot".  Cancel.  No change of state.
-[ ] Choose "Save state snapshot" and specify a name.
-[ ] View in text editor to confirm.
+[y] Create two BASIC programs one after the other, use Lynx SAVE command to save both to the SAME tape.
+[y] Save the TAP file.
+[y] View in HxD to confirm.
+[y] Start over, and confirm Lynx can load the two.
 
 Start Over.
-[ ] Choose "Load state snapshot".  Cancel.  No change of state.
-[ ] Choose "Load state snapshot".  Open a bad file.  Emulator resets.
-[ ] Choose "Load state snapshot".  Open a good file.  Emulator starts that position.
-
-- - SPEED MENU - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+[y] Choose "Save state snapshot".  Cancel.  No change of state.
+[y] Choose "Save state snapshot" and specify a name.
+[y] View in text editor to confirm.
 
 Start Over.
-[ ] Speed menu:  Test the speed settings, check with cursor flash, check ticks move.
-[ ] Speed menu:  Test "Pause", check with cursor flash.
-[ ] Tick 100%, Tick "Super speed cassette" only.  Run a TAP file to check load is fast, but game is normal speed.
-[ ] Start over.  Tick "100%" and "Super speed console" only.
-[ ]   Check key repeat is normal.  
-[ ]   Check MON "H" command lists "instantly".
-[ ] Tick "Super speed always".  Check that typing repeat rate is impossibly fast.
+[y] Choose "Load state snapshot".  Cancel.  No change of state.
+[y] Choose "Load state snapshot".  Choose a good file.  Confirm appears.  Choose No.  No state change to lynx.
+[y] Choose "Load state snapshot".  Choose a good file.  Confirm appears.  Choose Yes.  Emulator restarts in saved state.
+[y] Choose "Load state snapshot".  Open a bad file.  Emulator resets.
 
-[ ] Emulation menu:  Tick 48K lynx, check one beep.
-[ ] Emulation menu:  Tick 96K lynx, check two beeps.
-[ ] Emulation menu:  Tick 96K + Scorpion lynx, check three beeps.
-[ ] Emulation menu:  Check "Reset guest machine" works.
-[ ] Emulation menu:  Untick "Pause".  Tick "Pause after load".  Run a TAP, and quickly open Speed menu.
+- - SPEED MENU - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Start Over.
+[y] Speed menu:  Test the speed settings, check with cursor flash, check ticks move.
+[y] Speed menu:  Test "Pause", check with cursor flash.
+[y] Tick 100%, Tick "Super speed cassette" only.  Run a TAP file to check load is fast, but game is normal speed.
+[y]    Do a super speed BASIC LOAD command
+[!]    Do a super speed BASIC SAVE command   [saves at real speed only!]
+[y] Start over.  Tick "100%" and "Super speed console" only.  Check key repeat is normal.
+[y]   Check command execution in general (eg:  MON "H" command)  list "instantly".
+[y] Tick "Super speed always".  Check that typing repeat rate is impossibly fast.
+
+- - EMULATION MENU - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+[y] Tick 48K lynx, check prompt appears, choose NO.  No state change to lynx, and ONE menu tick appears in correct place.
+[!] Tick 96K lynx, check prompt appears, choose NO.  No state change to lynx, and ONE menu tick appears in correct place.  [result:  cancelling seems to leave the tick states incorrect. Seen two ticks (a new one on the cancelled item)]
+[y] Tick 48K lynx, check prompt appears, choose YES, check one beep, and ONE menu tick appears in correct place.
+[y] Tick 96K lynx, choose YES, check two beeps, and ONE menu tick appears in correct place.
+[y] Tick 96K + Scorpion lynx, choose YES, check three beeps, and ONE menu tick appears in correct place.
+[y] Check "Reset guest machine" prompts.  Choose NO.  No state change to lynx.
+[y] Check "Reset guest machine" prompts.  Choose YES.  Lynx resets.
+[y] Untick "Pause".  Tick "Pause after load".  Run a TAP, and quickly open Speed menu.
     See that Pause becomes ticked once the program loads, and unticking pause releases the lynx.
+[!] Test a BASIC SAVE command with "Pause after load" selected.  See that lynx does NOT pause after a SAVE.  [result: yes is does pause still]
 
-- - DISPLAY MENU - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - DISPLAY MENU - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-[ ] Reset, use PAPER BLUE, CLS to establish guest screen bounds.
-[ ] Tick "Display | Use square pixels".  See that guest pixels are forced square, and display is centred.
-[ ]   Resize host window and see that guest display size "snaps" to keep pixels square.
-[ ]   If host window is too small, guest display disappears altogether.
-[ ] Tick "Display | Fit to window".  See that guest image has its aspect ratio maintained at all times,
+[y] Reset, use PAPER BLUE, CLS to establish guest screen bounds.
+[y] Tick "Display | Use square pixels".  See that guest pixels are forced square, and display is centred.
+[y]   Resize host window and see that guest display size "snaps" to keep pixels square.
+[y]   If host window is too small, guest display disappears altogether.
+[y] Tick "Display | Fit to window".  See that guest image has its aspect ratio maintained at all times,
     but is increased to fill as much of the host window as possible.  This means black strips at top and
     bottom, or black strips at left and right.
-[ ] Tick "Display | Fill Window".  See guest screen image fills the whole of the host area.
-[ ]   Stretch host to wide or tall configuration, see guest image precisely fills this space, 
+[y] Tick "Display | Fill Window".  See guest screen image fills the whole of the host area.
+[y]   Stretch host to wide or tall configuration, see guest image precisely fills this space,
       and no black areas are visible at all.
-[ ] Tick "Display | Full screen".  See screen covers entire desktop.  Linux shows the menu, Windows doesn't.
-[ ]   See that "Full screen" combines OK with the other 3 options tested above.
-[ ] See that unticking "Display | Full screen" restores the window.
-[ ] Surround for guest display was black at all times during all above tests.
+[y] Tick "Display | Full screen".  See screen covers entire desktop.  Menu is NOT shown.
+[y]   See that "Full screen" combines OK with the other 3 options tested above.
+[y] See that double clicking the screen restores the window.
+[y] Surround for guest display was black at all times during all above tests except for Fill Window.
 
 Start over, and get examples of all PAPER colours onto the screen.
-[ ] Display menu:  Tick "Normal lynx colours".  See colours are normal.
-[ ] Display menu:  Tick "Green screen monitor".  See colours are all present as shades of green.
-[ ] Display menu:  Tick "Black and white TV".   See colours are all present as shades of black/white/gray.
-[ ] Display menu:  Tick "Level 9 game colours".  See 4,5,6,7 are bright yellows thru white, and 0,1,2,3 are dark blue/red/magenta.
-[ ] Display menu:  Tick "Show green channel only".  See that inks 4,5,6,7 are full green, and 0,1,2,3 are black.
+[y] Tick "Normal lynx colours".  See colours are normal.  See tick is on chosen menu item.
+[y] Tick "Green screen monitor".  See colours are all present as shades of green.  See tick is on chosen menu item.
+[y] Tick "Black and white TV".   See colours are all present as shades of black/white/gray.  See tick is on chosen menu item.
+[y] Tick "Level 9 game colours".  See 4,5,6,7 are bright yellows thru white, and 0,1,2,3 are dark blue/red/magenta.  See tick is on chosen menu item.
+[y] Tick "Show green channel only".  See that inks 4,5,6,7 are full green, and 0,1,2,3 are black.  See tick is on chosen menu item.
 
-- - SOUND MENU - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-Start over.
-[ ] Ensure "Enable sound" is ticked.
-[ ] Check lynx beeps
-[ ] Run BACH tap file to check sound is OK.
-[ ] Ensure "Enable sound" silences BACH while it is ticked.
-[ ] Test unticking "Enable sound".
-[ ] Check "Finish Recording" is greyed.
-[ ] Choose "Record sound to file" then cancel.
-[ ]   See BACH is still playing.
-[ ]   Check "Finish Recording" is greyed
-[ ] Choose "Record sound to file" then enter a good name somewhere good.
-[ ]   See BACH is still playing.
-[ ]   Check "Finish Recording" is enabled.
-[ ]   Choose "Finish Recording".  See WAV file is available in file system, and can be played on other software.
-[ ]     See Check "Finish Recording" is greyed, once recording was finished.
+- - SOUND MENU - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 Start over.
-[ ] Tick "Listen to tape sounds".  This requires 100% speed and Super speed cassette OFF, and sound enabled, pause after tape load OFF.
-[ ] Load a TAP and hear the sounds.
-[ ] Save a TAP and hear the sounds.
-[ ] Changing speed %age should change pitch of tape sounds.
-[ ] Super speed cassette will never play sounds, even if tape sounds are enabled.
+[y] Ensure "Enable sound" is ticked.
+[y] Check lynx beeps  (reset will do)
+[y] Run BACH tap file to check sound is OK.
+[y] Ensure "Enable sound" silences BACH while it is un-ticked.
+[y] Test ticking "Enable sound" restores sound.
+[y] Check "Finish Recording" is greyed.
+[y] Choose "Record sound to file" then cancel.
+[y]   See BACH is still playing.
+[y]   Check "Finish Recording" is greyed
+[y] Choose "Record sound to file" then enter a good name somewhere good.
+[y]   See BACH is still playing.
+[y]   Check "Finish Recording" is enabled.
+[y]   Choose "Finish Recording".  See WAV file is available in file system, and can be played on other software.
+[y]     See Check "Finish Recording" is greyed, once recording was finished.
+
+Start over.
+[y] Tick "Listen to tape sounds".  This requires 100% speed and Super speed cassette OFF, and sound enabled, pause after tape load OFF.
+[y] Run a TAP and hear the sounds.
+[y] Save a TAP and hear the sounds.
+[y] Changing speed %age should change pitch of tape sounds.
+[y] Super speed cassette will never play sounds, even if tape sounds are enabled.
 
 
-- - TEXT MENU - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - TEXT MENU - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 Start over.
 [ ] See "Stop recording lynx text" is grey initially.
@@ -197,11 +247,11 @@ Start over.
 [ ] The disassembly output cannot be "spoiled" by the user typing at the same time.
 [ ] Except... The ESC key stops the disassembly, returning the lynx to normal service.
 
-- - HELP MENU - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - HELP MENU - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 [ ] "Help | About" shows the about box with jynx version and blog address.
 
-- - THE COMMAND LINE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - THE COMMAND LINE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 [ ] No parameters just starts the program.
 [ ] The "--settings" allows specification of a settings file to use.  The next lexeme is the full path, enclosed in quotes if needed.
@@ -210,21 +260,4 @@ Start over.
 [ ] The "--tap" allows auto-running a TAP file.  The next lexeme is the full path, enclosed in quotes if needed.
 [ ] "--snapshot" takes precedence over "--run" if both are present.
 [ ] "--games" suppresses prompts on exit ** TODO: fully specify behaviours.
-
-- - ROM FILES - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-[ ] Test if they are missing.
-[ ] Test if they are bad.
-
-- - DEFAULT DEFAULTS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-[ ] TODO:  When the default settings file is missing, say what the default settings are.
-
-- - USER SETTINGS FILE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-
-
-
-
-
 

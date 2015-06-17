@@ -57,11 +57,8 @@ int main( int argc, char *argv[] )
     try
     {
         auto paramsList = MakeParamsListFromArgcAndArgv( argc, argv, 1 );
-
         auto exePath = RemoveLeafFromPath( argv[0] );
-
         auto mainWindow = std::make_shared<MainForm>( paramsList, exePath.c_str() );
-
         gtk_main();
     }
     catch( std::exception &e )
