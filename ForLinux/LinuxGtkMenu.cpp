@@ -20,6 +20,7 @@
 
 #include <algorithm>
 #include <assert.h>
+#include "LinuxGtk.h"
 #include "LinuxGtkMenu.h"
 
 // TODO: Raise exception on allocation failures.
@@ -49,7 +50,7 @@ private:
 
 LinuxGtkMenuBar::LinuxGtkMenuBar()
 {
-    _menuBar = gtk_menu_bar_new();
+    _menuBar = ThrowIfNull( gtk_menu_bar_new() );
 }
 
 
@@ -92,10 +93,10 @@ void LinuxGtkMenuBar::CheckMenuItem(  uint32_t menuID, bool isChecked )
 LinuxGtkMenu::LinuxGtkMenu( GtkWidget *menubar, const char *optionText, InterfaceForMenuItemClickHandling *eventHandler )
 {
     _onClickEventHandler = eventHandler;
-    _menuObject = gtk_menu_new();
-    _barButton  = gtk_menu_item_new_with_label( StripAccelerators(optionText).c_str() );
+    _menuObject = ThrowIfNull( gtk_menu_new() );
+    _barButton  = ThrowIfNull( gtk_menu_item_new_with_label( StripAccelerators(optionText).c_str() ) );
     gtk_menu_item_set_submenu( GTK_MENU_ITEM(_barButton), _menuObject );
-    gtk_menu_shell_append(GTK_MENU_SHELL(menubar), _barButton);
+    gtk_menu_shell_append( GTK_MENU_SHELL(menubar), _barButton );
 }
 
 
@@ -119,7 +120,7 @@ void LinuxGtkMenu::AddTick( const char *optionText, uint32_t menuID )
 void LinuxGtkMenu::AppendItem( GtkWidget *menuItemWidget, uint32_t menuID )
 {
     gtk_menu_shell_append( GTK_MENU_SHELL(_menuObject), menuItemWidget );
-    g_signal_connect( G_OBJECT(menuItemWidget), "activate", G_CALLBACK(&LinuxGtkMenu::GenericMenuItemHandler), this );
+    ThrowLEZ( g_signal_connect( G_OBJECT(menuItemWidget), "activate", G_CALLBACK(&LinuxGtkMenu::GenericMenuItemHandler), this ) );
     _widgetToMenuItemIdMap.insert( std::make_pair(menuItemWidget, menuID) );
     _menuItemIdMapToWidget.insert( std::make_pair(menuID, menuItemWidget) );
 }
@@ -128,7 +129,7 @@ void LinuxGtkMenu::AppendItem( GtkWidget *menuItemWidget, uint32_t menuID )
 
 void LinuxGtkMenu::AddSeparator()
 {
-    auto newSeparatorWidget = gtk_separator_menu_item_new();
+    auto newSeparatorWidget = ThrowIfNull( gtk_separator_menu_item_new() );
     gtk_menu_shell_append( GTK_MENU_SHELL(_menuObject), newSeparatorWidget );
 }
 

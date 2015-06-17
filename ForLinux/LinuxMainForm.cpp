@@ -27,6 +27,8 @@
 #include <iostream>
 #include <fstream>
 #include <algorithm>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #include "gdk/gdkkeysyms.h"
 
@@ -34,8 +36,10 @@
 #include "LinuxAboutBox.h"
 #include "LinuxFileOpener.h"
 #include "LinuxGtkFileDialogs.h"
+#include "LinuxGtk.h"
 
 #include "JynxParsedParameters.h"
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //        HOST WINDOW
@@ -56,13 +60,10 @@ MainForm::MainForm( const std::vector<std::string> &paramsList, const char *exeP
 
         //
         // Create frame buffer bitmap which emulator can directly draw on.
+        // Reminder: buffer is not cleared.
         //
 
-        _pixBuf = gdk_pixbuf_new( GDK_COLORSPACE_RGB, TRUE, 8, LYNX_FRAMEBUF_WIDTH, LYNX_FRAMEBUF_HEIGHT );  // Reminder: buffer is not cleared.
-        if( ! _pixBuf )
-        {
-            throw std::runtime_error( "Cannot create the screen bitmap for the emulation.\nThe emulation cannot continue." );
-        }
+        _pixBuf = ThrowIfNull( gdk_pixbuf_new( GDK_COLORSPACE_RGB, TRUE, 8, LYNX_FRAMEBUF_WIDTH, LYNX_FRAMEBUF_HEIGHT ), "Cannot create the screen bitmap for the emulation.\nThe emulation cannot continue." );
 
         auto pixelBuffer   = gdk_pixbuf_get_pixels( _pixBuf );
         auto rowStride     = gdk_pixbuf_get_rowstride( _pixBuf );
@@ -99,7 +100,7 @@ MainForm::MainForm( const std::vector<std::string> &paramsList, const char *exeP
 
         // Create the main window:
 
-        _gtkWindow = GTK_WINDOW( gtk_window_new( GTK_WINDOW_TOPLEVEL ) );
+        _gtkWindow         = ThrowIfNull( GTK_WINDOW( gtk_window_new( GTK_WINDOW_TOPLEVEL ) ) );
         _gtkWindowAsWidget = GTK_WIDGET( _gtkWindow );  // avoid loads of casting
 
         gtk_container_set_border_width( GTK_CONTAINER( _gtkWindow ), 0 );
@@ -107,11 +108,11 @@ MainForm::MainForm( const std::vector<std::string> &paramsList, const char *exeP
         gtk_window_set_title(           _gtkWindow, "Jynx" );
         gtk_window_set_position(        _gtkWindow, GTK_WIN_POS_CENTER );
         gtk_widget_realize(             _gtkWindowAsWidget );
-        gtk_signal_connect(             GTK_OBJECT( _gtkWindow ), "delete_event", GTK_SIGNAL_FUNC( &MainForm::GtkHandlerForCloseBoxDeleteEvent ), this );
+        ThrowLEZ( g_signal_connect(       GTK_OBJECT( _gtkWindow ), "delete_event", GTK_SIGNAL_FUNC( &MainForm::GtkHandlerForCloseBoxDeleteEvent ), this ) );
 
         // Create vertical box:
 
-        _vbox = gtk_vbox_new( FALSE, 0 );
+        _vbox = ThrowIfNull( gtk_vbox_new( FALSE, 0 ) );
         gtk_container_add( GTK_CONTAINER(_gtkWindow), _vbox );
 
         // Create the menu bar:
@@ -213,11 +214,11 @@ MainForm::MainForm( const std::vector<std::string> &paramsList, const char *exeP
         _gtkDrawingArea = gtk_drawing_area_new();
         // gtk_drawing_area_size( GTK_DRAWING_AREA(_gtkDrawingArea), 200, 200 );
         auto gtkDrawingAreaAsObject = GTK_OBJECT(_gtkDrawingArea);
-        gtk_signal_connect( gtkDrawingAreaAsObject, "expose_event",        (GtkSignalFunc) &MainForm::GtkHandlerForDrawingAreaExposeEvent,       this );
-        gtk_signal_connect( gtkDrawingAreaAsObject, "button_press_event",  (GtkSignalFunc) &MainForm::GtkHandlerForDrawingAreaButtonPressEvent,  this );
-        gtk_signal_connect( gtkDrawingAreaAsObject, "key_press_event",     (GtkSignalFunc) &MainForm::GtkHandlerForKeyPress,    this );
-        gtk_signal_connect( gtkDrawingAreaAsObject, "key_release_event",   (GtkSignalFunc) &MainForm::GtkHandlerForKeyRelease,  this );
-        gtk_signal_connect( gtkDrawingAreaAsObject, "focus_out_event",     (GtkSignalFunc) &MainForm::GtkHandlerForFocusLoss,  this );
+        ThrowLEZ( g_signal_connect( gtkDrawingAreaAsObject, "expose_event",        (GtkSignalFunc) &MainForm::GtkHandlerForDrawingAreaExposeEvent,       this ) );
+        ThrowLEZ( g_signal_connect( gtkDrawingAreaAsObject, "button_press_event",  (GtkSignalFunc) &MainForm::GtkHandlerForDrawingAreaButtonPressEvent,  this ) );
+        ThrowLEZ( g_signal_connect( gtkDrawingAreaAsObject, "key_press_event",     (GtkSignalFunc) &MainForm::GtkHandlerForKeyPress,    this ) );
+        ThrowLEZ( g_signal_connect( gtkDrawingAreaAsObject, "key_release_event",   (GtkSignalFunc) &MainForm::GtkHandlerForKeyRelease,  this ) );
+        ThrowLEZ( g_signal_connect( gtkDrawingAreaAsObject, "focus_out_event",     (GtkSignalFunc) &MainForm::GtkHandlerForFocusLoss,  this ) );
 
         gtk_widget_set_events(
             _gtkDrawingArea, GDK_FOCUS_CHANGE_MASK | GDK_EXPOSURE_MASK | GDK_LEAVE_NOTIFY_MASK | GDK_BUTTON_PRESS_MASK
@@ -240,11 +241,7 @@ MainForm::MainForm( const std::vector<std::string> &paramsList, const char *exeP
         // This saves us setting up an additional timer with the library.
         //
 
-        _gtkTimerId = g_timeout_add( 20, (GSourceFunc) &MainForm::GtkHandlerForTheTimer, this );
-        if( _gtkTimerId <= 0 )
-        {
-            throw std::runtime_error( "Cannot create the main timer.\nThe emulation cannot continue." );
-        }
+        _gtkTimerId = ThrowLEZ( g_timeout_add( 20, (GSourceFunc) &MainForm::GtkHandlerForTheTimer, this ), "Cannot create the main timer.\nThe emulation cannot continue." );
 
         /*
         SetBigAndSmallIcons( IDR_MAINFRAME );
@@ -825,21 +822,42 @@ void  MainForm::PaintPixelsOnHostBitmap_OnEmulatorThread( uint32_t addressOffset
 
 
 
+bool EnsureFolderExists( const char *folderPath )
+{
+    // You can make use of the stat system call by passing it the name of the directory as
+    // the first argument. If the directory exists a 0 is returned else -1 is returned and
+    // errno will be set to ENOENT.
+
+    struct stat st;
+    if( stat( folderPath, &st ) == -1 && errno == ENOENT )
+    {
+        if( mkdir( folderPath, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH ) != 0 )
+        {
+            return false;
+        }
+        return true;
+    }
+
+    return true;
+}
+
+
+
 std::string  GetJynxAppDataPath()
 {
     // TODO:  Ensure it is a folder, make it if it does not exist.
-    return "~/.jynx_emulator";
-
-/*	auto pathRoot = "~/.jynx_emulator";
-	if( ! pathRoot.empty() )
-	{
-		auto jynxFolderPath = pathRoot + L"JynxEmulator";
-		if ( CreateDirectory( jynxFolderPath.c_str(), NULL) || ERROR_ALREADY_EXISTS == GetLastError() )
-		{
-			return jynxFolderPath;
-		}
-	}
-	return std::string();*/
+    auto envString = getenv( "HOME" );
+    if( envString != nullptr )
+    {
+        std::string resultStr;
+        resultStr += envString;
+        resultStr += "/.jynx_emulator";
+        if( EnsureFolderExists( resultStr.c_str() ) )
+        {
+            return resultStr;
+        }
+    }
+	return std::string();
 }
 
 

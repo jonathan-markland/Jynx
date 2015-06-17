@@ -2749,9 +2749,10 @@
 	"ParameterParsing.h"
 	"LinuxMainForm.h"
 
-1434229158 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxGtkMenu.cpp
+1434565551 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxGtkMenu.cpp
 	<algorithm>
 	<assert.h>
+	"LinuxGtk.h"
 	"LinuxGtkMenu.h"
 
 1434229158 /home/jonathan/Documents/Jynx/ForLinux/LinuxGtkMenu.h
@@ -2773,7 +2774,7 @@
 
 1434229158 /home/jonathan/Documents/Jynx/ForLinux/LinuxAboutBox.h
 
-1434406852 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.cpp
+1434565777 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.cpp
 	"MenuItemIDs.h"
 	"LynxHardware.h"
 	"UIStrings.h"
@@ -2781,11 +2782,14 @@
 	<iostream>
 	<fstream>
 	<algorithm>
+	<sys/stat.h>
+	<sys/types.h>
 	"gdk/gdkkeysyms.h"
 	"LinuxMainForm.h"
 	"LinuxAboutBox.h"
 	"LinuxFileOpener.h"
 	"LinuxGtkFileDialogs.h"
+	"LinuxGtk.h"
 	"JynxParsedParameters.h"
 
 1434401298 /home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.h
@@ -2804,7 +2808,7 @@
 	"UIStrings.h"
 	"MenuItemIDs.h"
 
-1433758452 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxFileOpener.cpp
+1434490569 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxFileOpener.cpp
 	"LinuxFileOpener.h"
 
 1433754952 /home/jonathan/Documents/Jynx/ForLinux/LinuxFileOpener.h
@@ -2846,4 +2850,11 @@
 	"ParameterParsing.h"
 
 1434401884 /home/jonathan/Documents/Jynx/Portable/UnexpectedExceptionGuard.h
+
+1434564489 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxGtk.cpp
+	"LinuxGtk.h"
+
+1434565818 /home/jonathan/Documents/Jynx/ForLinux/LinuxGtk.h
+	<stdexcept>
+	"gtk/gtk.h"
 
