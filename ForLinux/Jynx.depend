@@ -2774,7 +2774,7 @@
 
 1434229158 /home/jonathan/Documents/Jynx/ForLinux/LinuxAboutBox.h
 
-1434575255 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.cpp
+1434655887 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.cpp
 	"MenuItemIDs.h"
 	"LynxHardware.h"
 	"UIStrings.h"
@@ -2792,7 +2792,7 @@
 	"LinuxGtk.h"
 	"JynxParsedParameters.h"
 
-1434401298 /home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.h
+1434655894 /home/jonathan/Documents/Jynx/ForLinux/LinuxMainForm.h
 	"../Portable/LynxUserInterfaceModel.h"
 	"../Portable/IViewServicesForLynxUserInterfaceModel.h"
 	"../Portable/WaveOutputStream.h"
@@ -2854,7 +2854,7 @@
 1434564489 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxGtk.cpp
 	"LinuxGtk.h"
 
-1434566040 /home/jonathan/Documents/Jynx/ForLinux/LinuxGtk.h
+1434655900 /home/jonathan/Documents/Jynx/ForLinux/LinuxGtk.h
 	<stdexcept>
 	"gtk/gtk.h"
 

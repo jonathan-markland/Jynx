@@ -227,37 +227,67 @@ Start over.
 - - TEXT MENU - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 Start over.
-[ ] See "Stop recording lynx text" is grey initially.
-[ ] Choose "Record lynx text to file".  Cancel dialog.  No changes to state.
-[ ] Choose "Record lynx text to file".  Choose a good name.
-[ ]   See that "Stop recording lynx text" is enabled.
-[ ]   Use the Lynx MON "H" command to dump some text to the screen.
-[ ]   See that "Stop recording lynx text" is enabled.
-[ ]   Choose "Stop recording lynx text".  See it greys out.
-[ ]   See that the file is fully saved to the file system, and can be opened by another program.
-[ ]   See that the file contains only the text that the Lynx output, and not the user's typing at the prompts.
+[y] See "Stop recording lynx text" is grey initially.
+[y] Choose "Record lynx text to file".  Cancel dialog.  No changes to state.
+[y] Choose "Record lynx text to file".  Choose a good name.
+[y]   See that "Stop recording lynx text" is enabled.
+[y]   Use the Lynx MON "H" command to dump some text to the screen.
+[y]   See that "Stop recording lynx text" is enabled.
+[y]   Choose "Stop recording lynx text".  See it greys out.
+[y]   See that the file is fully saved to the file system, and can be opened by another program.
+[y]   See that the file contains only the text that the Lynx output, and not the user's typing at the prompts.
 
 Start over.
-[ ] Choose "Text | Type in text from file...", and see that the text is typed at the BASIC prompt.
-[ ] See that the user cannot "spoil" the text coming in from the file by typing at the same time.
-[ ] Except... the user CAN press ESCAPE to cancel the text spooling, returning the Lynx prompt to normal service.
+[y] Choose "Text | Type in text from file...", and see that the text is typed at the BASIC prompt.
+[y] See that the user cannot "spoil" the text coming in from the file by typing at the same time.
+[y] Except... the user CAN press ESCAPE to cancel the text spooling, returning the Lynx prompt to normal service.
 
 Start over.
-[ ] Tick "Enable Lynx REM command extensions".  Typing "REM DISASM 85E 100" will start a disassembly.
-[ ] The disassembly output cannot be "spoiled" by the user typing at the same time.
-[ ] Except... The ESC key stops the disassembly, returning the lynx to normal service.
+[y] Untick "Enable Lynx REM command extensions".  Typing "REM DISASM 85E 100" at BASIC prompt does nothing.
+[y] Tick "Enable Lynx REM command extensions".  Typing "REM DISASM 85E 100" will start a disassembly.
+[y] The disassembly output cannot be "spoiled" by the user typing at the same time.
+[y] Except... The ESC key stops the disassembly, returning the lynx to normal service.
 
 - - HELP MENU - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-[ ] "Help | About" shows the about box with jynx version and blog address.
+[y] "Help | About" shows the (modal) about box with jynx version and blog address.
 
 - - THE COMMAND LINE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-[ ] No parameters just starts the program.
-[ ] The "--settings" allows specification of a settings file to use.  The next lexeme is the full path, enclosed in quotes if needed.
-[ ]    TODO: Check [does the games flag control this instead?]:   A settings file used in this manner should never be saved over automatically by Jynx on exiting!
-[ ] The "--snapshot" allows auto-starting a snapshot.  The next lexeme is the full path, enclosed in quotes if needed.
-[ ] The "--tap" allows auto-running a TAP file.  The next lexeme is the full path, enclosed in quotes if needed.
-[ ] "--snapshot" takes precedence over "--run" if both are present.
-[ ] "--games" suppresses prompts on exit ** TODO: fully specify behaviours.
+[y] No parameters just starts the program.
+[y] Use green screen to show that the program can be re-started and is restoring settings from the master settings file.
+
+[y] The "--settings" allows specification of a settings file to use.  The next lexeme is the full path, enclosed in quotes if needed.
+
+[y]    A settings file used in this manner should never be saved over automatically by Jynx on exiting!  [Use gedit to check]
+       On Linux:     ../ForLinux/bin/Debug/Jynx --settings /home/jonathan/Documents/Jynx/Testing/test.config
+       On Windows:
+
+[ ]       TODO: Check [does the games flag control this instead?]:
+
+[y] The "--snapshot" allows auto-starting a snapshot.  The next lexeme is the full path, enclosed in quotes if needed.
+       On Linux:     ../ForLinux/bin/Debug/Jynx --snapshot /home/jonathan/Documents/Jynx/Testing/DuringBACH.lynxsnapshot
+       On Windows:
+
+[y] The "--snapshot" reports a clean failure, and exits the emulator, if a non-snapshot is passed in.
+       On Linux:     ../ForLinux/bin/Debug/Jynx --snapshot /home/jonathan/Documents/Jynx/Testing/Nonsense.lynxsnapshot
+       On Windows:
+
+[y] The "--tap" allows auto-running a TAP file.  The next lexeme is the full path, enclosed in quotes if needed.
+       On Linux:     ../ForLinux/bin/Debug/Jynx --run "/home/jonathan/Documents/Jynx/Testing/ALL PAPERS.tap"
+       On Windows:
+
+[y] The "--tap" reports a clean failure, and exits the emulator, if a non-tap is passed in.
+       On Linux:     ../ForLinux/bin/Debug/Jynx --run "/home/jonathan/Documents/Jynx/Testing/Nonsense.tap"
+       On Windows:
+
+[y] "--snapshot" takes precedence over "--run" if both are present.
+       On Linux:     ../ForLinux/bin/Debug/Jynx --run "/home/jonathan/Documents/Jynx/Testing/ALL PAPERS.tap" --snapshot /home/jonathan/Documents/Jynx/Testing/DuringBACH.lynxsnapshot
+       On Windows:
+
+The "--games" command line switch will suppress the following prompts.
+[ ] The   "Are you sure you want to close the Lynx emulator?"   prompt is never shown, and is forced to YES.
+[ ] The   "Tape rewound."   message is never displayed.  The tape is re-wound quietly.
+[ ] The   "This action will RESET the emulator!\n\nDo you wish to proceed?"   message is never displayed, and the default is taken to be YES.
+
 

@@ -304,6 +304,11 @@ void MainForm::Cleanup()
 		_gtkTimerId = 0;
 	}
 
+    // Disconnect signals:
+
+    g_signal_handlers_disconnect_by_data( _gtkWindow, this );
+    g_signal_handlers_disconnect_by_data( _gtkDrawingArea, this );
+
 	// MULTI-THREADING NOTE:
 	// - Must destroy _lynxUIModel before destroying resources that
 	//   the model uses!
