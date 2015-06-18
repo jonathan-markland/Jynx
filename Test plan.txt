@@ -156,7 +156,7 @@ Start Over.
 [y] Speed menu:  Test "Pause", check with cursor flash.
 [y] Tick 100%, Tick "Super speed cassette" only.  Run a TAP file to check load is fast, but game is normal speed.
 [y]    Do a super speed BASIC LOAD command
-[!]    Do a super speed BASIC SAVE command   [saves at real speed only!]
+[y]    Do a super speed BASIC SAVE command   [saves at real speed only!]
 [y] Start over.  Tick "100%" and "Super speed console" only.  Check key repeat is normal.
 [y]   Check command execution in general (eg:  MON "H" command)  list "instantly".
 [y] Tick "Super speed always".  Check that typing repeat rate is impossibly fast.
@@ -172,7 +172,7 @@ Start Over.
 [y] Check "Reset guest machine" prompts.  Choose YES.  Lynx resets.
 [y] Untick "Pause".  Tick "Pause after load".  Run a TAP, and quickly open Speed menu.
     See that Pause becomes ticked once the program loads, and unticking pause releases the lynx.
-[!] Test a BASIC SAVE command with "Pause after load" selected.  See that lynx does NOT pause after a SAVE.  [result: yes is does pause still]
+[!] Test a BASIC SAVE command with "Pause after load" selected.  See that lynx does NOT pause after a SAVE.  [result: yes it does pause still]
 
 - - DISPLAY MENU - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
