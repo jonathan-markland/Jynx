@@ -27,7 +27,6 @@ If these are working, everything is likely to be worked, since no code changes.
 
 [y] Test present and correct.
 [y] Test if they are missing.
-[ ] Test if they are bad.
 
 - - GENERAL - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -42,6 +41,7 @@ If these are working, everything is likely to be worked, since no code changes.
 [y]       When confirming TAP:  YES will abandon and exit.
 [y]   The current sound recording is saved and closed automatically.
 [!]   The Linux console "play" program plays the WAV without error or warning.  [result: Plays to end, but warns]
+[ ]   WAV can be played in Windows.
 [y]   The current text recording is saved and closed automatically.
 
 - - KEYBOARD - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -263,8 +263,6 @@ Start over.
        On Linux:     ../ForLinux/bin/Debug/Jynx --settings /home/jonathan/Documents/Jynx/Testing/test.config
        On Windows:
 
-[ ]       TODO: Check [does the games flag control this instead?]:
-
 [y] The "--snapshot" allows auto-starting a snapshot.  The next lexeme is the full path, enclosed in quotes if needed.
        On Linux:     ../ForLinux/bin/Debug/Jynx --snapshot /home/jonathan/Documents/Jynx/Testing/DuringBACH.lynxsnapshot
        On Windows:
@@ -286,8 +284,8 @@ Start over.
        On Windows:
 
 The "--games" command line switch will suppress the following prompts.
-[ ] The   "Are you sure you want to close the Lynx emulator?"   prompt is never shown, and is forced to YES.
-[ ] The   "Tape rewound."   message is never displayed.  The tape is re-wound quietly.
-[ ] The   "This action will RESET the emulator!\n\nDo you wish to proceed?"   message is never displayed, and the default is taken to be YES.
+[y] The   "Are you sure you want to close the Lynx emulator?"   prompt is never shown, and is forced to YES.
+[y] The   "Tape rewound."   message is never displayed.  The tape is re-wound quietly.
+[y] The   "This action will RESET the emulator!\n\nDo you wish to proceed?"   message is never displayed, and the default is taken to be YES.
 
 

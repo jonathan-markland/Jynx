@@ -1051,11 +1051,6 @@ namespace Jynx
 			{
 				if( (portNumber & 0xFC6) == 0x0080 ) // <-- Mask per Lynx User Magazine Issue 1.  The lynx appears to only read from this port specifically, when reading tapes.
 				{
-					if( _canEnableSpeedMaxModeWhenUsingCassette )
-					{
-						_speedMaxModeBecauseOfCassette = true;
-					}
-
 					// (It seems cassette loading terminates immediately unless the key information is
 					// returned here.  Fixing the top 7 bits at "0"s wasn't a good idea!).
 					auto cassetteBit0 = CassetteRead();
@@ -1115,7 +1110,6 @@ namespace Jynx
 
 	void LynxEmulatorGuest::CassetteMotorOff()
 	{
-		_speedMaxModeBecauseOfCassette = false;
 		_currentReadTape->CassetteMotorOff();
 		_currentWriteTape->NotifyCassetteMotorOff();
 		_hostObject->NotifyOutputTapeAvailbilityChanged_OnAnyThread();
@@ -1236,6 +1230,12 @@ namespace Jynx
 			_verticalOffsetPixels6845   = (rangeMaskedScreenStartAddress6845 / 32) * charHeight6845;
 			MarkWholeScreenInvalid();
 		}
+
+        // Pins MA12 and MA13 of the 6845 are (mis!) used as outputs that control tape circuitry
+        // and this is how we know we are doing a SAVE or LOAD.
+
+        _speedMaxModeBecauseOfCassette =
+            _canEnableSpeedMaxModeWhenUsingCassette  &&  IsTapeInOperation();
 	}
 
 
