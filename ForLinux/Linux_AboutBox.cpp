@@ -30,7 +30,13 @@ namespace Jynx
         gtk_about_dialog_set_name(      GTK_ABOUT_DIALOG(dialog), "Jynx Emulator" );
         gtk_about_dialog_set_version(   GTK_ABOUT_DIALOG(dialog), "1.0.9" );
         gtk_about_dialog_set_copyright( GTK_ABOUT_DIALOG(dialog), "(c) 2015 Jonathan Markland" );
-        gtk_about_dialog_set_comments(  GTK_ABOUT_DIALOG(dialog), "Emulator for the Camputers Lynx 48K/96K" );
+
+        gtk_about_dialog_set_comments(  GTK_ABOUT_DIALOG(dialog),
+            "Emulator for the Camputers Lynx 48K/96K\nLinux Edition\n\n"
+            "This program comes with ABSOLUTELY NO WARRANTY,\n"
+            "and is licensed under the GNU General Public License Version 3\n"
+            "See   http://www.gnu.org/licenses/   for your rights." );
+
         gtk_about_dialog_set_website(   GTK_ABOUT_DIALOG(dialog), "http://jynxemulator.wordpress.com" );
 
         // gtk_about_dialog_set_logo(      GTK_ABOUT_DIALOG(dialog), pixbuf);

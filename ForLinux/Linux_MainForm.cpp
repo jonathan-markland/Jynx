@@ -32,11 +32,11 @@
 
 #include "gdk/gdkkeysyms.h"
 
-#include "LinuxMainForm.h"
-#include "LinuxAboutBox.h"
-#include "LinuxFileOpener.h"
-#include "LinuxGtkFileDialogs.h"
-#include "LinuxGtk.h"
+#include "Linux_MainForm.h"
+#include "Linux_AboutBox.h"
+#include "Linux_FileOpener.h"
+#include "Linux_GtkFileDialogs.h"
+#include "Linux_Gtk.h"
 
 #include "JynxParsedParameters.h"
 

@@ -25,20 +25,7 @@
 #include <gtk/gtk.h>
 
 #include "ParameterParsing.h"
-#include "LinuxMainForm.h"
-
-
-template<typename CHAR_TYPE>
-std::basic_string<CHAR_TYPE>  RemoveLeafFromPath( const CHAR_TYPE *path )   // TODO: Move to library
-{
-    std::basic_string<CHAR_TYPE>  result(path);
-    auto pos = result.rfind('/');
-    if( pos != std::basic_string<CHAR_TYPE>::npos )
-    {
-        return std::basic_string<CHAR_TYPE>( result.begin(), result.begin() + pos );
-    }
-    throw std::runtime_error( "Failed to remove leaf from path!" );
-}
+#include "Linux_MainForm.h"
 
 
 
@@ -83,6 +70,7 @@ int main( int argc, char *argv[] )
         gtk_window_set_title( GTK_WINDOW(dialog), "Program error" );
         gtk_dialog_run( GTK_DIALOG(dialog) );
         gtk_widget_destroy( dialog );
+        return 1;
     }
 
     return 0;

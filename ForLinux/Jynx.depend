@@ -148,7 +148,7 @@
 
 1433969238 /home/jonathan/Documents/Jynx/Portable/LynxRectangle.h
 
-1434790914 source:/home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.cpp
+1434791320 source:/home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.cpp
 	<assert.h>
 	"LynxUserInterfaceModel.h"
 	"LynxHardware.h"
@@ -2857,4 +2857,74 @@
 1434655900 /home/jonathan/Documents/Jynx/ForLinux/LinuxGtk.h
 	<stdexcept>
 	"gtk/gtk.h"
+
+1434793673 source:/home/jonathan/Documents/Jynx/ForLinux/Linux_AboutBox.cpp
+	<gtk/gtk.h>
+
+1434791739 source:/home/jonathan/Documents/Jynx/ForLinux/Linux_FileOpener.cpp
+	"Linux_FileOpener.h"
+
+1433754952 /home/jonathan/Documents/Jynx/ForLinux/Linux_FileOpener.h
+	<string>
+	"../Portable/IFileOpener.h"
+
+1434791739 source:/home/jonathan/Documents/Jynx/ForLinux/Linux_GtkFileDialogs.cpp
+	"Linux_GtkFileDialogs.h"
+
+1434229158 /home/jonathan/Documents/Jynx/ForLinux/Linux_GtkFileDialogs.h
+	<string>
+	<gtk/gtk.h>
+
+1434791739 source:/home/jonathan/Documents/Jynx/ForLinux/Linux_GtkMenu.cpp
+	<algorithm>
+	<assert.h>
+	"Linux_Gtk.h"
+	"Linux_GtkMenu.h"
+
+1434655900 /home/jonathan/Documents/Jynx/ForLinux/Linux_Gtk.h
+	<stdexcept>
+	"gtk/gtk.h"
+
+1434574244 /home/jonathan/Documents/Jynx/ForLinux/Linux_GtkMenu.h
+	<gtk/gtk.h>
+	<stdint.h>
+	<string>
+	<map>
+	<memory>
+	<vector>
+
+1434793812 source:/home/jonathan/Documents/Jynx/ForLinux/Linux_Main.cpp
+	<stdlib.h>
+	<stdint.h>
+	<string>
+	<gtk/gtk.h>
+	"ParameterParsing.h"
+	"Linux_MainForm.h"
+
+1434793774 /home/jonathan/Documents/Jynx/ForLinux/Linux_MainForm.h
+	"../Portable/LynxUserInterfaceModel.h"
+	"../Portable/IViewServicesForLynxUserInterfaceModel.h"
+	"../Portable/WaveOutputStream.h"
+	<gtk/gtk.h>
+	"Linux_GtkMenu.h"
+
+1434791739 source:/home/jonathan/Documents/Jynx/ForLinux/Linux_MainForm.cpp
+	"MenuItemIDs.h"
+	"LynxHardware.h"
+	"UIStrings.h"
+	<assert.h>
+	<iostream>
+	<fstream>
+	<algorithm>
+	<sys/stat.h>
+	<sys/types.h>
+	"gdk/gdkkeysyms.h"
+	"Linux_MainForm.h"
+	"Linux_AboutBox.h"
+	"Linux_FileOpener.h"
+	"Linux_GtkFileDialogs.h"
+	"Linux_Gtk.h"
+	"JynxParsedParameters.h"
+
+1434229158 /home/jonathan/Documents/Jynx/ForLinux/Linux_AboutBox.h
 

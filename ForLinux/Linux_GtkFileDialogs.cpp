@@ -18,7 +18,7 @@
 //		jynx_emulator {at} yahoo {dot} com
 //
 
-#include "LinuxGtkFileDialogs.h"
+#include "Linux_GtkFileDialogs.h"
 
 
 
@@ -106,16 +106,6 @@ bool ShowSaveFileDialog( GtkWindow *parentWindow, const char *dialogTitle, const
     AddMicrosoftStyleFilters( gtkFileChooser, fileSpecs );
 
     gtk_file_chooser_set_do_overwrite_confirmation( gtkFileChooser, TRUE );
-
-/*
-    if (TRUE) // user_edited_a_new_document) // TODO: fix
-      {
-        gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog), "/home/jonathan/Documents");
-        gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (dialog), "Untitled document");
-      }
-    else
-      gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (dialog), "filename_for_existing_document");
-*/
 
     if (gtk_dialog_run( GTK_DIALOG( dialog ) ) == GTK_RESPONSE_ACCEPT )
     {

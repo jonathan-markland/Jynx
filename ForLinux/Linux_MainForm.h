@@ -26,7 +26,7 @@
 
 #include <gtk/gtk.h>
 
-#include "LinuxGtkMenu.h"
+#include "Linux_GtkMenu.h"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //     MAIN FORM
@@ -115,5 +115,22 @@ private:
     guint     _gtkTimerId                = 0;
 
 };
+
+
+
+
+
+template<typename CHAR_TYPE>
+std::basic_string<CHAR_TYPE>  RemoveLeafFromPath( const CHAR_TYPE *path )   // TODO: Move to library
+{
+    std::basic_string<CHAR_TYPE>  result(path);
+    auto pos = result.rfind('/');
+    if( pos != std::basic_string<CHAR_TYPE>::npos )
+    {
+        return std::basic_string<CHAR_TYPE>( result.begin(), result.begin() + pos );
+    }
+    throw std::runtime_error( "Failed to remove leaf from path!" );
+}
+
 
 

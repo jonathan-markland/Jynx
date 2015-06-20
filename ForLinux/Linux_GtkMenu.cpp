@@ -20,8 +20,8 @@
 
 #include <algorithm>
 #include <assert.h>
-#include "LinuxGtk.h"
-#include "LinuxGtkMenu.h"
+#include "Linux_Gtk.h"
+#include "Linux_GtkMenu.h"
 
 // TODO: Raise exception on allocation failures.
 // TODO: Consider gtk_check_menu_item_get_draw_as_radio()
