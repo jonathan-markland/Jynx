@@ -110,21 +110,21 @@
 		<Unit filename="../Portable/Z80/JynxZ80_CB.cpp" />
 		<Unit filename="../Portable/Z80/JynxZ80_ED.cpp" />
 		<Unit filename="../Portable/ZeroInitialiseMemory.h" />
-		<Unit filename="LinuxAboutBox.cpp" />
-		<Unit filename="LinuxAboutBox.h" />
-		<Unit filename="LinuxFileOpener.cpp" />
-		<Unit filename="LinuxFileOpener.h" />
-		<Unit filename="LinuxGtk.h" />
-		<Unit filename="LinuxGtkFileDialogs.cpp" />
-		<Unit filename="LinuxGtkFileDialogs.h" />
-		<Unit filename="LinuxGtkMenu.cpp" />
-		<Unit filename="LinuxGtkMenu.h" />
-		<Unit filename="LinuxMainForm.cpp" />
-		<Unit filename="LinuxMainForm.h" />
+		<Unit filename="Linux_AboutBox.cpp" />
+		<Unit filename="Linux_AboutBox.h" />
+		<Unit filename="Linux_FileOpener.cpp" />
+		<Unit filename="Linux_FileOpener.h" />
+		<Unit filename="Linux_Gtk.h" />
+		<Unit filename="Linux_GtkFileDialogs.cpp" />
+		<Unit filename="Linux_GtkFileDialogs.h" />
+		<Unit filename="Linux_GtkMenu.cpp" />
+		<Unit filename="Linux_GtkMenu.h" />
+		<Unit filename="Linux_Main.cpp" />
+		<Unit filename="Linux_MainForm.cpp" />
+		<Unit filename="Linux_MainForm.h" />
 		<Unit filename="Linux_Thread.cpp" />
 		<Unit filename="Linux_Waitable.cpp" />
 		<Unit filename="Linux_WaveOutputStream.cpp" />
-		<Unit filename="main.cpp" />
 		<Extensions>
 			<envvars />
 			<code_completion />
