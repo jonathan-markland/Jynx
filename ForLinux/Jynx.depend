@@ -43,7 +43,7 @@
 	<stdexcept>
 	"Lexer.h"
 
-1434656532 source:/home/jonathan/Documents/Jynx/Portable/LynxEmulatorGuest.cpp
+1434656981 source:/home/jonathan/Documents/Jynx/Portable/LynxEmulatorGuest.cpp
 	<assert.h>
 	<string>
 	"LynxEmulatorGuest.h"
@@ -148,7 +148,7 @@
 
 1433969238 /home/jonathan/Documents/Jynx/Portable/LynxRectangle.h
 
-1434406018 source:/home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.cpp
+1434790914 source:/home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.cpp
 	<assert.h>
 	"LynxUserInterfaceModel.h"
 	"LynxHardware.h"
@@ -157,7 +157,7 @@
 	"MenuItemIDs.h"
 	"UnexpectedExceptionGuard.h"
 
-1434405894 /home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.h
+1434790931 /home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.h
 	"IViewServicesForLynxUserInterfaceModel.h"
 	"IHostServicesForLynxEmulator.h"
 	"LynxEmulatorGuest.h"

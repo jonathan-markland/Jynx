@@ -181,7 +181,7 @@ namespace Jynx
 	{
 		// (Called on the MAIN thread)
 
-		DoWithTerminationOnException( [&]() 
+		DoWithTerminationOnException( [&]()
 		{
 			_lynxEmulator->CallMeBackToInvalidateRegions();
 
@@ -471,10 +471,7 @@ namespace Jynx
 	{
 		// The View calls this because an option has (somehow!) been selected in the UI (menu/button/icon/whatever).
 
-		if( UserAllowsReset() )
-		{
-			SetMachineTypeAndReset( LynxMachineType::LYNX_48K );
-		}
+        IfUserAllowsThenSetMachineTypeAndReset( LynxMachineType::LYNX_48K );
 	}
 
 
@@ -483,10 +480,7 @@ namespace Jynx
 	{
 		// The View calls this because an option has (somehow!) been selected in the UI (menu/button/icon/whatever).
 
-		if( UserAllowsReset() )
-		{
-			SetMachineTypeAndReset( LynxMachineType::LYNX_96K );
-		}
+        IfUserAllowsThenSetMachineTypeAndReset( LynxMachineType::LYNX_96K );
 	}
 
 
@@ -495,10 +489,7 @@ namespace Jynx
 	{
 		// The View calls this because an option has (somehow!) been selected in the UI (menu/button/icon/whatever).
 
-		if( UserAllowsReset() )
-		{
-			SetMachineTypeAndReset( LynxMachineType::LYNX_96K_Scorpion );
-		}
+		IfUserAllowsThenSetMachineTypeAndReset( LynxMachineType::LYNX_96K_Scorpion );
 	}
 
 
@@ -507,10 +498,7 @@ namespace Jynx
 	{
 		// The View calls this because an option has (somehow!) been selected in the UI (menu/button/icon/whatever).
 
-		if( UserAllowsReset() )
-		{
-			SetMachineTypeAndReset( _lynxEmulator->GetMachineType() );  // ie: don't change machine type
-		}
+		IfUserAllowsThenSetMachineTypeAndReset( _lynxEmulator->GetMachineType() );  // ie: don't change machine type
 	}
 
 
@@ -991,10 +979,13 @@ namespace Jynx
 
 
 
-	void LynxUserInterfaceModel::SetMachineTypeAndReset( LynxMachineType::Enum machineType )
+	void LynxUserInterfaceModel::IfUserAllowsThenSetMachineTypeAndReset( LynxMachineType::Enum machineType )
 	{
-		_lynxEmulator->ResetGuest( machineType );
-		UpdateUserInterfaceElementsOnView();
+		if( UserAllowsReset() )
+		{
+            _lynxEmulator->ResetGuest( machineType );
+		}
+        UpdateUserInterfaceElementsOnView(); // Always, in case UI library assumes to automatically change tick-state without permission!
 	}
 
 

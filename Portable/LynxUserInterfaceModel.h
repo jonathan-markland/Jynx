@@ -129,7 +129,7 @@ namespace Jynx
 		void UpdateUserInterfaceElementsOnView();
 		bool CanRiskLosingModifiedTape() const;
 		void SetRenderStyle( RenderStyle::Enum newStyle );
-		void SetMachineTypeAndReset( LynxMachineType::Enum machineType );
+		void IfUserAllowsThenSetMachineTypeAndReset( LynxMachineType::Enum machineType );
 		bool UserAllowsReset();
 
 		void SaveUserSettings();
