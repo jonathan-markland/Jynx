@@ -167,7 +167,7 @@ MainForm::MainForm( const std::vector<std::string> &paramsList, const char *exeP
 		_menuEmulation->AddTick(  "Lynx 9&6K",                   ID_EMULATION_LYNX96K );
 		_menuEmulation->AddTick(  "Lynx 96K (+ &Scorpion ROM)",  ID_EMULATION_LYNX96KSCORPION );
 		_menuEmulation->AddSeparator();
-		_menuEmulation->AddTick(  "&Pause after tape load",       ID_EMULATION_PAUSEAFTERTAPLOAD );
+		_menuEmulation->AddTick(  "&Pause after tape operation", ID_EMULATION_PAUSEAFTERTAPOPERATION );
 		_menuEmulation->AddSeparator();
 		_menuEmulation->AddItem(  "&Reset guest machine",        ID_EMULATION_RESET );
 

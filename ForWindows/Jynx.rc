@@ -75,7 +75,7 @@ BEGIN
         MENUITEM "Lynx 9&6K",                   ID_EMULATION_LYNX96K
         MENUITEM "Lynx 96K (+ &Scorpion ROM)",  ID_EMULATION_LYNX96KSCORPION
         MENUITEM SEPARATOR
-        MENUITEM "&Pause after tape load",       ID_EMULATION_PAUSEAFTERTAPLOAD
+        MENUITEM "&Pause after tape operation", ID_EMULATION_PAUSEAFTERTAPOPERATION
         MENUITEM SEPARATOR
         MENUITEM "&Reset guest machine",        ID_EMULATION_RESET
     END

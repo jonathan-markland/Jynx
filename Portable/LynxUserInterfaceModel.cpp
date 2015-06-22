@@ -249,7 +249,7 @@ namespace Jynx
 					case ID_EMULATION_LYNX48K:		      OnEmulation48K(); break;
 					case ID_EMULATION_LYNX96K:		      OnEmulation96K(); break;
 					case ID_EMULATION_LYNX96KSCORPION:    OnEmulation96KScorpion(); break;
-					case ID_EMULATION_PAUSEAFTERTAPLOAD:  OnPauseAfterTapLoad(); break;
+					case ID_EMULATION_PAUSEAFTERTAPOPERATION:  OnPauseAfterTapLoad(); break;
 
 					case ID_SPEED_SPEED50:                OnSetCycles( Jynx::LynxZ80Cycles::At50 ); break;
 					case ID_SPEED_SPEED100:               OnSetCycles( Jynx::LynxZ80Cycles::At100 ); break;
