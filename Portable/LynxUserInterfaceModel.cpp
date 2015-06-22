@@ -65,9 +65,9 @@ namespace Jynx
 
 
 
-	void LynxUserInterfaceModel::OnAllKeysUp()                 { DoWithTerminationOnException( [&]() { _lynxEmulator->NotifyAllKeysUp(); } ); }
+	void LynxUserInterfaceModel::OnAllKeysUp()                 { DoWithTerminationOnException( [&]() { _lynxEmulator->NotifyAllKeysUp();        } ); }
 	void LynxUserInterfaceModel::OnKeyDown( int32_t keyCode )  { DoWithTerminationOnException( [&]() { _lynxEmulator->NotifyKeyDown( keyCode ); } ); }
-	void LynxUserInterfaceModel::OnKeyUp( int32_t keyCode )    { DoWithTerminationOnException( [&]() { _lynxEmulator->NotifyKeyUp( keyCode ); } ); }
+	void LynxUserInterfaceModel::OnKeyUp(   int32_t keyCode )  { DoWithTerminationOnException( [&]() { _lynxEmulator->NotifyKeyUp(   keyCode ); } ); }
 
 
 
@@ -109,7 +109,7 @@ namespace Jynx
 	void LynxUserInterfaceModel::OnPaint()
 	{
 		// The model provides a paint algorithm, which really amounts to positioning assistance.
-		// (Models don't usually paint, but heck all views will be using pixels!)
+		// (Models don't usually paint, but heck all views will be using pixels, so the model can *calculate*!)
 
 		DoWithTerminationOnException( [&]()
 		{
