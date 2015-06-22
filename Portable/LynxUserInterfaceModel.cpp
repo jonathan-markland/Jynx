@@ -903,22 +903,22 @@ namespace Jynx
 		// Decide what we need the tick state to be for the menu items:
 		//
 
-		auto machineType = _lynxEmulator->GetMachineType();
-		bool tick48K        = (machineType == LynxMachineType::LYNX_48K);
-		bool tick96K        = (machineType == LynxMachineType::LYNX_96K);
-		bool tick96KScorpion= (machineType == LynxMachineType::LYNX_96K_Scorpion);
-		bool tickSquare     = (_renderStyle == RenderStyle::SquarePixels);
-		bool tickFitWindow  = (_renderStyle == RenderStyle::FitToWindow);
-		bool tickFillWindow = (_renderStyle == RenderStyle::FillWindow);
-		bool tickTapeSounds = _lynxEmulator->GetTapeSounds();
-		bool tickRemExtensions = _lynxEmulator->GetLynxRemCommandExtensionsEnabled();
-		bool tickPaused        = _lynxEmulator->GetPauseMode();
-		bool tickPauseAfterTap = _lynxEmulator->GetPauseAfterTapLoadEnable();
+		auto machineType          = _lynxEmulator->GetMachineType();
+		bool tick48K              = (machineType  == LynxMachineType::LYNX_48K);
+		bool tick96K              = (machineType  == LynxMachineType::LYNX_96K);
+		bool tick96KScorpion      = (machineType  == LynxMachineType::LYNX_96K_Scorpion);
+		bool tickSquare           = (_renderStyle == RenderStyle::SquarePixels);
+		bool tickFitWindow        = (_renderStyle == RenderStyle::FitToWindow);
+		bool tickFillWindow       = (_renderStyle == RenderStyle::FillWindow);
+		bool tickTapeSounds       = _lynxEmulator->GetTapeSounds();
+		bool tickRemExtensions    = _lynxEmulator->GetLynxRemCommandExtensionsEnabled();
+		bool tickPaused           = _lynxEmulator->GetPauseMode();
+		bool tickPauseAfterTap    = _lynxEmulator->GetPauseAfterTapLoadEnable();
 		bool tickMaxSpeedCassette = _lynxEmulator->GetEnableSpeedMaxModeWhenUsingCassette();
 		bool tickMaxSpeedConsole  = _lynxEmulator->GetEnableSpeedMaxModeWhenInBetweenConsoleCommands();
 		bool tickMaxSpeedAlways   = _lynxEmulator->GetEnableSpeedMaxModeBecauseUserWantsItPermanently();
-		bool tickSound      = _lynxEmulator->IsSoundEnabled();
-		bool tickFullScreen = _showFullScreen;
+		bool tickSound            = _lynxEmulator->IsSoundEnabled();
+		bool tickFullScreen       = _showFullScreen;
 
 		//
 		// Decide what menu items need to be greyed out:
@@ -933,21 +933,21 @@ namespace Jynx
 		// Set the check mark against the menu items:
 		//
 
-		_hostView->SetTickBoxState( TickableInterfaceElements::Lynx48K, tick48K );
-		_hostView->SetTickBoxState( TickableInterfaceElements::Lynx96K, tick96K );
-		_hostView->SetTickBoxState( TickableInterfaceElements::Lynx96KScorpion, tick96KScorpion );
+		_hostView->SetTickBoxState( TickableInterfaceElements::Lynx48K,            tick48K );
+		_hostView->SetTickBoxState( TickableInterfaceElements::Lynx96K,            tick96K );
+		_hostView->SetTickBoxState( TickableInterfaceElements::Lynx96KScorpion,    tick96KScorpion );
 		_hostView->SetTickBoxState( TickableInterfaceElements::ListenToTapeSounds, tickTapeSounds );
-		_hostView->SetTickBoxState( TickableInterfaceElements::FitToWindow, tickFitWindow );
-		_hostView->SetTickBoxState( TickableInterfaceElements::FillWindow, tickFillWindow );
-		_hostView->SetTickBoxState( TickableInterfaceElements::UseSquarePixels, tickSquare );
+		_hostView->SetTickBoxState( TickableInterfaceElements::FitToWindow,        tickFitWindow );
+		_hostView->SetTickBoxState( TickableInterfaceElements::FillWindow,         tickFillWindow );
+		_hostView->SetTickBoxState( TickableInterfaceElements::UseSquarePixels,    tickSquare );
 		_hostView->SetTickBoxState( TickableInterfaceElements::LynxBasicRemCommandExtensions, tickRemExtensions );
 		_hostView->SetTickBoxState( TickableInterfaceElements::SoundEnableDisable, tickSound );
-		_hostView->SetTickBoxState( TickableInterfaceElements::ShowFullScreen, tickFullScreen );
-		_hostView->SetTickBoxState( TickableInterfaceElements::Paused, tickPaused );
+		_hostView->SetTickBoxState( TickableInterfaceElements::ShowFullScreen,     tickFullScreen );
+		_hostView->SetTickBoxState( TickableInterfaceElements::Paused,             tickPaused );
 		_hostView->SetTickBoxState( TickableInterfaceElements::PausedAfterTapLoad, tickPauseAfterTap );
-		_hostView->SetTickBoxState( TickableInterfaceElements::MaxSpeedCassette, tickMaxSpeedCassette );
-		_hostView->SetTickBoxState( TickableInterfaceElements::MaxSpeedConsole,  tickMaxSpeedConsole );
-		_hostView->SetTickBoxState( TickableInterfaceElements::MaxSpeedAlways,   tickMaxSpeedAlways );
+		_hostView->SetTickBoxState( TickableInterfaceElements::MaxSpeedCassette,   tickMaxSpeedCassette );
+		_hostView->SetTickBoxState( TickableInterfaceElements::MaxSpeedConsole,    tickMaxSpeedConsole );
+		_hostView->SetTickBoxState( TickableInterfaceElements::MaxSpeedAlways,     tickMaxSpeedAlways );
 
 		_hostView->SetEnabledState( ButtonInterfaceElements::RewindTape,              enableRewind );
 		_hostView->SetEnabledState( ButtonInterfaceElements::FinishRecording,         enableFinishRecording );
@@ -961,7 +961,7 @@ namespace Jynx
 		//
 
 		UpdateMenuExclusiveSelectionGroup( _hostView, CycleCountToMenuOptionLookupTable, _lynxEmulator->GetCyclesPerTimeslice() );
-		UpdateMenuExclusiveSelectionGroup( _hostView, ColourSetToMenuOptionLookupTable, _lynxEmulator->GetLynxColourSet() );
+		UpdateMenuExclusiveSelectionGroup( _hostView, ColourSetToMenuOptionLookupTable,  _lynxEmulator->GetLynxColourSet() );
 	}
 
 
@@ -1031,9 +1031,11 @@ namespace Jynx
 
             // Now that the file has loaded successfully, we know we can use the information in it!
             // (Or, of course, the defaults that the UserSettings object applies, if it's down-level version).
-            _renderStyle = userSettings.GetRenderStyle();
+
+			_renderStyle = userSettings.GetRenderStyle();
             _lynxEmulator->SetSoundEnable( userSettings.GetSoundEnable() );
-            _showFullScreen = userSettings.GetFullScreenEnable();
+
+			_showFullScreen = userSettings.GetFullScreenEnable();
             _lynxEmulator->SetCyclesPerTimeslice( userSettings.GetCyclesPerTimeslice() );
             _lynxEmulator->SetTapeSounds( userSettings.GetTapeSounds() );
             _lynxEmulator->SetLynxRemCommandExtensionsEnabled( userSettings.GetRemExtensions() );

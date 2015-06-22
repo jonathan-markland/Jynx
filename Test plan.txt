@@ -196,7 +196,7 @@ Reset Lynx.
 [W][L] Untick "Pause".  Tick "Pause after load".  Run a TAP, and quickly open Speed menu.
     See that Pause becomes ticked once the program loads, and unticking pause releases the lynx.
 		[MS-Windows NOTE: The tick doesn't repaint.
-[w][l] Test a BASIC SAVE command with "Pause after load" selected.  See that lynx does NOT pause after a SAVE. [linux: it still pauses, same on windows.  Soln: Rename menu option to Pause after tape operation completes]
+[W][L] Test a BASIC SAVE command with "Pause after load" selected.  See that lynx pauses after a SAVE.
 
 - - DISPLAY MENU - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
