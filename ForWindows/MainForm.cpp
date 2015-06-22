@@ -189,7 +189,7 @@ uint8_t  KeysInLynxKeyOrder[NUMBER_OF_KEYS] =
 	0,         0,           'J',         0,     'M',           'U',      '8',      '7',
 	0,         0,           'K',         0,     VK_OEM_COMMA,  'O',      'I',      '9',
 	0,         0,           VK_OEM_1,    0,     VK_OEM_PERIOD, 'L',      'P',      '0',
-	0,         0,           VK_OEM_PLUS, 0,     VK_OEM_2,      VK_OEM_4, VK_OEM_7, VK_OEM_MINUS,
+	0,         0,           VK_OEM_PLUS, 0,     VK_OEM_2,      VK_OEM_4, VK_OEM_3, VK_OEM_MINUS,
 	0,         0,           VK_RIGHT,    0,     VK_RETURN,     VK_LEFT,  VK_OEM_6, VK_BACK,
 };
 
