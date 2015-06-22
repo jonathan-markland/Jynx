@@ -222,27 +222,37 @@ int32_t MicrosoftWindowsVkCodeToLynxKeyIndex( uint8_t keyVkCode )
 
 bool  MainForm::OnInitDialog()
 {
-	SetBigAndSmallIcons( IDR_MAINFRAME );
-
-	g_hWndToPostMessage = GetHWND();
-
-	// Centre window placement BEFORE calling model's OnInitDialog() as
-	// that may cause go full screen as settings file is loaded!
-	libWinApi::CenterWindowPercent( *this, 85, GetOwner() );
-
-	_lynxUIModel->OnInitDialog();
-
-	if( ! _snapshotFilePath.empty() )
+	// WARNING:  MUST NOT RAISE EXCEPTIONS (else kernel frames get blown out)
+	//           See OnInitDialogSecondPhase() instead.
+	try
 	{
-		// Load the snapshot file that the user specified on the command line:
-		WindowsFileOpener  fileOpener( _snapshotFilePath.c_str() );
-		_lynxUIModel->ForceLoadSpecificSnapshot( &fileOpener );
+		SetBigAndSmallIcons( IDR_MAINFRAME );
+
+		g_hWndToPostMessage = GetHWND();
+
+		// Centre window placement BEFORE calling model's OnInitDialog() as
+		// that may cause go full screen as settings file is loaded!
+		libWinApi::CenterWindowPercent( *this, 85, GetOwner() );
+
+		_lynxUIModel->OnInitDialog();
+
+		if( ! _snapshotFilePath.empty() )
+		{
+			// Load the snapshot file that the user specified on the command line:
+			WindowsFileOpener  fileOpener( _snapshotFilePath.c_str() );
+			_lynxUIModel->ForceLoadSpecificSnapshot( &fileOpener );
+		}
+		else if( ! _tapFilePath.empty() )
+		{
+			// Load the cassette file that the user specified on the command line:
+			WindowsFileOpener  fileOpener( _tapFilePath.c_str() );
+			_lynxUIModel->ForceLoadSpecificTape( &fileOpener );
+		}
 	}
-	else if( ! _tapFilePath.empty() )
+	catch( std::exception &e )
 	{
-		// Load the cassette file that the user specified on the command line:
-		WindowsFileOpener  fileOpener( _tapFilePath.c_str() );
-		_lynxUIModel->ForceLoadSpecificTape( &fileOpener );
+		MessageBoxA( NULL, e.what(), "Program cannot continue running", MB_OK | MB_ICONERROR );
+		exit(1);
 	}
 
 	auto result = BaseForm::OnInitDialog();

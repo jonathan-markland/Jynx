@@ -136,7 +136,7 @@ Start Over:
 [W][L]     Insert a TAP, and delibrately load the wrong name.  Not found.
 [W][L]     Press ESC, rewind tape.  Load again.  Lynx finds it.
 [W][ ] Reset lynx. Select bad file.  Error is displayed.
-[w][L]     File | Rewind is greyed   [RESULT: WINDOWS: NO IT ISNT - but is suspect it should be lit because previous good cassette is still selected]
+[w][ ]     File | Rewind is greyed   [RESULT: WINDOWS: NO IT ISNT - but is suspect it should be lit because previous good cassette is still selected]
 [W][L]     Lynx doesn't find anything to load.
 [W][L] In fact, previous good cassette is untouched until another good file is selected.
 
@@ -203,7 +203,7 @@ Reset Lynx.
 [W][L] Reset, use PAPER BLUE, CLS to establish guest screen bounds.
 [W][L] Tick "Display | Use square pixels".  See that guest pixels are forced square, and display is centred.
 [W][L]   Resize host window and see that guest display size "snaps" to keep pixels square.
-[w][L]   If host window is too small, guest display disappears altogether.   [on windows it never disappears]
+[w][ ]   If host window is too small, guest display disappears altogether.   [on windows it never disappears -- try linux again.]
 [W][L] Tick "Display | Fit to window".  See that guest image has its aspect ratio maintained at all times,
     but is increased to fill as much of the host window as possible.  This means black strips at top and
     bottom, or black strips at left and right.
@@ -285,25 +285,27 @@ NOTE: Add tests for saving the disassembly to a file?
 
 The "--settings" allows specification of a settings file to use.  The next lexeme is the full path, enclosed in quotes if needed.
 
-[w][L]    A settings file used in this manner should never be saved over automatically by Jynx on exiting!  [Use gedit to check]
+[W][ ]    A settings file used in this manner should always be saved over automatically by Jynx on exiting!  [Use gedit to check]
        On Linux:     ../ForLinux/bin/Debug/Jynx --settings /home/jonathan/Documents/Jynx/Testing/test.config
        On Windows:   c:\users\jonathan\documents\work\jynx\ForWindows\Debug\Jynx.exe --settings "c:\users\jonathan\documents\work\jynx\Testing\test.config"
-			[MS-windows failed because it overwrites the settings file always]
+
+[W][ ]    If --settings and --games are both present, the settings file should NEVER be saved over on exit.  This supports Hyperspin.
+       On Linux:     ../ForLinux/bin/Debug/Jynx --games --settings /home/jonathan/Documents/Jynx/Testing/test.config
+       On Windows:   c:\users\jonathan\documents\work\jynx\ForWindows\Debug\Jynx.exe --games --settings "c:\users\jonathan\documents\work\jynx\Testing\test.config"
 
 [W][L] The "--snapshot" allows auto-starting a snapshot.  The next lexeme is the full path, enclosed in quotes if needed.
        On Linux:     ../ForLinux/bin/Debug/Jynx --snapshot /home/jonathan/Documents/Jynx/Testing/DuringBACH.lynxsnapshot
        On Windows:   c:\users\jonathan\documents\work\jynx\ForWindows\Debug\Jynx.exe --snapshot "c:\users\jonathan\documents\work\jynx\Testing\DuringBACH.lynxsnapshot"
 
-[w][L] The "--snapshot" reports a clean failure, and exits the emulator, if a non-snapshot is passed in.
+[W][L] The "--snapshot" reports a clean failure, and exits the emulator, if a non-snapshot is passed in.
        On Linux:     ../ForLinux/bin/Debug/Jynx --snapshot /home/jonathan/Documents/Jynx/Testing/Nonsense.lynxsnapshot
        On Windows:   c:\users\jonathan\documents\work\jynx\ForWindows\Debug\Jynx.exe --snapshot "c:\users\jonathan\documents\work\jynx\Testing\Nonsense.lynxsnapshot"
-			[MS-windows failed with ABORT called -- exception not caught properly]
 
 [W][L] The "--tap" allows auto-running a TAP file.  The next lexeme is the full path, enclosed in quotes if needed.
        On Linux:     ../ForLinux/bin/Debug/Jynx --run "/home/jonathan/Documents/Jynx/Testing/ALL PAPERS.tap"
        On Windows:   c:\users\jonathan\documents\work\jynx\ForWindows\Debug\Jynx.exe --run "c:\users\jonathan\documents\work\jynx\Testing\ALL PAPERS.tap"
 
-[w][L] The "--tap" reports a clean failure, and exits the emulator, if a non-tap is passed in.
+[W][L] The "--tap" reports a clean failure, and exits the emulator, if a non-tap is passed in.
        On Linux:     ../ForLinux/bin/Debug/Jynx --run "/home/jonathan/Documents/Jynx/Testing/Nonsense.tap"
        On Windows:   c:\users\jonathan\documents\work\jynx\ForWindows\Debug\Jynx.exe --run "c:\users\jonathan\documents\work\jynx\Testing\nonsense.tap"
 			[MS-windows failed with ABORT called -- exception not caught properly]

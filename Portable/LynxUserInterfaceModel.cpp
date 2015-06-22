@@ -333,8 +333,7 @@ namespace Jynx
 	{
 		// The View calls this to handle the case where the "exit" button/menu/close box has been selected in the UI.
 
-		// If a snapshot file was issued on the command line, we assume its "games mode" so we do NOT pester
-		// the user for shutdown confirmation:
+		// If "--games" was issued on the command line, we do NOT pester the user for shutdown confirmation:
 
 		if( ! _gamesMode )
 		{
@@ -353,8 +352,8 @@ namespace Jynx
 			_lynxEmulator->FinishRecordingLynxTextToFile();
 		} );
 
-        DoWithFileHandlingErrorReportsToUser( "Failed to save the user options file!  ", [&]()
-        {
+		DoWithFileHandlingErrorReportsToUser( "Failed to save the user options file!  ", [&]()
+		{
 			SaveUserSettings();
 		} );
 
@@ -998,8 +997,14 @@ namespace Jynx
 
 	void LynxUserInterfaceModel::SaveUserSettings()
 	{
-		// TODO: Failure to save user settings must not disrupt anything else, eg: closedown
 		// TODO: Can we save to a temporary and re-name on success?
+
+		// If "--games" was on the command line, NEVER overwrite the user settings file, since
+		// games mode uses pre-configured settings files ("--settings") that are not appropriate for overwrite.
+		// This supports Hyperspin.
+
+		if( _gamesMode ) return;
+
 		auto fileOpener = _hostView->GetUserSettingsFileOpener();
 		if( fileOpener != nullptr )
 		{
