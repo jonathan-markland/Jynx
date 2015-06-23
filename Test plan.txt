@@ -59,8 +59,8 @@ Start over:
 	PC	  1 2 3 4 5 6 7 8 9 0 - = BACKSPACE
 	LYNX	  1 2 3 4 5 6 7 8 9 0 - : (delete)
 
-	PC	q w e r t y u i o p [ ] ENTER
-	LYNX	Q W E R T Y U I O P [ ] (RETURN)
+	PC	q w e r t y u i o p [  ] ENTER
+	LYNX	Q W E R T Y U I O P [  ] (RETURN)
 
 	PC	        a s d f g h j k l ; '
 	LYNX	        A S D F G H J K L ; @
@@ -135,12 +135,12 @@ Start Over:
 [W][L]        Directory of tape can be obtained at BASIC prompt.
 [W][L]     Insert a TAP, and delibrately load the wrong name.  Not found.
 [W][L]     Press ESC, rewind tape.  Load again.  Lynx finds it.
-[W][ ] Reset lynx. Select bad file.  Error is displayed.
-[w][ ]     File | Rewind is greyed   [RESULT: WINDOWS: NO IT ISNT - but is suspect it should be lit because previous good cassette is still selected]
+[W][L] Restart Emulator. Select bad file.  Error is displayed.
+[W][L]     "File | Rewind" is greyed -- should be after total emulator restart, as there is no previous good tape loaded.
 [W][L]     Lynx doesn't find anything to load.
 [W][L] In fact, previous good cassette is untouched until another good file is selected.
 
-Reset Lynx. 
+Reset Lynx.
 [W][L] File | New Output tape is enabled.
 [W][L] Choose "File | New Output tape".  (No feedback given).
 [W][L] Save something from the lynx
@@ -155,18 +155,18 @@ Reset Lynx.
 			00000000  22 43 4C 45 41 52 22 42 09 00 C1 10 00 00 00 08  "CLEAR"B..Á.....
 			00000010  13 0D 80 00 00 00                                ..€...
 
-Reset Lynx. 
+Reset Lynx.
 [W][L] Create two BASIC programs one after the other, use Lynx SAVE command to save both to the SAME tape.
 [W][L] Save the TAP file.
 [W][L] View file in HxD or Linux "hd" to confirm.
 [W][L] Start over, and confirm Lynx can load the two.
 
-Reset Lynx. 
+Reset Lynx.
 [W][L] Choose "Save state snapshot".  Cancel.  No change of state.
 [W][L] Choose "Save state snapshot" and specify a name.
 [W][L] View in text editor to confirm.
 
-Reset Lynx. 
+Reset Lynx.
 [W][L] Choose "Load state snapshot".  Cancel the file selector.  No change of state.
 [W][L] Choose "Load state snapshot".  Choose a good file.  Confirm appears.  Choose No.  No state change to lynx.
 [W][L] Choose "Load state snapshot".  Choose a good file.  Confirm appears.  Choose Yes.  Emulator is set to saved state.
@@ -174,7 +174,7 @@ Reset Lynx.
 
 - - SPEED MENU - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-Reset Lynx. 
+Reset Lynx.
 [W][L] Speed menu:  Test the speed settings, check with cursor flash, check ticks move.
 [W][L] Speed menu:  Test "Pause", check with cursor flash.
 [W][L] Tick 100%, Tick "Super speed cassette" only.  Run a TAP file to check load is fast, but game is normal speed.

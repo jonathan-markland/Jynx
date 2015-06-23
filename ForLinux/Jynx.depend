@@ -43,7 +43,7 @@
 	<stdexcept>
 	"Lexer.h"
 
-1434656981 source:/home/jonathan/Documents/Jynx/Portable/LynxEmulatorGuest.cpp
+1434656980 source:/home/jonathan/Documents/Jynx/Portable/LynxEmulatorGuest.cpp
 	<assert.h>
 	<string>
 	"LynxEmulatorGuest.h"
@@ -148,7 +148,7 @@
 
 1433969238 /home/jonathan/Documents/Jynx/Portable/LynxRectangle.h
 
-1434791320 source:/home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.cpp
+1435008176 source:/home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.cpp
 	<assert.h>
 	"LynxUserInterfaceModel.h"
 	"LynxHardware.h"
@@ -157,7 +157,7 @@
 	"MenuItemIDs.h"
 	"UnexpectedExceptionGuard.h"
 
-1434790931 /home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.h
+1434790930 /home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.h
 	"IViewServicesForLynxUserInterfaceModel.h"
 	"IHostServicesForLynxEmulator.h"
 	"LynxEmulatorGuest.h"
@@ -2767,7 +2767,7 @@
 
 1434229158 /home/jonathan/Documents/Jynx/Portable/Enumerations.h
 
-1433750104 /home/jonathan/Documents/Jynx/Portable/MenuItemIDs.h
+1435006386 /home/jonathan/Documents/Jynx/Portable/MenuItemIDs.h
 
 1434229306 source:/home/jonathan/Documents/Jynx/ForLinux/LinuxAboutBox.cpp
 	<gtk/gtk.h>
@@ -2804,7 +2804,7 @@
 	"Enumerations.h"
 	"LynxRoms.h"
 
-1434227196 source:/home/jonathan/Documents/Jynx/Portable/UIStrings.cpp
+1435006386 source:/home/jonathan/Documents/Jynx/Portable/UIStrings.cpp
 	"UIStrings.h"
 	"MenuItemIDs.h"
 
@@ -2858,24 +2858,24 @@
 	<stdexcept>
 	"gtk/gtk.h"
 
-1434793673 source:/home/jonathan/Documents/Jynx/ForLinux/Linux_AboutBox.cpp
+1434793672 source:/home/jonathan/Documents/Jynx/ForLinux/Linux_AboutBox.cpp
 	<gtk/gtk.h>
 
-1434791739 source:/home/jonathan/Documents/Jynx/ForLinux/Linux_FileOpener.cpp
+1434791738 source:/home/jonathan/Documents/Jynx/ForLinux/Linux_FileOpener.cpp
 	"Linux_FileOpener.h"
 
 1433754952 /home/jonathan/Documents/Jynx/ForLinux/Linux_FileOpener.h
 	<string>
 	"../Portable/IFileOpener.h"
 
-1434791739 source:/home/jonathan/Documents/Jynx/ForLinux/Linux_GtkFileDialogs.cpp
+1434794408 source:/home/jonathan/Documents/Jynx/ForLinux/Linux_GtkFileDialogs.cpp
 	"Linux_GtkFileDialogs.h"
 
 1434229158 /home/jonathan/Documents/Jynx/ForLinux/Linux_GtkFileDialogs.h
 	<string>
 	<gtk/gtk.h>
 
-1434791739 source:/home/jonathan/Documents/Jynx/ForLinux/Linux_GtkMenu.cpp
+1434791738 source:/home/jonathan/Documents/Jynx/ForLinux/Linux_GtkMenu.cpp
 	<algorithm>
 	<assert.h>
 	"Linux_Gtk.h"
@@ -2908,7 +2908,7 @@
 	<gtk/gtk.h>
 	"Linux_GtkMenu.h"
 
-1434791739 source:/home/jonathan/Documents/Jynx/ForLinux/Linux_MainForm.cpp
+1435006440 source:/home/jonathan/Documents/Jynx/ForLinux/Linux_MainForm.cpp
 	"MenuItemIDs.h"
 	"LynxHardware.h"
 	"UIStrings.h"

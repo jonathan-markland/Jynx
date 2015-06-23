@@ -1,24 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
-	<ActiveTarget name="Debug" />
-	<File name="Linux_Main.cpp" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<ActiveTarget name="Release" />
+	<File name="Linux_GtkFileDialogs.cpp" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1601" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="../Portable/SignalWriter.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2283" topLine="41" />
-		</Cursor>
-	</File>
-	<File name="Linux_MainForm.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="5608" topLine="81" />
-		</Cursor>
-	</File>
-	<File name="../Portable/Z80/JynxZ80_CB.cpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="0" topLine="0" />
+			<Cursor1 position="3247" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="../Portable/Enumerations.h" open="0" top="0" tabpos="26" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -26,169 +11,9 @@
 			<Cursor1 position="825" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="../Portable/Z80/JynxZ80Shared.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="0" topLine="12" />
-		</Cursor>
-	</File>
-	<File name="Linux_Thread.cpp" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="3583" topLine="111" />
-		</Cursor>
-	</File>
-	<File name="Linux_MainForm.cpp" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="0" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="../Portable/Waitable.h" open="0" top="0" tabpos="34" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="825" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="../Portable/IViewServicesForLynxUserInterfaceModel.h" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1522" topLine="25" />
-		</Cursor>
-	</File>
-	<File name="Linux_AboutBox.cpp" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1641" topLine="9" />
-		</Cursor>
-	</File>
-	<File name="../Portable/UIStrings.cpp" open="0" top="0" tabpos="25" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2644" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="../Portable/SoundRecorder.cpp" open="0" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="3393" topLine="73" />
-		</Cursor>
-	</File>
-	<File name="../Portable/ParameterParsing.cpp" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1131" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="../Portable/FileLoader.cpp" open="1" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="866" topLine="33" />
-		</Cursor>
-	</File>
-	<File name="Linux_GtkFileDialogs.cpp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="3247" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="Linux_FileOpener.h" open="0" top="0" tabpos="37" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1799" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="../Portable/Z80/JynxZ80Disassembler.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2719" topLine="50" />
-		</Cursor>
-	</File>
 	<File name="../Portable/Z80/JynxZ80.h" open="0" top="0" tabpos="17" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="7342" topLine="184" />
-		</Cursor>
-	</File>
-	<File name="../Portable/LynxUserInterfaceModel.h" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="5043" topLine="119" />
-		</Cursor>
-	</File>
-	<File name="../Portable/LynxHardware.h" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="861" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="../Portable/Z80/JynxZ80.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="0" topLine="12" />
-		</Cursor>
-	</File>
-	<File name="../Portable/LynxUserInterfaceModel.cpp" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="36293" topLine="964" />
-		</Cursor>
-	</File>
-	<File name="../Portable/IFileOpener.h" open="0" top="0" tabpos="30" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="842" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="Linux_Waitable.cpp" open="1" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="827" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="../Portable/ISerialiser.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2018" topLine="33" />
-		</Cursor>
-	</File>
-	<File name="Linux_Gtk.h" open="0" top="0" tabpos="20" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1782" topLine="33" />
-		</Cursor>
-	</File>
-	<File name="../Portable/FileLoader.h" open="0" top="0" tabpos="27" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="983" topLine="14" />
-		</Cursor>
-	</File>
-	<File name="../Portable/TapFileWriter.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1363" topLine="29" />
-		</Cursor>
-	</File>
-	<File name="../Portable/UserSettingsSerialiser.cpp" open="0" top="0" tabpos="18" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2109" topLine="54" />
-		</Cursor>
-	</File>
-	<File name="../Portable/Z80/JynxZ80Disassembler.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1906" topLine="62" />
-		</Cursor>
-	</File>
-	<File name="../Portable/Lexer.h" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="903" topLine="15" />
-		</Cursor>
-	</File>
-	<File name="../Portable/WaveOutputStream.h" open="0" top="0" tabpos="19" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="825" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="Linux_GtkFileDialogs.h" open="0" top="0" tabpos="19" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="193" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="../Portable/LynxRectangle.h" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1346" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="../Portable/SignalWriter.cpp" open="0" top="0" tabpos="39" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2021" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="../Portable/SoundBufferWriter.h" open="0" top="0" tabpos="15" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2462" topLine="26" />
-		</Cursor>
-	</File>
-	<File name="../Portable/Thread.h" open="0" top="0" tabpos="17" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="825" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="../Portable/ParameterParsing.h" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -196,29 +21,74 @@
 			<Cursor1 position="239" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="../Portable/FileSerialiser.cpp" open="1" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="3422" topLine="133" />
-		</Cursor>
-	</File>
 	<File name="../Portable/TapFileWriter.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="2121" topLine="59" />
 		</Cursor>
 	</File>
-	<File name="../Portable/UserSettingsSerialiser.h" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Portable/TapFileWriter.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="3434" topLine="0" />
+			<Cursor1 position="1363" topLine="29" />
 		</Cursor>
 	</File>
-	<File name="../Portable/SoundBufferWriter.cpp" open="0" top="0" tabpos="16" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Portable/SignalWriter.cpp" open="0" top="0" tabpos="39" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1245" topLine="0" />
+			<Cursor1 position="2021" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="Linux_WaveOutputStream.cpp" open="1" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="Linux_Main.cpp" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1601" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Portable/FileLoader.cpp" open="0" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="866" topLine="33" />
+		</Cursor>
+	</File>
+	<File name="Linux_AboutBox.cpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1641" topLine="9" />
+		</Cursor>
+	</File>
+	<File name="../Portable/TapFileSplitter.h" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2479" topLine="50" />
+		</Cursor>
+	</File>
+	<File name="../Portable/Z80/JynxZ80Shared.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="12" />
+		</Cursor>
+	</File>
+	<File name="Linux_Gtk.h" open="0" top="0" tabpos="20" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1782" topLine="33" />
+		</Cursor>
+	</File>
+	<File name="Linux_FileOpener.cpp" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1890" topLine="5" />
+		</Cursor>
+	</File>
+	<File name="Linux_WaveOutputStream.cpp" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="827" topLine="180" />
+		</Cursor>
+	</File>
+	<File name="../Portable/LynxRectangle.h" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1346" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Portable/ZeroInitialiseMemory.h" open="0" top="0" tabpos="31" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Portable/Z80/JynxZ80Disassembler.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1906" topLine="62" />
 		</Cursor>
 	</File>
 	<File name="Linux_GtkMenu.cpp" open="0" top="0" tabpos="21" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -226,49 +96,59 @@
 			<Cursor1 position="3734" topLine="108" />
 		</Cursor>
 	</File>
-	<File name="Linux_FileOpener.cpp" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1890" topLine="5" />
-		</Cursor>
-	</File>
-	<File name="../Portable/UIStrings.h" open="0" top="0" tabpos="33" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="807" topLine="2" />
-		</Cursor>
-	</File>
-	<File name="../Portable/Lexer.cpp" open="1" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2318" topLine="69" />
-		</Cursor>
-	</File>
-	<File name="../Portable/IBinarySerialiser.h" open="0" top="0" tabpos="29" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="0" topLine="0" />
-		</Cursor>
-	</File>
 	<File name="../Portable/TextPlayer.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="1163" topLine="33" />
 		</Cursor>
 	</File>
-	<File name="../Portable/TapFileSplitter.cpp" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Portable/IFileOpener.h" open="0" top="0" tabpos="30" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="5140" topLine="145" />
+			<Cursor1 position="842" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="../Portable/LynxEmulatorGuest.h" open="0" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Portable/SignalWriter.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="2563" topLine="53" />
+			<Cursor1 position="2283" topLine="41" />
 		</Cursor>
 	</File>
-	<File name="../Portable/Z80/JynxZ80MainSet.cpp" open="0" top="0" tabpos="17" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Portable/LynxUserInterfaceModel.h" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="3090" topLine="84" />
+			<Cursor1 position="5043" topLine="119" />
 		</Cursor>
 	</File>
-	<File name="../Portable/FileSerialiser.h" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="Linux_GtkFileDialogs.h" open="0" top="0" tabpos="19" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1908" topLine="39" />
+			<Cursor1 position="193" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="Linux_Waitable.cpp" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="827" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Portable/Z80/JynxZ80Disassembler.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2719" topLine="50" />
+		</Cursor>
+	</File>
+	<File name="../Portable/Lexer.h" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="903" topLine="15" />
+		</Cursor>
+	</File>
+	<File name="../Portable/ParameterParsing.cpp" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1131" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Portable/IViewServicesForLynxUserInterfaceModel.h" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1522" topLine="25" />
+		</Cursor>
+	</File>
+	<File name="../Portable/Thread.h" open="0" top="0" tabpos="17" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="825" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="../Portable/TapFileReader.h" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -281,14 +161,69 @@
 			<Cursor1 position="431" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="../Portable/LynxEmulatorGuest.cpp" open="1" top="1" tabpos="15" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Portable/TapFileSplitter.cpp" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="56229" topLine="1776" />
+			<Cursor1 position="5140" topLine="163" />
 		</Cursor>
 	</File>
-	<File name="../Portable/ZeroInitialiseMemory.h" open="0" top="0" tabpos="31" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Portable/LynxEmulatorGuest.cpp" open="0" top="0" tabpos="15" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="0" topLine="0" />
+			<Cursor1 position="55852" topLine="1776" />
+		</Cursor>
+	</File>
+	<File name="../Portable/ISerialiser.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2018" topLine="33" />
+		</Cursor>
+	</File>
+	<File name="../Portable/FileLoader.h" open="0" top="0" tabpos="27" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="983" topLine="14" />
+		</Cursor>
+	</File>
+	<File name="../Portable/Lexer.cpp" open="0" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2318" topLine="69" />
+		</Cursor>
+	</File>
+	<File name="../Portable/SoundBufferWriter.h" open="0" top="0" tabpos="15" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2462" topLine="26" />
+		</Cursor>
+	</File>
+	<File name="../Portable/LynxEmulatorGuest.h" open="0" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2563" topLine="53" />
+		</Cursor>
+	</File>
+	<File name="../Portable/FileSerialiser.cpp" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3422" topLine="133" />
+		</Cursor>
+	</File>
+	<File name="Linux_Thread.cpp" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3583" topLine="111" />
+		</Cursor>
+	</File>
+	<File name="../Portable/LynxUserInterfaceModel.cpp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="4742" topLine="106" />
+		</Cursor>
+	</File>
+	<File name="Linux_MainForm.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="5608" topLine="81" />
+		</Cursor>
+	</File>
+	<File name="../Portable/UIStrings.h" open="0" top="0" tabpos="33" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="807" topLine="2" />
+		</Cursor>
+	</File>
+	<File name="Linux_MainForm.cpp" open="1" top="1" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="26290" topLine="753" />
 		</Cursor>
 	</File>
 	<File name="../Portable/IHostServicesForLynxEmulator.h" open="0" top="0" tabpos="17" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -296,14 +231,34 @@
 			<Cursor1 position="3120" topLine="39" />
 		</Cursor>
 	</File>
-	<File name="../Portable/TapFileSplitter.h" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Portable/UIStrings.cpp" open="0" top="0" tabpos="25" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="2479" topLine="50" />
+			<Cursor1 position="2644" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="Linux_GtkMenu.h" open="0" top="0" tabpos="22" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Portable/Z80/JynxZ80.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1719" topLine="42" />
+			<Cursor1 position="0" topLine="12" />
+		</Cursor>
+	</File>
+	<File name="Linux_AboutBox.h" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="886" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Portable/WaveOutputStream.h" open="0" top="0" tabpos="19" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="825" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Portable/Waitable.h" open="0" top="0" tabpos="34" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="825" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Portable/SoundBufferWriter.cpp" open="0" top="0" tabpos="16" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1245" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="../Portable/TapFileReader.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -311,9 +266,54 @@
 			<Cursor1 position="1576" topLine="26" />
 		</Cursor>
 	</File>
-	<File name="Linux_AboutBox.h" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Portable/UserSettingsSerialiser.h" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="886" topLine="0" />
+			<Cursor1 position="3434" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Portable/FileSerialiser.h" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1908" topLine="39" />
+		</Cursor>
+	</File>
+	<File name="../Portable/Z80/JynxZ80MainSet.cpp" open="0" top="0" tabpos="17" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3090" topLine="84" />
+		</Cursor>
+	</File>
+	<File name="Linux_GtkMenu.h" open="0" top="0" tabpos="22" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1719" topLine="42" />
+		</Cursor>
+	</File>
+	<File name="../Portable/Z80/JynxZ80_CB.cpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Portable/UserSettingsSerialiser.cpp" open="0" top="0" tabpos="18" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2109" topLine="54" />
+		</Cursor>
+	</File>
+	<File name="../Portable/IBinarySerialiser.h" open="0" top="0" tabpos="29" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Portable/LynxHardware.h" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="861" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="Linux_FileOpener.h" open="0" top="0" tabpos="37" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1799" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Portable/SoundRecorder.cpp" open="0" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3393" topLine="73" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>
