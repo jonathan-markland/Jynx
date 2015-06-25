@@ -96,7 +96,7 @@
 	"ISerialiser.h"
 	"WaveOutputStream.h"
 
-1433678744 /home/jonathan/Documents/Jynx/Portable/SoundRecorder.h
+1435271229 /home/jonathan/Documents/Jynx/Portable/SoundRecorder.h
 	"IBinarySerialiser.h"
 	"IFileOpener.h"
 
@@ -190,7 +190,7 @@
 	"SoundBufferWriter.h"
 	"ZeroInitialiseMemory.h"
 
-1434398366 source:/home/jonathan/Documents/Jynx/Portable/SoundRecorder.cpp
+1435271430 source:/home/jonathan/Documents/Jynx/Portable/SoundRecorder.cpp
 	"SoundRecorder.h"
 	"ZeroInitialiseMemory.h"
 

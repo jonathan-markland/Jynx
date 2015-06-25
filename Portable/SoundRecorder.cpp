@@ -24,6 +24,9 @@
 
 namespace Jynx
 {
+    enum { WavHeaderSize = 0x2C };
+
+
 	SoundRecorder::SoundRecorder()
 	{
 	}
@@ -42,9 +45,9 @@ namespace Jynx
 		fileOpener->OpenOutputStream( _outStream, std::ios::binary | std::ios::out );
 
 		// Output a reservation for the file header.  We shall fill it in on close:
-		char  wavFileHeaderReservation[0x2C];
+		char  wavFileHeaderReservation[WavHeaderSize];
 		ZeroInitialiseMemory( wavFileHeaderReservation );
-		_outStream.write( wavFileHeaderReservation, 0x2C );
+		_outStream.write( wavFileHeaderReservation, WavHeaderSize );
 	}
 
 
@@ -70,63 +73,66 @@ namespace Jynx
 		{
 			// Seek to start and fill in the WAVE FILE HEADER.
 
-			auto endPos = _outStream.tellp();
-			auto bytesOfSoundData = (uint32_t) endPos;
+			auto fileLengthAtEnd  = (uint32_t) _outStream.tellp();
+            _outStream.seekp( 0, std::ios_base::beg );
 
-			_outStream.seekp( 0, std::ios_base::beg );
+			if( fileLengthAtEnd >= WavHeaderSize )
+            {
+                auto bytesOfSoundData = fileLengthAtEnd - WavHeaderSize;
 
-			// 00000000  52 49 46 46  RIFF
-			// 00000004  8C CD 15 00  number of bytes in sound image + 36
-			// 00000008  57 41 56 45  WAVE
-			// 0000000C  66 6D 74 20  fmt
+                // 00000000  52 49 46 46  RIFF
+                // 00000004  8C CD 15 00  number of bytes in sound image + 36
+                // 00000008  57 41 56 45  WAVE
+                // 0000000C  66 6D 74 20  fmt
 
-			// 00000010  10 00 00 00  (size)
-			// 00000014  01 00 01 00  Audio format | Number of channels
-			// 00000018  44 AC 00 00  SampleRate (44100Hz)
-			// 0000001C  88 58 01 00  ByteRate   (44100Hz * 2) ???
+                // 00000010  10 00 00 00  (size)
+                // 00000014  01 00 01 00  Audio format | Number of channels
+                // 00000018  44 AC 00 00  SampleRate (44100Hz)
+                // 0000001C  88 58 01 00  ByteRate   (44100Hz * 2) ???
 
-			// 00000020  02 00 10 00  BlockAlign | Bits Per Sample
-			// 00000024  64 61 74 61 data
-			// 00000028  68 CD 15 00 number of bytes in sound image
+                // 00000020  02 00 10 00  BlockAlign | Bits Per Sample
+                // 00000024  64 61 74 61 data
+                // 00000028  68 CD 15 00 number of bytes in sound image
 
-			uint8_t  wavFileHeader[0x2C];
-			ZeroInitialiseMemory( wavFileHeader );
+                uint8_t  wavFileHeader[WavHeaderSize];
+                ZeroInitialiseMemory( wavFileHeader );
 
-			wavFileHeader[ 0] = 'R';
-			wavFileHeader[ 1] = 'I';
-			wavFileHeader[ 2] = 'F';
-			wavFileHeader[ 3] = 'F';
+                wavFileHeader[ 0] = 'R';
+                wavFileHeader[ 1] = 'I';
+                wavFileHeader[ 2] = 'F';
+                wavFileHeader[ 3] = 'F';
 
-			* (uint32_t *) (wavFileHeader + 4) = bytesOfSoundData + 36;
+                * (uint32_t *) (wavFileHeader + 4) = bytesOfSoundData + 36;
 
-			wavFileHeader[ 8] = 'W';
-			wavFileHeader[ 9] = 'A';
-			wavFileHeader[10] = 'V';
-			wavFileHeader[11] = 'E';
+                wavFileHeader[ 8] = 'W';
+                wavFileHeader[ 9] = 'A';
+                wavFileHeader[10] = 'V';
+                wavFileHeader[11] = 'E';
 
-			wavFileHeader[12] = 'f';
-			wavFileHeader[13] = 'm';
-			wavFileHeader[14] = 't';
-			wavFileHeader[15] = ' ';
+                wavFileHeader[12] = 'f';
+                wavFileHeader[13] = 'm';
+                wavFileHeader[14] = 't';
+                wavFileHeader[15] = ' ';
 
-			wavFileHeader[0x10] = 0x10;
-			wavFileHeader[0x14] = 0x01;
-			wavFileHeader[0x16] = 0x01;
+                wavFileHeader[0x10] = 0x10;
+                wavFileHeader[0x14] = 0x01;
+                wavFileHeader[0x16] = 0x01;
 
-			* (uint32_t *) (wavFileHeader + 0x18) = 44100;
-			* (uint32_t *) (wavFileHeader + 0x1C) = 44100 * 2;
+                * (uint32_t *) (wavFileHeader + 0x18) = 44100;
+                * (uint32_t *) (wavFileHeader + 0x1C) = 44100 * 2;
 
-			wavFileHeader[0x20] = 0x02;
-			wavFileHeader[0x22] = 0x10;
+                wavFileHeader[0x20] = 0x02;
+                wavFileHeader[0x22] = 0x10;
 
-			wavFileHeader[0x24] = 'd';
-			wavFileHeader[0x25] = 'a';
-			wavFileHeader[0x26] = 't';
-			wavFileHeader[0x27] = 'a';
+                wavFileHeader[0x24] = 'd';
+                wavFileHeader[0x25] = 'a';
+                wavFileHeader[0x26] = 't';
+                wavFileHeader[0x27] = 'a';
 
-			* (uint32_t *) (wavFileHeader + 0x28) = bytesOfSoundData;
+                * (uint32_t *) (wavFileHeader + 0x28) = bytesOfSoundData;
 
-			_outStream.write( (const char *) wavFileHeader, 0x2C );
+                _outStream.write( (const char *) wavFileHeader, WavHeaderSize );
+            }
 
 			_outStream.close();
 		}
