@@ -255,7 +255,6 @@ Ensure "Enable sound" is ticked.
 [L][ ]   Check "Finish Recording" is enabled.
 [L][ ]   Choose "Finish Recording".  See WAV file is available in file system, and can be played on other software.
 [L][ ]     See Check "Finish Recording" is greyed, once recording was finished.
-	[TODO: Linux warns of premature end of input file, but plays it to apparent end]
 
 Start over.
 Tick "Listen to tape sounds".  
@@ -266,6 +265,33 @@ Pause after tape load OFF.
 [L][ ] Changing speed %age should change pitch of tape sounds.
 [L][ ] Super speed cassette will never play sounds, even if tape sounds are enabled.
 
+
+- - TEXT MENU - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Start over.
+[L][ ] See "Stop recording lynx text" is grey initially.
+[L][ ] Choose "Record lynx text to file".  Cancel dialog.  No changes to state.
+[L][ ] Choose "Record lynx text to file".  Choose a good name.
+[L][ ]   See that "Stop recording lynx text" is enabled.
+[L][ ]   Use the Lynx MON "H" command to dump some text to the screen.
+[L][ ]   See that "Stop recording lynx text" is enabled.
+[L][ ]   Choose "Stop recording lynx text".  See it greys out.
+[L][ ]   See that a text file is saved to the file system, and can be opened by another program.
+[L][ ]   See that the file contains only the text that the Lynx output, and not the user's typing at the prompts.
+
+Start over.
+[L][ ] Choose "Text | Type in text from file...", and see that the text is typed at the BASIC prompt.
+[L][ ] See that when this option is in use, the user cannot "spoil" the text coming in from the file by typing at the same time.
+[L][ ] Except... the user CAN press ESCAPE to cancel the text spooling, returning the Lynx prompt to normal service.
+
+Start over.
+[L][ ] Untick "Enable Lynx REM command extensions".  Typing "REM DISASM 85E 100" at BASIC prompt does nothing.
+[L][ ] Tick "Enable Lynx REM command extensions".  Typing "REM DISASM 85E 100" will start a disassembly.
+[L][ ] The disassembly output cannot be "spoiled" by the user typing at the same time.
+[L][ ] Except... The ESC key stops the disassembly, returning the lynx to normal service.
+
+Start over
+[L][ ] Test recording a disassembly to a file.  It should work.
 
 - - FILE MENU - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -282,77 +308,55 @@ Run the BACH program.
 Start a recording of the sound to a file.
 Choose "File | Exit" and YES (to quit).
 [L][ ]   The current sound recording is saved and closed automatically.
-[L]      The Linux console "play" program plays the WAV without error or warning.  [result: Plays to end, but warns]
+[L]      The Linux console "play" program plays the WAV without error or warning.
 [ ]      WAV can be played in Windows.
-[ ][ ]   The current text recording is saved and closed automatically.
-
-- - TEXT MENU - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 Start over.
-[ ][ ] See "Stop recording lynx text" is grey initially.
-[ ][ ] Choose "Record lynx text to file".  Cancel dialog.  No changes to state.
-[ ][ ] Choose "Record lynx text to file".  Choose a good name.
-[ ][ ]   See that "Stop recording lynx text" is enabled.
-[ ][ ]   Use the Lynx MON "H" command to dump some text to the screen.
-[ ][ ]   See that "Stop recording lynx text" is enabled.
-[ ][ ]   Choose "Stop recording lynx text".  See it greys out.
-[ ][ ]   See that the file is fully saved to the file system, and can be opened by another program.
-[ ][ ]   See that the file contains only the text that the Lynx output, and not the user's typing at the prompts.
-
-Start over.
-[ ][ ] Choose "Text | Type in text from file...", and see that the text is typed at the BASIC prompt.
-[ ][ ] See that the user cannot "spoil" the text coming in from the file by typing at the same time.
-[ ][ ] Except... the user CAN press ESCAPE to cancel the text spooling, returning the Lynx prompt to normal service.
-
-Start over.
-[ ][ ] Untick "Enable Lynx REM command extensions".  Typing "REM DISASM 85E 100" at BASIC prompt does nothing.
-[ ][ ] Tick "Enable Lynx REM command extensions".  Typing "REM DISASM 85E 100" will start a disassembly.
-[ ][ ] The disassembly output cannot be "spoiled" by the user typing at the same time.
-[ ][ ] Except... The ESC key stops the disassembly, returning the lynx to normal service.
-
-NOTE: Add tests for saving the disassembly to a file?
+Start recording lynx text, and output something (MON H will do).
+Choose "File | Exit" and YES (to quit) during the output spooling.
+[L][ ] The current text recording is saved and closed automatically.
 
 - - THE COMMAND LINE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-[ ][ ] No parameters just starts the program.
-[ ][ ] Use green screen to show that the program can be re-started and is restoring settings from the master settings file.
+[L][ ] No parameters just starts the program.
+[L][ ] Use green screen to show that the program can be re-started and is restoring settings from the master settings file.
 
 The "--settings" allows specification of a settings file to use.  The next lexeme is the full path, enclosed in quotes if needed.
 
-[ ][ ]    A settings file used in this manner should always be saved over automatically by Jynx on exiting!  [Use gedit to check]
-       On Linux:     ../ForLinux/bin/Debug/Jynx --settings /home/jonathan/Documents/Jynx/Testing/test.config
+[L][ ]    A settings file used in this manner should always be saved over automatically by Jynx on exiting!
+       On Linux:     ~/Documents/Jynx/ForLinux/bin/Debug/Jynx --settings /home/jonathan/Documents/Jynx/Testing/test.config
        On Windows:   c:\users\jonathan\documents\work\jynx\ForWindows\Debug\Jynx.exe --settings "c:\users\jonathan\documents\work\jynx\Testing\test.config"
 
-[ ][ ]    If --settings and --games are both present, the settings file should NEVER be saved over on exit.  This supports Hyperspin.
-       On Linux:     ../ForLinux/bin/Debug/Jynx --games --settings /home/jonathan/Documents/Jynx/Testing/test.config
+[L][ ]    If --settings and --games are both present, the settings file should NEVER be saved over on exit.  This supports Hyperspin.
+       On Linux:     ~/Documents/Jynx/ForLinux/bin/Debug/Jynx --games --settings /home/jonathan/Documents/Jynx/Testing/test.config
        On Windows:   c:\users\jonathan\documents\work\jynx\ForWindows\Debug\Jynx.exe --games --settings "c:\users\jonathan\documents\work\jynx\Testing\test.config"
 
-[ ][ ] The "--snapshot" allows auto-starting a snapshot.  The next lexeme is the full path, enclosed in quotes if needed.
-       On Linux:     ../ForLinux/bin/Debug/Jynx --snapshot /home/jonathan/Documents/Jynx/Testing/DuringBACH.lynxsnapshot
+[L][ ] The "--snapshot" allows auto-starting a snapshot.  The next lexeme is the full path, enclosed in quotes if needed.
+       On Linux:     ~/Documents/Jynx/ForLinux/bin/Debug/Jynx --snapshot /home/jonathan/Documents/Jynx/Testing/DuringBACH.lynxsnapshot
        On Windows:   c:\users\jonathan\documents\work\jynx\ForWindows\Debug\Jynx.exe --snapshot "c:\users\jonathan\documents\work\jynx\Testing\DuringBACH.lynxsnapshot"
 
-[ ][ ] The "--snapshot" reports a clean failure, and exits the emulator, if a non-snapshot is passed in.
-       On Linux:     ../ForLinux/bin/Debug/Jynx --snapshot /home/jonathan/Documents/Jynx/Testing/Nonsense.lynxsnapshot
+[L][ ] The "--snapshot" reports a clean failure, and exits the emulator, if a non-snapshot is passed in.
+       On Linux:     ~/Documents/Jynx/ForLinux/bin/Debug/Jynx --snapshot /home/jonathan/Documents/Jynx/Testing/Nonsense.lynxsnapshot
        On Windows:   c:\users\jonathan\documents\work\jynx\ForWindows\Debug\Jynx.exe --snapshot "c:\users\jonathan\documents\work\jynx\Testing\Nonsense.lynxsnapshot"
 
-[ ][ ] The "--tap" allows auto-running a TAP file.  The next lexeme is the full path, enclosed in quotes if needed.
-       On Linux:     ../ForLinux/bin/Debug/Jynx --run "/home/jonathan/Documents/Jynx/Testing/ALL PAPERS.tap"
+[L][ ] The "--tap" allows auto-running a TAP file.  The next lexeme is the full path, enclosed in quotes if needed.
+       On Linux:     ~/Documents/Jynx/ForLinux/bin/Debug/Jynx --run "/home/jonathan/Documents/Jynx/Testing/ALL PAPERS.tap"
        On Windows:   c:\users\jonathan\documents\work\jynx\ForWindows\Debug\Jynx.exe --run "c:\users\jonathan\documents\work\jynx\Testing\ALL PAPERS.tap"
 
-[ ][ ] The "--tap" reports a clean failure, and exits the emulator, if a non-tap is passed in.
-       On Linux:     ../ForLinux/bin/Debug/Jynx --run "/home/jonathan/Documents/Jynx/Testing/Nonsense.tap"
+[L][ ] The "--tap" reports a clean failure, and exits the emulator, if a non-tap is passed in.
+       On Linux:     ~/Documents/Jynx/ForLinux/bin/Debug/Jynx --run "/home/jonathan/Documents/Jynx/Testing/Nonsense.tap"
        On Windows:   c:\users\jonathan\documents\work\jynx\ForWindows\Debug\Jynx.exe --run "c:\users\jonathan\documents\work\jynx\Testing\nonsense.tap"
 			[MS-windows failed with ABORT called -- exception not caught properly]
 
-[ ][ ] "--snapshot" takes precedence over "--run" if both are present.
-       On Linux:     ../ForLinux/bin/Debug/Jynx --run "/home/jonathan/Documents/Jynx/Testing/ALL PAPERS.tap" --snapshot /home/jonathan/Documents/Jynx/Testing/DuringBACH.lynxsnapshot
+[L][ ] "--snapshot" takes precedence over "--run" if both are present.  Hence this should play BACH, not load "ALL PAPERS":
+       On Linux:     ~/Documents/Jynx/ForLinux/bin/Debug/Jynx --run "/home/jonathan/Documents/Jynx/Testing/ALL PAPERS.tap" --snapshot /home/jonathan/Documents/Jynx/Testing/DuringBACH.lynxsnapshot
        On Windows:   c:\users\jonathan\documents\work\jynx\ForWindows\Debug\Jynx.exe --run "c:\users\jonathan\documents\work\jynx\Testing\ALL PAPERS.tap" --snapshot "c:\users\jonathan\documents\work\jynx\Testing\DuringBACH.lynxsnapshot"
 
 The "--games" command line switch will suppress the following prompts.
-       On Linux:     ../ForLinux/bin/Debug/Jynx --games
+       On Linux:     ~/Documents/Jynx/ForLinux/bin/Debug/Jynx --games
        On Windows:   c:\users\jonathan\documents\work\jynx\ForWindows\Debug\Jynx.exe --games
-[ ][ ] The   "Are you sure you want to close the Lynx emulator?"   prompt is never shown, and is forced to YES.
-[ ][ ] The   "Tape rewound."   message is never displayed.  The tape is re-wound quietly.
-[ ][ ] The   "This action will RESET the emulator!\n\nDo you wish to proceed?"   message is never displayed, and the default is taken to be YES.
+[L][ ] The   "Are you sure you want to close the Lynx emulator?"   prompt is never shown, and is forced to YES.
+[L][ ] The   "Tape rewound."   message is never displayed.  The tape is re-wound quietly.
+[L][ ] The   "This action will RESET the emulator!\n\nDo you wish to proceed?"   message is never displayed, and the default is taken to be YES.
 
 
