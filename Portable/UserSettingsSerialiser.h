@@ -54,7 +54,7 @@ namespace Jynx
 			RenderStyle::Enum      renderStyle,
 			bool                   soundEnable,
 			bool                   fullScreenEnable,
-			uint32_t               cyclesPerTimeslice,
+			uint32_t               speedPercentage,
 			bool                   tapeSounds,
 			bool                   remExtensions,
 			bool                   maxSpeedCassette,
@@ -66,7 +66,7 @@ namespace Jynx
 
 		LynxMachineType::Enum  GetMachineType()        const { return _machineType; }
 		RenderStyle::Enum      GetRenderStyle()        const { return _renderStyle; }
-		uint32_t               GetCyclesPerTimeslice() const { return _cyclesPerTimeslice; }
+		uint32_t               GetSpeedPercentage()    const { return _speedPercentage; }
 		bool                   GetSoundEnable()        const { return _soundEnable; }
 		bool                   GetFullScreenEnable()   const { return _fullScreenEnable; }
 		bool                   GetTapeSounds()         const { return _tapeSounds; }
@@ -82,7 +82,7 @@ namespace Jynx
 		RenderStyle::Enum      _renderStyle;
 		bool                   _soundEnable;
 		bool                   _fullScreenEnable;
-		uint32_t               _cyclesPerTimeslice;
+		uint32_t               _speedPercentage;
 		bool                   _tapeSounds;
 		bool                   _remExtensions;
 		bool                   _maxSpeedCassette;

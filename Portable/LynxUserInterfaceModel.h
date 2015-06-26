@@ -84,7 +84,7 @@ namespace Jynx
 		void OnEmulation48K();
 		void OnEmulation96K();
 		void OnEmulation96KScorpion();
-		void OnSetCycles( LynxZ80Cycles::Enum numCycles );
+        void OnSetSpeedPercentage( uint32_t speedPercentage );
 		void OnListenToTapeSounds();
 		void OnRecordToFile();
 		void OnFinishRecording();

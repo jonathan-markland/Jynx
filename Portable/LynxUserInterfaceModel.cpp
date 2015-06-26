@@ -251,11 +251,11 @@ namespace Jynx
 					case ID_EMULATION_LYNX96KSCORPION:    OnEmulation96KScorpion(); break;
 					case ID_EMULATION_PAUSEAFTERTAPOPERATION:  OnPauseAfterTapLoad(); break;
 
-					case ID_SPEED_SPEED50:                OnSetCycles( Jynx::LynxZ80Cycles::At50 ); break;
-					case ID_SPEED_SPEED100:               OnSetCycles( Jynx::LynxZ80Cycles::At100 ); break;
-					case ID_SPEED_SPEED200:               OnSetCycles( Jynx::LynxZ80Cycles::At200 ); break;
-					case ID_SPEED_SPEED400:               OnSetCycles( Jynx::LynxZ80Cycles::At400 ); break;
-					case ID_SPEED_SPEED800:               OnSetCycles( Jynx::LynxZ80Cycles::At800 ); break;
+					case ID_SPEED_SPEED50:                OnSetSpeedPercentage( 50 ); break;
+					case ID_SPEED_SPEED100:               OnSetSpeedPercentage( 100 ); break;
+					case ID_SPEED_SPEED200:               OnSetSpeedPercentage( 200 ); break;
+					case ID_SPEED_SPEED400:               OnSetSpeedPercentage( 400 ); break;
+					case ID_SPEED_SPEED800:               OnSetSpeedPercentage( 800 ); break;
 					case ID_SPEED_MAXSPEEDCASSETTE:       OnSpeedMaxCassette(); break;
 					case ID_SPEED_MAXSPEEDCONSOLE:        OnSpeedMaxConsoleCommands(); break;
 					case ID_SPEED_MAXSPEEDALWAYS:         OnSpeedMaxPermanently(); break;
@@ -672,11 +672,11 @@ namespace Jynx
 
 
 
-	void LynxUserInterfaceModel::OnSetCycles( LynxZ80Cycles::Enum cyclesEnum )
+	void LynxUserInterfaceModel::OnSetSpeedPercentage( uint32_t speedPercentage )
 	{
 		// The View calls this because an option has (somehow!) been selected in the UI (menu/button/icon/whatever).
 
-		_lynxEmulator->SetCyclesPerTimeslice( cyclesEnum );
+		_lynxEmulator->SetSpeedPercentage( speedPercentage );
 		UpdateUserInterfaceElementsOnView();
 	}
 
@@ -868,16 +868,14 @@ namespace Jynx
 
 
 
-
-	ValueToMenuItemMap<uint32_t>  CycleCountToMenuOptionLookupTable[5] =
+	ValueToMenuItemMap<uint32_t>  SpeedPercentageToMenuOptionLookupTable[5] =
 	{
-		TickableInterfaceElements::Speed50,     LynxZ80Cycles::At50,     //  2MHz
-		TickableInterfaceElements::Speed100,    LynxZ80Cycles::At100,    //  4Mhz
-		TickableInterfaceElements::Speed200,    LynxZ80Cycles::At200,    //  8Mhz
-		TickableInterfaceElements::Speed400,    LynxZ80Cycles::At400,    // 16Mhz
-		TickableInterfaceElements::Speed800,    LynxZ80Cycles::At800,    // 32Mhz
+		TickableInterfaceElements::Speed50,     50,     //  2MHz  50%
+		TickableInterfaceElements::Speed100,    100,    //  4Mhz  100%
+		TickableInterfaceElements::Speed200,    200,    //  8Mhz  200%
+		TickableInterfaceElements::Speed400,    400,    // 16Mhz  400%
+		TickableInterfaceElements::Speed800,    800,    // 32Mhz  800%
 	};
-
 
 
 
@@ -959,8 +957,8 @@ namespace Jynx
 		//   but we'll honour the tampered speed setting!
 		//
 
-		UpdateMenuExclusiveSelectionGroup( _hostView, CycleCountToMenuOptionLookupTable, _lynxEmulator->GetCyclesPerTimeslice() );
-		UpdateMenuExclusiveSelectionGroup( _hostView, ColourSetToMenuOptionLookupTable,  _lynxEmulator->GetLynxColourSet() );
+		UpdateMenuExclusiveSelectionGroup( _hostView, SpeedPercentageToMenuOptionLookupTable, _lynxEmulator->GetSpeedPercentage() );
+		UpdateMenuExclusiveSelectionGroup( _hostView, ColourSetToMenuOptionLookupTable,       _lynxEmulator->GetLynxColourSet() );
 	}
 
 
@@ -1008,12 +1006,12 @@ namespace Jynx
 		auto fileOpener = _hostView->GetUserSettingsFileOpener();
 		if( fileOpener != nullptr )
 		{
-			UserSettings userSettings(
+			UserSettings  userSettings(
 				_lynxEmulator->GetMachineType(),
 				_renderStyle,
 				_lynxEmulator->IsSoundEnabled(),
 				_showFullScreen,
-				_lynxEmulator->GetCyclesPerTimeslice(),
+				_lynxEmulator->GetSpeedPercentage(),
 				_lynxEmulator->GetTapeSounds(),
 				_lynxEmulator->GetLynxRemCommandExtensionsEnabled(),
 				_lynxEmulator->GetEnableSpeedMaxModeWhenUsingCassette(),
@@ -1032,7 +1030,7 @@ namespace Jynx
 		auto fileOpener = _hostView->GetUserSettingsFileOpener();
 		if( fileOpener != nullptr )
 		{
-            UserSettings userSettings( &*fileOpener );
+            UserSettings  userSettings( &*fileOpener );
 
             // Now that the file has loaded successfully, we know we can use the information in it!
             // (Or, of course, the defaults that the UserSettings object applies, if it's down-level version).
@@ -1041,7 +1039,7 @@ namespace Jynx
             _lynxEmulator->SetSoundEnable( userSettings.GetSoundEnable() );
 
 			_showFullScreen = userSettings.GetFullScreenEnable();
-            _lynxEmulator->SetCyclesPerTimeslice( userSettings.GetCyclesPerTimeslice() );
+            _lynxEmulator->SetSpeedPercentage( userSettings.GetSpeedPercentage() );
             _lynxEmulator->SetTapeSounds( userSettings.GetTapeSounds() );
             _lynxEmulator->SetLynxRemCommandExtensionsEnabled( userSettings.GetRemExtensions() );
             _lynxEmulator->SetEnableSpeedMaxModeWhenUsingCassette( userSettings.GetMaxSpeedCassette() );

@@ -43,7 +43,7 @@
 	<stdexcept>
 	"Lexer.h"
 
-1434656980 source:/home/jonathan/Documents/Jynx/Portable/LynxEmulatorGuest.cpp
+1435349786 source:/home/jonathan/Documents/Jynx/Portable/LynxEmulatorGuest.cpp
 	<assert.h>
 	<string>
 	"LynxEmulatorGuest.h"
@@ -52,7 +52,7 @@
 	"FileLoader.h"
 	"Z80/JynxZ80Disassembler.h"
 
-1434299718 /home/jonathan/Documents/Jynx/Portable/LynxEmulatorGuest.h
+1435349480 /home/jonathan/Documents/Jynx/Portable/LynxEmulatorGuest.h
 	<memory>
 	"IHostServicesForLynxEmulator.h"
 	"ISerialiser.h"
@@ -89,7 +89,7 @@
 1433752830 /home/jonathan/Documents/Jynx/Portable/LynxHardware.h
 	<stdint.h>
 
-1433678744 /home/jonathan/Documents/Jynx/Portable/LynxEmulatorEnums.h
+1435349279 /home/jonathan/Documents/Jynx/Portable/LynxEmulatorEnums.h
 
 1434148200 /home/jonathan/Documents/Jynx/Portable/SoundBufferWriter.h
 	"stdint.h"
@@ -148,7 +148,7 @@
 
 1433969238 /home/jonathan/Documents/Jynx/Portable/LynxRectangle.h
 
-1435008176 source:/home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.cpp
+1435350408 source:/home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.cpp
 	<assert.h>
 	"LynxUserInterfaceModel.h"
 	"LynxHardware.h"
@@ -157,7 +157,7 @@
 	"MenuItemIDs.h"
 	"UnexpectedExceptionGuard.h"
 
-1434790930 /home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.h
+1435349339 /home/jonathan/Documents/Jynx/Portable/LynxUserInterfaceModel.h
 	"IViewServicesForLynxUserInterfaceModel.h"
 	"IHostServicesForLynxEmulator.h"
 	"LynxEmulatorGuest.h"
@@ -172,7 +172,7 @@
 	"LynxRoms.h"
 	"Enumerations.h"
 
-1434299718 /home/jonathan/Documents/Jynx/Portable/UserSettingsSerialiser.h
+1435350380 /home/jonathan/Documents/Jynx/Portable/UserSettingsSerialiser.h
 	<stdint.h>
 	"IFileOpener.h"
 	"ISerialiser.h"
@@ -216,7 +216,7 @@
 	"TextRecorder.h"
 	"ZeroInitialiseMemory.h"
 
-1433678744 source:/home/jonathan/Documents/Jynx/Portable/UserSettingsSerialiser.cpp
+1435350360 source:/home/jonathan/Documents/Jynx/Portable/UserSettingsSerialiser.cpp
 	"UserSettingsSerialiser.h"
 	"FileSerialiser.h"
 	"ISerialiser.h"

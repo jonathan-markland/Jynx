@@ -146,7 +146,7 @@ namespace Jynx
 		_currentReadTape  = std::make_shared<TapFileReader>( this );
 		_currentWriteTape = std::make_shared<TapFileWriter>();
 
-		_processor.SetTimesliceLength( LynxZ80Cycles::At100 ); // 4.00 mhz
+		_processor.SetTimesliceLength( LynxZ80CyclesPerSecond / 50 ); // 4.00 mhz assuming 1/50th second
 
 		LoadROMS();
 		InitialiseLYNX();
@@ -1794,16 +1794,41 @@ namespace Jynx
 
 
 
-	uint32_t LynxEmulatorGuest::GetCyclesPerTimeslice() const
+	uint32_t LynxEmulatorGuest::GetSpeedPercentage() const
 	{
-		EmulatorThreadInhibitor  handshake(const_cast<LynxEmulatorGuest *>(this));  // TODO: elminate by having a copy of the state, NOT by changing the Z80!
-		return _processor.GetTimesliceLength();
+	    uint32_t numCycles = 0;
+
+        // NB: Scoped to hold lock for shortest time.
+	    {
+            EmulatorThreadInhibitor  handshake(const_cast<LynxEmulatorGuest *>(this));  // TODO: elminate by having a copy of the state, NOT by changing the Z80!
+            numCycles = _processor.GetTimesliceLength();
+	    }
+
+        // Translate the cycle count back to a percentage:
+
+	    if( numCycles == 35000 )  return 50;
+	    if( numCycles == 140000 ) return 200;
+	    if( numCycles == 280000 ) return 400;
+	    if( numCycles == 560000 ) return 800;
+
+	    return 100;
 	}
 
 
 
-	void LynxEmulatorGuest::SetCyclesPerTimeslice( uint32_t numCycles )
+	void LynxEmulatorGuest::SetSpeedPercentage( uint32_t speedPercentage )
 	{
+	    // Translate the percentage to a cycle count, defaulting to 100% if unsupported value:
+
+	    uint32_t  numCycles = 70000;
+
+	    if( speedPercentage ==  50 )  numCycles = 35000;
+	    if( speedPercentage == 200 )  numCycles = 140000;
+	    if( speedPercentage == 400 )  numCycles = 280000;
+	    if( speedPercentage == 800 )  numCycles = 560000;
+
+        // Set the number of cycles:
+
 		EmulatorThreadInhibitor  handshake(this);
 		_processor.SetTimesliceLength( numCycles );
 	}

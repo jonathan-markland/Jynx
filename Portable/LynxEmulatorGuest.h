@@ -62,8 +62,8 @@ namespace Jynx
 		void LoadState( IFileOpener *fileOpener );
 		void ResetGuest( LynxMachineType::Enum machineType );
 		LynxMachineType::Enum  GetMachineType() const;
-		uint32_t GetCyclesPerTimeslice() const;
-		void SetCyclesPerTimeslice( uint32_t numCycles );
+		uint32_t GetSpeedPercentage() const;
+		void SetSpeedPercentage( uint32_t speedPercentage );
 		void InsertBlankTape();
 		bool CanRewindTape() const;
 		void RewindTape();
@@ -166,6 +166,8 @@ namespace Jynx
 	private:
 
 		friend class EmulatorThreadInhibitor;
+
+        enum { LynxZ80CyclesPerSecond = 4000000 };
 
 		IHostServicesForLynxEmulator * const _hostObject;     // Safe to read on ANY thread (not changed once constructed).
 		Thread  _emulationThread;                             // The "EMULATOR thread".
