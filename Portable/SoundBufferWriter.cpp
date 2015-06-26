@@ -27,12 +27,13 @@ namespace Jynx
 {
 	SoundBufferWriter::SoundBufferWriter()
 		: _soundBuffer( nullptr )
-		, _soundBufferNumSamples( 882 )
+		, _soundBufferNumSamples( 0 )
 		, _lynxSpeakerLevel( 0 )
 		, _currentRecordingPos( 0 )
     {
-        _waveOutputStream = std::make_shared<WaveOutputStream>( 1, _soundBufferNumSamples, 3 );
-        _soundBuffer      = (uint16_t *) _waveOutputStream->GetSoundBufferBaseAddress();
+        _waveOutputStream      = std::make_shared<WaveOutputStream>( 44100, 1, 882, 3 );
+        _soundBuffer           = (uint16_t *) _waveOutputStream->GetSoundBufferBaseAddress();
+        _soundBufferNumSamples = _waveOutputStream->GetBufferSizeInFrames(); // We're mono, hence frames == samples.
     }
 
 

@@ -185,7 +185,7 @@
 	<stdint.h>
 	<vector>
 
-1434150272 source:/home/jonathan/Documents/Jynx/Portable/SoundBufferWriter.cpp
+1435346760 source:/home/jonathan/Documents/Jynx/Portable/SoundBufferWriter.cpp
 	<assert.h>
 	"SoundBufferWriter.h"
 	"ZeroInitialiseMemory.h"
@@ -2822,13 +2822,13 @@
 	<string>
 	<gtk/gtk.h>
 
-1434229158 /home/jonathan/Documents/Jynx/Portable/WaveOutputStream.h
+1435346239 /home/jonathan/Documents/Jynx/Portable/WaveOutputStream.h
 	<stdexcept>
 	<stdint.h>
 	<memory>
 	<vector>
 
-1434229158 source:/home/jonathan/Documents/Jynx/ForLinux/Linux_WaveOutputStream.cpp
+1435347275 source:/home/jonathan/Documents/Jynx/ForLinux/Linux_WaveOutputStream.cpp
 	<alsa/asoundlib.h>
 	<assert.h>
 	"WaveOutputStream.h"

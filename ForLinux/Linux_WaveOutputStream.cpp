@@ -28,6 +28,7 @@
 #include "WaveOutputStream.h"
 
 
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //     WAVE SOUND OUTPUT FOR LINUX
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -36,8 +37,10 @@ class HostOS_WaveOutputStream
 {
 public:
 
-    HostOS_WaveOutputStream( uint32_t channelCount, uint32_t bufferSizeFrames, uint32_t numBuffersInRing );
+    HostOS_WaveOutputStream( uint32_t requestedRateHz, uint32_t channelCount, uint32_t requestedBufferSizeFrames, uint32_t numBuffersInRing );
     ~HostOS_WaveOutputStream();
+    uint32_t GetRateHz() const;
+    uint32_t GetBufferSizeInFrames() const;
     void Write( const void *soundDataBlock, uint32_t numFrames );
     void Flush();
     void Reset();
@@ -47,14 +50,18 @@ private:
     bool _handleConstructed;
     snd_pcm_t *_handle;
     snd_pcm_hw_params_t *_params;  // TODO: not sure if needed globally
+    uint32_t  _actualRateHz;            // Because the driver may return different
+    uint32_t  _actualBufferSizeFrames;  // Because the driver may return different
 
 };
 
 
 
-HostOS_WaveOutputStream::HostOS_WaveOutputStream( uint32_t channelCount, uint32_t bufferSizeFrames, uint32_t numBuffersInRing )
+HostOS_WaveOutputStream::HostOS_WaveOutputStream( uint32_t requestedRateHz, uint32_t channelCount, uint32_t requestedBufferSizeFrames, uint32_t numBuffersInRing )
     : _handleConstructed( false )
     , _handle( nullptr )
+    , _actualRateHz( 0 )
+    , _actualBufferSizeFrames( 0 )
 {
     // Open PCM device for playback
     if( snd_pcm_open( &_handle, "default", SND_PCM_STREAM_PLAYBACK, 0 ) != 0 )   // TODO: mode	Open mode (see SND_PCM_NONBLOCK, SND_PCM_ASYNC)
@@ -90,25 +97,27 @@ HostOS_WaveOutputStream::HostOS_WaveOutputStream( uint32_t channelCount, uint32_
         throw std::runtime_error( "Failed to set number of sound channels." );
     }
 
-    // 44100 bits/second sampling rate (CD quality) */
-    unsigned int val = 44100;
+    // Sampling rate
+    unsigned int val = requestedRateHz;
     int dir = 0;
-    if( snd_pcm_hw_params_set_rate_near( _handle, _params, &val, &dir ) != 0  ||  val != 44100 )
+    if( snd_pcm_hw_params_set_rate_near( _handle, _params, &val, &dir ) != 0 )
     {
-        throw std::runtime_error( "Failed to set 44100Hz for sound output." );
+        throw std::runtime_error( "Failed to set rate for sound output." );
     }
+    _actualRateHz = requestedRateHz;
 
     // Set period size in frames
-    snd_pcm_uframes_t  frames = bufferSizeFrames;
-    if( snd_pcm_hw_params_set_period_size_near( _handle, _params, &frames, &dir ) != 0  ||  frames != bufferSizeFrames )
+    snd_pcm_uframes_t  frames = requestedBufferSizeFrames;
+    if( snd_pcm_hw_params_set_period_size_near( _handle, _params, &frames, &dir ) != 0 )
     {
         throw std::runtime_error( "Failed to set desired buffer size for sound output." );
     }
+    _actualBufferSizeFrames = frames;
 
     // Restrict total ring buffer size.
-    auto desireRingBufferSize = (snd_pcm_uframes_t) (bufferSizeFrames * numBuffersInRing);
+    auto desireRingBufferSize = (snd_pcm_uframes_t) (_actualBufferSizeFrames * numBuffersInRing);
     auto ringBufferSize = desireRingBufferSize;
-    if( snd_pcm_hw_params_set_buffer_size_near( _handle, _params, &ringBufferSize ) != 0  ||  ringBufferSize != desireRingBufferSize )
+    if( snd_pcm_hw_params_set_buffer_size_near( _handle, _params, &ringBufferSize ) != 0  ||  ringBufferSize != desireRingBufferSize )  // this must match the numBuffersInRing we asked for
     {
         throw std::runtime_error( "Failed to set sound driver ring buffer size." );
     }
@@ -120,10 +129,24 @@ HostOS_WaveOutputStream::HostOS_WaveOutputStream( uint32_t channelCount, uint32_
     }
 
     // Sanity check buffer size for one period, against what caller will expect to use.  // TODO: unnecessary?
-    if( snd_pcm_hw_params_get_period_size( _params, &frames, &dir ) != 0  ||  frames != bufferSizeFrames )
+    if( snd_pcm_hw_params_get_period_size( _params, &frames, &dir ) != 0  ||  frames != _actualBufferSizeFrames )
     {
         throw std::runtime_error( "Failed to confirm sound driver settings." );
     }
+}
+
+
+
+uint32_t HostOS_WaveOutputStream::GetRateHz() const
+{
+    return _actualRateHz;
+}
+
+
+
+uint32_t HostOS_WaveOutputStream::GetBufferSizeInFrames() const
+{
+    return _actualBufferSizeFrames;
 }
 
 
@@ -179,13 +202,14 @@ HostOS_WaveOutputStream::~HostOS_WaveOutputStream()
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-//     WAVE SOUND OUTPUT - INTERFACE DELEGATION
+//     WAVE SOUND OUTPUT - INTERFACE DELEGATION - Same on all platforms, except for content of class HostOS_WaveOutputStream
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-WaveOutputStream::WaveOutputStream( uint32_t channelCount, uint32_t bufferSizeFrames, uint32_t numBuffersInRing )
-    : _bufferSizeFrames( bufferSizeFrames )
+WaveOutputStream::WaveOutputStream( uint32_t requestedRateHz, uint32_t channelCount, uint32_t requestedBufferSizeFrames, uint32_t numBuffersInRing )
 {
-    auto numSamplesPerBuffer = channelCount * bufferSizeFrames;
+    _hostImplementation = std::make_shared<HostOS_WaveOutputStream>( requestedRateHz, channelCount, requestedBufferSizeFrames, numBuffersInRing );
+
+    auto numSamplesPerBuffer = channelCount * _hostImplementation->GetBufferSizeInFrames();
 
 	_soundBuffer.reserve( numSamplesPerBuffer );
 
@@ -193,14 +217,22 @@ WaveOutputStream::WaveOutputStream( uint32_t channelCount, uint32_t bufferSizeFr
 	{
 		_soundBuffer.push_back( 0 );
 	}
-
-    _hostImplementation = std::make_shared<HostOS_WaveOutputStream>( channelCount, bufferSizeFrames, numBuffersInRing );
 }
 
 WaveOutputStream::~WaveOutputStream()
 {
     _hostImplementation = nullptr;  // Destroy this first because it has had the _soundBuffer's address revealed to it.
     // Language will now safely apply destructors to everything.
+}
+
+uint32_t WaveOutputStream::GetRateHz() const
+{
+    return _hostImplementation->GetRateHz();
+}
+
+uint32_t WaveOutputStream::GetBufferSizeInFrames() const
+{
+    return _hostImplementation->GetBufferSizeInFrames();
 }
 
 void *WaveOutputStream::GetSoundBufferBaseAddress()
@@ -210,7 +242,7 @@ void *WaveOutputStream::GetSoundBufferBaseAddress()
 
 void WaveOutputStream::PlayBufferWithWait()
 {
-    _hostImplementation->Write( &_soundBuffer[0], _bufferSizeFrames );
+    _hostImplementation->Write( &_soundBuffer[0], GetBufferSizeInFrames() );
 }
 
 /* Not used yet

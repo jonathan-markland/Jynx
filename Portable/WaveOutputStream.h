@@ -40,12 +40,20 @@ public:
     // TODO: Store constructed values and provide "reminder" interface?
     // TODO: Should/could this expose the address of a buffer to be filled?
 
-    WaveOutputStream( uint32_t channelCount, uint32_t bufferSizeFrames, uint32_t numBuffersInRing );
-        // 44,100Hz
-        // 2 bytes per sample, 16-bit signed little-endian
+    WaveOutputStream( uint32_t requestedRateHz, uint32_t channelCount, uint32_t requestedBufferSizeFrames, uint32_t numBuffersInRing );
+        // Note: Format is fixed at 2 bytes per sample, 16-bit signed little-endian
+        // Note: You must honour GetRateHz()  GetBufferSizeInFrames() which may be different from requested
 
     ~WaveOutputStream();
         // Need to ensure a destruction order.
+
+    uint32_t GetRateHz() const;
+        // Retrieves the rate that was granted by the hardware driver.
+        // WARNING: This may be different to that requested, but as near as possible.
+
+    uint32_t GetBufferSizeInFrames() const;
+        // Retrieves the frame count that was granted by the hardware driver.
+        // WARNING: This may be different to that requested, but as near as possible.
 
     void *GetSoundBufferBaseAddress();
         // Retrieve base address of composition buffer.
@@ -63,7 +71,6 @@ public:
 
 private:
 
-    uint32_t               _bufferSizeFrames;
     std::shared_ptr<class HostOS_WaveOutputStream>  _hostImplementation;
     std::vector<uint16_t>  _soundBuffer;  // TODO: Can we use the ring buffer rather than copy-in (on both linux and windows?)
 

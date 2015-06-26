@@ -15,16 +15,16 @@
 
 
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //     WAVE SOUND BUFFERS
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
 
-class WaveBuffer 
+class WaveBuffer
 {
 public:
-    
+
 	~WaveBuffer();
 	bool Init( HWAVEOUT waveHandle, int sizeBytes );
 	bool Write( const void *soundBlock, int sizeBytes, int &bytesWritten );
@@ -52,7 +52,7 @@ bool WaveBuffer::Init( HWAVEOUT waveHandle, int sizeBytes )
 
 	// Allocate a buffer and initialize the header.
 	_waveHeader.lpData = (LPSTR) LocalAlloc( LMEM_FIXED, sizeBytes );
-	if( _waveHeader.lpData == nullptr ) 
+	if( _waveHeader.lpData == nullptr )
 	{
 		return false;
 	}
@@ -71,9 +71,9 @@ bool WaveBuffer::Init( HWAVEOUT waveHandle, int sizeBytes )
 
 
 
-WaveBuffer::~WaveBuffer() 
+WaveBuffer::~WaveBuffer()
 {
-	if( _waveHeader.lpData ) 
+	if( _waveHeader.lpData )
 	{
 		waveOutUnprepareHeader( _waveOutHandle, &_waveHeader, sizeof(WAVEHDR) );
 		LocalFree( _waveHeader.lpData );
@@ -97,7 +97,7 @@ bool WaveBuffer::Write( const void *soundBlock, int sizeBytes, int &bytesWritten
 	bytesWritten = min( (int)_waveHeader.dwBufferLength - _bytesCount, sizeBytes );
 	CopyMemory( (PVOID)(_waveHeader.lpData + _bytesCount), soundBlock, bytesWritten );
 	_bytesCount += bytesWritten;
-	if( _bytesCount == (int)_waveHeader.dwBufferLength ) 
+	if( _bytesCount == (int)_waveHeader.dwBufferLength )
 	{
 		// Write it!
 		_bytesCount = 0;
@@ -119,9 +119,9 @@ bool WaveBuffer::Write( const void *soundBlock, int sizeBytes, int &bytesWritten
 
 
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //     WAVE SOUND HOST OS IMPLEMENTATION -- MS WINDOWS
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
 class HostOS_WaveOutputStream
@@ -143,6 +143,7 @@ private:
 	HWAVEOUT       _waveOutHandle;
 	class WaveBuffer  *_waveBuffers;
 	uint32_t       _channelCount;
+	uint32_t       _bufferSizeFrames;
 
 	static void CALLBACK WaveCallback( HWAVEOUT hWave, UINT uMsg, DWORD dwUser, DWORD dw1, DWORD dw2 );
 
@@ -152,7 +153,7 @@ private:
 
 
 
-HostOS_WaveOutputStream::HostOS_WaveOutputStream( uint32_t channelCount, uint32_t bufferSizeFrames, uint32_t numBuffersInRing )
+HostOS_WaveOutputStream::HostOS_WaveOutputStream( uint32_t requestedRateHz, uint32_t channelCount, uint32_t requestedBufferSizeFrames, uint32_t numBuffersInRing )
 	: _bufferCount( numBuffersInRing )
 	, _currentBuffer(0)
 	, _noBuffer(true)
@@ -160,32 +161,55 @@ HostOS_WaveOutputStream::HostOS_WaveOutputStream( uint32_t channelCount, uint32_
 	, _waveBuffers( new WaveBuffer[numBuffersInRing] )
 	, _waveOutHandle( NULL )
 	, _channelCount(channelCount)
+	, _bufferSizeFrames(0)
+	, _rateHz(0)
 {
-	auto sampleRateHz = 44100; // not yet parameterisable
 	auto bytesPerSample = 2; // not yet parameterisable
 
 	WAVEFORMATEX  format;
-	format.wFormatTag = WAVE_FORMAT_PCM;
-	format.nChannels  = channelCount;
-	format.nSamplesPerSec = sampleRateHz;
+	format.wFormatTag     = WAVE_FORMAT_PCM;
+	format.nChannels      = channelCount;
+	format.nSamplesPerSec = requestedRateHz;
 	format.wBitsPerSample = bytesPerSample * 8;
-	format.nBlockAlign = bytesPerSample;
-	format.cbSize = 0;
+	format.nBlockAlign    = bytesPerSample;
+	format.cbSize         = 0;
 
 	// Create wave device.
-	waveOutOpen( &_waveOutHandle,
+	auto openResult = waveOutOpen( &_waveOutHandle,
 				WAVE_MAPPER,
 				&format,
 				(DWORD_PTR) HostOS_WaveOutputStream::WaveCallback,
 				(DWORD_PTR) _semaphoreHandle,
 				CALLBACK_FUNCTION);
 
+    if( openResult != MMSYSERR_NOERROR )
+    {
+        throw std::runtime_error( "Failed to open the WAVE output with the desired parameters." );
+    }
+
 	// Initialize the wave buffers.
-	auto bufferSizeBytes = bufferSizeFrames * channelCount * bytesPerSample;
-	for (uint32_t i = 0; i < numBuffersInRing; i++) 
+	auto bufferSizeBytes = requestedBufferSizeFrames * channelCount * bytesPerSample;
+	for (uint32_t i = 0; i < numBuffersInRing; i++)
 	{
 		_waveBuffers[i].Init( _waveOutHandle, bufferSizeBytes );
-	} 
+	}
+
+	_bufferSizeFrames = requestedBufferSizeFrames;
+	_rateHz = requestedRateHz;
+}
+
+
+
+uint32_t HostOS_WaveOutputStream::GetRateHz() const
+{
+    return _rateHz;
+}
+
+
+
+uint32_t HostOS_WaveOutputStream::GetBufferSizeInFrames() const
+{
+    return _bufferSizeFrames;
 }
 
 
@@ -194,10 +218,10 @@ void HostOS_WaveOutputStream::Write( const void *soundDataBlock, uint32_t numFra
 {
 	auto sizeBytes = numFrames * _channelCount * 2; // TODO : *2 is specific to 16-bits per sample
 
-	while( sizeBytes != 0 ) 
+	while( sizeBytes != 0 )
 	{
 		// Get a buffer if necessary.
-		if ( _noBuffer ) 
+		if ( _noBuffer )
 		{
 			WaitOnTheSemaphore();
 			_noBuffer = false;
@@ -205,14 +229,14 @@ void HostOS_WaveOutputStream::Write( const void *soundDataBlock, uint32_t numFra
 
 		// Write into a buffer.
 		int nWritten;
-		if (_waveBuffers[_currentBuffer].Write( soundDataBlock, sizeBytes, nWritten) ) 
+		if (_waveBuffers[_currentBuffer].Write( soundDataBlock, sizeBytes, nWritten) )
 		{
 			_noBuffer = true;
 			_currentBuffer = (_currentBuffer + 1) % _bufferCount;
 			sizeBytes -= nWritten;
 			((const uint8_t *&) soundDataBlock) += nWritten;
-		} 
-		else 
+		}
+		else
 		{
 			// ASSERT(nWritten == nBytes);
 			break;
@@ -224,7 +248,7 @@ void HostOS_WaveOutputStream::Write( const void *soundDataBlock, uint32_t numFra
 
 void CALLBACK HostOS_WaveOutputStream::WaveCallback( HWAVEOUT hWave, UINT uMsg, DWORD dwUser, DWORD dw1, DWORD dw2 ) // static member function
 {
-	if( uMsg == WOM_DONE ) 
+	if( uMsg == WOM_DONE )
 	{
 		ReleaseSemaphore( (HANDLE) dwUser, 1, NULL );
 	}
@@ -234,7 +258,7 @@ void CALLBACK HostOS_WaveOutputStream::WaveCallback( HWAVEOUT hWave, UINT uMsg, 
 
 void HostOS_WaveOutputStream::Flush()
 {
-	if( ! _noBuffer ) 
+	if( ! _noBuffer )
 	{
 		_waveBuffers[_currentBuffer].Flush();
 		_noBuffer = true;
@@ -261,7 +285,7 @@ void HostOS_WaveOutputStream::Wait()
 	Flush();
 
 	// Wait for the buffers back.
-	for (int i = 0; i < _bufferCount; i++) 
+	for (int i = 0; i < _bufferCount; i++)
 	{
 		WaitOnTheSemaphore();
 	}
@@ -302,13 +326,14 @@ HostOS_WaveOutputStream::~HostOS_WaveOutputStream()
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-//     WAVE SOUND OUTPUT - INTERFACE DELEGATION
+//     WAVE SOUND OUTPUT - INTERFACE DELEGATION - Same on all platforms, except for content of class HostOS_WaveOutputStream
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-WaveOutputStream::WaveOutputStream( uint32_t channelCount, uint32_t bufferSizeFrames, uint32_t numBuffersInRing )
-    : _bufferSizeFrames( bufferSizeFrames )
+WaveOutputStream::WaveOutputStream( uint32_t requestedRateHz, uint32_t channelCount, uint32_t requestedBufferSizeFrames, uint32_t numBuffersInRing )
 {
-    auto numSamplesPerBuffer = channelCount * bufferSizeFrames;
+    _hostImplementation = std::make_shared<HostOS_WaveOutputStream>( requestedRateHz, channelCount, requestedBufferSizeFrames, numBuffersInRing );
+
+    auto numSamplesPerBuffer = channelCount * _hostImplementation->GetBufferSizeInFrames();
 
 	_soundBuffer.reserve( numSamplesPerBuffer );
 
@@ -316,14 +341,22 @@ WaveOutputStream::WaveOutputStream( uint32_t channelCount, uint32_t bufferSizeFr
 	{
 		_soundBuffer.push_back( 0 );
 	}
-
-    _hostImplementation = std::make_shared<HostOS_WaveOutputStream>( channelCount, bufferSizeFrames, numBuffersInRing );
 }
 
 WaveOutputStream::~WaveOutputStream()
 {
     _hostImplementation = nullptr;  // Destroy this first because it has had the _soundBuffer's address revealed to it.
     // Language will now safely apply destructors to everything.
+}
+
+uint32_t WaveOutputStream::GetRateHz() const
+{
+    return _hostImplementation->GetRateHz();
+}
+
+uint32_t WaveOutputStream::GetBufferSizeInFrames() const
+{
+    return _hostImplementation->GetBufferSizeInFrames();
 }
 
 void *WaveOutputStream::GetSoundBufferBaseAddress()
@@ -333,7 +366,7 @@ void *WaveOutputStream::GetSoundBufferBaseAddress()
 
 void WaveOutputStream::PlayBufferWithWait()
 {
-    _hostImplementation->Write( &_soundBuffer[0], _bufferSizeFrames );
+    _hostImplementation->Write( &_soundBuffer[0], GetBufferSizeInFrames() );
 }
 
 /* Not used yet
@@ -347,4 +380,5 @@ void WaveOutputStream::Reset()
     _hostImplementation->Reset();
 }
 */
+
 
