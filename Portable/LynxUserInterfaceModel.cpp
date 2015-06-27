@@ -859,7 +859,7 @@ namespace Jynx
 	template<typename VALUE, size_t N>
 	void UpdateMenuExclusiveSelectionGroup( IViewServicesForLynxUserInterfaceModel *hostView, ValueToMenuItemMap<VALUE> (&mappingsArray)[N], VALUE memberToActivate )
 	{
-		for( int i=0; i < N; i++ )
+		for( size_t i=0; i < N; i++ )
 		{
 			bool foundThisTime = (memberToActivate == mappingsArray[i].enumerationValue);
 			hostView->SetTickBoxState( mappingsArray[i].interfaceItem, foundThisTime );
