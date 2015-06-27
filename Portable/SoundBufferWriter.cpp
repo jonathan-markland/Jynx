@@ -38,6 +38,20 @@ namespace Jynx
 
 
 
+    uint32_t SoundBufferWriter::GetRateHz() const
+    {
+        return _waveOutputStream->GetRateHz();
+    }
+
+
+
+    uint32_t SoundBufferWriter::GetBufferSizeInFrames() const
+    {
+        return _waveOutputStream->GetBufferSizeInFrames();
+    }
+
+
+
 
 	void SoundBufferWriter::WriteSample( uint8_t lynxSpeakerLevel, int32_t periodZ80Cycles, int32_t countdownZ80Cycles )
 	{

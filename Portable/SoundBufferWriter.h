@@ -30,7 +30,10 @@ namespace Jynx
 	{
 	public:
 
-		// "Draws" the waveform of the sound that the Lynx is generating onto a 44,100Hz CD MONO PCM sound buffer.
+		// "Draws" the waveform of the sound that the Lynx is generating onto CD MONO PCM sound buffer.
+		// - The size of the sound buffer (in frames) is not controlled by external parties, hence the
+		//   GetBufferSizeInFrames() function.  Likewise for GetRateHz().  These two enable the emulator
+		//   to calculate the number of Z80 cycles per burst.
 		// - This is an on-going process.  The emulation runs in "bursts", each burst mixes sound samples for an
 		//   entire sound buffer (it fits *precisely*).  In fact, with sound enabled, the host's sound provision
 		//   TIMES the entire emulation!
@@ -43,6 +46,8 @@ namespace Jynx
 		//   "drawing" issues (ie: overrun array), but I handle this.
 
 		SoundBufferWriter();
+        uint32_t GetRateHz() const;
+        uint32_t GetBufferSizeInFrames() const;
 		void WriteSample( uint8_t lynxSpeakerLevel, int32_t periodZ80Cycles, int32_t countdownZ80Cycles );
 		void PeriodComplete();  // reminder: Allows buffer skip in case sound is not enabled at higher level.
         void PlayBufferWithWait();

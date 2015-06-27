@@ -120,6 +120,7 @@ namespace Jynx
 	LynxEmulatorGuest::LynxEmulatorGuest( IHostServicesForLynxEmulator *hostObject, LynxMachineType::Enum initialMachineType, const char *platformEndOfLineSequenceUTF8 )
 		: _hostObject(hostObject)
 		, _machineType(initialMachineType)
+		, _speedPercentage(100)
 		, _tapeMode( LynxTapeMode::SavingPermitted )
 		, _recompositeWholeScreen(true)
 		, _z80CycleCounter(0)
@@ -146,12 +147,40 @@ namespace Jynx
 		_currentReadTape  = std::make_shared<TapFileReader>( this );
 		_currentWriteTape = std::make_shared<TapFileWriter>();
 
-		_processor.SetTimesliceLength( LynxZ80CyclesPerSecond / 50 ); // 4.00 mhz assuming 1/50th second
-
+		CalculateAndApplyZ80BurstPeriod();
 		LoadROMS();
 		InitialiseLYNX();
 		_emulationThread.CreateAndRun( &LynxEmulatorGuest::BootstrapRunThreadMainLoop, this );
 	}
+
+
+
+    void LynxEmulatorGuest::CalculateAndApplyZ80BurstPeriod()
+    {
+        uint32_t  cyclesPerBurst = 0;
+
+        if( _soundEnable )
+        {
+            cyclesPerBurst = (uint64_t(LynxZ80ClockSpeedHz) * _soundBufferWriter.GetBufferSizeInFrames())  /  _soundBufferWriter.GetRateHz();
+        }
+        else
+        {
+            // Sound disabled.
+            // The 20ms timer is in use, so use that as a cycle count.
+            cyclesPerBurst = LynxZ80ClockSpeedHz / 50;
+        }
+
+        // Adjust for speed percentage:
+
+        cyclesPerBurst = (cyclesPerBurst * _speedPercentage) / 100;
+
+        // Program Z80 with the number of cycles per burst:
+
+        // NOTE : Actually program 90% of the value to account for slowdown when
+        //        Lynx ROM is switched IN.  TODO: We assume this is always the case, which it mostly is.
+
+        _processor.SetTimesliceLength( (cyclesPerBurst * 9) / 10 );
+    }
 
 
 
@@ -1612,8 +1641,7 @@ namespace Jynx
                 if( _soundEnable )
                 {
                     // NOTE: The sound card "forces" us back until it's ready.
-                    // This gives us a 20ms timer (because 882 samples @ 44,100Hz), on
-                    // which the emulation is synchronised, when sound is ON.
+                    // The sound subsystem "times" the emulation when the sound is ON.
                     _soundBufferWriter.PlayBufferWithWait();
                 }
                 else
@@ -1796,41 +1824,16 @@ namespace Jynx
 
 	uint32_t LynxEmulatorGuest::GetSpeedPercentage() const
 	{
-	    uint32_t numCycles = 0;
-
-        // NB: Scoped to hold lock for shortest time.
-	    {
-            EmulatorThreadInhibitor  handshake(const_cast<LynxEmulatorGuest *>(this));  // TODO: elminate by having a copy of the state, NOT by changing the Z80!
-            numCycles = _processor.GetTimesliceLength();
-	    }
-
-        // Translate the cycle count back to a percentage:
-
-	    if( numCycles == 35000 )  return 50;
-	    if( numCycles == 140000 ) return 200;
-	    if( numCycles == 280000 ) return 400;
-	    if( numCycles == 560000 ) return 800;
-
-	    return 100;
+	    return _speedPercentage;
 	}
 
 
 
 	void LynxEmulatorGuest::SetSpeedPercentage( uint32_t speedPercentage )
 	{
-	    // Translate the percentage to a cycle count, defaulting to 100% if unsupported value:
-
-	    uint32_t  numCycles = 70000;
-
-	    if( speedPercentage ==  50 )  numCycles = 35000;
-	    if( speedPercentage == 200 )  numCycles = 140000;
-	    if( speedPercentage == 400 )  numCycles = 280000;
-	    if( speedPercentage == 800 )  numCycles = 560000;
-
-        // Set the number of cycles:
-
 		EmulatorThreadInhibitor  handshake(this);
-		_processor.SetTimesliceLength( numCycles );
+        _speedPercentage = speedPercentage;
+		CalculateAndApplyZ80BurstPeriod();
 	}
 
 
@@ -2196,7 +2199,9 @@ namespace Jynx
 
     void LynxEmulatorGuest::SetSoundEnable( bool soundEnable )
     {
+		EmulatorThreadInhibitor  handshake(this);
         _soundEnable = soundEnable;
+        CalculateAndApplyZ80BurstPeriod();
     }
 
 

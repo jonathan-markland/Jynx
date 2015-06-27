@@ -163,17 +163,22 @@ namespace Jynx
 
 		bool IsTapeInOperation() const;
 
+		void CalculateAndApplyZ80BurstPeriod();
+
 	private:
 
 		friend class EmulatorThreadInhibitor;
 
-        enum { LynxZ80CyclesPerSecond = 4000000 };
+        enum { LynxZ80ClockSpeedHz = 4000000 };
 
 		IHostServicesForLynxEmulator * const _hostObject;     // Safe to read on ANY thread (not changed once constructed).
 		Thread  _emulationThread;                             // The "EMULATOR thread".
 
 		// Machine type being emulated
 		volatile LynxMachineType::Enum _machineType;
+
+        // Speed percentage
+        volatile uint32_t _speedPercentage;
 
 		// Tape mode (not serialised)
 		LynxTapeMode::Enum  _tapeMode;
