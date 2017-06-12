@@ -7,8 +7,9 @@ Emulator for the 1983 Camputers Lynx Microcomputer, written by Jonathan Markland
 Please refer to the readme.htm for installation instructions.
 
     - Scroll down for pictures!
-    - [My wordpress blog](https://jynxemulator.wordpress.com/)
-    - [Camputers Lynx (Wikipedia)](https://en.wikipedia.org/wiki/Camputers_Lynx)
+
+[My wordpress blog](https://jynxemulator.wordpress.com/)
+[Camputers Lynx (Wikipedia)](https://en.wikipedia.org/wiki/Camputers_Lynx)
 
 	
 For Windows
