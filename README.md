@@ -49,41 +49,41 @@ A hack is required to obtain g++ from the "Jessie" edition:
 Pictures!
 ---------
 
-![Brushes](/Images/lynxmainscreen.gif)
+![Lynx main screen](/Images/lynxmainscreen.gif)
 
-![Brushes](/Images/airraid2.gif)
+![Air raid](/Images/airraid2.gif)
 
-![Brushes](/Images/airraid1.gif)
+![Air raid instructions](/Images/airraid1.gif)
 
-![Brushes](/Images/battlebrick.gif)
+![Battle brick](/Images/battlebrick.gif)
 
-![Brushes](/Images/lynxinvaders1.gif)
+![Invaders](/Images/lynxinvaders1.gif)
 
-![Brushes](/Images/lynxinvaders2.gif)
+![Invaders](/Images/lynxinvaders2.gif)
 
-![Brushes](/Images/panik.jpg)
+![Panik](/Images/panik.jpg)
 
-![Brushes](/Images/twinkle3.jpg)
+![Twinkle](/Images/twinkle3.gif)
 
-![Brushes](/Images/dungeon2.jpg)
+![Dungeon Adventure](/Images/dungeon2.gif)
 
-![Brushes](/Images/deflektor7.jpg)
+![Jonathan's 'Deflektor' demo](/Images/deflektor7.jpg)
 
-![Brushes](/Images/penrose1.gif)
+![Penrose demo](/Images/penrose1.gif)
 
-![Brushes](/Images/penrose2.gif)
+![Penrose demo](/Images/penrose2.gif)
 
-![Brushes](/Images/planets4.gif)
+![Cytera Planets Demo](/Images/planets4.gif)
 
-![Brushes](/Images/planets1.gif)
+![Cytera Planets Demo](/Images/planets1.gif)
 
-![Brushes](/Images/planets5.gif)
+![Cytera Planets Demo](/Images/planets5.gif)
 
-![Brushes](/Images/disasm.gif)
+![Built-in disassembler](/Images/disasm.gif)
 
-![Brushes](/Images/jam1.gif)
+![Jonathan jamming](/Images/jam1.gif)
 
-![Brushes](/Images/jamming3.gif)
+![Jonathan jamming](/Images/jamming3.jpg)
 
-![Brushes](/Images/jynx-on-the-pi-2.jpg)
+![Raspberry PI image](/Images/jynx-on-the-pi-2.jpg)
 
