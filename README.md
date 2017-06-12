@@ -9,6 +9,7 @@ Please refer to the readme.htm for installation instructions.
     - Scroll down for pictures!
 
 [My wordpress blog](https://jynxemulator.wordpress.com/)
+
 [Camputers Lynx (Wikipedia)](https://en.wikipedia.org/wiki/Camputers_Lynx)
 
 	
