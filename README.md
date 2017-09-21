@@ -12,6 +12,19 @@ Please refer to the readme.htm for installation instructions.
 
 [Camputers Lynx (Wikipedia)](https://en.wikipedia.org/wiki/Camputers_Lynx)
 
+
+Notes to programmers
+--------------------
+
+- Tag v1.0.8 is the most recent *tested and released* Windows version.
+- Tag v1.0.9 is the most recent *tested and released* Linux version.
+
+v1.0.9 didn't build on Windows - I broke the build, sorry.  Branch 'master' 
+fixes this, but NO v1.0.9 changes have been regression-tested on Windows!
+When I get around to re-testing, I will apply a new version tag, but since
+it takes about 3-4 hours to run the manual test plan, I think I will
+leave this until I do further work on Jynx.
+
 	
 For Windows
 -----------
