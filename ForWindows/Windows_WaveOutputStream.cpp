@@ -128,9 +128,11 @@ class HostOS_WaveOutputStream
 {
 public:
 
-    HostOS_WaveOutputStream( uint32_t channelCount, uint32_t bufferSizeFrames, uint32_t numBuffersInRing );
+    HostOS_WaveOutputStream(uint32_t requestedRateHz, uint32_t channelCount, uint32_t requestedBufferSizeFrames, uint32_t numBuffersInRing );
     ~HostOS_WaveOutputStream();
-    void Write( const void *soundDataBlock, uint32_t numFrames );
+	uint32_t GetRateHz() const;
+	uint32_t GetBufferSizeInFrames() const;
+	void Write( const void *soundDataBlock, uint32_t numFrames );
     void Flush();
     void Reset();
 
@@ -144,6 +146,7 @@ private:
 	class WaveBuffer  *_waveBuffers;
 	uint32_t       _channelCount;
 	uint32_t       _bufferSizeFrames;
+	uint32_t       _rateHz;
 
 	static void CALLBACK WaveCallback( HWAVEOUT hWave, UINT uMsg, DWORD dwUser, DWORD dw1, DWORD dw2 );
 
