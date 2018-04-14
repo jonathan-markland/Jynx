@@ -1579,7 +1579,7 @@ namespace Jynx
 				uint32_t  lineCount = 0;
 				ss >> std::hex >> address >> std::dec >> lineCount;
 
-				if( ! ss.fail() )
+				if( ! ss.fail() && lineCount > 0 && lineCount < 10000 )
 				{
 					// Establish disassembler, and run it on the address given, for the
 					// given number of lines of disassembly:
