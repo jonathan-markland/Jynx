@@ -121,6 +121,7 @@ namespace JynxZ80
 	{
 		assert( g_Z80GlobalInitDone ); // Assert if you didn't call InitialiseGlobalTables().
 		_timesliceLength = 0;
+		_currentOpcode = 0; // Not essential
 		Reset();
 	}
 
