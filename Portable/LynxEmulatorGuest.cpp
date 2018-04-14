@@ -685,7 +685,7 @@ namespace Jynx
 			auto adjustedOffset = (charOffset - _rangeMaskedScreenStartAddress6845) & LYNX_DISPLAY_DIMENSIONS_6845_CHARS_MASK;
 			auto invRowIndex    = adjustedOffset / 64;
 
-			assert( invRowIndex >= 0 && invRowIndex < INV_ROWS );
+			assert( invRowIndex < INV_ROWS );
 			_invalidateRow[ invRowIndex ] = true; // mark a row invalid
 		}
 		else
