@@ -61,58 +61,55 @@ namespace Jynx
 		// - Encoding: UTF-8 allowing code points 0..255, ignoring non-line-end values in range 1-31.
 		// - Do not assume to skip unrecognised content, enter Reset() state, and return 0.
 
-		for(;;)
+		auto byte = (uint8_t) (*_readPosition);   // Reminder - char is signed.
+
+		// Look for likely host end-of-line character(s).  Pass as "13" to the Lynx:
+		//    - 10 only
+		//    - 13 only
+		//    - 13 10
+
+		if( byte == 10 ) // UNIX
 		{
-			auto byte = (uint8_t) (*_readPosition);   // Reminder - char is signed.
-
-			// Look for likely host end-of-line character(s).  Pass as "13" to the Lynx:
-			//    - 10 only
-			//    - 13 only
-			//    - 13 10
-
-			if( byte == 10 ) // UNIX
-			{
-				++_readPosition; // consume the character
-				return 13; // Lynx's preferred char
-			}
-
-			if( byte == 13 ) // MAC / WINDOWS
-			{
-				++_readPosition; // consume the character
-				if( _readPosition[0] == 10 ) ++_readPosition; // It a WINDOWS line end
-				return 13; // Lynx's preferred char
-			}
-
-			// Now, if it's not NUL then do UTF-8 decoding:
-
-			if( byte != '\0' )
-			{
-				++_readPosition; // always consume the character
-
-				if( byte >= 32 && byte < 0x80 )
-				{
-					return (char) byte;
-				}
-				else if( byte == 0xC2 || byte == 0xC3 )  // Subset UTF-8 support (we only need code points 0..255)
-				{
-					auto tailByte = (uint8_t) (*_readPosition);
-					if( (tailByte & 0xC0) == 0x80 )
-					{
-						++_readPosition; // consume valid tail byte
-						if( byte == 0xC3 ) tailByte += 0x40;
-						return (char) tailByte;
-					}
-				}
-
-				// Failed to read the subset of UTF-8 that we support.
-				// Drop through.
-			}
-
-			// If we get to NUL, then let's free the memory.
-
-			Reset();
-			return '\0';
+			++_readPosition; // consume the character
+			return 13; // Lynx's preferred char
 		}
+
+		if( byte == 13 ) // MAC / WINDOWS
+		{
+			++_readPosition; // consume the character
+			if( _readPosition[0] == 10 ) ++_readPosition; // It a WINDOWS line end
+			return 13; // Lynx's preferred char
+		}
+
+		// Now, if it's not NUL then do UTF-8 decoding:
+
+		if( byte != '\0' )
+		{
+			++_readPosition; // always consume the character
+
+			if( byte >= 32 && byte < 0x80 )
+			{
+				return (char) byte;
+			}
+			else if( byte == 0xC2 || byte == 0xC3 )  // Subset UTF-8 support (we only need code points 0..255)
+			{
+				auto tailByte = (uint8_t) (*_readPosition);
+				if( (tailByte & 0xC0) == 0x80 )
+				{
+					++_readPosition; // consume valid tail byte
+					if( byte == 0xC3 ) tailByte += 0x40;
+					return (char) tailByte;
+				}
+			}
+
+			// Failed to read the subset of UTF-8 that we support.
+			// Drop through.
+		}
+
+		// If we get to NUL, then let's free the memory.
+
+		Reset();
+		return '\0';
 	}
 
 } // end namespace Jynx
