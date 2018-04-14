@@ -144,6 +144,7 @@ namespace JynxZ80
 				DoSubroutineReturn();
 				break;
 			}
+			break;
 
 		case 6:  // Column 6
 			// No flags affected here.
@@ -163,6 +164,7 @@ namespace JynxZ80
 			case 7: // 0x7E:    // (unofficial)
 				_interruptMode = 2;  break; // IM 2
 			}
+			break;
 
 		case 7:  // Column 7
 			switch( GetRowIndexWithinColumnFromOpcode(_currentOpcode) )
